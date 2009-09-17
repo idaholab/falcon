@@ -1,0 +1,46 @@
+#ifndef PRESSURENEUMANNBC_H
+#define PRESSURENEUMANNBC_H
+
+#include "BoundaryCondition.h"
+#include "Material.h"
+
+
+//Forward Declarations
+class PressureNeumannBC;
+
+template<>
+Parameters valid_params<PressureNeumannBC>();
+
+class PressureNeumannBC : public BoundaryCondition
+{
+public:
+
+  PressureNeumannBC(std::string name, Parameters parameters, std::string var_name, unsigned int boundary_id, std::vector<std::string> coupled_to, std::vector<std::string> coupled_as);
+
+  virtual ~PressureNeumannBC(){}
+
+protected:
+
+  /**
+   * This is here because materials don't yet work on boundaries!
+   */
+  Real pressure();
+  
+  virtual Real computeQpResidual();
+  
+  unsigned int _pe_var;
+  std::vector<Real> & _pe;
+
+  unsigned int _u_vel_var;
+  std::vector<Real> & _u_vel;
+
+  unsigned int _v_vel_var;
+  std::vector<Real> & _v_vel;
+
+  unsigned int _w_vel_var;
+  std::vector<Real> & _w_vel;
+
+  int _component;
+};
+
+#endif //PRESSURENEUMANNBC_H
