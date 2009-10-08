@@ -2,7 +2,7 @@
 
 [Mesh]
   dim = 3
-  file = cube.e
+  file = shale_cyl.e
 []
 
 [Variables]
@@ -28,6 +28,7 @@
   [./temp]
     order = FIRST
     family = LAGRANGE
+    initial_condition = 300
   [../]
 []
 
@@ -101,25 +102,16 @@
     type = HeatConductionImplicitEuler
     variable = temp
   [../]
-
 []
 
 [BCs]
-  names = 'bottom_x bottom_y bottom_z bottom_temp'
+  names = 'heater bottom_y side_x side_y side_z bore_x bore_z'
 #bottom_temp top_temp left_temp'
-
-  [./top_y]
+  [./heater]
     type = NeumannBC
-    variable = y_disp
-    boundary = 2
-    value = 1.0
-  [../]
-
-  [./bottom_x]
-    type = DirichletBC
-    variable = x_disp
-    boundary = 1
-    value = 0.0
+    variable = temp
+    boundary = 6
+    value = 700
   [../]
 
   [./bottom_y]
@@ -129,25 +121,46 @@
     value = 0.0
   [../]
 
-  [./bottom_z]
+  [./side_x]
     type = DirichletBC
-    variable = z_disp
-    boundary = 1
+    variable = x_disp
+    boundary = 3
     value = 0.0
   [../]
 
-  [./bottom_temp]
+  [./side_y]
     type = DirichletBC
-    variable = temp
-    boundary = 1
-    value = 1.0
+    variable = y_disp
+    boundary = 3
+    value = 0.0
+  [../]
+
+  [./side_z]
+    type = DirichletBC
+    variable = z_disp
+    boundary = 3
+    value = 0.0
+  [../]
+
+  [./bore_x]
+    type = DirichletBC
+    variable = x_disp
+    boundary = '4 5 6 7'
+    value = 0.0
+  [../]
+
+  [./bore_z]
+    type = DirichletBC
+    variable = z_disp
+    boundary = '4 5 6 7'
+    value = 0.0
   [../]
 []
 
 [Materials]
-  names = 'constant'
+  names = 'uinta green_river mahogany lower_green_river'
   
-  [./constant]
+  [./uinta]
     type = Constant
     block = 1
     coupled_to = 'temp'
@@ -158,7 +171,49 @@
     thermal_expansion = 1e-5
     density = 2.7e3
     specific_heat = 1.0e3
-    t_ref = 0
+    t_ref = 300
+  [../]
+
+  [./green_river]
+    type = Constant
+    block = 2
+    coupled_to = 'temp'
+    coupled_as = 'temp'
+    thermal_conductivity = 1.0
+    youngs_modulus = 1.0e10
+    poissons_ratio = .3
+    thermal_expansion = 1e-5
+    density = 2.7e3
+    specific_heat = 1.0e3
+    t_ref = 300
+  [../]
+
+  [./mahogany]
+    type = Constant
+    block = 3
+    coupled_to = 'temp'
+    coupled_as = 'temp'
+    thermal_conductivity = 1.0
+    youngs_modulus = 1.0e10
+    poissons_ratio = .3
+    thermal_expansion = 1e-5
+    density = 2.7e3
+    specific_heat = 1.0e3
+    t_ref = 300
+  [../]
+
+  [./lower_green_river]
+    type = Constant
+    block = 4
+    coupled_to = 'temp'
+    coupled_as = 'temp'
+    thermal_conductivity = 1.0
+    youngs_modulus = 1.0e10
+    poissons_ratio = .3
+    thermal_expansion = 1e-5
+    density = 2.7e3
+    specific_heat = 1.0e3
+    t_ref = 300
   [../]
 []
 
@@ -166,20 +221,19 @@
   type = Transient
   perf_log = true
   petsc_options = '-snes_mf_operator'
-  petsc_options_iname =  '-pc_type -pc_hypre_type'
-  petsc_options_value =  'hypre    boomeramg'
+  petsc_options_iname =  '-pc_type -pc_hypre_type -ksp_gmres_restart'
+  petsc_options_value =  'hypre    boomeramg 100'
 
-  l_max_its =  100
+  l_max_its =  60
   l_tol =  1e-5
 
   nl_max_its =  10
   nl_rel_tol =  1e-5
 
-
   [./Transient]
     start_time = 0.0
-    num_steps = 30
-    dt = 86400.0
+    num_steps = 100
+    dt = 10000000
   [../]
 []
 
