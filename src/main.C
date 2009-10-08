@@ -62,6 +62,15 @@ Number init_value (const Point& p,
   if(var_name == "cv" || var_name == "c")
     return 1.13e-4*rand()/(RAND_MAX + 1.0);
 
+  if(var_name == "temp")
+  {
+    if (p(1) <= -0.499)
+      return 1.0;
+    else
+      0.0;
+  }
+  
+
   if(parameters.have_parameter<Real>("initial_"+var_name))
     return parameters.get<Real>("initial_"+var_name);
   
