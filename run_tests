@@ -1,33 +1,46 @@
 #!/usr/bin/env python
-import os
-import sys
-
+import sys, os
 from socket import gethostname
 
-host_name = gethostname()
+# Set the current working directory to the directory where this script is located
+os.chdir(os.path.abspath(os.path.dirname(sys.argv[0])))
 
+#### Set the name of the application here and moose directory relative to the application
+app_name = 'falcon'
+MOOSE_DIR = '../moose'
+#### See if MOOSE_DIR is already in the environment instead
+if os.environ.has_key("MOOSE_DIR"):
+  MOOSE_DIR = os.environ['MOOSE_DIR']
+
+
+# Import the TestHarness and Helper functions from the MOOSE toolkit
+sys.path.append(MOOSE_DIR + '/tests')
+import tools
+
+host_name = gethostname()
 if host_name == 'service0' or host_name == 'service1':
   print 'Testing not supported on Icestorm head node'
   sys.exit(0)
 
-sys.path += (os.path.dirname(os.path.abspath(__file__)) + '/tests')
+  
+# Determine the application name based on the libMesh naming scheme
+# Assume the application is in the current working directory
+method = ''
+if os.environ.has_key('METHOD'):
+  method = os.environ['METHOD']
+else:
+  method = 'opt'
+executable = os.getcwd() + '/' + app_name + '-' + method
 
-#This junk is for running the tests with Bitten
-test_dir='tests'
-test_workdir_pos = 0
-try:
-  test_workdir_pos = sys.argv.index('TEST_WORKDIR')
-  test_dir=os.path.join(sys.argv[test_workdir_pos+1],test_dir)
-  sys.argv.pop(test_workdir_pos+1)
-  test_workdir_pos = sys.argv.remove('TEST_WORKDIR')
-except:
-  pass
-
-import nose
-result = nose.run(argv=['./run_tests','-v','-w',test_dir]+sys.argv[1:])
-
+# create an instance of the test harness passing in the main arg vector
+# and the name of the application executable
+test_harness = tools.TestHarness(sys.argv, executable)
+results, results_table, test_counter, time = test_harness.run_tests()
+  
 # Was it completely successful?
-if result:
-  sys.exit(0)
+print "\n" + '-'*70 + "\nRan " + str(test_counter) + " tests in " + time + "s\n\nOK"
+if results:
+  print "\n" + results + results_table + "\n" + '-'*70 + "\nRan " + str(test_counter) + " tests in " + time + "s\n\nOK"
+  sys.exit(1)
 
-sys.exit(1)
+sys.exit(0)
