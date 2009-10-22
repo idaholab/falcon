@@ -279,7 +279,7 @@ int main (int argc, char** argv)
     GetPot input_file(input_filename);
 
 #ifdef LIBMESH_HAVE_PETSC
-    PetscSupport::petscParseOptions(input_file);
+    MoosePetscSupport::petscParseOptions(input_file);
 #endif //HAVE_PETSC    
     
     if(!input_file("Execution/perf_log",false))
@@ -620,7 +620,7 @@ int main (int argc, char** argv)
     
 
 #ifdef LIBMESH_HAVE_PETSC
-    PetscSupport::petscSetDefaults(Moose::equation_system,system, Moose::compute_jacobian_block, Moose::compute_residual);
+    MoosePetscSupport::petscSetDefaults(Moose::equation_system,system, Moose::compute_jacobian_block, Moose::compute_residual);
 #endif //LIBMESH_HAVE_PETSC
     
     // Grab the Execution parameters
@@ -1310,7 +1310,7 @@ int main (int argc, char** argv)
         }
 
 #ifdef LIBMESH_HAVE_PETSC
-        PetscSupport::petscSetDefaults(Moose::equation_system, system, Moose::compute_jacobian_block, Moose::compute_residual);
+        MoosePetscSupport::petscSetDefaults(Moose::equation_system, system, Moose::compute_jacobian_block, Moose::compute_residual);
 #endif //LIBMESH_HAVE_PETSC
 
         timeval solve_start, solve_end;
