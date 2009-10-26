@@ -17,7 +17,6 @@
 #include "SolidMechSwellingGas.h"
 #include "SinHeat.h"
 #include "PrescribedExpansion.h"
-#include "Constant.h"
 
 #include "MassInviscidFlux.h"
 #include "MomentumInviscidFlux.h"
@@ -28,8 +27,18 @@
 #include "GravityPower.h"
 #include "Velocity.h"
 #include "Temperature.h"
+#include "DarcyImplicitEuler.h"
+#include "DarcyMassFluxPressure.h"
+#include "DarcyMassFluxZ.h"
+#include "TemperatureImplicitEuler.h"
+#include "TemperatureDiffusion.h"
+#include "TemperatureConvection.h"
 
 #include "PressureNeumannBC.h"
+
+#include "Constant.h"
+#include "DarcyWater.h"
+
 
 namespace Falcon
 {
@@ -51,8 +60,6 @@ namespace Falcon
     KernelFactory::instance()->registerKernel<SinHeat>("SinHeat");
     KernelFactory::instance()->registerKernel<PrescribedExpansion>("PrescribedExpansion");
 
-    MaterialFactory::instance()->registerMaterial<Constant>("Constant");
-
     KernelFactory::instance()->registerKernel<MassInviscidFlux>("MassInviscidFlux");
     KernelFactory::instance()->registerKernel<MomentumInviscidFlux>("MomentumInviscidFlux");
     KernelFactory::instance()->registerKernel<MomentumViscousFlux>("MomentumViscousFlux");
@@ -62,7 +69,17 @@ namespace Falcon
     KernelFactory::instance()->registerKernel<GravityPower>("GravityPower");
     KernelFactory::instance()->registerKernel<Velocity>("Velocity");
     KernelFactory::instance()->registerKernel<Temperature>("Temperature");
-
+    KernelFactory::instance()->registerKernel<DarcyImplicitEuler>("DarcyImplicitEuler");
+    KernelFactory::instance()->registerKernel<DarcyMassFluxPressure>("DarcyMassFluxPressure");
+    KernelFactory::instance()->registerKernel<DarcyMassFluxZ>("DarcyMassFluxZ");
+    KernelFactory::instance()->registerKernel<TemperatureImplicitEuler>("TemperatureImplicitEuler");
+    KernelFactory::instance()->registerKernel<TemperatureDiffusion>("TemperatureDiffusion");
+    KernelFactory::instance()->registerKernel<TemperatureConvection>("TemperatureConvection");
+        
     BCFactory::instance()->registerBC<PressureNeumannBC>("PressureNeumannBC");
+
+    MaterialFactory::instance()->registerMaterial<Constant>("Constant");
+    MaterialFactory::instance()->registerMaterial<DarcyWater>("DarcyWater");
+    
   }
 }

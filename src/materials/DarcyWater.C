@@ -1,0 +1,93 @@
+#include "DarcyWater.h"
+
+template<>
+Parameters valid_params<DarcyWater>()
+{
+  Parameters params;
+  params.set<Real>("permeability")=1.0E-12; //intrinsic permeability, "k", in (m^2)
+  params.set<Real>("porosity")=0.3; //dimensionless but variable
+  params.set<Real>("rho_w")=1000.0; //water density, variable, in (kg/m^3)
+  params.set<Real>("mu_w")=0.001; //water dynamic viscosity, variable, in (Pa s)
+  params.set<Real>("c_f")=1.0;//"consolodation factor", use for modifing porosity from
+                              // geomechanics
+  params.set<Real>("thermal_conductivity")=1.0;  //thermal thermal_conductivity, in (m^2/s)
+  params.set<Real>("time_coefficient")=1.0; //leftover from example, carry it along for now
+  params.set<Real>("gravity")=9.80665; //gravity acceleration, in (m/s^2)
+  params.set<Real>("water_specific_heat") = 4.18E3;  //units of (J/(kg K))
+  params.set<Real>("rock_specific_heat") = 1.01e3;  //units of (J/(kg K))
+  params.set<Real>("rho_r") = 2.50e3;  //rock density, in  (kg/m^3)
+
+  params.set<Real>("gx")=0.0;  //x component of the gravity pressure vector
+  params.set<Real>("gy")=1.0; //y component of the gravity pressure vector
+  params.set<Real>("gz")=-0.0;  //z component of the gravity pressure vector
+
+return params;
+}
+
+DarcyWater::DarcyWater(std::string name,
+                                 Parameters parameters,
+                                 unsigned int block_id,
+                                 std::vector<std::string> coupled_to,
+                                 std::vector<std::string> coupled_as)
+  
+  :Material(name,parameters,block_id,coupled_to,coupled_as),
+   _input_permeability(parameters.get<Real>("permeability")),
+   _input_porosity(parameters.get<Real>("porosity")),
+   _input_rho_w(parameters.get<Real>("rho_w")),
+   _input_mu_w(parameters.get<Real>("mu_w")),
+   _input_c_f(parameters.get<Real>("c_f")),
+   _input_thermal_conductivity(parameters.get<Real>("thermal_conductivity")),
+   _input_time_coefficient(parameters.get<Real>("time_coefficient")),
+   _input_water_specif_heat(parameters.get<Real>("water_specific_heat")),
+   _input_rock_specific_heat(parameters.get<Real>("rock_specific_heat")),
+   _input_rho_r(parameters.get<Real>("rho_r")),
+   
+   _gx(parameters.get<Real>("gx")),
+   _gy(parameters.get<Real>("gy")),
+   _gz(parameters.get<Real>("gz")),
+
+   _permeability(declareRealProperty("permeability")),
+   _porosity(declareRealProperty("porosity")),
+   _rho_w(declareRealProperty("rho_w")),
+   _mu_w(declareRealProperty("mu_w")),
+   _c_f(declareRealProperty("c_f")),
+   _thermal_conductivity(declareRealProperty("thermal_conductivity")),
+   _time_coefficient(declareRealProperty("time_coefficient")),
+   _gravity(declareRealProperty("gravity")),
+   _water_specific_heat(declareRealProperty("water_specific_heat")),
+   _rock_specific_heat(declareRealProperty("rock_specific_heat")),
+   _rho_r(declareRealProperty("rho_r")),
+
+   _darcy_params(declareRealProperty("darcy_params")),
+   _darcy_pressure(declareGradientProperty("darcy_pressure")),
+   _depth_pressure(declareGradientProperty("depth_pressure")),
+   _darcy_velocity(declareGradientProperty("darcy_velocity")),
+   
+   _gravity_pressure(declareRealVectorValueProperty("gravity_pressure")),
+   
+   _grad_p(coupledGrad("pressure"))
+{}
+
+void
+DarcyWater::computeProperties()
+{
+  for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
+  {
+    _gravity_pressure[qp](0) = _gx;
+    _gravity_pressure[qp](1) = _gy;
+    _gravity_pressure[qp](2) = _gz;
+    
+    _permeability[qp] = _input_permeability;
+    _porosity[qp] = _input_porosity;
+    _rho_w[qp] = _input_rho_w;
+    _mu_w[qp] = _input_mu_w;
+    _thermal_conductivity[qp] = _input_thermal_conductivity;
+    _time_coefficient[qp] = _input_time_coefficient;
+    
+    _darcy_params[qp] = ((_permeability[qp] * _rho_w[qp]) / _mu_w[qp]);
+    _darcy_pressure[qp] = (_darcy_params[qp]) * _grad_p[qp];
+    _depth_pressure[qp] = (_darcy_params[qp]) * (_gravity[qp] * _rho_w[qp])*(_gravity_pressure[qp]);
+    _darcy_velocity[qp] = (_darcy_pressure[qp] + _depth_pressure[qp]) / _porosity[qp];
+    
+  }    
+}
