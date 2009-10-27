@@ -13,7 +13,7 @@ void
 TemperatureConvection::subdomainSetup()
 {
    _water_specific_heat = &_material->getRealProperty("water_specific_heat");
-   _darcy_velocity =  &_material->getRealVectorValueProperty("darcy_velocity");
+   _darcy_velocity =  &_material->getGradientProperty("darcy_velocity");
 }
 
 Real TemperatureConvection::computeQpResidual()

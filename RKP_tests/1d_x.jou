@@ -1,0 +1,142 @@
+CUBIT> brick x 10 y 1 z 1
+Successfully created brick volume 1 
+Journaled Command: brick x 10 y 1 z 1
+
+  Current entity is Volume 1.
+CUBIT> 
+CUBIT> volume 1  move x 5 y 0 z 0 
+Journaled Command: volume 1 move x 5 y 0 z 0
+
+  Current entity is Volume 1.
+CUBIT> volume 1  interval 1
+Journaled Command: volume 1 interval 1
+
+CUBIT> volume 1  interval 1
+Journaled Command: volume 1 interval 1
+
+CUBIT> 
+CUBIT> mesh volume 1 
+Volume 1 (Volume 1) meshing scheme automatically set to submap.
+Matching intervals successful.
+Meshing Volume 1 (Volume 1)
+Generated 1 faces for Surface 1 (Surface 1).
+Generated 1 faces for Surface 2 (Surface 2).
+Generated 1 faces for Surface 3 (Surface 3).
+Generated 1 faces for Surface 4 (Surface 4).
+Generated 1 faces for Surface 5 (Surface 5).
+Generated 1 faces for Surface 6 (Surface 6).
+Generated 1 hexes for Volume 1 (Volume 1).
+Volume 1 (Volume 1) meshing completed using scheme: submap
+Journaled Command: mesh volume 1
+
+Mesh visibility OFF.
+
+CUBIT> volume 1  size 1
+WARNING: Cannot change size settings on meshed entities.
+The size settings on Volume 1 (Volume 1) will not change.
+CUBIT> delete mesh volume 1  propagate
+Journaled Command: delete mesh volume 1 propagate
+
+CUBIT> volume 1  size 1
+Journaled Command: volume 1 size 1
+
+CUBIT> 
+CUBIT> mesh volume 1 
+Matching intervals successful.
+Meshing Volume 1 (Volume 1)
+Generated 10 faces for Surface 1 (Surface 1).
+Generated 10 faces for Surface 2 (Surface 2).
+Generated 10 faces for Surface 3 (Surface 3).
+Generated 1 faces for Surface 4 (Surface 4).
+Generated 10 faces for Surface 5 (Surface 5).
+Generated 1 faces for Surface 6 (Surface 6).
+Generated 10 hexes for Volume 1 (Volume 1).
+Volume 1 (Volume 1) meshing completed using scheme: submap
+Journaled Command: mesh volume 1
+
+Mesh visibility ON.
+
+  Current entity is Volume 1.
+CUBIT> 
+CUBIT> block 1 volume 1  
+Added Volume 1 to Block 1
+Journaled Command: block 1 volume 1
+
+  Current entity is Face 37.
+CUBIT> 
+CUBIT> Sideset 1 face 37  
+Journaled Command: sideset 1 face 37
+
+  Current entity is Face 48.
+CUBIT> 
+CUBIT> Sideset 2 face 48  
+Journaled Command: sideset 2 face 48
+
+  Current entity is Face 12.
+  Current entity is Face 11.
+  Current entity is Face 12.
+  Current entity is Face 42.
+  Current entity is Face 43.
+  Current entity is Face 12.
+  Current entity is Face 11.
+CUBIT> 
+CUBIT> Sideset 3 face 11 12 21 22 31 32 41 42 
+Journaled Command: sideset 3 face 11 12 21 22 31 32 41 42
+
+CUBIT> color sideset 3  red
+CUBIT> draw sideset 3 add
+  Current entity is Face 41.
+  Current entity is Face 43.
+  Current entity is Face 42.
+  Current entity is Face 43.
+  Current entity is Face 12.
+  Current entity is Face 11.
+  Current entity is Face 12.
+  Current entity is Face 42.
+  Current entity is Face 43.
+  Current entity is Face 42.
+  Current entity is Face 43.
+  Current entity is Face 21.
+  Current entity is Face 22.
+  Current entity is Face 32.
+  Current entity is Face 31.
+CUBIT> 
+CUBIT> delete sideset 3 
+Journaled Command: delete sideset 3
+
+CUBIT> Sideset 3 face 11 12 21 22 31 32 42 43 
+Journaled Command: sideset 3 face 11 12 21 22 31 32 42 43
+
+CUBIT> color sideset 3  red
+CUBIT> draw sideset 3 add
+CUBIT> undo group begin
+Journaled Command: undo group begin
+
+CUBIT> set large exodus file off
+Journaled Command: set large exodus file off
+
+CUBIT> export Genesis  "/Users/podgrk/packages/falcon/pressure_1d_x.e"  overwrite 
+
+Using ExodusII API version 4.57 and DB version 4.57 to export "/Users/podgrk/packages/falcon/pressure_1d_x.e".
+
+
+Executive Exodus summary:
+  Number of dimensions     = 3
+  Number of element blocks = 1
+  Number of sidesets       = 3
+  Number of nodesets       = 0
+  Number of elements       = 10
+  Number of nodes          = 44
+Finished writing /Users/podgrk/packages/falcon/pressure_1d_x.e
+Journaled Command: export genesis "/Users/podgrk/packages/falcon/pressure_1d_x.e" overwrite
+
+CUBIT> 
+CUBIT> 
+CUBIT> undo group end
+Journaled Command: undo group end
+
+CUBIT> color sideset 1  blue
+CUBIT> draw sideset 1 add
+CUBIT> color sideset 2  gold
+CUBIT> draw sideset 2 add
+CUBIT> 

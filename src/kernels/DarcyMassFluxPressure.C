@@ -18,7 +18,7 @@ DarcyMassFluxPressure::subdomainSetup()
 Real
 DarcyMassFluxPressure::computeQpResidual()
 {
-  return (*_darcy_params)[_qp]*Diffusion::computeQpResidual();
+  return -(*_darcy_params)[_qp]*Diffusion::computeQpResidual();
 }
 
 Real

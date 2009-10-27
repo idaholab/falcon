@@ -1,0 +1,19 @@
+Cur DT: 1000
+Solve Elapsed Time: 0.025411
+Old Ratio: 1e+18
+New Ratio: 2.5411e-05
+Cur DT: 1100
+Solve Elapsed Time: 0.04032
+Old Ratio: 2.5411e-05
+New Ratio: 3.66545e-05
+Cur DT: 1210
+Solve Elapsed Time: 0.036649
+Old Ratio: 3.66545e-05
+New Ratio: 3.02884e-05
+Switching Direction
+Cur DT: 1089
+Solve Elapsed Time: 0.036161
+Old Ratio: 3.02884e-05
+New Ratio: 3.32057e-05
+Cur DT: 980.1
+Solve Elapsed Time: 0.041942
