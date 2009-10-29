@@ -4,17 +4,18 @@
 []
 
 [Variables]
-  names = 'u'
+  active = 'u'
 
   [./u]
     order = FIRST
     family = LAGRANGE
-    initial_from_file = 'u 2'
+    initial_from_file_var = u
+    initial_from_file_timestep = 2
   [../]
 []
 
 [Kernels]
-  names = 'bodyforce ie'
+  active = 'bodyforce ie'
 
   [./bodyforce]
     type = BodyForce
@@ -29,7 +30,7 @@
 []
 
 [BCs]
-  names = 'left right'
+  active = 'left right'
 
   [./left]
     type = DirichletBC
@@ -47,7 +48,7 @@
 []
 
 [Materials]
-  names = constant
+  active = constant
 
   [./constant]
     type = Constant

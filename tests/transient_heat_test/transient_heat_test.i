@@ -4,7 +4,7 @@
 []
 
 [Variables]
-  names = 'u'
+  active = 'u'
 
   [./u]
     order = FIRST
@@ -13,7 +13,7 @@
 []
 
 [Kernels]
-  names = 'heat ie'
+  active = 'heat ie'
 
   [./heat]
     type = HeatConduction
@@ -27,7 +27,7 @@
 []
 
 [BCs]
-  names = 'bottom top'
+  active = 'bottom top'
 
   [./bottom]
     type = DirichletBC
@@ -45,7 +45,7 @@
 []
 
 [Materials]
-  names = 'constant'
+  active = 'constant'
   
   [./constant]
     type = Constant

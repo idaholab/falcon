@@ -5,7 +5,7 @@
 []
 
 [Variables]
-  names = 'u v'
+  active = 'u v'
 
   [./u]
     order = FIRST
@@ -18,8 +18,19 @@
   [../]
 []
 
+[Preconditioning]
+  active = 'PBP'
+
+  [./PBP]
+    solve_order = 'u v'
+    preconditioner  = 'LU LU'
+    off_diag_row    = 'v'
+    off_diag_column = 'u'
+  [../]
+[]
+
 [Kernels]
-  names = 'diff_u conv_v diff_v'
+  active = 'diff_u conv_v diff_v'
 
   [./diff_u]
     type = Diffusion
@@ -40,7 +51,7 @@
 []
 
 [BCs]
-  names = 'left_u right_u left_v'
+  active = 'left_u right_u left_v'
 
   [./left_u]
     type = DirichletBC
@@ -72,7 +83,7 @@
 []
 
 [Materials]
-  names = constant
+  active = constant
 
   [./constant]
     type = Constant
@@ -88,13 +99,6 @@
   nl_max_its = 1
 
   petsc_options = '-snes_mf'
-  pbp = true
-  [./PBP]
-    solve_order = 'u v'
-    preconditioner  = 'LU LU'
-    off_diag_row    = 'v'
-    off_diag_column = 'u'
-  [../]
 []
 
 [Output]

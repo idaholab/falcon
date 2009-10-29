@@ -4,7 +4,7 @@
 []
 
 [Variables]
-  names = 'u'
+  active = 'u'
 
   [./u]
     order = FIRST
@@ -13,7 +13,7 @@
 []
 
 [AuxVariables]
-  names = 'one five coupled coupled_nl'
+  active = 'one five coupled coupled_nl'
 
   [./one]
     order = CONSTANT
@@ -37,7 +37,7 @@
 []
 
 [Kernels]
-  names = 'diff force'
+  active = 'diff force'
 
   [./diff]
     type = Diffusion
@@ -54,7 +54,7 @@
 []
 
 [AuxKernels]
-  names = 'constant coupled  coupled_nl'
+  active = 'constant coupled  coupled_nl'
 
   #Simple Aux Kernel
   [./constant]
@@ -83,7 +83,7 @@
 []
 
 [BCs]
-  names = 'left right'
+  active = 'left right'
 
   [./left]
     type = DirichletBC
@@ -101,7 +101,7 @@
 []
 
 [AuxBCs]
-  names = 'five'
+  active = 'five'
   
   [./five]
     type = ConstantAux
@@ -112,7 +112,7 @@
 []
 
 [Materials]
-  names = constant
+  active = constant
 
   [./constant]
     type = Constant

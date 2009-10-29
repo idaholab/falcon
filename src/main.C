@@ -10,6 +10,7 @@
 #include "AuxFactory.h"
 #include "ComputeResidual.h"
 #include "ComputeJacobian.h"
+#include "Parser.h"
 
 // C++ include files that we need
 #include <iostream>
@@ -114,7 +115,7 @@ void print_missing_param(std::string missing_param, std::string object_name)
 /**
  * Outputs the system.
  */
-void output_system(EquationSystems & equation_systems, std::string file_base, unsigned int t_step, Real time, bool exodus_output, bool gmv_output, bool tecplot_output, bool print_out_info)
+void output_system(EquationSystems * equation_systems, std::string file_base, unsigned int t_step, Real time, bool exodus_output, bool gmv_output, bool tecplot_output, bool print_out_info)
 {
   OStringStream stream_file_base;
   
@@ -128,9 +129,9 @@ void output_system(EquationSystems & equation_systems, std::string file_base, un
   
   if(exodus_output) 
   {     
-    static ExodusII_IO ex_out(equation_systems.get_mesh());
+    static ExodusII_IO ex_out(equation_systems->get_mesh());
     // The +1 is because Exodus starts timesteps at 1 and we start at 0
-    ex_out.write_timestep(file_base + ".e", equation_systems, t_step+1, time);
+    ex_out.write_timestep(file_base + ".e", *equation_systems, t_step+1, time);
     
     if(print_out_info)
     {       
@@ -145,7 +146,7 @@ void output_system(EquationSystems & equation_systems, std::string file_base, un
   }  
   if(gmv_output) 
   {     
-    GMVIO(*Moose::mesh).write_equation_systems(file_name + ".gmv", equation_systems);
+    GMVIO(*Moose::mesh).write_equation_systems(file_name + ".gmv", *equation_systems);
     if(print_out_info)
     {       
       if(exodus_output)
@@ -155,7 +156,7 @@ void output_system(EquationSystems & equation_systems, std::string file_base, un
   }  
   if(tecplot_output) 
   {     
-    TecplotIO(*Moose::mesh).write_equation_systems(file_name + ".plt", equation_systems);
+    TecplotIO(*Moose::mesh).write_equation_systems(file_name + ".plt", *equation_systems);
     if(print_out_info)
     {       
       if(exodus_output || gmv_output)
@@ -228,7 +229,7 @@ void dump()
   std::resetiosflags(std::ios::left);
 }
 
-// Begin the main program.
+ // Begin the main program.
 int main (int argc, char** argv)
 {
   Moose::perf_log.push("main()","Falcon");
@@ -239,851 +240,88 @@ int main (int argc, char** argv)
   //Seed the random number generator
   srand(libMesh::processor_id());
 
+  // Setup Falcon specific settings
   Falcon::registerObjects();
+  Moose::init_value = init_value;
+  Moose::init_gradient = init_gradient;
+  Moose::init_cond = init_cond;
   
   // Braces are used to force object scope, like in example 2
-   {
+  {
     // Create a GetPot object to parse the command line
     GetPot command_line (argc, argv);
 
     if (command_line.search("--dump")) 
     {
-      dump();
+      Parser p(true);
 
       // Exit the program without solving any problem
       exit(0);
     }
-    
-    std::string input_filename = "";
-    if ( command_line.search("-i") ) 
-    {
-      
-      input_filename = command_line.next(input_filename);
 
-      // Check if file exists
-      std::ifstream in(input_filename.c_str(), std::ifstream::in);
-      if (in.fail()) 
-      {
-        
-        std::cout<<"Unable to open file \"" << input_filename
-                 << "\".  Check to make sure that it exists and that you have read permission." << std::endl;
-        libmesh_error();
-      }
-    }
+    std::string input_filename = "";
+    if ( command_line.search("-i") )
+      input_filename = command_line.next(input_filename);
     else
-    {
-      std::cout<<"Must specify an input file using -i"<<std::endl;
-      libmesh_error();
-    }
+      mooseError("Must specify an input file using -i");
+      
+
+    Parser p(input_filename);
+    p.execute();
 
     GetPot input_file(input_filename);
 
-#ifdef LIBMESH_HAVE_PETSC
-    MoosePetscSupport::petscParseOptions(input_file);
-#endif //HAVE_PETSC    
     
-    if(!input_file("Execution/perf_log",false))
-      Moose::perf_log.disable_logging();
+    TransientNonlinearImplicitSystem &system =
+      Moose::equation_system->get_system<TransientNonlinearImplicitSystem>("NonlinearSystem");
 
-    unsigned int mesh_dim = input_file("Mesh/dim",3);
-    unsigned int init_unif_refine = input_file("Mesh/uniform_refine",0);
-    std::string mesh_file = input_file("Mesh/file","");
-    bool second_order = input_file("Mesh/second_order",false);
-
-    const unsigned int dim = mesh_dim;
-
-    Mesh *mesh = new Mesh(dim);
-
-    // MUST set the global mesh!
-    Moose::mesh = mesh;
+    TransientExplicitSystem &aux_system =
+      Moose::equation_system->get_system<TransientExplicitSystem> ("AuxiliarySystem");
     
-    ExodusII_IO * exreader = NULL;
+    Moose::setSolverDefaults(Moose::equation_system, system, Moose::compute_jacobian_block, Moose::compute_residual);
 
-    bool generated = input_file("Mesh/generated",false);
+    if(Moose::execution_type != "Transient" && Moose::execution_type != "Steady")
+      mooseError("Must specify either Transient or Steady for Execution/type");
 
-    if(!generated)
-    {
-      /* Detect if any solution variables need to be read and determine if we need to use
-       * the Exodus reader or if the mesh reader will suffice */
-      int num_vars = input_file.vector_variable_size("Variables/names");
-      bool restart_detected = false;
-      for(int i=0;i<num_vars && !restart_detected;i++)
-      {
-        std::string var_name = input_file("Variables/names", "", i);
-        if(input_file.vector_variable_size(("Variables/" + var_name + "/initial_from_file").c_str())) 
-          restart_detected = true;
-      }
-      int num_aux_vars = input_file.vector_variable_size("AuxVariables/names");
-      for(int i=0;i<num_aux_vars && !restart_detected;i++)
-      {
-        std::string var_name = input_file("AuxVariables/names", "", i);
-        if(input_file.vector_variable_size(("AuxVariables/" + var_name + "/initial_from_file").c_str())) 
-          restart_detected = true;
-      }
-
-      if (restart_detected) 
-      {
-        exreader = new ExodusII_IO(*mesh);
-        exreader->read(mesh_file);
-      }
-      else
-        /* We will use the mesh object to read the file to cut down on
-         * I/O conntention.  We still need to use the Exodus reader though
-         *for copy_nodal_solutions
-         */
-        mesh->read(mesh_file);  
-    }
-    else
-    {
-      unsigned int nx = input_file("Mesh/Generation/nx",1);
-      unsigned int ny = input_file("Mesh/Generation/ny",1);
-      unsigned int nz = input_file("Mesh/Generation/nz",1);
-
-      double xmin = input_file("Mesh/Generation/xmin",0.0);
-      double ymin = input_file("Mesh/Generation/ymin",0.0);
-      double zmin = input_file("Mesh/Generation/zmin",0.0);
-
-      double xmax = input_file("Mesh/Generation/xmax",1.0);
-      double ymax = input_file("Mesh/Generation/ymax",1.0);
-      double zmax = input_file("Mesh/Generation/zmax",1.0);
-
-      ElemType elem_type = Utility::string_to_enum<ElemType>(input_file("Mesh/Generation/elem_type","QUAD4"));
-//      MeshTools::Generation::build_cube(*mesh, nx, ny, nz, xmin, xmax, xmin, xmax, xmin, xmax, elem_type, false, 1, 1);
-//      MeshTools::Generation::build_square(*mesh, nx, ny, xmin, xmax, ymin, ymax, elem_type, false);
-    }
-
-    if(second_order)
-      mesh->all_second_order(true);
-
-    std::string partitioner = input_file("Mesh/partitioner", "");
-    
-    if (partitioner == "linear")
-      mesh->partitioner() = AutoPtr<Partitioner>(new LinearPartitioner);
-    mesh->prepare_for_use(false);
-    
-    // If using ParallelMesh this will delete non-local elements from the current processor
-    mesh->delete_remote_elements();
-
-    MeshRefinement mesh_refinement(*mesh);
-
-    mesh_refinement.uniformly_refine(init_unif_refine);
-
-    //Sets node's boundary ids from their side's boundary ids
-    mesh->boundary_info->build_node_list_from_side_list();
-
-//    mesh->boundary_info->add_node(mesh->node_ptr(4294),4);
-//    mesh->boundary_info->print_info();
-
-    mesh->print_info();
-    
-    EquationSystems equation_systems (*mesh);
-
-    // MUST set the global equation_systems!
-    Moose::equation_system = &equation_systems;
-    
-    TransientNonlinearImplicitSystem& system =
-      equation_systems.add_system<TransientNonlinearImplicitSystem> ("NonlinearSystem");
-
-    equation_systems.parameters.set<Real> ("linear solver tolerance")
-      = input_file("Execution/l_tol",1.e-5);
-
-    double l_abs_step_tol = input_file("Execution/l_abs_step_tol",-1.0);
-    
-    equation_systems.parameters.set<unsigned int> ("linear solver maximum iterations")
-      = input_file("Execution/l_max_its",10000);    
-    
-    equation_systems.parameters.set<unsigned int> ("nonlinear solver maximum iterations")
-      = input_file("Execution/nl_max_its",50);
-
-    equation_systems.parameters.set<unsigned int> ("nonlinear solver maximum function evaluations")
-      = input_file("Execution/nl_max_funcs",10000);
-
-    equation_systems.parameters.set<Real> ("nonlinear solver absolute residual tolerance")
-      = input_file("Execution/nl_abs_tol",1.e-50);
-
-    equation_systems.parameters.set<Real> ("nonlinear solver relative residual tolerance")
-      = input_file("Execution/nl_rel_tol",1.e-8);
-
-    equation_systems.parameters.set<Real> ("nonlinear solver absolute step tolerance")
-      = input_file("Execution/nl_abs_step_tol",1.e-50);
-
-    equation_systems.parameters.set<Real> ("nonlinear solver relative step tolerance")
-      = input_file("Execution/nl_rel_step_tol",1.e-50);
-
-    Moose::no_fe_reinit = input_file("Execution/no_fe_reinit",false);
-    
-    bool physics_based_preconditioning = input_file("Execution/pbp",false);
-    
-    //Map of variables to be read from a file to the timestep to be read.
-    std::map<std::string, unsigned int> var_to_timestep;
-    std::map<std::string, unsigned int> aux_var_to_timestep;
-      
-    //Parse the variables out
-    int num_vars = input_file.vector_variable_size("Variables/names");
-    for(int i=0;i<num_vars;i++)
-    {
-      std::string prefix = "Variables/";
-
-      std::string var_name = input_file("Variables/names", "", i);
-
-      std::string order_name = prefix + var_name + "/order";
-      std::string order = input_file(order_name.c_str(), "");
-
-      if(order == "")
-	print_missing_param("order",var_name);
-
-      std::string family_name = prefix + var_name + "/family";
-      std::string family = input_file(family_name.c_str(), "");
-
-      if(family == "")
-	print_missing_param("family",var_name);
-      
-      std::string initial_name = prefix + var_name + "/initial_condition";
-      Real initial = input_file(initial_name.c_str(), 0.0);
-
-      if(initial > 1e-12 || initial < -1e-12)
-        equation_systems.parameters.set<Real>("initial_"+var_name) = initial;
-      
-      system.add_variable(var_name,
-			  Utility::string_to_enum<Order>   (order),
-			  Utility::string_to_enum<FEFamily>(family));
-
-      if(physics_based_preconditioning)
-      {
-        //Create the preconditioning system
-        LinearImplicitSystem & precond_system = equation_systems.add_system<LinearImplicitSystem>(var_name+"_system");
-        precond_system.assemble_before_solve = false;
-        precond_system.add_variable(var_name+"_prec",
-                                    Utility::string_to_enum<Order>   (order),
-                                    Utility::string_to_enum<FEFamily>(family));
-      }      
-
-      if(input_file.vector_variable_size((prefix + var_name + "/initial_from_file").c_str()))
-      {
-        std::string read_name = input_file((prefix + var_name + "/initial_from_file").c_str(), "", 0);
-
-        //Default to reading timestep 2 (which will be the final solution from a steady state calc
-        int read_timestep = input_file((prefix + var_name + "/initial_from_file").c_str(), 2, 1);
-        
-        var_to_timestep[read_name] = read_timestep;
-      }
-    }
-
-    system.nonlinear_solver->residual = Moose::compute_residual;
-
-    if(!physics_based_preconditioning)
-      system.nonlinear_solver->jacobian = Moose::compute_jacobian;
-
-    system.attach_init_function(init_cond);
+    if(Moose::output_initial)
+      output_system(Moose::equation_system, Moose::file_base, 0, 0.0, Moose::exodus_output, Moose::gmv_output, Moose::tecplot_output, Moose::print_out_info);
 
     
-    
+    bool adaptivity = false;
 
-    if(physics_based_preconditioning)
-    {
-      PhysicsBasedPreconditioner *precond = new PhysicsBasedPreconditioner();
-      
-      //Parse out the PBP options
-      input_file.set_prefix("Execution/PBP/");
+    if(Moose::equation_system->parameters.have_parameter<bool>("adaptivity"))
+      adaptivity = Moose::equation_system->parameters.get<bool>("adaptivity");
 
-      unsigned int num_solve_order = input_file.vector_variable_size("solve_order");
-      
-      if(num_solve_order && num_solve_order < system.n_vars())
-      {
-        std::cout<<num_solve_order<<std::endl;
-        
-        std::cerr<<std::endl<<"If you specify a solve_order it must contain all of the variables"<<std::endl;
-        libmesh_error();
-      }
-
-      std::vector<unsigned int> solve_order(num_solve_order);
-      
-      for(int i=0;i<num_solve_order;i++)
-        solve_order[i] = system.variable_number(input_file("solve_order","",i));
-
-      unsigned int num_pre = input_file.vector_variable_size("preconditioner");
-      
-      if(num_pre && num_pre != system.n_vars())
-      {
-        std::cerr<<std::endl<<"If you specify the preconditioner you must specify it for all of the variables"<<std::endl;
-        libmesh_error();
-      }
-
-      std::vector<PreconditionerType> pre(num_pre);
-
-      for(int i=0;i<num_pre;i++)
-        pre[i] = Utility::string_to_enum<PreconditionerType>(input_file("preconditioner","",i));
-
-      unsigned int num_off_diag_row = input_file.vector_variable_size("off_diag_row");
-      unsigned int num_off_diag_column = input_file.vector_variable_size("off_diag_column");
-
-      if(num_off_diag_row != num_off_diag_column)
-      {
-        std::cerr<<"off_diag_row and off_diag_column must be the same size!"<<std::endl;
-        libmesh_error();
-      }
-
-      std::vector<std::vector<unsigned int> > off_diag(system.n_vars());
-
-      for(int i=0;i<num_off_diag_row;i++)
-      {
-        unsigned int row = system.variable_number(input_file("off_diag_row","",i));
-        unsigned int column = system.variable_number(input_file("off_diag_column","",i));
-
-        //The +1 is because the preconditioning system is always 1 more than the variable number
-        LinearImplicitSystem & u_system = equation_systems.get_system<LinearImplicitSystem>(row+1);
-
-        //Add the matrix to hold the off diagonal piece
-        u_system.add_matrix(input_file("off_diag_column","",i));
-        
-        off_diag[row].push_back(column);
-      }  
-      
-      input_file.set_prefix("");
-      
-      precond->setEq(equation_systems);
-      precond->setComputeJacobianBlock(Moose::compute_jacobian_block);
-      precond->setSolveOrder(solve_order);
-      precond->setPreconditionerType(pre);
-      precond->setOffDiagBlocks(off_diag);
-
-      system.nonlinear_solver->attach_preconditioner(precond);
-    }
-
-    TransientExplicitSystem& aux_system =
-      equation_systems.add_system<TransientExplicitSystem> ("AuxiliarySystem");
-
-    aux_system.attach_init_function(init_cond);
-
-    //Parse the aux variables out
-    int num_aux_vars = input_file.vector_variable_size("AuxVariables/names");
-
-    for(int i=0;i<num_aux_vars;i++)
-    {
-      std::string prefix = "AuxVariables/";
-
-      std::string var_name = input_file("AuxVariables/names", "", i);
-
-      std::string order_name = prefix + var_name + "/order";
-      std::string order = input_file(order_name.c_str(), "");
-
-      if(order == "")
-	print_missing_param("order",var_name);
-
-      std::string family_name = prefix + var_name + "/family";
-      std::string family = input_file(family_name.c_str(), "");
-
-      if(family == "")
-	print_missing_param("family",var_name);
-
-      std::string initial_name = prefix + var_name + "/initial_condition";
-      Real initial = input_file(initial_name.c_str(), 0.0);
-
-      if(initial > 1e-12 || initial < -1e-12)
-        equation_systems.parameters.set<Real>("initial_"+var_name) = initial;
-      
-      aux_system.add_variable(var_name,
-                              Utility::string_to_enum<Order>   (order),
-                              Utility::string_to_enum<FEFamily>(family));
-
-      if(input_file.vector_variable_size((prefix + var_name + "/initial_from_file").c_str()))
-      {
-        std::string read_name = input_file((prefix + var_name + "/initial_from_file").c_str(), "", 0);
-        
-        //Default to reading timestep 2 (which will be the final solution from a steady state calc
-        int read_timestep = input_file((prefix + var_name + "/initial_from_file").c_str(), 2, 1);
-        
-        aux_var_to_timestep[read_name] = read_timestep;
-      }
-    }
-
-    equation_systems.init();
-    equation_systems.print_info();
-
-    if (var_to_timestep.size() || aux_var_to_timestep.size()) 
-    {
-      if (exreader == NULL)
-        libmesh_error();
-      
-      std::map<std::string, unsigned int>::iterator var_it = var_to_timestep.begin();
-      const std::map<std::string, unsigned int>::iterator var_end = var_to_timestep.end();
-
-      for(;var_it != var_end; ++var_it)
-        exreader->copy_nodal_solution(system, var_it->first, var_it->second);
-
-      std::map<std::string, unsigned int>::iterator aux_var_it = aux_var_to_timestep.begin();
-      const std::map<std::string, unsigned int>::iterator aux_var_end = aux_var_to_timestep.end();
-
-      for(;aux_var_it != aux_var_end; ++aux_var_it)
-        exreader->copy_nodal_solution(aux_system, aux_var_it->first, aux_var_it->second);
-    }
-    
-
-#ifdef LIBMESH_HAVE_PETSC
-    MoosePetscSupport::petscSetDefaults(Moose::equation_system,system, Moose::compute_jacobian_block, Moose::compute_residual);
-#endif //LIBMESH_HAVE_PETSC
-    
-    // Grab the Execution parameters
-    std::string execution_type = "Steady";
-    execution_type = input_file("Execution/type",execution_type);
-
-    if(execution_type != "Transient" && execution_type != "Steady")
-    {
-      std::cerr<<std::endl<<"Must specify either Transient or Steady for Execution/type"<<std::endl;
-      libmesh_error();
-    }
-
-    if(execution_type == "Transient")
-    {
-      double time                    = input_file("Execution/Transient/start_time",0.0);
-      double end_time                = input_file("Execution/Transient/end_time",1.e+30);
-      double dt                      = input_file("Execution/Transient/dt",-1.0);
-      double dtmin                   = input_file("Execution/Transient/dtmin",0.0);
-      double dtmax                   = input_file("Execution/Transient/dtmax",1.0e30);
-      int num_steps                  = input_file("Execution/Transient/num_steps",-1);
-      int n_startup_steps            = input_file("Execution/Transient/n_startup_steps",0);
-      bool adaptive_time_stepping    = input_file("Execution/Transient/adaptive_time_stepping",false);
-      bool sol_time_adaptive_time_stepping    = input_file("Execution/Transient/sol_time_adaptive_time_stepping",false);
-      bool exponential_time_stepping = input_file("Execution/Transient/exponential_time_stepping",false);
-      bool trans_ss_check            = input_file("Execution/Transient/trans_ss_check",false);
-      double ss_check_tol            = input_file("Execution/Transient/ss_check_tol",1.e-08);
-      double ss_tmin                 = input_file("Execution/Transient/ss_tmin",0.);
-      
-      double reject_step_error       = input_file("Execution/Transient/reject_step_error",-1.);
-      if(reject_step_error > 0)
-      {
-        system.add_vector("time_error");
-        system.add_vector("old_solution");
-      }
-
-      // Transient simulation run time checks
-      if(dt < 0)
-	print_missing_param("dt","Transient");
-      if(num_steps < 0)
-	print_missing_param("num_steps","Transient");
-
-      // Load transient simulation control parameters 
-      equation_systems.parameters.set<Real> ("time")                      = time;
-      equation_systems.parameters.set<Real> ("end_time")                  = end_time;
-      equation_systems.parameters.set<Real> ("dt")                        = dt;
-      equation_systems.parameters.set<Real> ("dtmin")                     = dtmin;
-      equation_systems.parameters.set<Real> ("dtmax")                     = dtmax;
-      equation_systems.parameters.set<int>  ("num_steps")                 = num_steps;
-      equation_systems.parameters.set<int>  ("n_startup_steps")           = n_startup_steps;
-      equation_systems.parameters.set<bool> ("adaptive_time_stepping")    = adaptive_time_stepping;
-      equation_systems.parameters.set<bool> ("sol_time_adaptive_time_stepping")    = sol_time_adaptive_time_stepping;
-      equation_systems.parameters.set<bool> ("exponential_time_stepping") = exponential_time_stepping;
-      equation_systems.parameters.set<bool> ("trans_ss_check")            = trans_ss_check;
-      equation_systems.parameters.set<Real> ("ss_check_tol")              = ss_check_tol;
-      equation_systems.parameters.set<Real> ("ss_tmin")                   = ss_tmin;
-      equation_systems.parameters.set<Real> ("reject_step_error")         = reject_step_error;      
-    }
-
-    //Adaptivity objects
     unsigned int max_r_steps = 0;
-    ErrorVector error;
-    KellyErrorEstimator error_estimator;
 
-    bool adaptivity = input_file("Execution/adaptivity",false);
-    
-    //Read Adaptivity Parameters
-    if(adaptivity)
-    {      
-      input_file.set_prefix("Execution/Adaptivity/");
-
-      max_r_steps = input_file("steps",0);
-
-      mesh_refinement.refine_fraction()  = input_file("refine_fraction",0.0);
-      mesh_refinement.coarsen_fraction() = input_file("coarsen_fraction",0.0);
-      mesh_refinement.max_h_level()      = input_file("max_h_level",0);
-
-      int num_weight_names = input_file.vector_variable_size("weight_names");
-      int num_weight_values = input_file.vector_variable_size("weight_values");
-
-      if(num_weight_names)
-      {
-        if(num_weight_names != num_weight_values)
-        {
-          std::cerr<<std::endl<<"Number of weight_names must be equal to number of weight_values in Execution/Adaptivity"<<std::endl;
-          libmesh_error();
-        }
-
-        // If weights have been specified then set the default weight to zero
-        std::vector<float> weights(system.n_vars(),0);
-
-        for(int i=0;i<num_weight_names;i++)
-        {
-          std::string name = input_file("weight_names", "", i);
-          double value = input_file("weight_values", 0.0, i);
-
-          weights[system.variable_number(name)] = value;
-        }
-        
-//        error_estimator.component_scale = weights;
-      }
-
-      input_file.set_prefix("");
-    }
-
-    //Initialize common data structures for Kernels
-    Kernel::init(&equation_systems);
-    BoundaryCondition::init();
-    AuxKernel::init();
-
-    //Parse the kernels out
-    num_vars = input_file.vector_variable_size("Kernels/names");
-    for(int i=0;i<num_vars;i++)
-    {
-      std::string prefix = "Kernels/";
-
-      std::string kernel_name = input_file("Kernels/names", "", i);
-
-      std::string type_name = prefix + kernel_name + "/type";
-      std::string type = input_file(type_name.c_str(), "");
-
-      if(type == "")
-	print_missing_param("type",kernel_name);
-
-      std::string var_name = prefix + kernel_name + "/variable";
-      std::string var = input_file(var_name.c_str(), "");
-
-      if(var == "")
-	print_missing_param("variable",kernel_name);
-
-      std::string block_name = prefix + kernel_name + "/block";
-      int block = input_file(block_name.c_str(), -1);
-
-      Parameters kernel_params = KernelFactory::instance()->getValidParams(type);
-
-      Parameters::iterator it = kernel_params.begin();
-      Parameters::iterator end = kernel_params.end();
-
-      for(;it != end; ++it)
-      {
-	Parameters::Parameter<Real> * param = dynamic_cast<Parameters::Parameter<Real>*>(it->second);
-        param->set()=input_file((prefix+kernel_name+"/"+it->first).c_str(), param->get());
-      }
-
-      int num_coupled_to = input_file.vector_variable_size((prefix + kernel_name + "/coupled_to").c_str());
-      int num_coupled_as = input_file.vector_variable_size((prefix + kernel_name + "/coupled_as").c_str());
-
-      if(num_coupled_to != num_coupled_as)
-      {
-        std::cerr<<std::endl<<"_coupled_to_ must be the same size as _coupled_as_ for "<<kernel_name<<std::endl;
-        libmesh_error();
-      }
-
-      std::vector<std::string> coupled_to;
-      std::vector<std::string> coupled_as;
-
-      for(int j=0;j<num_coupled_to;j++)
-      {
-        coupled_to.push_back(input_file((prefix + kernel_name + "/coupled_to").c_str(), "", j));
-        coupled_as.push_back(input_file((prefix + kernel_name + "/coupled_as").c_str(), "", j));
-      }                       
-
-      if(block < 0)
-        KernelFactory::instance()->add(type, kernel_name, kernel_params, var, coupled_to, coupled_as);
-      else
-        KernelFactory::instance()->add(type, kernel_name, kernel_params, var, coupled_to, coupled_as, block);
-    }
-
-    //Parse the AuxKernels out
-    num_vars = input_file.vector_variable_size("AuxKernels/names");
-    for(int i=0;i<num_vars;i++)
-    {
-      std::string prefix = "AuxKernels/";
-
-      std::string kernel_name = input_file("AuxKernels/names", "", i);
-
-      std::string type_name = prefix + kernel_name + "/type";
-      std::string type = input_file(type_name.c_str(), "");
-
-      if(type == "")
-	print_missing_param("type",kernel_name);
-
-      std::string var_name = prefix + kernel_name + "/variable";
-      std::string var = input_file(var_name.c_str(), "");
-
-      if(var == "")
-	print_missing_param("variable",kernel_name);
-
-      Parameters kernel_params = AuxFactory::instance()->getValidParams(type);
-
-      Parameters::iterator it = kernel_params.begin();
-      Parameters::iterator end = kernel_params.end();
-
-      for(;it != end; ++it)
-      {
-	Parameters::Parameter<Real> * param = dynamic_cast<Parameters::Parameter<Real>*>(it->second);
-        param->set()=input_file((prefix+kernel_name+"/"+it->first).c_str(), param->get());
-      }
-
-      int num_coupled_to = input_file.vector_variable_size((prefix + kernel_name + "/coupled_to").c_str());
-      int num_coupled_as = input_file.vector_variable_size((prefix + kernel_name + "/coupled_as").c_str());
-
-      if(num_coupled_to != num_coupled_as)
-      {
-        std::cerr<<std::endl<<"_coupled_to_ must be the same size as _coupled_as_ for "<<kernel_name<<std::endl;
-        libmesh_error();
-      }
-
-      std::vector<std::string> coupled_to;
-      std::vector<std::string> coupled_as;
-
-      for(int j=0;j<num_coupled_to;j++)
-      {
-        coupled_to.push_back(input_file((prefix + kernel_name + "/coupled_to").c_str(), "", j));
-        coupled_as.push_back(input_file((prefix + kernel_name + "/coupled_as").c_str(), "", j));
-      }                       
-
-      AuxFactory::instance()->add(type, kernel_name, kernel_params, var, coupled_to, coupled_as);
-    }
-
-    //Parse the BCs out
-    num_vars = input_file.vector_variable_size("BCs/names");
-    for(int i=0;i<num_vars;i++)
-    {
-      std::string prefix = "BCs/";
-
-      std::string bc_name = input_file("BCs/names", "", i);
-
-      input_file.set_prefix((prefix + bc_name + "/").c_str());
-
-      std::string type = input_file("type", "");
-
-      if(type == "")
-	print_missing_param("type",bc_name);
-
-      std::string var = input_file("variable", "");
-
-      if(var == "")
-	print_missing_param("variable",bc_name);
-
-      Parameters bc_params = BCFactory::instance()->getValidParams(type);
-
-      Parameters::iterator it = bc_params.begin();
-      Parameters::iterator end = bc_params.end();
-
-      for(;it != end; ++it)
-      {
-	Parameters::Parameter<Real> * param = dynamic_cast<Parameters::Parameter<Real>*>(it->second);
-	param->set()=input_file(it->first.c_str(), param->get());
-      }
-
-      int num_coupled_to = input_file.vector_variable_size("coupled_to");
-      int num_coupled_as = input_file.vector_variable_size("coupled_as");
-
-      if(num_coupled_to != num_coupled_as)
-      {
-        std::cerr<<std::endl<<"_coupled_to_ must be the same size as _coupled_as_ for "<<bc_name<<std::endl;
-        libmesh_error();
-      }
-
-      std::vector<std::string> coupled_to;
-      std::vector<std::string> coupled_as;
-
-      for(int j=0;j<num_coupled_to;j++)
-      {
-        coupled_to.push_back(input_file("coupled_to", "", j));
-        coupled_as.push_back(input_file("coupled_as", "", j));
-      }
-
-      int num_boundary = input_file.vector_variable_size("boundary");
-
-      if(num_boundary <= 0)
-	print_missing_param("boundary",bc_name);
-
-      //Add one BC for each boundary
-      for(int j=0;j<num_boundary;j++)
-      {
-        
-        int boundary = input_file("boundary", -1, j);
-
-        if(boundary > 0)
-          BCFactory::instance()->add(type, bc_name, bc_params, var, boundary, coupled_to, coupled_as);
-        else
-        {
-          std::cout<<"Invalid boundary number: "<<boundary<<std::endl;
-          libmesh_error();
-        }
-      }  
-
-      input_file.set_prefix("");
-    }
-
-    //Parse the aux BCs out
-    num_vars = input_file.vector_variable_size("AuxBCs/names");
-    for(int i=0;i<num_vars;i++)
-    {
-      std::string prefix = "AuxBCs/";
-
-      std::string bc_name = input_file("AuxBCs/names", "", i);
-
-      input_file.set_prefix((prefix + bc_name + "/").c_str());
-
-      std::string type = input_file("type", "");
-
-      if(type == "")
-	print_missing_param("type",bc_name);
-
-      std::string var = input_file("variable", "");
-
-      if(var == "")
-	print_missing_param("variable",bc_name);
-
-      Parameters bc_params = AuxFactory::instance()->getValidParams(type);
-
-      Parameters::iterator it = bc_params.begin();
-      Parameters::iterator end = bc_params.end();
-
-      for(;it != end; ++it)
-      {
-	Parameters::Parameter<Real> * param = dynamic_cast<Parameters::Parameter<Real>*>(it->second);
-	param->set()=input_file(it->first.c_str(), param->get());
-      }
-
-      int num_coupled_to = input_file.vector_variable_size("coupled_to");
-      int num_coupled_as = input_file.vector_variable_size("coupled_as");
-
-      if(num_coupled_to != num_coupled_as)
-      {
-        std::cerr<<std::endl<<"_coupled_to_ must be the same size as _coupled_as_ for "<<bc_name<<std::endl;
-        libmesh_error();
-      }
-
-      std::vector<std::string> coupled_to;
-      std::vector<std::string> coupled_as;
-
-      for(int j=0;j<num_coupled_to;j++)
-      {
-        coupled_to.push_back(input_file("coupled_to", "", j));
-        coupled_as.push_back(input_file("coupled_as", "", j));
-      }
-
-      int num_boundary = input_file.vector_variable_size("boundary");
-
-      if(num_boundary <= 0)
-	print_missing_param("boundary",bc_name);
-
-      //Add one BC for each boundary
-      for(int j=0;j<num_boundary;j++)
-      {
-        
-        int boundary = input_file("boundary", -1, j);
-
-        if(boundary > 0)
-          AuxFactory::instance()->addBC(type, bc_name, bc_params, var, boundary, coupled_to, coupled_as);
-        else
-        {
-          std::cout<<"Invalid boundary number: "<<boundary<<std::endl;
-          libmesh_error();
-        }
-      }  
-
-      input_file.set_prefix("");
-    }
-
-    //Parse the materials out
-    num_vars = input_file.vector_variable_size("Materials/names");
-    for(int i=0;i<num_vars;i++)
-    {
-      std::string prefix = "Materials/";
-
-      std::string material_name = input_file("Materials/names", "", i);
-
-      std::string type_name = prefix + material_name + "/type";
-      std::string type = input_file(type_name.c_str(), "");
-
-      if(type == "")
-	print_missing_param("type",material_name);
-
-      std::string block_name = prefix + material_name + "/block";
-      int block = input_file(block_name.c_str(), -1);
-
-      if(block < 0)
-	print_missing_param("block",material_name);
-
-      Parameters material_params = MaterialFactory::instance()->getValidParams(type);
-
-      Parameters::iterator it = material_params.begin();
-      Parameters::iterator end = material_params.end();
-
-      for(;it != end; ++it)
-      {
-	Parameters::Parameter<Real> * param = dynamic_cast<Parameters::Parameter<Real>*>(it->second);
-        param->set()=input_file((prefix+material_name+"/"+it->first).c_str(), param->get());
-      }
-
-      int num_coupled_to = input_file.vector_variable_size((prefix + material_name + "/coupled_to").c_str());
-      int num_coupled_as = input_file.vector_variable_size((prefix + material_name + "/coupled_as").c_str());
-
-      if(num_coupled_to != num_coupled_as)
-      {
-        std::cerr<<std::endl<<"_coupled_to_ must be the same size as _coupled_as_ for "<<material_name<<std::endl;
-        libmesh_error();
-      }
-
-      std::vector<std::string> coupled_to;
-      std::vector<std::string> coupled_as;
-
-      for(int j=0;j<num_coupled_to;j++)
-      {
-        coupled_to.push_back(input_file((prefix + material_name + "/coupled_to").c_str(), "", j));
-        coupled_as.push_back(input_file((prefix + material_name + "/coupled_as").c_str(), "", j));
-      }                       
-
-      MaterialFactory::instance()->add(type, material_name, material_params, block, coupled_to, coupled_as);
-    }
-    
-    //Get Output Params
-    input_file.set_prefix("Output/");
-
-    std::string file_base = "";
-    file_base = input_file("file_base",file_base);
-    if(file_base == "")
-      print_missing_param("file_base","Output");
-
-    int interval = input_file("interval",1);
-
-    bool exodus_output = input_file("exodus",false);
-    bool gmv_output = input_file("gmv",false);
-    bool tecplot_output = input_file("tecplot",false);
-
-    if(!exodus_output && !gmv_output && !tecplot_output)
-    {
-      std::cerr<<std::endl<<"No ouput format specified, needs at least one of: exodus, gmv, tecplot"<<std::endl;
-      libmesh_error();
-    }
-
-    bool print_out_info = input_file("print_out_info",false);
-    
-    if(input_file("output_initial",false))
-       output_system(equation_systems, file_base, 0, 0.0, exodus_output, gmv_output, tecplot_output,print_out_info);
+    if(Moose::equation_system->parameters.have_parameter<unsigned int>("max_r_steps"))
+      max_r_steps = Moose::equation_system->parameters.get<unsigned int>("max_r_steps");
 
     bool converged = true;
     bool step_rejected = false;
     
-    if(execution_type == "Transient")
+    if(Moose::execution_type == "Transient")
     {
       // Load time steppping prameters for Transient scope
-      double time                    = equation_systems.parameters.get<Real>("time");
-      double end_time                = equation_systems.parameters.get<Real>("end_time");
-      double dt                      = equation_systems.parameters.get<Real>("dt");
-      double dtmin                   = equation_systems.parameters.get<Real>("dtmin");
-      double dtmax                   = equation_systems.parameters.get<Real>("dtmax");
-      int num_steps                  = equation_systems.parameters.get<int>("num_steps");
-      int n_startup_steps            = equation_systems.parameters.get<int>("n_startup_steps");
-      bool adaptive_time_stepping    = equation_systems.parameters.get<bool>("adaptive_time_stepping");
-      bool sol_time_adaptive_time_stepping    = equation_systems.parameters.get<bool>("sol_time_adaptive_time_stepping");
-      bool exponential_time_stepping = equation_systems.parameters.get<bool>("exponential_time_stepping");
-      bool trans_ss_check            = equation_systems.parameters.get<bool>("trans_ss_check");
-      double ss_check_tol            = equation_systems.parameters.get<Real>("ss_check_tol");
-      double ss_tmin                 = equation_systems.parameters.get<Real>("ss_tmin");      
-      double reject_step_error       = equation_systems.parameters.get<Real>("reject_step_error");
+      std::cerr << "Getting Time: " << std::endl;
+      double time                    = Moose::equation_system->parameters.get<Real>("time");
+      std::cerr << "Got Time" << std::endl;
+      double end_time                = Moose::equation_system->parameters.get<Real>("end_time");
+      double dt                      = Moose::equation_system->parameters.get<Real>("dt");
+      double dtmin                   = Moose::equation_system->parameters.get<Real>("dtmin");
+      double dtmax                   = Moose::equation_system->parameters.get<Real>("dtmax");
+      int num_steps                  = Moose::equation_system->parameters.get<int>("num_steps");
+      int n_startup_steps            = Moose::equation_system->parameters.get<int>("n_startup_steps");
+      bool adaptive_time_stepping    = Moose::equation_system->parameters.get<bool>("adaptive_time_stepping");
+      bool sol_time_adaptive_time_stepping    = Moose::equation_system->parameters.get<bool>("sol_time_adaptive_time_stepping");
+      bool exponential_time_stepping = Moose::equation_system->parameters.get<bool>("exponential_time_stepping");
+      bool trans_ss_check            = Moose::equation_system->parameters.get<bool>("trans_ss_check");
+      double ss_check_tol            = Moose::equation_system->parameters.get<Real>("ss_check_tol");
+      double ss_tmin                 = Moose::equation_system->parameters.get<Real>("ss_tmin");      
+      double reject_step_error       = Moose::equation_system->parameters.get<Real>("reject_step_error");
       
       bool keep_going = true;
-      int & t_step = equation_systems.parameters.set<int> ("t_step") = 0;
+      int & t_step = Moose::equation_system->parameters.set<int> ("t_step") = 0;
       Real dt_cur = dt;
 
       // Used in adaptive time stepping
@@ -1162,23 +400,20 @@ int main (int argc, char** argv)
             // Increment time
             time += dt_cur;
           
-            equation_systems.parameters.set<Real> ("time")  = time;
-            equation_systems.parameters.set<Real> ("dt")    = dt_cur;
-            equation_systems.parameters.set<int> ("t_step") = t_step;
+            Moose::equation_system->parameters.set<Real> ("time")  = time;
+            Moose::equation_system->parameters.set<Real> ("dt")    = dt_cur;
+            Moose::equation_system->parameters.set<int> ("t_step") = t_step;
+
+            std::cerr << "t_step: " << Moose::equation_system->parameters.get<int>("t_step") << "\n";
+            
         
             Kernel::reinitDT();
-
-            std::cout<<"Computing Residual 1"<<std::endl;
 
             Moose::compute_residual(*system.current_local_solution,*system.rhs);
             system.rhs->close();
 
-            std::cout<<"Finished Computing Residual 1"<<std::endl;
-
             initial_residual_norm = system.rhs->l2_norm();
             last_residual_norm = initial_residual_norm;
-
-            std::cout<<"Initial Residual Norm: "<<initial_residual_norm<<std::endl;
           }
           else // Adaptive time stepping is used
           {
@@ -1197,9 +432,9 @@ int main (int argc, char** argv)
 
                 Real temp_time = time + temp_dt;
           
-                equation_systems.parameters.set<Real> ("time")  = temp_time;
-                equation_systems.parameters.set<Real> ("dt")    = temp_dt;
-                equation_systems.parameters.set<int> ("t_step") = t_step;
+                Moose::equation_system->parameters.set<Real> ("time")  = temp_time;
+                Moose::equation_system->parameters.set<Real> ("dt")    = temp_dt;
+                Moose::equation_system->parameters.set<int> ("t_step") = t_step;
         
                 Kernel::reinitDT();
 
@@ -1282,8 +517,8 @@ int main (int argc, char** argv)
             // Increment time
             time += dt_cur;
 
-            equation_systems.parameters.set<Real> ("time")  = time;
-            equation_systems.parameters.set<Real> ("dt")    = dt_cur;
+            Moose::equation_system->parameters.set<Real> ("time")  = time;
+            Moose::equation_system->parameters.set<Real> ("dt")    = dt_cur;
 
             Kernel::reinitDT();
           }
@@ -1309,12 +544,43 @@ int main (int argc, char** argv)
           std::cout << out.str() << std::endl;
         }
 
-#ifdef LIBMESH_HAVE_PETSC
-        MoosePetscSupport::petscSetDefaults(Moose::equation_system, system, Moose::compute_jacobian_block, Moose::compute_residual);
-#endif //LIBMESH_HAVE_PETSC
+        Moose::setSolverDefaults(Moose::equation_system, system, Moose::compute_jacobian_block, Moose::compute_residual);
 
         timeval solve_start, solve_end;
-        gettimeofday (&solve_start, NULL);  
+        gettimeofday (&solve_start, NULL);
+
+        std::vector<Real> one_scaling;
+                  
+        // Reset the scaling to all 1's so we can compute the true residual
+        for(unsigned int var = 0; var < system.n_vars(); var++)
+          one_scaling.push_back(1.0);
+
+        Kernel::setVarScaling(one_scaling);
+
+        Moose::compute_residual(*system.current_local_solution,*system.rhs);
+
+        std::cout<<"  True Initial Nonlinear Residual: "<<system.rhs->l2_norm()<<std::endl;
+
+        // Set the scaling to manual scaling
+        Kernel::setVarScaling(Moose::manual_scaling);
+
+        if(Moose::auto_scaling)
+        {
+          std::vector<Real> scaling;
+
+          // Compute the new scaling
+          for(unsigned int var = 0; var < system.n_vars(); var++)
+          {
+            Real norm = system.calculate_norm(*system.rhs,var,DISCRETE_L2);
+
+            if(norm != 0)
+              scaling.push_back(1.0/norm);
+            else
+              scaling.push_back(1.0);
+          }
+          
+          Kernel::setVarScaling(scaling);
+        }
 
         Moose::perf_log.push("solve()","Solve");
         // System Solve
@@ -1343,31 +609,31 @@ int main (int argc, char** argv)
         if(converged && adaptivity)
         {
           // Compute the error for each active element
-          error_estimator.estimate_error(system, error);
+          Moose::error_estimator->estimate_error(system, *Moose::error);
         
           // Flag elements to be refined and coarsened
-          mesh_refinement.flag_elements_by_error_fraction (error);
+          Moose::mesh_refinement->flag_elements_by_error_fraction (*Moose::error);
           
           // Perform refinement and coarsening
-          mesh_refinement.refine_and_coarsen_elements();
+          Moose::mesh_refinement->refine_and_coarsen_elements();
         
           // Reinitialize the equation_systems object for the newly refined
           // mesh. One of the steps in this is project the solution onto the 
           // new mesh
-          equation_systems.reinit();
+          Moose::equation_system->reinit();
 
-          mesh->boundary_info->build_node_list_from_side_list();
+          Moose::mesh->boundary_info->build_node_list_from_side_list();
 /*
-          system.solution->close();
-          system.rhs->close();
-          system.current_local_solution->close();
-          system.old_local_solution->close();
-          system.older_local_solution->close();
+  system.solution->close();
+  system.rhs->close();
+  system.current_local_solution->close();
+  system.old_local_solution->close();
+  system.older_local_solution->close();
 
-          Moose::perf_log.push("solve()","Solve");
-          // System Solve
-          system.solve();
-          Moose::perf_log.pop("solve()","Solve");
+  Moose::perf_log.push("solve()","Solve");
+  // System Solve
+  system.solve();
+  Moose::perf_log.pop("solve()","Solve");
 */
         }
 
@@ -1416,8 +682,8 @@ int main (int argc, char** argv)
         for(unsigned int var = 0; var < system.n_vars(); var++)
           std::cout<<var<<": "<<system.calculate_norm(*system.rhs,var,DISCRETE_L2)<<std::endl;
 
-        if ( converged && (t_step+1)%interval == 0)
-          output_system(equation_systems, file_base, t_step, time, exodus_output, gmv_output, tecplot_output,print_out_info);
+        if ( converged && (t_step+1)%Moose::interval == 0)
+          output_system(Moose::equation_system, Moose::file_base, t_step, time, Moose::exodus_output, Moose::gmv_output, Moose::tecplot_output, Moose::print_out_info);
         
         // Check for stop condition based upon steady-state check flag:
         if(converged && trans_ss_check == true && time > ss_tmin)
@@ -1470,24 +736,73 @@ int main (int argc, char** argv)
       for(unsigned int r_step=0; r_step<=max_r_steps; r_step++)
       {
         system.print_info();
-        
+
+        std::vector<Real> one_scaling;
+                  
+        // Reset the scaling to all 1's so we can compute the true residual
+        for(unsigned int var = 0; var < system.n_vars(); var++)
+          one_scaling.push_back(1.0);
+
+        Kernel::setVarScaling(one_scaling);
+
+        Moose::compute_residual(*system.current_local_solution,*system.rhs);
+
+        std::cout<<"  True Initial Nonlinear Residual: "<<system.rhs->l2_norm()<<std::endl;
+
+        // Set the scaling to manual scaling
+        Kernel::setVarScaling(Moose::manual_scaling);
+
+        if(Moose::auto_scaling)
+        {
+          std::vector<Real> scaling;
+
+          // Compute the new scaling
+          for(unsigned int var = 0; var < system.n_vars(); var++)
+          {
+            Real norm = system.calculate_norm(*system.rhs,var,DISCRETE_L2);
+
+            if(norm != 0)
+              scaling.push_back(1.0/norm);
+            else
+              scaling.push_back(1.0);
+          }
+          
+          Kernel::setVarScaling(scaling);
+        }
+
         PerfLog solve_only("Solve Only");
         solve_only.push("solve()","Solve");
-
 
         Moose::perf_log.push("solve()","Solve");
 
         system.solve();
 
+#ifdef WITH_PF        
+        // Iterate over the materials, cast them and tell them to print their data structures
+        std::map<int, Material *>::iterator i;
+
+
+        for (i = MaterialFactory::instance()->activeMaterialsBegin(0);
+             i != MaterialFactory::instance()->activeMaterialsEnd(0); ++i)
+        {
+          Meso * meso = dynamic_cast<Meso *>(i->second);
+          if (meso != NULL)
+          {
+            meso->printData(*system.current_local_solution);
+          }
+          
+        }
+#endif        
+        
         for(unsigned int var = 0; var < system.n_vars(); var++)
-         std::cout<<var<<": "<<system.calculate_norm(*system.rhs,var,DISCRETE_L2)<<std::endl;
+          std::cout<<var<<": "<<system.calculate_norm(*system.rhs,var,DISCRETE_L2)<<std::endl;
 
         Moose::perf_log.pop("solve()","Solve");
         
         solve_only.pop("solve()","Solve");
         solve_only.print_log();
         
-        output_system(equation_systems, file_base, 1, 1.0, exodus_output, gmv_output, tecplot_output,print_out_info);
+        output_system(Moose::equation_system, Moose::file_base, r_step+1, r_step+1, Moose::exodus_output, Moose::gmv_output, Moose::tecplot_output, Moose::print_out_info);
         
         /*** Compute and print error:  ***
              ExactSolution exact_sol(equation_systems);
@@ -1508,13 +823,13 @@ int main (int argc, char** argv)
         if(r_step != max_r_steps)
         {          
           // Compute the error for each active element
-          error_estimator.estimate_error(system, error);
+          Moose::error_estimator->estimate_error(system, *Moose::error);
           
           // Flag elements to be refined and coarsened
-          mesh_refinement.flag_elements_by_error_fraction (error);
+          Moose::mesh_refinement->flag_elements_by_error_fraction (*Moose::error);
           
           // Perform refinement and coarsening
-          mesh_refinement.refine_and_coarsen_elements();
+          Moose::mesh_refinement->refine_and_coarsen_elements();
           
           // Tell MOOSE that the Mesh has changed
           Moose::meshChanged();

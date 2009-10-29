@@ -6,9 +6,9 @@
 []
 
 [Variables]
-  names = 'x_disp y_disp z_disp temp'
+  active = 'x_disp y_disp z_disp temp'
 
-  #names = 'temp'
+  #active = 'temp'
 
   [./x_disp]
     order = FIRST
@@ -32,8 +32,8 @@
 []
 
 [Kernels]
-  names = 'solid_x solid_y solid_z solid_x_ie solid_y_ie solid_z_ie solid_couple_x solid_couple_y solid_couple_z heat heat_ie'
-#  names = 'heat'
+  active = 'solid_x solid_y solid_z solid_x_ie solid_y_ie solid_z_ie solid_couple_x solid_couple_y solid_couple_z heat heat_ie'
+#  active = 'heat'
 
   [./solid_x]
     type = SolidMechX
@@ -105,7 +105,7 @@
 []
 
 [BCs]
-  names = 'bottom_x bottom_y bottom_z bottom_temp'
+  active = 'bottom_x bottom_y bottom_z bottom_temp'
 #bottom_temp top_temp left_temp'
 
   [./top_y]
@@ -145,7 +145,7 @@
 []
 
 [Materials]
-  names = 'constant'
+  active = 'constant'
   
   [./constant]
     type = Constant

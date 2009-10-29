@@ -6,7 +6,7 @@
 []
 
 [Variables]
-  names = 'x_disp y_disp z_disp'
+  active = 'x_disp y_disp z_disp'
 
   [./x_disp]
     order = FIRST
@@ -30,7 +30,7 @@
 []
 
 [Kernels]
-  names = 'solid_x solid_y solid_z body_force'
+  active = 'solid_x solid_y solid_z body_force'
 
   [./solid_x]
     type = SolidMechX
@@ -67,7 +67,7 @@
 []
 
 [BCs]
-  names = 'bottom_x bottom_y bottom_z'
+  active = 'bottom_x bottom_y bottom_z'
 
   [./bottom_x]
     type = DirichletBC
@@ -92,7 +92,7 @@
 []
 
 [Materials]
-  names = 'constant'
+  active = 'constant'
   
   [./constant]
     type = Constant

@@ -6,7 +6,7 @@
 # Solves a pair of coupled diffusion equations where u=v on the boundary
 
 [Variables]
-  names = 'u v'
+  active = 'u v'
 
   [./u]
     order = FIRST
@@ -22,7 +22,7 @@
 []
 
 [Kernels]
-  names = 'diff_u diff_v'
+  active = 'diff_u diff_v'
 
   [./diff_u]
     type = Diffusion
@@ -36,7 +36,7 @@
 []
 
 [BCs]
-  names = 'right_v left_u'
+  active = 'right_v left_u'
 
   [./right_v]
     type = DirichletBC
@@ -56,7 +56,7 @@
 []
 
 [Materials]
-  names = constant
+  active = constant
 
   [./constant]
     type = Constant
