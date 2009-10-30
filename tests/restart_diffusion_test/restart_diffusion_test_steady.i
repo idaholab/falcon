@@ -56,6 +56,7 @@
 
 [Output]
   file_base = steady_out
+  output_initial = true
   interval = 1
   exodus = true
 []

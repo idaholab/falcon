@@ -103,132 +103,6 @@ void init_cond(EquationSystems& es, const std::string& system_name)
   system.project_solution(init_value, init_gradient, es.parameters);
 }
 
-/**
- * Small helper function for printing parsing errors.
- */
-void print_missing_param(std::string missing_param, std::string object_name)
-{
-  std::cerr<<std::endl<<"A _"<<missing_param<<"_ must be specified for "<<object_name<<std::endl<<std::endl;
-  libmesh_error();
-}
-
-/**
- * Outputs the system.
- */
-void output_system(EquationSystems * equation_systems, std::string file_base, unsigned int t_step, Real time, bool exodus_output, bool gmv_output, bool tecplot_output, bool print_out_info)
-{
-  OStringStream stream_file_base;
-  
-  stream_file_base << file_base << "_";
-  OSSRealzeroright(stream_file_base,3,0,t_step);
-
-  std::string file_name = stream_file_base.str();
-
-  if(print_out_info)
-     std::cout << "   --> Output in file ";
-  
-  if(exodus_output) 
-  {     
-    static ExodusII_IO ex_out(equation_systems->get_mesh());
-    // The +1 is because Exodus starts timesteps at 1 and we start at 0
-    ex_out.write_timestep(file_base + ".e", *equation_systems, t_step+1, time);
-    
-    if(print_out_info)
-    {       
-      std::cout << file_base+".e";
-      OStringStream out;
-      out <<  "(";
-      OSSInt(out,2,t_step+1);
-      out <<  ") ";
-      std::cout << out.str();
-    }
-    
-  }  
-  if(gmv_output) 
-  {     
-    GMVIO(*Moose::mesh).write_equation_systems(file_name + ".gmv", *equation_systems);
-    if(print_out_info)
-    {       
-      if(exodus_output)
-         std::cout << " and ";    
-      std::cout << file_name+".gmv";
-    }    
-  }  
-  if(tecplot_output) 
-  {     
-    TecplotIO(*Moose::mesh).write_equation_systems(file_name + ".plt", *equation_systems);
-    if(print_out_info)
-    {       
-      if(exodus_output || gmv_output)
-         std::cout << " and ";    
-      std::cout << file_name+".plt";
-    }    
-  }
-
-  if(print_out_info) std::cout << std::endl; 
-}
-
-void dump() 
-{
-  // Dump Kernel Parameters
-  std::cout << "\nKERNEL\n";
-  for (KernelNamesIterator i = KernelFactory::instance()->registeredKernelsBegin();
-       i != KernelFactory::instance()->registeredKernelsEnd(); ++i)
-  {
-    Parameters tmpParams = KernelFactory::instance()->getValidParams(*i);
-
-    std::cout<<'<' << *i << ">\n";
-    std::cout << std::setiosflags(std::ios::left);
-    for (Parameters::iterator j = tmpParams.begin(); j != tmpParams.end(); ++j)
-    {
-      std::cout << "\t" << std::setw(35) << j->first;//<< "\"" << "True" << "\"\n";
-      j->second->print(std::cout);
-      std::cout<< "\n";
-      }
-    
-    std::cout<<"</" << *i << ">\n";
-    
-  }
- 
-  // Dump BoundaryCondition Parameters
-  std::cout << "\nBOUNDARY_CONDITION\n";
-  for (BCNamesIterator i = BCFactory::instance()->registeredBCsBegin();
-       i != BCFactory::instance()->registeredBCsEnd(); ++i)
-  {
-    Parameters tmpParams = BCFactory::instance()->getValidParams(*i);
-    std::cout<<'<' << *i << ">\n"; 
-   
-    for (Parameters::iterator j = tmpParams.begin(); j != tmpParams.end(); ++j)
-    {
-      std::cout << "\t" << std::setw(35) << j->first;// << "\"" << "True" << "\"\n";
-      j->second->print(std::cout);
-      std::cout<< "\n";
-    }
-    
-    std::cout<<"</" << *i << ">\n";
-    
-  }
-
-  // Dump Material Parameters
-  std::cout << "\nMATERIAL\n";
-  for (MaterialNamesIterator i = MaterialFactory::instance()->registeredMaterialsBegin();
-       i != MaterialFactory::instance()->registeredMaterialsEnd(); ++i)
-  {
-    Parameters tmpParams = MaterialFactory::instance()->getValidParams(*i);
-
-    std::cout<<'<' << *i << ">\n"; 
-    for (Parameters::iterator j = tmpParams.begin(); j != tmpParams.end(); ++j)
-    {
-      std::cout << "\t" << std::setw(35) << j->first;// << "\"" << "True" << "\"\n";
-      j->second->print(std::cout);
-      std::cout<< "\n";
-    }
-    
-    std::cout<<"</" << *i << ">\n";
-  }
-  std::resetiosflags(std::ios::left);
-}
-
  // Begin the main program.
 int main (int argc, char** argv)
 {
@@ -237,7 +111,7 @@ int main (int argc, char** argv)
   // Initialize libMesh and any dependent libaries, like in example 2.
   libMesh::init (argc, argv);
 
-  //Seed the random number generator
+  //Seed the random number geneFalconor
   srand(libMesh::processor_id());
 
   // Setup Falcon specific settings
@@ -283,9 +157,38 @@ int main (int argc, char** argv)
     if(Moose::execution_type != "Transient" && Moose::execution_type != "Steady")
       mooseError("Must specify either Transient or Steady for Execution/type");
 
-    if(Moose::output_initial)
-      output_system(Moose::equation_system, Moose::file_base, 0, 0.0, Moose::exodus_output, Moose::gmv_output, Moose::tecplot_output, Moose::print_out_info);
+    unsigned int initial_adaptivity = 0;    
 
+    if(Moose::equation_system->parameters.have_parameter<unsigned int>("initial_adaptivity"))
+      initial_adaptivity = Moose::equation_system->parameters.get<unsigned int>("initial_adaptivity");
+
+    //Initial adaptivity
+    for(unsigned int i=0; i<initial_adaptivity; i++)
+    {
+      // Compute the error for each active element
+      Moose::error_estimator->estimate_error(system, *Moose::error);
+      
+      // Flag elements to be refined and coarsened
+      Moose::mesh_refinement->flag_elements_by_error_fraction (*Moose::error);
+          
+      // Perform refinement and coarsening
+      Moose::mesh_refinement->refine_and_coarsen_elements();
+
+      // Tell MOOSE that the mesh has changed
+      // this performs a lot of functions including projecting
+      // the solution onto the new grid.
+      Moose::meshChanged();
+
+      //reproject the initial condition
+      system.project_solution(init_value, NULL, Moose::equation_system->parameters);
+    }    
+
+    if(Moose::output_initial)
+    {
+      std::cout<<"Outputting Initial"<<std::endl;
+      
+      Moose::output_system(Moose::equation_system, Moose::file_base, 0, 0.0, Moose::exodus_output, Moose::gmv_output, Moose::tecplot_output, Moose::print_out_info);
+    }
     
     bool adaptivity = false;
 
@@ -296,7 +199,7 @@ int main (int argc, char** argv)
 
     if(Moose::equation_system->parameters.have_parameter<unsigned int>("max_r_steps"))
       max_r_steps = Moose::equation_system->parameters.get<unsigned int>("max_r_steps");
-
+    
     bool converged = true;
     bool step_rejected = false;
     
@@ -444,9 +347,9 @@ int main (int argc, char** argv)
             
                 Real temp_residual_norm = system.rhs->l2_norm();
  
-                std::cout<<"Ratio: "<<(largest_residual_norm / temp_residual_norm)<<std::endl;
+                std::cout<<"Falconio: "<<(largest_residual_norm / temp_residual_norm)<<std::endl;
 
-                //Modify the timestep based on the ratio of residual norms
+                //Modify the timestep based on the Falconio of residual norms
                 temp_dt = temp_dt * (largest_residual_norm / temp_residual_norm);
 
                 //Keep growth to 10%
@@ -470,11 +373,11 @@ int main (int argc, char** argv)
               {
                 if(libMesh::processor_id() == 0)
                 {
-                  adaptive_log<<"Old Ratio: "<<old_sol_time_vs_dt<<std::endl;
-                  adaptive_log<<"New Ratio: "<<sol_time_vs_dt<<std::endl;
+                  adaptive_log<<"Old Falconio: "<<old_sol_time_vs_dt<<std::endl;
+                  adaptive_log<<"New Falconio: "<<sol_time_vs_dt<<std::endl;
                 }
                 
-                //Ratio grew so switch direction
+                //Falconio grew so switch direction
                 if(sol_time_vs_dt > older_sol_time_vs_dt && old_sol_time_vs_dt > older_sol_time_vs_dt)
                 {
                   if(libMesh::processor_id() == 0)
@@ -603,39 +506,7 @@ int main (int argc, char** argv)
           old_sol_time_vs_dt = sol_time_vs_dt;
           sol_time_vs_dt = elapsed_time / dt_cur;
           converged = system.nonlinear_solver->converged;
-        }
-
-        
-        if(converged && adaptivity)
-        {
-          // Compute the error for each active element
-          Moose::error_estimator->estimate_error(system, *Moose::error);
-        
-          // Flag elements to be refined and coarsened
-          Moose::mesh_refinement->flag_elements_by_error_fraction (*Moose::error);
-          
-          // Perform refinement and coarsening
-          Moose::mesh_refinement->refine_and_coarsen_elements();
-        
-          // Reinitialize the equation_systems object for the newly refined
-          // mesh. One of the steps in this is project the solution onto the 
-          // new mesh
-          Moose::equation_system->reinit();
-
-          Moose::mesh->boundary_info->build_node_list_from_side_list();
-/*
-  system.solution->close();
-  system.rhs->close();
-  system.current_local_solution->close();
-  system.old_local_solution->close();
-  system.older_local_solution->close();
-
-  Moose::perf_log.push("solve()","Solve");
-  // System Solve
-  system.solve();
-  Moose::perf_log.pop("solve()","Solve");
-*/
-        }
+        }        
 
         converged = system.nonlinear_solver->converged;
 
@@ -683,7 +554,23 @@ int main (int argc, char** argv)
           std::cout<<var<<": "<<system.calculate_norm(*system.rhs,var,DISCRETE_L2)<<std::endl;
 
         if ( converged && (t_step+1)%Moose::interval == 0)
-          output_system(Moose::equation_system, Moose::file_base, t_step, time, Moose::exodus_output, Moose::gmv_output, Moose::tecplot_output, Moose::print_out_info);
+          Moose::output_system(Moose::equation_system, Moose::file_base, t_step, time, Moose::exodus_output, Moose::gmv_output, Moose::tecplot_output, Moose::print_out_info);
+
+
+        if(converged && adaptivity)
+        {
+          // Compute the error for each active element
+          Moose::error_estimator->estimate_error(system, *Moose::error);
+          
+          // Flag elements to be refined and coarsened
+          Moose::mesh_refinement->flag_elements_by_error_fraction (*Moose::error);
+          
+          // Perform refinement and coarsening
+          Moose::mesh_refinement->refine_and_coarsen_elements();
+          
+          // Tell MOOSE that the Mesh has changed
+          Moose::meshChanged();
+        }
         
         // Check for stop condition based upon steady-state check flag:
         if(converged && trans_ss_check == true && time > ss_tmin)
@@ -714,20 +601,6 @@ int main (int argc, char** argv)
           keep_going = false;            
         if((time>end_time) || (fabs(time-end_time)<1.e-14))
           keep_going = false;
-            
-        /*** Compute and print error:  ***
-             ExactSolution exact_sol(equation_systems);
-             exact_sol.attach_exact_value(ManSol4ADR2exv);
-             exact_sol.attach_exact_deriv(ManSol4ADR2exd);
-             exact_sol.extra_quadrature_order(4);    
-             exact_sol.compute_error("NonlinearSystem","phi");
-             std::cout << "   --> L2-Error is: "
-             << exact_sol.l2_error("NonlinearSystem","phi")
-             << "   H1-Error is: "
-             << exact_sol.h1_error("NonlinearSystem","phi")
-             << std::endl;
-        ***/
-            
       } // End of "do while(keep_going)"      
     }    // End of Transient...
     else // Steady-state...
@@ -778,8 +651,8 @@ int main (int argc, char** argv)
         system.solve();
 
 #ifdef WITH_PF        
-        // Iterate over the materials, cast them and tell them to print their data structures
-        std::map<int, Material *>::iterator i;
+        // IteFalcone over the materials, cast them and tell them to print their data structures
+        std::map<int, Material *>::iteFalconor i;
 
 
         for (i = MaterialFactory::instance()->activeMaterialsBegin(0);
@@ -802,24 +675,8 @@ int main (int argc, char** argv)
         solve_only.pop("solve()","Solve");
         solve_only.print_log();
         
-        output_system(Moose::equation_system, Moose::file_base, r_step+1, r_step+1, Moose::exodus_output, Moose::gmv_output, Moose::tecplot_output, Moose::print_out_info);
+        Moose::output_system(Moose::equation_system, Moose::file_base, r_step+1, r_step+1, Moose::exodus_output, Moose::gmv_output, Moose::tecplot_output, Moose::print_out_info);
         
-        /*** Compute and print error:  ***
-             ExactSolution exact_sol(equation_systems);
-             exact_sol.attach_exact_value(ManSol4ADR1exv);
-             exact_sol.attach_exact_deriv(ManSol4ADR1exd);
-             exact_sol.extra_quadrature_order(2);    
-             exact_sol.compute_error("NonlinearSystem","phi");
-             std::cout << "L2-Error is: "
-             << exact_sol.l2_error("NonlinearSystem","phi")
-             << "   H1-Error is: "
-             << exact_sol.h1_error("NonlinearSystem","phi")
-             << std::endl;
-        ***/
-
-        // We need to ensure that the mesh is not refined on the last iteration
-        // of this loop, since we do not want to refine the mesh unless we are
-        // going to solve the equation system for that refined mesh.
         if(r_step != max_r_steps)
         {          
           // Compute the error for each active element
