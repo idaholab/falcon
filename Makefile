@@ -47,19 +47,19 @@ endif
 #
 # source files
 srcfiles 	:= $(wildcard src/*.C) $(wildcard src/*/*.C)
-fsrcfiles       := $(wildcard src/matpro/*.f)
+fsrcfiles       := $(wildcard src/steam_tables/*.f90)
 
 #
 # object files
 objects		:= $(patsubst %.C, %.$(obj-suffix), $(srcfiles))
-fobjects        := $(patsubst %.f, %.$(obj-suffix), $(fsrcfiles))
+fobjects        := $(patsubst %.f90, %.$(obj-suffix), $(fsrcfiles))
 
 #
 # phasefield objects and build rule
 falconPFobjects 	:= $(patsubst %.C, %-pf.$(obj-suffix), $(srcfiles))
 
 # include dirs
-libmesh_INCLUDE += -Iinclude -Iinclude/kernels -Iinclude/user -Iinclude/materials -Iinclude/matpro
+libmesh_INCLUDE += -Iinclude -Iinclude/kernels -Iinclude/user -Iinclude/materials -Iinclude/steam_tables
 ###############################################################################
 
 

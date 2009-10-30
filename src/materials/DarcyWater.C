@@ -1,4 +1,5 @@
 #include "DarcyWater.h"
+#include "SteamTables.h"
 
 template<>
 Parameters valid_params<DarcyWater>()
@@ -18,8 +19,8 @@ Parameters valid_params<DarcyWater>()
   params.set<Real>("rho_r") = 2.50e3;  //rock density, in  (kg/m^3)
 
   params.set<Real>("gx")=0.0;  //x component of the gravity pressure vector
-  params.set<Real>("gy")=1.0; //y component of the gravity pressure vector
-  params.set<Real>("gz")=-0.0;  //z component of the gravity pressure vector
+  params.set<Real>("gy")=0.0; //y component of the gravity pressure vector
+  params.set<Real>("gz")=-1.0;  //z component of the gravity pressure vector
 
   //  params.set<RealGradient>("darcy_velocity")=0.0;
   
@@ -44,6 +45,7 @@ DarcyWater::DarcyWater(std::string name,
    _input_water_specif_heat(parameters.get<Real>("water_specific_heat")),
    _input_rock_specific_heat(parameters.get<Real>("rock_specific_heat")),
    _input_rho_r(parameters.get<Real>("rho_r")),
+   _input_gravity(parameters.get<Real>("gravity")),
    
    _gx(parameters.get<Real>("gx")),
    _gy(parameters.get<Real>("gy")),
@@ -62,13 +64,12 @@ DarcyWater::DarcyWater(std::string name,
    _rho_r(declareRealProperty("rho_r")),
 
    _darcy_params(declareRealProperty("darcy_params")),
-   _darcy_pressure(declareGradientProperty("darcy_pressure")),
-   _depth_pressure(declareGradientProperty("depth_pressure")),
+   _darcy_flux(declareGradientProperty("darcy_pressure")),
    _darcy_velocity(declareGradientProperty("darcy_velocity")),
-   
-   _gravity_pressure(declareRealVectorValueProperty("gravity_pressure")),
-   
-   _grad_p(coupledGrad("pressure"))
+   _gravity_vector(declareRealVectorValueProperty("gravity_pressure")),
+   _grad_p(coupledGrad("pressure")),
+   _pressure(coupledVal("pressure")),
+   _temperature(coupledVal("temperature"))
 {}
 
 void
@@ -76,9 +77,9 @@ DarcyWater::computeProperties()
 {
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
-    _gravity_pressure[qp](0) = _gx;
-    _gravity_pressure[qp](1) = _gy;
-    _gravity_pressure[qp](2) = _gz;
+    _gravity_vector[qp](0) = _gx;
+    _gravity_vector[qp](1) = _gy;
+    _gravity_vector[qp](2) = _gz;
     
     _permeability[qp] = _input_permeability;
     _porosity[qp] = _input_porosity;
@@ -86,17 +87,27 @@ DarcyWater::computeProperties()
     _mu_w[qp] = _input_mu_w;
     _thermal_conductivity[qp] = _input_thermal_conductivity;
     _time_coefficient[qp] = _input_time_coefficient;
+    _gravity[qp] = _input_gravity;
+    
+    // std::cerr << "Pressure  =   " <<(_pressure)[qp]<<"   Temp =  "<<(_temperature)[qp]<<"\n";
+    
+    SteamTables::steam_call_(_pressure[qp], _temperature[qp], _rho_w[qp], _mu_w[qp]);
 
     _darcy_params[qp] = ((_permeability[qp] * _rho_w[qp]) / _mu_w[qp]);
-    _darcy_pressure[qp] = ((_permeability[qp]) / _mu_w[qp]) * _grad_p[qp];
-    _depth_pressure[qp] = ((_permeability[qp]) / _mu_w[qp]) * (_gravity[qp] * _rho_w[qp])*(_gravity_pressure[qp]);
-    _darcy_velocity[qp] = (_darcy_pressure[qp] + _depth_pressure[qp]) / _porosity[qp];
+    _darcy_flux[qp] = ((_permeability[qp]) / _mu_w[qp]) * _grad_p[qp];
+    _darcy_velocity[qp] = (_darcy_flux[qp]) / _porosity[qp];
 
     /*
-    std::cout << (_mu_w)[qp] <<" * "<< (_rho_w)[qp] <<" * "<< (_permeability)[qp] <<" = "<< (_darcy_params)[qp]<<"\n";
-    std::cout << "Darcy Pressure Vector =  " << (_darcy_pressure)[qp];//<<"\n";
-    std::cout << "Depth Pressure Vector =  " << (_depth_pressure)[qp];//<<"\n";
-    std::cout << "Darcy Velocity =   " <<(_darcy_velocity)[qp]<<"\n";
+    std::cerr << "Pressure  =   " <<(_pressure)[qp]<<"   Temp =  "<<(_temperature)[qp]<<"\n \n";
+    std::cerr << (_mu_w)[qp] <<" * "<< (_rho_w)[qp] <<" * "<< (_permeability)[qp] <<" = "<< (_darcy_params)[qp]<<"\n";
+    std::cerr << "Darcy Flux Vector =  " << (_darcy_flux)[qp];//<<"\n";
+    std::cerr << "gravity Vector =  " << (_gravity_vector)[qp];//<<"\n";
+    std::cerr << "Darcy Velocity =   " <<(_darcy_velocity)[qp];//<<"\n";
+    std::cerr << "Pressure  =   " <<(_pressure)[qp]<<"   Temp =  "<<(_temperature)[qp]<<"\n";
+    std::cerr << "grad Pressure  =   " <<(_grad_p)[qp];
+    std::cerr << "density  =   " <<(_rho_w)[qp]<<"\n";
+    std::cerr << "viscosity  =   " <<(_mu_w)[qp]<<"\n" <<"\n";
+    std::cerr <<"\n"<<"\n";
     */
   }    
 }

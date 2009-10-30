@@ -23,6 +23,8 @@ Real
 DarcyMassFluxZ::computeQpResidual()
 {
 return (*_darcy_params)[_qp]*(*_gravity)[_qp]*(*_rho_w)[_qp]*(*_gravity_pressure)[_qp]*_dphi[_i][_qp];
+//return (*_gravity)[_qp]*(*_rho_w)[_qp]*(*_gravity_pressure)[_qp]*_dphi[_i][_qp];
+
 }
 
 Real

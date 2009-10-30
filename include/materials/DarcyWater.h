@@ -9,9 +9,6 @@ class DarcyWater;
 template<>
 Parameters valid_params<DarcyWater>();
 
-/**
- * Example material class that defines a few properties.
- */
 class DarcyWater : public Material
 {
 public:
@@ -36,7 +33,8 @@ private:
   Real _input_water_specif_heat;
   Real _input_rock_specific_heat;
   Real _input_rho_r;
-
+  Real _input_gravity;
+  
   Real _gx;
   Real _gy;
   Real _gz;  
@@ -56,13 +54,16 @@ private:
 
   std::vector<Real> & _darcy_params;
   
-  std::vector<RealGradient> & _darcy_pressure;
-  std::vector<RealGradient> & _depth_pressure;
+  std::vector<RealGradient> & _darcy_flux;
   std::vector<RealGradient> & _darcy_velocity;
 
-  std::vector<RealVectorValue> & _gravity_pressure;
+  std::vector<RealVectorValue> & _gravity_vector;
 
   std::vector<RealGradient> & _grad_p;
+  std::vector<Real> & _pressure;
+  std::vector<Real> & _temperature;
+  
+  
 };
 
 #endif //DARCYWATER_H
