@@ -25,6 +25,6 @@ protected:
   std::vector<Real> *_gravity;
   std::vector<Real> *_rho_w;
   
-  std::vector<RealVectorValue> *_gravity_pressure;
+  std::vector<RealVectorValue> *_gravity_vector;
 };
 #endif //DARCYMASSFLUXZ

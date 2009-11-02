@@ -16,13 +16,13 @@ DarcyMassFluxZ::subdomainSetup()
   _gravity = &_material->getRealProperty("gravity");
   _rho_w = &_material->getRealProperty("rho_w");
   
-  _gravity_pressure = &_material->getRealVectorValueProperty("gravity_pressure");
+  _gravity_vector = &_material->getRealVectorValueProperty("gravity_vector");
 }
 
 Real
 DarcyMassFluxZ::computeQpResidual()
 {
-return (*_darcy_params)[_qp]*(*_gravity)[_qp]*(*_rho_w)[_qp]*(*_gravity_pressure)[_qp]*_dphi[_i][_qp];
+return (*_darcy_params)[_qp]*(*_gravity)[_qp]*(*_rho_w)[_qp]*(*_gravity_vector)[_qp]*_dphi[_i][_qp];
 //return (*_gravity)[_qp]*(*_rho_w)[_qp]*(*_gravity_pressure)[_qp]*_dphi[_i][_qp];
 
 }

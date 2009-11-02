@@ -1,6 +1,6 @@
 [Mesh]
   dim = 3
-  file = pressure_1d_z_out.e
+  file = 1d_z.e
 []
 press
 [Variables]
@@ -9,19 +9,19 @@ press
    [./pressure]
     order = FIRST
     family = LAGRANGE
-    initial_from_file = 'pressure 2'
- #   initial_condition = 900000.0
+ #   initial_from_file = 'pressure 2'
+    initial_condition = 90000.0
    [../]
 
   [./temperature]
     order = FIRST
     family = LAGRANGE
-    initial_condition = 10.0
+    initial_condition = 25.0
    [../]
 []
 
 [Kernels]
-  names = 'p_ie p_dmfp p_dmfz t_ie t_d t_c'
+  names = 'p_dmfp p_dmfz t_d t_c'
 
   [./p_ie]
     type = DarcyImplicitEuler
@@ -56,22 +56,16 @@ press
 []
 
 [BCs]
-  names = 'top_p center_t bottom_f top_t bottom_t'
+  names = 'top_p center_t top_t bottom_t'
 #  names = 'left'
 
   [./top_p]
     type = DirichletBC
     variable = pressure
     boundary = 1
-    value = 10.0
+    value = 90000.0
   [../]
  
-  [./bottom_f]
-    type = NeumannBC
-    variable = pressure
-    boundary = 2
-    value = -1.0
-  [../]
 
   [./center_t]
     type = DirichletBC
@@ -84,14 +78,14 @@ press
     type = DirichletBC
     variable = temperature
     boundary = 1
-    value = 10.0
+    value = 25.0
   [../]
 
   [./bottom_t]
     type = DirichletBC
     variable = temperature
     boundary = 2
-    value = 10.0
+    value = 25.0
   [../]
 
 []
@@ -102,14 +96,14 @@ press
   [./darcy_water]
     type = DarcyWater
     block = 1
-    coupled_to = 'pressure'
-    coupled_as = 'pressure'
+    coupled_to = 'pressure temperature'
+    coupled_as = 'pressure temperature'
     permeability = 1.0E-08
     gravity = -9.80665
     rho_w = 1000.0
     gx = 0.0
     gy = 0.0
-    gz = -1.0
+    gz = 1.0
     porosity = .1
     thermal_conductivity = 1.0
     water_specific_heat = 10.0
@@ -118,7 +112,7 @@ press
 []
 
 [Execution]
-  type = Transient
+  type = Steady
   perf_log = true
   petsc_options = '-snes_mf_operator'
 

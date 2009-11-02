@@ -66,7 +66,7 @@ DarcyWater::DarcyWater(std::string name,
    _darcy_params(declareRealProperty("darcy_params")),
    _darcy_flux(declareGradientProperty("darcy_pressure")),
    _darcy_velocity(declareGradientProperty("darcy_velocity")),
-   _gravity_vector(declareRealVectorValueProperty("gravity_pressure")),
+   _gravity_vector(declareRealVectorValueProperty("gravity_vector")),
    _grad_p(coupledGrad("pressure")),
    _pressure(coupledVal("pressure")),
    _temperature(coupledVal("temperature"))
