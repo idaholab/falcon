@@ -80,7 +80,15 @@ subroutine dense ( p, t, rho_start, rho, dpdr )
   real ( kind = 8 ) ur
   real ( kind = 8 ) x
 
+!RKP added for debug
+  real ( kind = 8 ) p_print
+  real ( kind = 8 ) t_print
+  real ( kind = 8 ) rho_print
+
+!WRITE(*,*) p, t
+!RKP Test
   errtol = sqrt ( epsilon ( errtol ) )
+!  errtol = sqrt ( epsilon ( errtol ) ) * 10.
 !
 !  Refuse to handle zero or negative temperatures.
 !
@@ -91,7 +99,7 @@ subroutine dense ( p, t, rho_start, rho, dpdr )
     write ( *, '(a,g14.6)' ) '  Input value was T = ', t
     stop
   end if
-!
+
 !  Refuse to handle zero or negative pressures.
 !
   if ( p <= 0.0D+00 ) then
@@ -105,7 +113,6 @@ subroutine dense ( p, t, rho_start, rho, dpdr )
   rho = rho_start
   rho = max ( rho, rho_min )
   rho = min ( rho, rho_max )
-
   do it = 1, it_max
 
     call resid ( t, rho, ar, cvr, dpdrr, dpdtr, gr, hr, pr, sr, ur )
@@ -154,11 +161,16 @@ subroutine dense ( p, t, rho_start, rho, dpdr )
 
   end do
 
-  write ( *, '(a)' ) ' '
-  write ( *, '(a)' ) 'DENSE - Warning!'
-  write ( *, '(a)' ) '  The iteration did not converge.'
-  write ( *, '(a,i6)' ) '  Number of iterations was ', it_max
-  write ( *, '(a,g14.6)' ) '  Last iterate was ', rho
+! RKP edit print line below
+p_print = p *1.0e6
+t_print = t - 273.15
+rho_print = rho * 1000.
+
+!  write ( *, '(a)' ) ' '
+  write ( *, '(a,3f12.4)' ) 'dense.f90 - Non-Convergence Warning:', rho_print, p_print, t_print
+!  write ( *, '(a)' ) '  The iteration did not converge.'
+!  write ( *, '(a,i6)' ) '  Number of iterations was ', it_max
+!  write ( *, '(a,3f12.4)' ) '  Last iterate was ', rho_print, p_print, t_print
 
   return
 end
