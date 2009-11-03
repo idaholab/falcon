@@ -2,24 +2,26 @@
   dim = 3
   file = elder_IC_out.e
 []
-press
+
 [Variables]
-  names = 'pressure temperature'
+  active = 'pressure temperature'
 
    [./pressure]
     order = FIRST
     family = LAGRANGE
-    initial_from_file = 'pressure 2'
+    initial_from_file_var = 'pressure'
+    initial_from_file_timestep = 1
    [../]
 
   [./temperature]
     order = FIRST
     family = LAGRANGE
-    initial_from_file = 'temperature 1'
+    initial_from_file_var = 'temperature'
+    initial_from_file_timestep = 1
    [../]
 []
 [Kernels]
-  names = 'p_ie p_dmfp p_dmfz t_ie t_d t_c'
+  active = 'p_ie p_dmfp p_dmfz t_ie t_d t_c'
 
   [./p_ie]
     type = DarcyImplicitEuler
@@ -54,7 +56,7 @@ press
 []
 
 [BCs]
-  names = 'top_p top_t bot_t'
+  active = 'top_p top_t bot_t'
 
   [./top_p]
     type = DirichletBC
@@ -80,7 +82,7 @@ press
 []
 
 [Materials]
-  names = 'darcy_water'
+  active = 'darcy_water'
   
   [./darcy_water]
     type = DarcyWater

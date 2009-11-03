@@ -4,7 +4,7 @@
 []
 
 [Variables]
-  names = 'pressure temperature'
+  active = 'pressure temperature'
 
   [./pressure]
     order = FIRST
@@ -20,7 +20,7 @@
 
 []
 [Kernels]
-  names = 'p_dmfp p_dmfz t_d t_c'
+  active = 'p_dmfp p_dmfz t_d t_c'
 
   [./p_dmfp]
     type = DarcyMassFluxPressure
@@ -45,7 +45,7 @@
 []
 
 [BCs]
-  names = 'top_p top_t bot_t'
+  active = 'top_p top_t bot_t'
 
   [./top_p]
     type = DirichletBC
@@ -70,7 +70,7 @@
 []
 
 [Materials]
-  names = 'darcy_water'
+  active = 'darcy_water'
   
   [./darcy_water]
     type = DarcyWater
