@@ -107,7 +107,7 @@
   petsc_options = '-snes_mf_operator' 
 #  petsc_options_iname =  '-pc_type -pc_hypre_type -ksp_gmres_restart'
 #  petsc_options_value =  'hypre    boomeramg 100'                           
-#  l_max_its =  100                            
+  l_max_its =  20
 #  l_tol =  1e-5                           
 #  nl_max_its =  10                          
 #  nl_rel_tol =  1e-5

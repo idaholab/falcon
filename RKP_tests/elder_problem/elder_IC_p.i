@@ -10,6 +10,7 @@
     order = FIRST
     family = LAGRANGE
     initial_condition = 100000.0
+    scaling = 1e-6
    [../]
 
   [./temperature]
@@ -20,7 +21,7 @@
 
 []
 [Kernels]
-  active = 'p_dmfp p_dmfz t_d t_c'
+  active = 'p_dmfp p_dmfz t_d'
 
   [./p_dmfp]
     type = DarcyMassFluxPressure
@@ -93,6 +94,10 @@
   type = Steady
   perf_log = true
   petsc_options = '-snes_mf_operator'
+  petsc_options_iname = '-pc_type -pc_hypre_type -ksp_gmres_restart'
+  petsc_options_value = 'hypre boomeramg 101'
+
+  l_max_its = 20
 []
 
 [Output]
