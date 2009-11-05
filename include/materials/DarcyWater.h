@@ -29,12 +29,10 @@ private:
   Real _input_c_f;  
   Real _input_thermal_conductivity;
   Real _input_time_coefficient;
-
   Real _input_water_specif_heat;
   Real _input_rock_specific_heat;
   Real _input_rho_r;
   Real _input_gravity;
-  
   Real _gx;
   Real _gy;
   Real _gz;  
@@ -50,15 +48,10 @@ private:
   std::vector<Real> & _water_specific_heat;
   std::vector<Real> & _rock_specific_heat;
   std::vector<Real> & _rho_r;
-  
-
   std::vector<Real> & _darcy_params;
-  
   std::vector<RealGradient> & _darcy_flux;
   std::vector<RealGradient> & _darcy_velocity;
-
   std::vector<RealVectorValue> & _gravity_vector;
-
   std::vector<RealGradient> & _grad_p;
   std::vector<Real> & _pressure;
   std::vector<Real> & _temperature;
