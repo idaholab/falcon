@@ -86,9 +86,9 @@ subroutine dense ( p, t, rho_start, rho, dpdr )
   real ( kind = 8 ) rho_print
 
 !WRITE(*,*) p, t
-!RKP Test
-  errtol = sqrt ( epsilon ( errtol ) )
-!  errtol = sqrt ( epsilon ( errtol ) ) * 10.
+!RKP Test, ease errtol by order of magnitude
+!  errtol = sqrt ( epsilon ( errtol ) )
+  errtol = sqrt ( epsilon ( errtol ) ) * 10.
 !
 !  Refuse to handle zero or negative temperatures.
 !

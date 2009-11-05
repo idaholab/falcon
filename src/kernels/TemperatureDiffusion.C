@@ -19,11 +19,11 @@ TemperatureDiffusion::subdomainSetup()
 Real
 TemperatureDiffusion::computeQpResidual()
 {
-  return -(*_thermal_conductivity)[_qp]*Diffusion::computeQpResidual();
+  return (*_thermal_conductivity)[_qp]*Diffusion::computeQpResidual();
 }
 
 Real
 TemperatureDiffusion::computeQpJacobian()
 {
-  return -(*_thermal_conductivity)[_qp]*Diffusion::computeQpJacobian();
+  return (*_thermal_conductivity)[_qp]*Diffusion::computeQpJacobian();
 }

@@ -62,7 +62,7 @@ private:
   std::vector<RealGradient> & _grad_p;
   std::vector<Real> & _pressure;
   std::vector<Real> & _temperature;
-  
+  std::vector<RealGradient> & _grad_T;
   
 };
 

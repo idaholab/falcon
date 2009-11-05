@@ -23,6 +23,7 @@ protected:
 
   std::vector<Real> *_water_specific_heat;
   std::vector<RealGradient> *_darcy_velocity;
+  std::vector<Real> *_rho_w;
   
 };
 #endif //TEMPERATURECONVECTION

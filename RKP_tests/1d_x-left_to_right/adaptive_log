@@ -1,19 +1,5 @@
 Cur DT: 1000
-Solve Elapsed Time: 0.025782
-Old Ratio: 1e+18
-New Ratio: 2.5782e-05
+Solve Elapsed Time: 1.36101
+Old Falconio: 1e+18
+New Falconio: 0.00136101
 Cur DT: 1100
-Solve Elapsed Time: 0.040856
-Old Ratio: 2.5782e-05
-New Ratio: 3.71418e-05
-Cur DT: 1210
-Solve Elapsed Time: 0.040296
-Old Ratio: 3.71418e-05
-New Ratio: 3.33025e-05
-Switching Direction
-Cur DT: 1089
-Solve Elapsed Time: 0.042867
-Old Ratio: 3.33025e-05
-New Ratio: 3.93636e-05
-Cur DT: 980.1
-Solve Elapsed Time: 0.041535

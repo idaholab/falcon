@@ -10,14 +10,14 @@
     order = FIRST
     family = LAGRANGE
     initial_from_file_var = 'pressure'
-    initial_from_file_timestep = 1
+    initial_from_file_timestep = 2
    [../]
 
   [./temperature]
     order = FIRST
     family = LAGRANGE
     initial_from_file_var = 'temperature'
-    initial_from_file_timestep = 1
+    initial_from_file_timestep = 2
    [../]
 []
 [Kernels]
@@ -52,7 +52,6 @@
     type = TemperatureConvection
     variable = temperature
   [../]
-
 []
 
 [BCs]
@@ -90,10 +89,9 @@
     coupled_to = 'pressure temperature'
     coupled_as = 'pressure temperature'
     permeability = 1.21e-10
-    thermal_conductivity = 1.49
+    thermal_conductivity = 0.149
     rock_specific_heat = 0.0
-    gravity = -9.80655
-    rho_w = 1000.0
+#    water_specific_heat = 1.0
     gx = 0.0
     gy = 0.0
     gz = 1.0
@@ -105,8 +103,8 @@
   type = Transient
   perf_log = true
   petsc_options = '-snes_mf_operator' 
-#  petsc_options_iname =  '-pc_type -pc_hypre_type -ksp_gmres_restart'
-#  petsc_options_value =  'hypre    boomeramg 100'                           
+  petsc_options_iname =  '-pc_type -pc_hypre_type -ksp_gmres_restart'
+  petsc_options_value =  'hypre    boomeramg 100'                           
   l_max_its =  20
 #  l_tol =  1e-5                           
 #  nl_max_its =  10                          
@@ -117,9 +115,9 @@
 #   end_time = 1.32e7
     num_steps = 24
 # dt = 1 month
-    dt = 2592000.0
-#   trans_ss_check = true
-#   ss_check_tol = 5.0e-5
+    dt = 259200.0
+    trans_ss_check = true
+    ss_check_tol = 5.0e-5
 #   sol_time_adaptive_time_stepping = true
   [../]
 []

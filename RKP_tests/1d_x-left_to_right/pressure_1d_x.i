@@ -4,7 +4,7 @@
 []
 
 [Variables]
-  names = 'pressure'
+  active = 'pressure'
 
   [./pressure]
     order = FIRST
@@ -14,7 +14,7 @@
 []
 
 [Kernels]
-  names = 'p_dmfp p_dmfz'
+  active = 'p_dmfp p_dmfz'
 
   [./p_ie]
     type = DarcyImplicitEuler
@@ -33,7 +33,7 @@
 []
 
 [BCs]
-  names = 'left_p right_p'
+  active = 'left_p right_p'
 
   [./left_p]
     type = DirichletBC
@@ -50,7 +50,7 @@
   [../]
 
 [Materials]
-  names = 'darcy_water'
+  active = 'darcy_water'
   
   [./darcy_water]
     type = DarcyWater

@@ -16,7 +16,7 @@
   [./temperature]
     order = FIRST
     family = LAGRANGE
-    initial_condition = 12.0
+    initial_condition = 20.0
    [../]
 
 []
@@ -81,7 +81,6 @@
     permeability = 1.21e-10
     thermal_conductivity = 1.49
     rock_specific_heat = 0.0
-    gravity = -9.80655
     rho_w = 1000.0
     gx = 0.0
     gy = 0.0

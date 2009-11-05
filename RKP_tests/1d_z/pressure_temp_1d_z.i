@@ -2,9 +2,9 @@
   dim = 3
   file = 1d_z.e
 []
-press
+
 [Variables]
-  names = 'pressure temperature'
+  active = 'pressure temperature'
 
    [./pressure]
     order = FIRST
@@ -21,7 +21,7 @@ press
 []
 
 [Kernels]
-  names = 'p_dmfp p_dmfz t_d t_c'
+  active = 'p_dmfp p_dmfz t_d t_c'
 
   [./p_ie]
     type = DarcyImplicitEuler
@@ -56,8 +56,8 @@ press
 []
 
 [BCs]
-  names = 'top_p center_t top_t bottom_t'
-#  names = 'left'
+  active = 'top_p center_t top_t bottom_t bottom_f'
+#  active = 'left'
 
   [./top_p]
     type = DirichletBC
@@ -88,26 +88,31 @@ press
     value = 25.0
   [../]
 
+  [./bottom_f]
+    type = NeumannBC
+    variable = pressure
+    boundary = 2
+    value = 0.1
+  [../]
+
 []
 
 [Materials]
-  names = 'darcy_water'
+  active = 'darcy_water'
   
   [./darcy_water]
     type = DarcyWater
     block = 1
     coupled_to = 'pressure temperature'
     coupled_as = 'pressure temperature'
-    permeability = 1.0E-08
-    gravity = -9.80665
+    permeability = 1.0E-10
+    gravity = 9.80665
     rho_w = 1000.0
     gx = 0.0
     gy = 0.0
     gz = 1.0
     porosity = .1
     thermal_conductivity = 1.0
-    water_specific_heat = 10.0
-    rock_specific_heat = 10.0
   [../]
 []
 
