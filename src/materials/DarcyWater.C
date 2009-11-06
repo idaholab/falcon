@@ -1,6 +1,60 @@
 #include "DarcyWater.h"
 #include "SteamTables.h"
 
+//Function to calc water density, single phase conditions only
+double density_(double T)
+{
+  double _rho_w;
+  _rho_w=1000.*(1-((pow(((T)-3.9863),2)/508929.2)*(((T)+288.9414)/((T)+68.12963))));
+   return (_rho_w);
+}
+//end density function
+
+
+//Function call to calc viscosity, can define local variables here....need to finish 11-6-09
+double viscosity_(double T)
+{
+  double _mu_w, a, b, c, d;
+  
+  if (T < 0.)
+    {
+      std::cerr << "T= " << T ;
+      mooseError("Temperature out of Range");
+    }
+    
+    else if (T <= 40.)
+    {
+      a = 1.787E-3;
+      b = (-0.03288+(1.962E-4*T))*T;
+      _mu_w = a * exp(b);
+     }
+    
+    else if (T <= 100.)
+    {
+      a = 1e-3;
+      b = (1+(0.015512*(T-20)));
+      c = -1.572;
+      _mu_w = a * pow(b,c);
+    }
+    
+    else if (T <= 300.)
+    {
+      a = 0.2414;
+      b = 247 / (T+133.15);
+      c = (a * pow(10,b));
+      _mu_w = c * 1E-4;
+     }
+    
+    else
+    {
+      std::cerr << "T= " << T;
+      mooseError("Temperature out of Range");
+    }
+  return (_mu_w);
+}
+//end viscosity function
+
+
 template<>
 Parameters valid_params<DarcyWater>()
 {
@@ -90,7 +144,12 @@ DarcyWater::computeProperties()
     _time_coefficient[qp] = _input_time_coefficient;
     _gravity[qp] = _input_gravity;
     
-    SteamTables::steam_call_(_pressure[qp], _temperature[qp], _rho_w[qp], _mu_w[qp]);
+    //SteamTables::steam_call_(_pressure[qp], _temperature[qp], _rho_w[qp], _mu_w[qp]);
+    
+    //RKP:  Function call to "density_" to calc rho_w
+    _rho_w[qp] = density_((_temperature)[qp]);
+    //RKP:  Function call to "viscosity_" to cal mu_w
+    _mu_w[qp] = viscosity_((_temperature)[qp]);
 
     _darcy_params[qp] = ((_permeability[qp] * _rho_w[qp]) / _mu_w[qp]);
     _darcy_flux[qp] = -((_permeability)[qp] / (_mu_w)[qp]) * ((_grad_p[qp])+((_rho_w)[qp]*(_gravity)[qp]*(_gravity_vector)[qp]));
@@ -101,10 +160,10 @@ DarcyWater::computeProperties()
     //std::cerr << (_mu_w)[qp] <<" * "<< (_rho_w)[qp] <<" * "<< (_permeability)[qp] <<" = "<< (_darcy_params)[qp]<<"\n";
     //std::cerr << "Darcy Flux Vector =  " << (_darcy_flux)[qp];//<<"\n";
     //std::cerr << "gravity Vector =  " << (_gravity_vector)[qp];//<<"\n";
-    std::cerr << "Darcy Velocity =   " <<(_darcy_velocity)[qp];//<<"\n";
+    //std::cerr << "Darcy Velocity =   " <<(_darcy_velocity)[qp];//<<"\n";
     // std::cerr << "Pressure  =   " <<(_pressure)[qp]<<"   Temp =  "<<(_temperature)[qp]<<"\n";
-    std::cerr << "grad Pressure  =   " <<(_grad_p)[qp];
-    std::cerr << "grad Temp  =   " <<(_grad_T)[qp];
+    //std::cerr << "grad Pressure  =   " <<(_grad_p)[qp];
+    //std::cerr << "grad Temp  =   " <<(_grad_T)[qp];
     std::cerr << "density  =   " <<(_rho_w)[qp]<< "     viscosity  =   " <<(_mu_w)[qp]<<"\n";
     //std::cerr << "viscosity  =   " <<(_mu_w)[qp]<<"\n";
     std::cerr <<"\n";
@@ -112,3 +171,7 @@ DarcyWater::computeProperties()
   }
   
 }
+
+
+
+  

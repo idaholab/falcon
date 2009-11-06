@@ -21,7 +21,7 @@
 []
 
 [Kernels]
-  active = 'p_dmfp p_dmfz t_d t_c'
+  active = 'p_dmfp p_dmfz t_d'
 
   [./p_ie]
     type = DarcyImplicitEuler
@@ -71,21 +71,21 @@
     type = DirichletBC
     variable = temperature
     boundary = 3
-    value = 50.0
+    value = 35.0
   [../]
 
   [./top_t]
     type = DirichletBC
     variable = temperature
     boundary = 1
-    value = 25.0
+    value = 10.0
   [../]
 
   [./bottom_t]
     type = DirichletBC
     variable = temperature
     boundary = 2
-    value = 25.0
+    value = 10.0
   [../]
 
   [./bottom_f]
@@ -121,7 +121,7 @@
   perf_log = true
   petsc_options = '-snes_mf_operator'
 
-  nl_rel_tol = 1e-10
+  nl_rel_tol = 1e-12
 
   [./Transient]
     start_time = 0.0
