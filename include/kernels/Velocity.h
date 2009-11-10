@@ -9,14 +9,14 @@
 class Velocity;
 
 template<>
-Parameters valid_params<Velocity>();
+InputParameters valid_params<Velocity>();
 
 class Velocity : public Kernel
 {
 public:
 
   Velocity(std::string name,
-                  Parameters parameters,
+                  InputParameters parameters,
                   std::string var_name,
                   std::vector<std::string> coupled_to=std::vector<std::string>(0),
            std::vector<std::string> coupled_as=std::vector<std::string>(0));

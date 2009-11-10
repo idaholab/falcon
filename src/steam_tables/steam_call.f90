@@ -79,7 +79,7 @@ subroutine steam_call ( p, t, rho, eta )
         p_min_new = p_min 
 
         call d_gtle_range_p ( p_new, p_min_new, p_max_new, ok )
-        if ( ok == .FALSE.) STOP
+        if ( ok .eqv. .FALSE.) STOP
 
 ! RKP: the following manual input lnes are retained here for testing outside of the subroutine     
 !        write ( *, '(a)' ) 'Enter the temperature in degrees Celsius'
@@ -93,7 +93,7 @@ subroutine steam_call ( p, t, rho, eta )
         t_max_new = t_max - 273.15
         t_min_new = t_min 
         call d_gtle_range_t ( t_new, t_min_new, t_max_new, ok )
-        if ( ok == .FALSE.) STOP
+        if ( ok .eqv. .FALSE.) STOP
             
 !  Get the density as function of P and T.
       ps = 20000.0D+00

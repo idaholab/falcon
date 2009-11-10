@@ -1,9 +1,9 @@
 #include "Constant.h"
 
 template<>
-Parameters valid_params<Constant>()
+InputParameters valid_params<Constant>()
 {
-  Parameters params;
+  InputParameters params;
   params.set<Real>("thermal_conductivity")=1.0;
   params.set<Real>("thermal_expansion")=1.0;
   params.set<Real>("specific_heat")=1.0;
@@ -16,7 +16,7 @@ Parameters valid_params<Constant>()
 }
 
 Constant::Constant(std::string name,
-           Parameters parameters,
+           InputParameters parameters,
            unsigned int block_id,
            std::vector<std::string> coupled_to,
            std::vector<std::string> coupled_as)

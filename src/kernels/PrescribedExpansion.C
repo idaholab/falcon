@@ -1,16 +1,16 @@
 #include "PrescribedExpansion.h"
 
 template<>
-Parameters valid_params<PrescribedExpansion>()
+InputParameters valid_params<PrescribedExpansion>()
 {
-  Parameters params;
+  InputParameters params;
   params.set<Real>("component");
   params.set<Real>("percent");
   return params;
 }
 
 PrescribedExpansion::PrescribedExpansion(std::string name,
-                      Parameters parameters,
+                      InputParameters parameters,
                       std::string var_name,
                       std::vector<std::string> coupled_to,
                       std::vector<std::string> coupled_as)

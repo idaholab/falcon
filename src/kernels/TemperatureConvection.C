@@ -2,7 +2,7 @@
 #include "TemperatureConvection.h"
 
 TemperatureConvection::TemperatureConvection(std::string name,
-                                             Parameters parameters,
+                                             InputParameters parameters,
                                              std::string var_name,
                                              std::vector<std::string> coupled_to,
                                              std::vector<std::string> coupled_as)

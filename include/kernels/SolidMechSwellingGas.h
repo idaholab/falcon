@@ -9,13 +9,13 @@
 class SolidMechSwellingGas;
 
 template<>
-Parameters valid_params<SolidMechSwellingGas>();
+InputParameters valid_params<SolidMechSwellingGas>();
 
 class SolidMechSwellingGas : public Kernel
 {
 public:
   SolidMechSwellingGas(std::string name,
-                       Parameters parameters,
+                       InputParameters parameters,
                        std::string var_name,
                        std::vector<std::string> coupled_to,
                        std::vector<std::string> coupled_as);

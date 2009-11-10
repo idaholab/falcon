@@ -1,9 +1,9 @@
 #include "SolidMechSwellingGas.h"
 
 template<>
-Parameters valid_params<SolidMechSwellingGas>()
+InputParameters valid_params<SolidMechSwellingGas>()
 {
-  Parameters params;
+  InputParameters params;
   params.set<Real>("burnup") = 0;
   params.set<Real>("component") = -1;
   
@@ -11,7 +11,7 @@ Parameters valid_params<SolidMechSwellingGas>()
 }
 
 SolidMechSwellingGas::SolidMechSwellingGas(std::string name,
-                       Parameters parameters,
+                       InputParameters parameters,
                        std::string var_name,
                        std::vector<std::string> coupled_to,
                        std::vector<std::string> coupled_as)

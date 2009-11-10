@@ -7,13 +7,13 @@
 class DarcyWater;
 
 template<>
-Parameters valid_params<DarcyWater>();
+InputParameters valid_params<DarcyWater>();
 
 class DarcyWater : public Material
 {
 public:
   DarcyWater(std::string name,
-                  Parameters parameters,
+                  InputParameters parameters,
                   unsigned int block_id,
                   std::vector<std::string> coupled_to,
                   std::vector<std::string> coupled_as);

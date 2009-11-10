@@ -1,15 +1,15 @@
 #include "SolidMechSwellingSolid.h"
 
 template<>
-Parameters valid_params<SolidMechSwellingSolid>()
+InputParameters valid_params<SolidMechSwellingSolid>()
 {
-  Parameters params;
+  InputParameters params;
   params.set<Real>("component") = -1;  
   return params;
 }
 
 SolidMechSwellingSolid::SolidMechSwellingSolid(std::string name,
-                         Parameters parameters,
+                         InputParameters parameters,
                          std::string var_name,
                          std::vector<std::string> coupled_to,
                          std::vector<std::string> coupled_as)

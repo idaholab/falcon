@@ -1,9 +1,9 @@
 #include "SinHeat.h"
  
 template<>
-Parameters valid_params<SinHeat>()
+InputParameters valid_params<SinHeat>()
 {
-  Parameters params;
+  InputParameters params;
   params.set<Real>("qdotzero")=0.0;
   params.set<Real>("qmax")=0.0;
   params.set<Real>("duration")=0.0;
@@ -11,7 +11,7 @@ Parameters valid_params<SinHeat>()
 }
 
 SinHeat::SinHeat(std::string name,
-            Parameters parameters,
+            InputParameters parameters,
             std::string var_name,
             std::vector<std::string> coupled_to,
             std::vector<std::string> coupled_as)

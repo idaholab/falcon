@@ -8,7 +8,7 @@
 class Constant;
 
 template<>
-Parameters valid_params<Constant>();
+InputParameters valid_params<Constant>();
 
 /**
  * Simple material with constant properties.
@@ -17,7 +17,7 @@ class Constant : public Material
 {
 public:
   Constant(std::string name,
-           Parameters parameters,
+           InputParameters parameters,
            unsigned int block_id,
            std::vector<std::string> coupled_to,
            std::vector<std::string> coupled_as);
