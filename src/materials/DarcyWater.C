@@ -118,7 +118,9 @@ DarcyWater::DarcyWater(std::string name,
    _rho_r(declareRealProperty("rho_r")),
 
    _darcy_params(declareRealProperty("darcy_params")),
-   _darcy_flux(declareGradientProperty("darcy_pressure")),
+   
+   //  _darcy_flux(declareGradientProperty("darcy_pressure")),
+   _darcy_flux(declareGradientProperty("darcy_flux")),
    _darcy_velocity(declareGradientProperty("darcy_velocity")),
    _gravity_vector(declareRealVectorValueProperty("gravity_vector")),
    _grad_p(coupledGrad("pressure")),
@@ -147,8 +149,10 @@ DarcyWater::computeProperties()
     //SteamTables::steam_call_(_pressure[qp], _temperature[qp], _rho_w[qp], _mu_w[qp]);
     
     //RKP:  Function call to "density_" to calc rho_w
+    //  
     _rho_w[qp] = density_((_temperature)[qp]);
-    //RKP:  Function call to "viscosity_" to cal mu_w
+    //RKP:  Function call to "viscosity_" to calc mu_w
+    //
     _mu_w[qp] = viscosity_((_temperature)[qp]);
 
     _darcy_params[qp] = ((_permeability[qp] * _rho_w[qp]) / _mu_w[qp]);
@@ -160,13 +164,15 @@ DarcyWater::computeProperties()
     //std::cerr << (_mu_w)[qp] <<" * "<< (_rho_w)[qp] <<" * "<< (_permeability)[qp] <<" = "<< (_darcy_params)[qp]<<"\n";
     //std::cerr << "Darcy Flux Vector =  " << (_darcy_flux)[qp];//<<"\n";
     //std::cerr << "gravity Vector =  " << (_gravity_vector)[qp];//<<"\n";
-    //std::cerr << "Darcy Velocity =   " <<(_darcy_velocity)[qp];//<<"\n";
+    std::cerr << "Point =   " <<_q_point[qp]<<"\n";
+    
+    std::cerr << "Darcy Velocity =   " <<_darcy_velocity[qp]<<"\n";
     // std::cerr << "Pressure  =   " <<(_pressure)[qp]<<"   Temp =  "<<(_temperature)[qp]<<"\n";
     //std::cerr << "grad Pressure  =   " <<(_grad_p)[qp];
     //std::cerr << "grad Temp  =   " <<(_grad_T)[qp];
-    std::cerr << "density  =   " <<(_rho_w)[qp]<< "     viscosity  =   " <<(_mu_w)[qp]<<"\n";
+    //std::cerr << "density  =   " <<(_rho_w)[qp]<< "     viscosity  =   " <<(_mu_w)[qp]<<"\n";
     //std::cerr << "viscosity  =   " <<(_mu_w)[qp]<<"\n";
-    std::cerr <<"\n";
+    //std::cerr <<"\n";
     */
   }
   

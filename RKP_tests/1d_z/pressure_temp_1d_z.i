@@ -4,7 +4,7 @@
 []
 
 [Variables]
-  active = 'pressure temperature'
+  active = 'pressure temperature v_x v_y v_z'
 
    [./pressure]
     order = FIRST
@@ -18,10 +18,39 @@
     family = LAGRANGE
     initial_condition = 25.0
    [../]
+
+  [./v_x]
+    order = FIRST
+    family = LAGRANGE
+   [../]
+
+  [./v_y]
+    order = FIRST
+    family = LAGRANGE
+   [../]
+
+  [./v_z]
+    order = FIRST
+    family = LAGRANGE
+   [../]
+[]
+
+[AuxVariables]
+  active = 'density viscosity'
+
+  [./density]
+    order = FIRST
+    family = LAGRANGE
+  [../]
+
+  [./viscosity]
+    order = FIRST
+    family = LAGRANGE
+  [../]
 []
 
 [Kernels]
-  active = 'p_dmfp p_dmfz t_d'
+  active = 'p_dmfp p_dmfz t_d dv_x dv_y dv_z'
 
   [./p_ie]
     type = DarcyImplicitEuler
@@ -53,6 +82,42 @@
     variable = temperature
   [../]
 
+  [./dv_x]
+    type = DarcyVelocity
+    variable = v_x
+    component = 0
+  [../]
+
+  [./dv_y]
+    type = DarcyVelocity
+    variable = v_y
+    component = 1
+  [../]
+
+  [./dv_z]
+    type = DarcyVelocity
+    variable = v_z
+    component = 2
+  [../]
+
+[]
+
+[AuxKernels]
+  active = 'density viscosity'
+
+  [./density]
+    variable = density
+    type = CoupledDensityAux
+    coupled_to = 'temperature'
+    coupled_as = 'temperature'
+  [../]
+
+  [./viscosity]
+    variable = viscosity
+    type = CoupledViscosityAux
+    coupled_to = 'temperature'
+    coupled_as = 'temperature'
+  [../]
 []
 
 [BCs]
@@ -92,7 +157,7 @@
     type = NeumannBC
     variable = pressure
     boundary = 2
-    value = 0.1
+    value = 0
   [../]
 
 []

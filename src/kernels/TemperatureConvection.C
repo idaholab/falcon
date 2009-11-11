@@ -20,11 +20,11 @@ TemperatureConvection::subdomainSetup()
 Real TemperatureConvection::computeQpResidual()
 {
   return (*_water_specific_heat)[_qp]*(*_darcy_velocity)[_qp]*(*_rho_w)[_qp]*_phi[_i][_qp]*_grad_u[_qp];
-//  return (*_water_specific_heat)[_qp]*(*_darcy_velocity)[_qp]*_phi[_i][_qp]*_grad_u[_qp];
+
 }
 
 Real TemperatureConvection::computeQpJacobian()
 {
   return (*_water_specific_heat)[_qp]*(*_darcy_velocity)[_qp]*(*_rho_w)[_qp]*_phi[_i][_qp]*_dphi[_j][_qp];
-//  return (*_water_specific_heat)[_qp]*(*_darcy_velocity)[_qp]*_phi[_i][_qp]*_dphi[_j][_qp];
+
 }
