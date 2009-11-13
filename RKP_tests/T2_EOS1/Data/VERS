@@ -1,11 +1,9 @@
       IO       1.0      15 APRIL     1991      OPEN FILES *VERS*, *MESH*, *INCON*, *GENER*, *SAVE*, *LINEQ*, AND *TABLE*
-      SECOND   1.0       6 September 1994      CPU timing function for IBM RS/6000
-
+      CPUSEC   1.0      05 OCTOBER    2004      #--: RETURNS CPU-TIME (VERSION Mac OS X)
       TOUGH2   2.00      8 June      1999      MAIN PROGRAM
                                                special version for conjugate gradient package T2CG2
                                                includes definition of coordinate arrays and radiative heat transfer capability
-
-      INPUT    1.50     20 May       1999      READ ALL DATA PROVIDED THROUGH FILE *INPUT*
+      INPUT    1.50     25 May       2000      READ ALL DATA PROVIDED THROUGH FILE *INPUT*
 
       MESHM    1.0      24 MAY       1990      EXECUTIVE ROUTINE FOR INTERNAL MESH GENERATION
 
