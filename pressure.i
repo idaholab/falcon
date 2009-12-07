@@ -75,7 +75,7 @@
   [./Transient]
     start_time = 0.0
  #   end_time = 1.32e7
-    num_steps = 500000
+    num_steps = 10
     dt = 50000
     trans_ss_check = true
  #   ss_check_tol = 5.0e-5

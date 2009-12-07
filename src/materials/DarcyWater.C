@@ -5,7 +5,7 @@
 double density_(double T)
 {
   double _rho_w;
-  _rho_w=1000.*(1-((pow(((T)-3.9863),2)/508929.2)*(((T)+288.9414)/((T)+68.12963))));
+  _rho_w=1000.*(1-((pow((T-3.9863),2)/508929.2)*((T+288.9414)/(T+68.12963))));
    return (_rho_w);
 }
 //end density function
@@ -63,8 +63,7 @@ InputParameters valid_params<DarcyWater>()
   params.set<Real>("porosity")=0.10; //dimensionless but variable
   params.set<Real>("rho_w")=1000.0; //water density, variable, in (kg/m^3)
   params.set<Real>("mu_w")=0.001; //water dynamic viscosity, variable, in (Pa s)
-  params.set<Real>("c_f")=1.0;//"consolodation factor", use for modifing porosity from
-                              // geomechanics
+  params.set<Real>("c_f")=1.0;//"fluid compressibility", use for modifing
   params.set<Real>("thermal_conductivity") = 1.0;  //thermal thermal_conductivity, in (m^2/s)
   params.set<Real>("time_coefficient") = 1.0; //leftover from example, carry it along for now
   params.set<Real>("gravity") = 9.80665; //gravity acceleration, in (m/s^2)
@@ -139,6 +138,7 @@ DarcyWater::computeProperties()
     _gravity_vector[qp](2) = _gz;
     
     _permeability[qp] = _input_permeability;
+    _c_f[qp] = _input_c_f; //Rob missed this
     _porosity[qp] = _input_porosity;
     _rho_w[qp] = _input_rho_w;
     _mu_w[qp] = _input_mu_w;
@@ -150,10 +150,11 @@ DarcyWater::computeProperties()
     
     //RKP:  Function call to "density_" to calc rho_w
     //  
-    _rho_w[qp] = density_((_temperature)[qp]);
-    //RKP:  Function call to "viscosity_" to calc mu_w
+     _rho_w[qp] = density_((_temperature)[qp]);
+
+     //RKP:  Function call to "viscosity_" to calc mu_w
     //
-    _mu_w[qp] = viscosity_((_temperature)[qp]);
+    // _mu_w[qp] = viscosity_((_temperature)[qp]);
 
     _darcy_params[qp] = ((_permeability[qp] * _rho_w[qp]) / _mu_w[qp]);
     _darcy_flux[qp] = -((_permeability)[qp] / (_mu_w)[qp]) * ((_grad_p[qp])+((_rho_w)[qp]*(_gravity)[qp]*(_gravity_vector)[qp]));

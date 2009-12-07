@@ -1,5 +1,6 @@
 #include "Falcon.h"
 #include "PetscSupport.h"
+#include "Flux.h"
 
 //Moose Includes
 #include "Moose.h"
@@ -13,6 +14,7 @@
 #include "Parser.h"
 
 // C++ include files that we need
+#include <cmath>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -44,63 +46,149 @@
 
 PerfLog Moose::perf_log("Falcon");
 
+/*
 Number init_value (const Point& p,
                    const Parameters& parameters,
                    const std::string& sys_name,
                    const std::string& var_name)
 {
-  /*
-  if(var_name == "p")
-    return 101325.0 / (287.04 * 600.0);
 
-  if(var_name == "pe")
-    return 101325.0 / (1.405 - 1.0);
-
-  if(var_name == "c")
-    return -1+(2.0*rand()/(RAND_MAX + 1.0));
-  */
-
-  if(var_name == "cv" || var_name == "c")
-    return 1.13e-4*rand()/(RAND_MAX + 1.0);
-/*
-  if(var_name == "temp")
+  if(var_name == "pressure")
   {
-    if (p(1) <= -0.499)
+    if (p(0) < 1.0e-10)
       return 1.0;
     else
-      0.0;
+      return 0.0;
   }
+  
+  if(var_name == "a")
+    return 1.0e-8;
+
+  if(var_name == "b")
+    return 1.0e-8;
+
+  if(var_name == "c")
+    return 1.0e-10;
+
+  if(var_name == "tracer")
+  {
+    if (p(0) < 1.0e-10)
+      return 1.0e-8;
+    else
+      return 1.0e-8;
+  }
+
+  if(var_name == "ca2+")
+  {
+//    if (p(0) < 1.0e-10)
+//      return 5.0e-2;
+//    else
+      return 1.0e-3;
+  }
+
+  if(var_name == "hco3-")
+  {
+//    if (p(0) < 1.0e-10)
+//      return 1.0e-6;
+//    else
+      return 1.0e-6;
+  }
+  
+  if(var_name == "cl-")
+    return 1.0e-3;
+
+  if(var_name == "na+")
+    return 1.0e-6;
+
+  if(var_name == "so42-")
+    return 1.0e-6;
+  if(var_name == "h+")
+    return 1.0e-7;
+
+  if(var_name == "urea")
+  {
+//    if (p(0) < 1.0e-10)
+//      return 5.0e-2;
+//    else
+      return 1.0e-8;
+  }
+  
+  if(var_name == "nh4+")
+  {
+    
+//    if (p(0) < 1.0e-8)
+//      return 1.0e-8;
+//    else
+      return 1.0e-5;
+  }
+  
+
+  if(var_name == "urease")
+  {
+    
+//    if (p(0) < 1.0e-10)
+//      return 2.083e-8;
+//    else
+      return 0.0;
+  }
+  
+  if(var_name == "caco3(s)")
+    return 0.0;
+  if(var_name == "porosity")
+    return 0.6923;
+  
+  if(parameters.have_parameter<Real>("initial_"+var_name))
+    return parameters.get<Real>("initial_"+var_name);
+}
 */
 
-  if(parameters.have_parameter<Real>("initial_"+var_name))
-    return parameters.get<Real>("initial_"+var_name);
-  
-  return 0;
-}
-
-Gradient init_gradient (const Point& p,
-                        const Parameters& parameters,
-                        const std::string& sys_name,
-                        const std::string& var_name)
+Real computeFlux(const NumericVector<Number>& soln, Flux * flux)
 {
-  /*
-  if(var_name == "p")
-    return 101325.0 / (287.04 * 600.0);
-
-  if(var_name == "pe")
-    return 101325.0 / (1.405 - 1.0);
-  */
-  if(parameters.have_parameter<Real>("initial_"+var_name))
-    return parameters.get<Real>("initial_"+var_name);
+  Real flux_value = 0.0;
   
-  return 0;
-}
+  unsigned int boundary_id = flux->boundaryID();
 
-void init_cond(EquationSystems& es, const std::string& system_name)
-{
-  ExplicitSystem & system = es.get_system<ExplicitSystem>(system_name);
+  // Not actually used... just satisfying the interface
+  DenseVector<Number> Re;
+
+  // Zero is for thread id... no need to thread this
+  unsigned int tid = 0;
+
+  std::vector<unsigned int> elems;
+  std::vector<unsigned short int> sides;
+  std::vector<short int> ids;
   
-  system.project_solution(init_value, init_gradient, es.parameters);
+  Moose::mesh->boundary_info->build_side_list(elems, sides, ids);
+
+  for(unsigned int i=0; i<ids.size(); i++)
+  {
+    unsigned int cur_id = ids[i];
+    
+    if(boundary_id == cur_id)
+    {
+      unsigned int side = sides[i];
+      unsigned int elem_num = elems[i];
+      
+      Elem * elem = Moose::mesh->elem(elem_num);
+
+      std::vector< const Elem * > family;
+
+      elem->active_family_tree_by_side(family, side);
+
+      for(unsigned int j=0; j<family.size(); j++)
+      {
+        const Elem * child_elem = family[j];
+
+        Kernel::reinit(tid, soln, child_elem, &Re);
+
+        BoundaryCondition::reinit(tid, soln, side, boundary_id);
+
+        flux_value += flux->computeIntegral();
+      }
+    }
+  }
+
+  return flux_value;
 }
 
  // Begin the main program.
@@ -111,14 +199,11 @@ int main (int argc, char** argv)
   // Initialize libMesh and any dependent libaries, like in example 2.
   libMesh::init (argc, argv);
 
-  //Seed the random number geneFalconor
+  //Seed the random number generator
   srand(libMesh::processor_id());
 
   // Setup Falcon specific settings
   Falcon::registerObjects();
-  Moose::init_value = init_value;
-  Moose::init_gradient = init_gradient;
-  Moose::init_cond = init_cond;
   
   // Braces are used to force object scope, like in example 2
   {
@@ -180,15 +265,11 @@ int main (int argc, char** argv)
       Moose::meshChanged();
 
       //reproject the initial condition
-      system.project_solution(init_value, NULL, Moose::equation_system->parameters);
+      system.project_solution(Moose::init_value, NULL, Moose::equation_system->parameters);
     }    
 
     if(Moose::output_initial)
-    {
-      std::cout<<"Outputting Initial"<<std::endl;
-      
       Moose::output_system(Moose::equation_system, Moose::file_base, 0, 0.0, Moose::exodus_output, Moose::gmv_output, Moose::tecplot_output, Moose::print_out_info);
-    }
     
     bool adaptivity = false;
 
@@ -347,9 +428,9 @@ int main (int argc, char** argv)
             
                 Real temp_residual_norm = system.rhs->l2_norm();
  
-                std::cout<<"Falconio: "<<(largest_residual_norm / temp_residual_norm)<<std::endl;
+                std::cout<<"Ratio: "<<(largest_residual_norm / temp_residual_norm)<<std::endl;
 
-                //Modify the timestep based on the Falconio of residual norms
+                //Modify the timestep based on the ratio of residual norms
                 temp_dt = temp_dt * (largest_residual_norm / temp_residual_norm);
 
                 //Keep growth to 10%
@@ -373,11 +454,11 @@ int main (int argc, char** argv)
               {
                 if(libMesh::processor_id() == 0)
                 {
-                  adaptive_log<<"Old Falconio: "<<old_sol_time_vs_dt<<std::endl;
-                  adaptive_log<<"New Falconio: "<<sol_time_vs_dt<<std::endl;
+                  adaptive_log<<"Old Ratio: "<<old_sol_time_vs_dt<<std::endl;
+                  adaptive_log<<"New Ratio: "<<sol_time_vs_dt<<std::endl;
                 }
                 
-                //Falconio grew so switch direction
+                //Ratio grew so switch direction
                 if(sol_time_vs_dt > older_sol_time_vs_dt && old_sol_time_vs_dt > older_sol_time_vs_dt)
                 {
                   if(libMesh::processor_id() == 0)
@@ -651,8 +732,8 @@ int main (int argc, char** argv)
         system.solve();
 
 #ifdef WITH_PF        
-        // IteFalcone over the materials, cast them and tell them to print their data structures
-        std::map<int, Material *>::iteFalconor i;
+        // Iterate over the materials, cast them and tell them to print their data structures
+        std::map<int, Material *>::iterator i;
 
 
         for (i = MaterialFactory::instance()->activeMaterialsBegin(0);
