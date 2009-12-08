@@ -1,7 +1,7 @@
 #include "Flux.h"
 
 template<>
-InputParameters valid_params<Flux>()
+InputParameters validParams<Flux>()
 {
   InputParameters params;
   params.set<Real>("coefficient");

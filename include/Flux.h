@@ -7,7 +7,7 @@
 class Flux;
 
 template<>
-InputParameters valid_params<Flux>();
+InputParameters validParams<Flux>();
 
 class Flux : public BoundaryCondition
 {
