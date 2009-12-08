@@ -7,7 +7,7 @@
 class DarcyWater;
 
 template<>
-InputParameters valid_params<DarcyWater>();
+InputParameters validParams<DarcyWater>();
 
 class DarcyWater : public Material
 {

@@ -8,7 +8,7 @@
 class PrescribedExpansion;
 
 template<>
-InputParameters valid_params<PrescribedExpansion>();
+InputParameters validParams<PrescribedExpansion>();
 
 class PrescribedExpansion : public SolidMechTempCouple
 {

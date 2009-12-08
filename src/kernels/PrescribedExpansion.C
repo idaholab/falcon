@@ -1,7 +1,7 @@
 #include "PrescribedExpansion.h"
 
 template<>
-InputParameters valid_params<PrescribedExpansion>()
+InputParameters validParams<PrescribedExpansion>()
 {
   InputParameters params;
   params.set<Real>("component");

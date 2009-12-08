@@ -56,7 +56,7 @@ double viscosity_(double T)
 
 
 template<>
-InputParameters valid_params<DarcyWater>()
+InputParameters validParams<DarcyWater>()
 {
   InputParameters params;
   params.set<Real>("permeability")=1.0E-12; //intrinsic permeability, "k", in (m^2)

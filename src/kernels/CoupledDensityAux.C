@@ -1,7 +1,7 @@
 #include "CoupledDensityAux.h"
 
 template<>
-InputParameters valid_params<CoupledDensityAux>()
+InputParameters validParams<CoupledDensityAux>()
 {
   InputParameters params;
   params.set<Real>("value")=0.0;

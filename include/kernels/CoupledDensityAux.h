@@ -8,7 +8,7 @@
 class CoupledDensityAux;
 
 template<>
-InputParameters valid_params<CoupledDensityAux>();
+InputParameters validParams<CoupledDensityAux>();
 
 /** 
  * Coupled auxiliary value

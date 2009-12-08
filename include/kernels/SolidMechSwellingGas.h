@@ -9,7 +9,7 @@
 class SolidMechSwellingGas;
 
 template<>
-InputParameters valid_params<SolidMechSwellingGas>();
+InputParameters validParams<SolidMechSwellingGas>();
 
 class SolidMechSwellingGas : public Kernel
 {

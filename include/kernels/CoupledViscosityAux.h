@@ -8,7 +8,7 @@
 class CoupledViscosityAux;
 
 template<>
-InputParameters valid_params<CoupledViscosityAux>();
+InputParameters validParams<CoupledViscosityAux>();
 
 /** 
  * Coupled auxiliary value

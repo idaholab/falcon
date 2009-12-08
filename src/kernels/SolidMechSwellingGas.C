@@ -1,7 +1,7 @@
 #include "SolidMechSwellingGas.h"
 
 template<>
-InputParameters valid_params<SolidMechSwellingGas>()
+InputParameters validParams<SolidMechSwellingGas>()
 {
   InputParameters params;
   params.set<Real>("burnup") = 0;

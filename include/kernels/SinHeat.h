@@ -9,7 +9,7 @@
 class SinHeat;
 
 template<>
-InputParameters valid_params<SinHeat>();
+InputParameters validParams<SinHeat>();
 
 class SinHeat : public Kernel
 {

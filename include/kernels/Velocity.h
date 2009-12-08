@@ -9,7 +9,7 @@
 class Velocity;
 
 template<>
-InputParameters valid_params<Velocity>();
+InputParameters validParams<Velocity>();
 
 class Velocity : public Kernel
 {

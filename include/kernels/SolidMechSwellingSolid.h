@@ -9,7 +9,7 @@
 class SolidMechSwellingSolid;
 
 template<>
-InputParameters valid_params<SolidMechSwellingSolid>();
+InputParameters validParams<SolidMechSwellingSolid>();
 
 class SolidMechSwellingSolid : public SolidMechTempCouple
 {

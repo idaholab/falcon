@@ -1,7 +1,7 @@
 #include "GravityNeumannBC.h"
 
 template<>
-InputParameters valid_params<GravityNeumannBC>()
+InputParameters validParams<GravityNeumannBC>()
 {
   InputParameters params;
   params.set<Real>("permeability") = 0;

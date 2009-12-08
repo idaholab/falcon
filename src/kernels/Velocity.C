@@ -2,7 +2,7 @@
  
 
 template<>
-InputParameters valid_params<Velocity>()
+InputParameters validParams<Velocity>()
 {
   InputParameters params;
   return params;

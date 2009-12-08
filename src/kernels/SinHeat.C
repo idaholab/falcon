@@ -1,7 +1,7 @@
 #include "SinHeat.h"
  
 template<>
-InputParameters valid_params<SinHeat>()
+InputParameters validParams<SinHeat>()
 {
   InputParameters params;
   params.set<Real>("qdotzero")=0.0;

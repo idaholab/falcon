@@ -8,7 +8,7 @@
 class GravityNeumannBC;
 
 template<>
-InputParameters valid_params<GravityNeumannBC>();
+InputParameters validParams<GravityNeumannBC>();
 
 /**
  * Implements a simple constant GravityNeumann BC where grad(u)=value on the boundary.

@@ -8,7 +8,7 @@
 class Constant;
 
 template<>
-InputParameters valid_params<Constant>();
+InputParameters validParams<Constant>();
 
 /**
  * Simple material with constant properties.

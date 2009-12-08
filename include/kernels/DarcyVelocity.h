@@ -9,7 +9,7 @@
 class DarcyVelocity;
 
 template<>
-InputParameters valid_params<DarcyVelocity>();
+InputParameters validParams<DarcyVelocity>();
 
 class DarcyVelocity : public Kernel
 {

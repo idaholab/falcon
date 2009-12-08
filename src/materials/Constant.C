@@ -1,7 +1,7 @@
 #include "Constant.h"
 
 template<>
-InputParameters valid_params<Constant>()
+InputParameters validParams<Constant>()
 {
   InputParameters params;
   params.set<Real>("thermal_conductivity")=1.0;

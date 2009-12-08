@@ -1,7 +1,7 @@
 #include "SolidMechSwellingSolid.h"
 
 template<>
-InputParameters valid_params<SolidMechSwellingSolid>()
+InputParameters validParams<SolidMechSwellingSolid>()
 {
   InputParameters params;
   params.set<Real>("component") = -1;  

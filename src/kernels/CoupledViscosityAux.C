@@ -1,7 +1,7 @@
 #include "CoupledViscosityAux.h"
 
 template<>
-InputParameters valid_params<CoupledViscosityAux>()
+InputParameters validParams<CoupledViscosityAux>()
 {
   InputParameters params;
   params.set<Real>("a")=0.0;

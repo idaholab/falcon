@@ -2,7 +2,7 @@
 #include "DarcyVelocity.h"
  
 template<>
-InputParameters valid_params<DarcyVelocity>()
+InputParameters validParams<DarcyVelocity>()
 {
   InputParameters params;
   params.set<int>("component")= 0;
