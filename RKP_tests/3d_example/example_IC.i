@@ -1,6 +1,6 @@
 [Mesh]
   dim = 3
-  file = 3d_10m.e
+  file = 3d_5m.e
 []
 
 [Variables]
@@ -130,7 +130,7 @@
     type = DirichletBC
     variable = pressure
     boundary = 5
-    value = 100000.0
+    value = 110000.0
   [../]
 
  [./left_p]
@@ -155,7 +155,7 @@
     gx = 0.0
     gy = 0.0
     gz = 1.0
-    porosity = .40
+    porosity = .25
   [../]
 []
 

@@ -34,12 +34,15 @@
 #include "TemperatureDiffusion.h"
 #include "TemperatureConvection.h"
 #include "DarcyVelocity.h"
-
+#include "DarcyImplicitBackwardDifference2.h"
+#include "TemperatureImplicitBackwardDifference2.h"
 #include "CoupledDensityAux.h"
 #include "CoupledViscosityAux.h"
 
 #include "PressureNeumannBC.h"
 #include "GravityNeumannBC.h"
+#include "OutFlowBC.h"
+
 
 #include "Constant.h"
 #include "DarcyWater.h"
@@ -81,12 +84,15 @@ namespace Falcon
     KernelFactory::instance()->registerKernel<TemperatureDiffusion>("TemperatureDiffusion");
     KernelFactory::instance()->registerKernel<TemperatureConvection>("TemperatureConvection");
     KernelFactory::instance()->registerKernel<DarcyVelocity>("DarcyVelocity");
-    
+    KernelFactory::instance()->registerKernel<DarcyImplicitBackwardDifference2>("DarcyImplicitBackwardDifference2");
+    KernelFactory::instance()->registerKernel<TemperatureImplicitBackwardDifference2>("TemperatureImplicitBackwardDifference2");
+
     AuxFactory::instance()->registerAux<CoupledDensityAux>("CoupledDensityAux");
     AuxFactory::instance()->registerAux<CoupledViscosityAux>("CoupledViscosityAux");
         
     BCFactory::instance()->registerBC<PressureNeumannBC>("PressureNeumannBC");
     BCFactory::instance()->registerBC<GravityNeumannBC>("GravityNeumannBC");
+    BCFactory::instance()->registerBC<OutFlowBC>("OutFlowBC");
 
     MaterialFactory::instance()->registerMaterial<Constant>("Constant");
     MaterialFactory::instance()->registerMaterial<DarcyWater>("DarcyWater");

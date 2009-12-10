@@ -1,9 +1,12 @@
 #include "DarcyWater.h"
-#include "SteamTables.h"
+// #include "SteamTables.h"
 
 //Function to calc water density, single phase conditions only
 double density_(double T)
 {
+  double a;
+  a = 1000.*(1-((pow(((T)-3.9863),2)/508929.2)*(((T)+288.9414)/((T)+68.12963))));
+   return (a);
   double _rho_w;
   _rho_w=1000.*(1-((pow((T-3.9863),2)/508929.2)*((T+288.9414)/(T+68.12963))));
    return (_rho_w);
