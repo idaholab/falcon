@@ -23,13 +23,13 @@ DarcyVelocity::DarcyVelocity(std::string name,
 void
 DarcyVelocity::subdomainSetup()
 {
-  _darcy_velocity = &_material->getGradientProperty("darcy_velocity");
+  _pore_velocity = &_material->getGradientProperty("pore_velocity");
 }
 
 Real
 DarcyVelocity::computeQpResidual()
 {
-  return ((_u[_qp]-( *_darcy_velocity)[_qp](_component) )) *_phi[_i][_qp];
+  return ((_u[_qp]-( *_pore_velocity)[_qp](_component) )) *_phi[_i][_qp];
 }
 
 

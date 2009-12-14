@@ -10,9 +10,15 @@
 #include "SolidMechY.h"
 #include "SolidMechZ.h"
 #include "SolidMechImplicitEuler.h"
+
 #include "SolidMechTempCoupleX.h"
 #include "SolidMechTempCoupleY.h"
 #include "SolidMechTempCoupleZ.h"
+
+#include "SolidMechPoroCoupleX.h"
+#include "SolidMechPoroCoupleY.h"
+#include "SolidMechPoroCoupleZ.h"
+
 #include "SolidMechSwellingSolid.h"
 #include "SolidMechSwellingGas.h"
 #include "SinHeat.h"
@@ -44,9 +50,9 @@
 //#include "OutFlowBC.h"
 
 
-#include "Constant.h"
-#include "DarcyWater.h"
-
+//#include "Constant.h"
+//#include "DarcyWater.h"
+#include "ThermalPoroElastic.h"
 
 namespace Falcon
 {
@@ -63,6 +69,11 @@ namespace Falcon
     KernelFactory::instance()->registerKernel<SolidMechTempCoupleX>("SolidMechTempCoupleX");
     KernelFactory::instance()->registerKernel<SolidMechTempCoupleY>("SolidMechTempCoupleY");
     KernelFactory::instance()->registerKernel<SolidMechTempCoupleZ>("SolidMechTempCoupleZ");
+
+    KernelFactory::instance()->registerKernel<SolidMechPoroCoupleX>("SolidMechPoroCoupleX");
+    KernelFactory::instance()->registerKernel<SolidMechPoroCoupleY>("SolidMechPoroCoupleY");
+    KernelFactory::instance()->registerKernel<SolidMechPoroCoupleZ>("SolidMechPoroCoupleZ");
+
     KernelFactory::instance()->registerKernel<SolidMechSwellingSolid>("SolidMechSwellingSolid");
     KernelFactory::instance()->registerKernel<SolidMechSwellingGas>("SolidMechSwellingGas");
     KernelFactory::instance()->registerKernel<SinHeat>("SinHeat");
@@ -94,8 +105,9 @@ namespace Falcon
     BCFactory::instance()->registerBC<GravityNeumannBC>("GravityNeumannBC");
     //BCFactory::instance()->registerBC<OutFlowBC>("OutFlowBC");
 
-    MaterialFactory::instance()->registerMaterial<Constant>("Constant");
-    MaterialFactory::instance()->registerMaterial<DarcyWater>("DarcyWater");
+//    MaterialFactory::instance()->registerMaterial<Constant>("Constant");
+//    MaterialFactory::instance()->registerMaterial<DarcyWater>("DarcyWater");
+    MaterialFactory::instance()->registerMaterial<ThermalPoroElastic>("ThermalPoroElastic");
     
   }
 }

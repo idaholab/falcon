@@ -6,8 +6,8 @@
 
 [Variables]
 #  active = 'pressure temperature'
-  active = 'pressure temperature v_x v_y v_z'
-
+   active = 'pressure temperature v_x v_y v_z'
+#  active = 'pressure temperature'
    [./pressure]
     order = FIRST
     family = LAGRANGE
@@ -17,7 +17,7 @@
     family = LAGRANGE
     [./InitialCondition]
         type = ConstantIC
-    	value = 20.0
+    	value = 20.00
     [../]
    [../]
 
@@ -55,7 +55,6 @@
 [Kernels]
 #  active = 'p_ie p_dmfp p_dmfz t_ie t_d t_c' 
   active = 'p_ie p_dmfp p_dmfz t_ie t_d t_c dv_x dv_y dv_z' 
-
   [./p_ie]
     type = DarcyImplicitEuler
     variable = pressure
@@ -125,7 +124,7 @@
 [BCs]
 #  active = 'top_t bot_t left_t left_f right_f'
 #  active = 'left_p right_p left_t'
-   active = 'bot_t bot_p'
+   active = 'bot_p bot_t'
   [./bot_p]
     type = DirichletBC
     variable = pressure
@@ -151,7 +150,7 @@
     type = DirichletBC
     variable = temperature
     boundary = 1
-    value = 100.0
+    value = 100.00
  [../]
 
  [./left_f]
@@ -171,24 +170,40 @@
 [ ]
 
 [Materials]
-  active = 'darcy_water'
+  active = 'ThermalPoroElastic'
   
-  [./darcy_water]
-    type = DarcyWater
+  [./ThermalPoroElastic]
+    type = ThermalPoroElastic
     block = 1
     coupled_to = 'pressure temperature'
     coupled_as = 'pressure temperature'
-    permeability = 1.e-10
-    c_f = 1.0e-12
-    thermal_conductivity = 7.5e1
-    rock_specific_heat =  10.0e4
-    water_specific_heat = 1!0.0e3
-    gravity = 9.8
-    gx = 0.0
-    gy = 0.0
-    gz = 1.0
-    porosity = .5
+
+    permeability         =  1.0e-10
+    porosity             =  0.50
+
+    rho_r                =  2.50e3
+
+#   rock_specific_heat   =  0.92e3
+    rock_specific_heat   =  1.0
+
+    thermal_conductivity =  2.4e1
+    thermal_expansion    =  1.0e-6
+    youngs_modulus       = 15.0e09
+    poissons_ratio       =  0.2
+    biot_coeff           =  1.0
+    t_ref                = 20.0
+
+    rho_w                = 1.0e03
+    mu_w                 = 0.001
+    c_f                  = 4.6e-12
+
+#    water_specific_heat  = 4.186e3
+    water_specific_heat  = 1.0
+
+    gravity              = 9.80
+
   [../]
+
 [ ]
 
 [Execution]
@@ -211,7 +226,7 @@
   [./Transient]
     start_time =  0.0
     num_steps =  10
-    dt =  100
+    dt =  1000
 #    sol_time_adaptive_time_stepping =  true
   [../]
 

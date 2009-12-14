@@ -11,7 +11,7 @@ SolidMechImplicitEuler::SolidMechImplicitEuler(std::string name,
 void
 SolidMechImplicitEuler::subdomainSetup()
   {
-    _density = &_material->getRealProperty("density");
+    _density = &_material->getRealProperty("rho_r");
   }
 
 Real

@@ -32,6 +32,7 @@ private:
 
   Real _my_thermal_conductivity;
   Real _my_thermal_expansion;
+  Real _my_biot_coeff;  
   Real _my_specific_heat;
   Real _my_density;
   Real _my_youngs_modulus;
@@ -41,6 +42,7 @@ private:
   std::vector<Real> & _thermal_conductivity;
   std::vector<Real> & _thermal_strain;
   std::vector<Real> & _alpha;
+  std::vector<Real> & _biot_coeff;
   std::vector<Real> & _specific_heat;
   std::vector<Real> & _density;
   std::vector<Real> & _youngs_modulus;

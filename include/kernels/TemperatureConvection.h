@@ -22,7 +22,7 @@ protected:
   virtual Real computeQpJacobian();  
 
   std::vector<Real> *_water_specific_heat;
-  std::vector<RealGradient> *_darcy_velocity;
+  std::vector<RealGradient> *_darcy_flux;
   std::vector<Real> *_rho_w;
   
 };

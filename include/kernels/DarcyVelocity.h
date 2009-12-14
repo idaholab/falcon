@@ -28,7 +28,7 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
   int _component;
-  std::vector<RealGradient> *_darcy_velocity;
+  std::vector<RealGradient> *_pore_velocity;
 
 private:
 };
