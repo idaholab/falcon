@@ -1,14 +1,13 @@
 [Mesh]
   dim = 3
   file = column.e
-#  uniform_refine = 2
+#  uniform_refine = 1
 [ ]
 
 [Variables]
-#  active = 'pressure temperature v_x v_y v_z'
+#   active = 'pressure temperature v_x v_y v_z'
    active = 'pressure temperature'
-
-  [./pressure]
+   [./pressure]
     order = FIRST
     family = LAGRANGE
    [../]
@@ -17,10 +16,9 @@
     family = LAGRANGE
     [./InitialCondition]
         type = ConstantIC
-	value = 20.0
+    	value = 20.00
     [../]
-
-  [../]
+   [../]
 
   [./v_x]
     order = FIRST
@@ -30,7 +28,7 @@
   [./v_y]
     order = FIRST
     family = LAGRANGE
-  [../]
+   [../]
 
   [./v_z]
     order = FIRST
@@ -54,7 +52,7 @@
 []
 
 [Kernels]
-#  active = 'p_ie p_dmfp p_dmfz t_ie t_d t_c dv_x dv_y dv_z'
+#  active = 'p_ie p_dmfp p_dmfz t_ie t_d t_c dv_x dv_y dv_z' 
   active = 'p_ie p_dmfp p_dmfz t_ie t_d t_c' 
   [./p_ie]
     type = DarcyImplicitEuler
@@ -121,7 +119,7 @@
 []
 
 [BCs]
-  active = 'left_p right_p left_t'
+   active = 'left_p right_p left_t'
 
  [./left_p]
     type = DirichletBC
@@ -171,18 +169,26 @@
 
     permeability         =  1.0e-10
     porosity             =  0.20
+
     rho_r                =  2.50e3
-    rock_specific_heat   =  0.92e3
-    thermal_conductivity =  2.4e01
+
+   rock_specific_heat   =  0.92e3
+#  rock_specific_heat   =  1.0
+
+    thermal_conductivity =  8.4e1
     thermal_expansion    =  1.0e-6
     youngs_modulus       = 15.0e09
     poissons_ratio       =  0.2
     biot_coeff           =  1.0
     t_ref                = 20.0
+
     rho_w                = 1.0e03
     mu_w                 = 0.001
-    c_f                  = 4.6e-10
-    water_specific_heat  = 4.186e3
+    c_f                  = 4.6e-12
+
+   water_specific_heat  = 4.186e3
+#    water_specific_heat  = 1.0
+
     gravity              = 0.0
 
   [../]
@@ -201,15 +207,15 @@
 #  auto_scaling = true
 
   l_max_its =  100
-  l_tol =  1.0e-6
+  l_tol =  1e-6
 
   nl_max_its =  10
-  nl_rel_tol =  1.0e-6
+  nl_rel_tol =  1e-6
 
   [./Transient]
     start_time =  0.0
     num_steps =  10
-    dt =  100
+    dt =  2000.0
 #    sol_time_adaptive_time_stepping =  true
   [../]
 
