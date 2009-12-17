@@ -50,8 +50,8 @@
 //#include "OutFlowBC.h"
 
 
-//#include "Constant.h"
-//#include "DarcyWater.h"
+#include "Constant.h"
+#include "DarcyWater.h"
 #include "ThermalPoroElastic.h"
 
 namespace Falcon
@@ -105,8 +105,8 @@ namespace Falcon
     BCFactory::instance()->registerBC<GravityNeumannBC>("GravityNeumannBC");
     //BCFactory::instance()->registerBC<OutFlowBC>("OutFlowBC");
 
-//    MaterialFactory::instance()->registerMaterial<Constant>("Constant");
-//    MaterialFactory::instance()->registerMaterial<DarcyWater>("DarcyWater");
+    MaterialFactory::instance()->registerMaterial<Constant>("Constant");
+    MaterialFactory::instance()->registerMaterial<DarcyWater>("DarcyWater");
     MaterialFactory::instance()->registerMaterial<ThermalPoroElastic>("ThermalPoroElastic");
     
   }

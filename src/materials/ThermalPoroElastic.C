@@ -1,61 +1,5 @@
 #include "ThermalPoroElastic.h"
-#include "SteamTables.h"
-/*
-//Function to calc water density, single phase conditions only
-double density_(double T)
-{
-  T -= 273.15;
- double _rho_w;
-  _rho_w=1000.*(1-((pow((T-3.9863),2)/508929.2)*((T+288.9414)/(T+68.12963))));
-   return (_rho_w);
-}
-//end density function
 
-
-//Function call to calc viscosity, can define local variables here....need to finish 11-6-09
-double viscosity_(double T)
-{
-  T -= 273.15;
-  
-  double _mu_w, a, b, c, d;
-  if (T < 0.)
-    {
-      std::cerr << "T= " << T ;
-      mooseError("Temperature out of Range");
-    }
-    
-    else if (T <= 40.)
-    {
-      a = 1.787E-3;
-      b = (-0.03288+(1.962E-4*T))*T;
-      _mu_w = a * exp(b);
-     }
-    
-    else if (T <= 100.)
-    {
-      a = 1e-3;
-      b = (1+(0.015512*(T-20)));
-      c = -1.572;
-      _mu_w = a * pow(b,c);
-    }
-    
-    else if (T <= 300.)
-    {
-      a = 0.2414;
-      b = 247 / (T+133.15);
-      c = (a * pow(10,b));
-      _mu_w = c * 1E-4;
-     }
-    
-    else
-    {
-      std::cerr << "T= " << T;
-      mooseError("Temperature out of Range");
-    }
-  return (_mu_w);
-}
-//end viscosity function
-*/
 template<>
 InputParameters validParams<ThermalPoroElastic>()
 {
@@ -191,13 +135,47 @@ ThermalPoroElastic::computeProperties()
     if(_has_temp)  //calculating the temperature dependent fluid density and viscosity
     {
       Real T = _temperature[qp];
+      double a;
+      double b;
+      double c;
       
- 
-       _rho_w[qp]=1000.*(1-((pow((T-3.9863),2)/508929.2)*((T+288.9414)/(T+68.12963))));
+      _rho_w[qp]=1000.*(1-((pow((T-3.9863),2)/508929.2)*((T+288.9414)/(T+68.12963))));
 
-       //      _rho_w[qp]= density_((_temperature)[qp]);
-//      _mu_w[qp] = viscosity_((_temperature)[qp]);
-    }
+      if (T < 0.)
+       {
+         std::cerr << "T= " << T ;
+         mooseError("Temperature out of Range");
+       }
+    
+      else if (T <= 40.)
+      {
+        a = 1.787E-3;
+        b = (-0.03288+(1.962E-4*T))*T;
+        _mu_w[qp] = a * exp(b);
+      }
+    
+      else if (T <= 100.)
+      {
+        a = 1e-3;
+        b = (1+(0.015512*(T-20)));
+        c = -1.572;
+        _mu_w[qp] = a * pow(b,c);
+      }
+    
+      else if (T <= 300.)
+      {
+        a = 0.2414;
+        b = 247 / (T+133.15);
+        c = (a * pow(10,b));
+        _mu_w[qp] = c * 1E-4;
+      }
+    
+      else
+      {
+        std::cerr << "T= " << T;
+        mooseError("Temperature out of Range");
+      }
+}
 
 //  compute Darcy flux and pore water velicity on q-points
     _darcy_params[qp] = _permeability[qp] * _rho_w[qp] / _mu_w[qp];
