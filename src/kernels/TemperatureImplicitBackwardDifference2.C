@@ -23,11 +23,37 @@ TemperatureImplicitBackwardDifference2::subdomainSetup()
 Real
 TemperatureImplicitBackwardDifference2::computeQpResidual()
 {
-  return (((*_porosity)[_qp]*(*_rho_w)[_qp]*(*_water_specific_heat)[_qp])+((1-(*_porosity)[_qp])*(*_rho_r)[_qp]*(*_rock_specific_heat)[_qp]))*ImplicitBackwardDifference2::computeQpResidual();
+  return
+    (
+      (
+        (*_porosity)[_qp] * (*_rho_w)[_qp] * (*_water_specific_heat)[_qp]
+      )
+      +
+      (
+        (1.0 - (*_porosity)[_qp]) * (*_rho_r)[_qp] * (*_rock_specific_heat)[_qp]
+      )
+    )
+    *
+    ImplicitBackwardDifference2::computeQpResidual();
+  
+//  return 2.677e6*ImplicitBackwardDifference2::computeQpResidual();
 }
 
 Real
 TemperatureImplicitBackwardDifference2::computeQpJacobian()
 {
-  return (((*_porosity)[_qp]*(*_rho_w)[_qp]*(*_water_specific_heat)[_qp])+((1-(*_porosity)[_qp])*(*_rho_r)[_qp]*(*_rock_specific_heat)[_qp]))*ImplicitBackwardDifference2::computeQpJacobian();
+return
+    (
+      (
+        (*_porosity)[_qp] * (*_rho_w)[_qp] * (*_water_specific_heat)[_qp]
+      )
+      +
+      (
+        (1.0 - (*_porosity)[_qp]) * (*_rho_r)[_qp] * (*_rock_specific_heat)[_qp]
+      )
+    )
+    *
+  ImplicitBackwardDifference2::computeQpJacobian();
+
+//  return 2.677e6*ImplicitBackwardDifference2::computeQpJacobian();
 }

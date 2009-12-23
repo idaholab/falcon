@@ -21,11 +21,11 @@ InputParameters validParams<ThermalPoroElastic>()
   params.set<Real>("c_f")                  = 4.6e-10;  //fluid compressibility (1/Pa)
   params.set<Real>("water_specific_heat")  = 4.186e3;   //units of (J/(kg K))
 
-
+  
   params.set<Real>("gravity") = 9.80665; //gravity acceleration, in (m/s^2)
-  params.set<Real>("gx")= 0.0;           //x component of the gravity pressure vector
-  params.set<Real>("gy")= 0.0;           //y component of the gravity pressure vector
-  params.set<Real>("gz")= 1.0;           //z component of the gravity pressure vector
+  params.set<Real>("gx") = 0.0;           //x component of the gravity pressure vector
+  params.set<Real>("gy") = 0.0;           //y component of the gravity pressure vector
+  params.set<Real>("gz") = 1.0;           //z component of the gravity pressure vector
 
   
 //  params.set<Real>("thermal_expansion")=1.0;
@@ -108,7 +108,8 @@ ThermalPoroElastic::computeProperties()
     _permeability[qp]         = _input_permeability;
     _porosity[qp]             = _input_porosity;
     _rho_r[qp]                = _input_rho_r;    
-    _rock_specific_heat[_qp]  = _input_rock_specific_heat;
+    //   _rock_specific_heat[_qp]  = _input_rock_specific_heat; The "_" on the qp was causing problems for the temp solution
+    _rock_specific_heat[qp]  = _input_rock_specific_heat;
     _thermal_conductivity[qp] = _input_thermal_conductivity;
     _alpha[qp]                = _input_thermal_expansion;
     
@@ -132,6 +133,7 @@ ThermalPoroElastic::computeProperties()
     _gravity_vector[qp](2) = _gz;
     _gravity[qp]           = _input_gravity;
 
+    
     if(_has_temp)  //calculating the temperature dependent fluid density and viscosity
     {
       Real T = _temperature[qp];
@@ -176,7 +178,7 @@ ThermalPoroElastic::computeProperties()
         mooseError("Temperature out of Range");
       }
 }
-
+    
 //  compute Darcy flux and pore water velicity on q-points
     _darcy_params[qp] = _permeability[qp] * _rho_w[qp] / _mu_w[qp];
     _darcy_flux[qp] =  -_permeability[qp] / _mu_w[qp] * ((_grad_p[qp])+(_rho_w[qp]*_gravity[qp]*_gravity_vector[qp]));

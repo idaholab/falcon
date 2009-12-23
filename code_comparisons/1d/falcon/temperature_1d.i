@@ -9,13 +9,14 @@
    [./pressure]
     order = FIRST
     family = LAGRANGE
-    initial_condition = 10
+    initial_condition = 100000
    [../]
 
   [./temperature]
     order = FIRST
     family = LAGRANGE
     initial_condition = 20
+
    [../]
 
   [./v_x]
@@ -34,35 +35,17 @@
    [../]
 []
 
-[AuxVariables]
-  active = 'density'
-
-  [./density]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-
-  [./viscosity]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-[]
-
 [Kernels]
   active = 'p_ie p_dmfp t_ie t_d t_c dv_x dv_y dv_z' 
+#  active = 'p_ie p_dmfp t_ie t_d dv_x dv_y dv_z' 
 
   [./p_ie]
-    type = DarcyImplicitBackwardDifference2
+    type = DarcyImplicitEuler
     variable = pressure
   [../]
 
   [./p_dmfp]
     type = DarcyMassFluxPressure
-    variable = pressure
-  [../]
-
-  [./p_dmfz]
-    type = DarcyMassFluxZ
     variable = pressure
   [../]
 
@@ -100,39 +83,21 @@
   [../]
 []
 
-[AuxKernels]
-  active = 'density'
-
-  [./density]
-    variable = density
-    type = CoupledDensityAux
-    coupled_to = 'temperature'
-    coupled_as = 'temperature'
-  [../]
-
-  [./viscosity]
-    variable = viscosity
-    type = CoupledViscosityAux
-    coupled_to = 'temperature'
-    coupled_as = 'temperature'
-  [../]
-[]
-
 [BCs]
-  active = 'left_p right_p left_t'
+  active = 'left_p right_p left_t right_t'
 
   [./left_p]
     type = DirichletBC
     variable = pressure
     boundary = 1
-    value = 10010.0
+    value = 110000.0
   [../]
 
    [./right_p]
     type = DirichletBC
     variable = pressure
     boundary = 2
-    value = 10.0
+    value = 100000.0
   [../]
 
   [./left_t]
@@ -146,7 +111,7 @@
     type = DirichletBC
     variable = temperature
     boundary = 2
-    value = 10.0
+    value = 20.0
   [../]
 []
 
@@ -161,6 +126,7 @@
     permeability = 1.0E-12
     gravity = 9.80665
     rho_w = 1000.
+    mu_w = 0.001
     rho_r = 2500.
     gx = 0.0
     gy = 0.0
@@ -184,9 +150,9 @@
 
   [./Transient]
     start_time = 0.0
- #   end_time = 1.32e7
-     num_steps = 100
-     dt = 10000.
+    end_time = 1.0e6
+#     num_steps = 1
+     dt = 1.0e4
 
 #    trans_ss_check = true
  #   ss_check_tol = 5.0e-5
@@ -195,9 +161,11 @@
 []
 
 [Output]
-  file_base = temperature_1d_fine_out
-  output_initial = true
-  interval = 1
+  file_base = temperature_1d_out
+#  output_initial = true
+  interval = 10
   exodus = true
+  tecplot = true
+#  print_out_info = true
 []
     

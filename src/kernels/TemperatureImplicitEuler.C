@@ -23,11 +23,50 @@ TemperatureImplicitEuler::subdomainSetup()
 Real
 TemperatureImplicitEuler::computeQpResidual()
 {
-  return (((*_porosity)[_qp]*(*_rho_w)[_qp]*(*_water_specific_heat)[_qp])+((1-(*_porosity)[_qp])*(*_rho_r)[_qp]*(*_rock_specific_heat)[_qp]))*ImplicitEuler::computeQpResidual();
+// return 2.677e6*ImplicitEuler::computeQpResidual();
+  
+Real _time_const =   
+
+    (
+      (
+        (*_porosity)[_qp] * (*_rho_w)[_qp] * (*_water_specific_heat)[_qp]
+      )
+      +
+      (
+        (1.0 - (*_porosity)[_qp]) * (*_rho_r)[_qp] * (*_rock_specific_heat)[_qp]
+      )
+      );
+
+    
+//   std::cout << "time constant =   " <<_time_const<<"\n";
+
+  return  _time_const*ImplicitEuler::computeQpResidual();
+
+  
+
+//  return (((*_porosity)[_qp]*(*_rho_w)[_qp]*(*_water_specific_heat)[_qp])+((1-(*_porosity)[_qp])*(*_rho_r)[_qp]*(*_rock_specific_heat)[_qp]))*ImplicitEuler::computeQpResidual();
 }
 
 Real
 TemperatureImplicitEuler::computeQpJacobian()
 {
-  return (((*_porosity)[_qp]*(*_rho_w)[_qp]*(*_water_specific_heat)[_qp])+((1-(*_porosity)[_qp])*(*_rho_r)[_qp]*(*_rock_specific_heat)[_qp]))*ImplicitEuler::computeQpJacobian();
+
+//  return 2.677e6*ImplicitEuler::computeQpJacobian();
+  
+Real _time_const =   
+
+    (
+      (
+        (*_porosity)[_qp] * (*_rho_w)[_qp] * (*_water_specific_heat)[_qp]
+      )
+      +
+      (
+        (1.0 - (*_porosity)[_qp]) * (*_rho_r)[_qp] * (*_rock_specific_heat)[_qp]
+      )
+      );
+
+    
+ return  _time_const*ImplicitEuler::computeQpJacobian();
+
+//  return (((*_porosity)[_qp]*(*_rho_w)[_qp]*(*_water_specific_heat)[_qp])+((1-(*_porosity)[_qp])*(*_rho_r)[_qp]*(*_rock_specific_heat)[_qp]))*ImplicitEuler::computeQpJacobian();
 }

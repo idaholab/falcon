@@ -24,6 +24,7 @@ protected:
   std::vector<Real> *_water_specific_heat;
   std::vector<RealGradient> *_darcy_flux;
   std::vector<Real> *_rho_w;
+//  std::vector<RealGradient> *_pore_velocity;
   
 };
 #endif //TEMPERATURECONVECTION
