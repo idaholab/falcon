@@ -1,5 +1,5 @@
 [Mesh]
-  dim = 3
+  dim = 2
   file = column.e
 #  uniform_refine = 1
 [ ]
@@ -53,7 +53,9 @@
 
 [Kernels]
 #  active = 'p_ie p_dmfp p_dmfz t_ie t_d t_c dv_x dv_y dv_z' 
+#  active = 'p_ie p_dmfp p_dmfz t_ie t_d t_c' 
   active = 'p_ie p_dmfp p_dmfz t_ie t_d t_c' 
+
   [./p_ie]
     type = DarcyImplicitEuler
     variable = pressure
@@ -172,8 +174,8 @@
 
     rho_r                =  2.50e3
 
-   rock_specific_heat   =  0.92e3
-#  rock_specific_heat   =  1.0
+#   rock_specific_heat   =  0.92e3
+    rock_specific_heat   =  1.0
 
     thermal_conductivity =  8.4e1
     thermal_expansion    =  1.0e-6
@@ -184,10 +186,10 @@
 
     rho_w                = 1.0e03
     mu_w                 = 0.001
-    c_f                  = 4.6e-12
+    c_f                  = 4.6e-10
 
-   water_specific_heat  = 4.186e3
-#    water_specific_heat  = 1.0
+#   water_specific_heat  = 4.186e3
+    water_specific_heat  = 1.0
 
     gravity              = 0.0
 
@@ -215,7 +217,7 @@
   [./Transient]
     start_time =  0.0
     num_steps =  10
-    dt =  2000.0
+    dt = 1000.0
 #    sol_time_adaptive_time_stepping =  true
   [../]
 
