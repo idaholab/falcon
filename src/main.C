@@ -269,7 +269,7 @@ int main (int argc, char** argv)
     }    
 
     if(Moose::output_initial)
-      Moose::output_system(Moose::equation_system, Moose::file_base, 0, 0.0, Moose::exodus_output, Moose::gmv_output, Moose::tecplot_output, Moose::print_out_info);
+      Moose::output_system(0, 0.0);
     
     bool adaptivity = false;
 
@@ -635,7 +635,7 @@ int main (int argc, char** argv)
           std::cout<<var<<": "<<system.calculate_norm(*system.rhs,var,DISCRETE_L2)<<std::endl;
 
         if ( converged && (t_step+1)%Moose::interval == 0)
-          Moose::output_system(Moose::equation_system, Moose::file_base, t_step, time, Moose::exodus_output, Moose::gmv_output, Moose::tecplot_output, Moose::print_out_info);
+          Moose::output_system(t_step, time);
 
 
         if(converged && adaptivity)
@@ -756,7 +756,7 @@ int main (int argc, char** argv)
         solve_only.pop("solve()","Solve");
         solve_only.print_log();
         
-        Moose::output_system(Moose::equation_system, Moose::file_base, r_step+1, r_step+1, Moose::exodus_output, Moose::gmv_output, Moose::tecplot_output, Moose::print_out_info);
+        Moose::output_system(r_step+1, r_step+1);
         
         if(r_step != max_r_steps)
         {          

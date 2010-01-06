@@ -45,6 +45,7 @@ private:
   std::vector<Real> & _biot_coeff;
   std::vector<Real> & _specific_heat;
   std::vector<Real> & _density;
+  std::vector<Real> & _rho_r;
   std::vector<Real> & _youngs_modulus;
   std::vector<Real> & _poissons_ratio;
 };
