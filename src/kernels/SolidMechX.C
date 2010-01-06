@@ -25,19 +25,19 @@ SolidMechX::computeQpResidual()
   {
     recomputeConstants();
 
-    _strain(0,0) = _grad_u[_qp](0);
-    _strain(1,1) = _grad_y[_qp](1);
-    _strain(0,1) = _grad_u[_qp](1)+_grad_y[_qp](0);
+    _strain(0,0) = _grad_u[_qp](0); //s_xx
+    _strain(1,1) = _grad_y[_qp](1); //s_yy
+    _strain(0,1) = _grad_u[_qp](1)+_grad_y[_qp](0); //2.0*sxy
 
-    _stress(0) = _c1*_strain(0,0)+_c1*_c2*_strain(1,1);
-    _stress(1) = _c1*_c3*_strain(0,1);
+    _stress(0) = _c1*_strain(0,0)+_c1*_c2*_strain(1,1); //tau_xx
+    _stress(1) = _c1*_c3*_strain(0,1);                  //tau_yx
 
     if( 3 == _dim){
-      _strain(2,2) = _grad_z[_qp](2);
-      _strain(0,2) = _grad_u[_qp](2)+_grad_z[_qp](0);
+      _strain(2,2) = _grad_z[_qp](2); //s_zz
+      _strain(0,2) = _grad_u[_qp](2)+_grad_z[_qp](0);  //2.0*s_zx
 
       _stress(0) += _c1*_c2*_strain(2,2);
-      _stress(2) = _c1*_c3*_strain(0,2);
+      _stress(2) = _c1*_c3*_strain(0,2);   //tau_zx
     }
 
     Real value = (_stress*_dphi[_i][_qp]);

@@ -44,6 +44,7 @@
 #include "TemperatureImplicitBackwardDifference2.h"
 #include "CoupledDensityAux.h"
 #include "CoupledViscosityAux.h"
+#include "AnalyticalADE1D.h"
 
 #include "PressureNeumannBC.h"
 #include "GravityNeumannBC.h"
@@ -100,6 +101,7 @@ namespace Falcon
 
     AuxFactory::instance()->registerAux<CoupledDensityAux>("CoupledDensityAux");
     AuxFactory::instance()->registerAux<CoupledViscosityAux>("CoupledViscosityAux");
+    AuxFactory::instance()->registerAux<AnalyticalADE1D>("AnalyticalADE1D");    
         
     BCFactory::instance()->registerBC<PressureNeumannBC>("PressureNeumannBC");
     BCFactory::instance()->registerBC<GravityNeumannBC>("GravityNeumannBC");

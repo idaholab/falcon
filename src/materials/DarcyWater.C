@@ -148,6 +148,8 @@ DarcyWater::computeProperties()
     _thermal_conductivity[qp] = _input_thermal_conductivity;
     _time_coefficient[qp] = _input_time_coefficient;
     _gravity[qp] = _input_gravity;
+    _rho_r[qp]   = _input_rho_r;
+    
     
     //SteamTables::steam_call_(_pressure[qp], _temperature[qp], _rho_w[qp], _mu_w[qp]);
     
@@ -163,21 +165,22 @@ DarcyWater::computeProperties()
     _darcy_flux[qp] = -((_permeability)[qp] / (_mu_w)[qp]) * ((_grad_p[qp])+((_rho_w)[qp]*(_gravity)[qp]*(_gravity_vector)[qp]));
     _darcy_velocity[qp] = (_darcy_flux[qp]) / _porosity[qp];
     
-    /*
-    std::cerr << "Pressure  =   " <<(_pressure)[qp]<<"   Temp =  "<<(_temperature)[qp]<<"\n";
+    
+    //std::cerr << "Pressure  =   " <<(_pressure)[qp]<<"   Temp =  "<<(_temperature)[qp]<<"\n";
     //std::cerr << (_mu_w)[qp] <<" * "<< (_rho_w)[qp] <<" * "<< (_permeability)[qp] <<" = "<< (_darcy_params)[qp]<<"\n";
     //std::cerr << "Darcy Flux Vector =  " << (_darcy_flux)[qp];//<<"\n";
     //std::cerr << "gravity Vector =  " << (_gravity_vector)[qp];//<<"\n";
-    std::cerr << "Point =   " <<_q_point[qp]<<"\n";
+    //std::cerr << "Point =   " <<_q_point[qp]<<"\n";
     
-    std::cerr << "Darcy Velocity =   " <<_darcy_velocity[qp]<<"\n";
+    //std::cerr << "Darcy Velocity =   " <<_darcy_velocity[qp]<<"\n";
     // std::cerr << "Pressure  =   " <<(_pressure)[qp]<<"   Temp =  "<<(_temperature)[qp]<<"\n";
     //std::cerr << "grad Pressure  =   " <<(_grad_p)[qp];
     //std::cerr << "grad Temp  =   " <<(_grad_T)[qp];
     //std::cerr << "density  =   " <<(_rho_w)[qp]<< "     viscosity  =   " <<(_mu_w)[qp]<<"\n";
-    //std::cerr << "viscosity  =   " <<(_mu_w)[qp]<<"\n";
+//    std::cerr << "rock density  =   " << _rho_r[qp]<<"\n";
+//  std::cerr << "rock specific heat  =   " << _rock_specific_heat[qp]<<"\n";
     //std::cerr <<"\n";
-    */
+    
   }
   
 }

@@ -25,7 +25,7 @@ TemperatureImplicitEuler::computeQpResidual()
 {
 // return 2.677e6*ImplicitEuler::computeQpResidual();
   
-Real _time_const =   
+Real _const =   
 
     (
       (
@@ -40,7 +40,7 @@ Real _time_const =
     
 //   std::cout << "time constant =   " <<_time_const<<"\n";
 
-  return  _time_const*ImplicitEuler::computeQpResidual();
+  return  _const*ImplicitEuler::computeQpResidual();
 
   
 
@@ -53,7 +53,7 @@ TemperatureImplicitEuler::computeQpJacobian()
 
 //  return 2.677e6*ImplicitEuler::computeQpJacobian();
   
-Real _time_const =   
+Real _const =   
 
     (
       (
@@ -66,7 +66,7 @@ Real _time_const =
       );
 
     
- return  _time_const*ImplicitEuler::computeQpJacobian();
+ return  _const*ImplicitEuler::computeQpJacobian();
 
 //  return (((*_porosity)[_qp]*(*_rho_w)[_qp]*(*_water_specific_heat)[_qp])+((1-(*_porosity)[_qp])*(*_rho_r)[_qp]*(*_rock_specific_heat)[_qp]))*ImplicitEuler::computeQpJacobian();
 }
