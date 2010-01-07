@@ -208,29 +208,21 @@ int main (int argc, char** argv)
   // Braces are used to force object scope, like in example 2
   {
     // Create a GetPot object to parse the command line
-    GetPot command_line (argc, argv);
+    Moose::command_line = new GetPot (argc, argv);
 
-    if (command_line.search("--dump")) 
-    {
-      Parser p(true);
-
-      // Exit the program without solving any problem
-      exit(0);
-    }
+    // Automatically look for a dump option on the commandline
+    Parser p;
 
     std::string input_filename = "";
-    if ( command_line.search("-i") )
-      input_filename = command_line.next(input_filename);
+    if ( Moose::command_line->search("-i") )
+      input_filename = Moose::command_line->next(input_filename);
     else
       mooseError("Must specify an input file using -i");
-      
 
-    Parser p(input_filename);
+    // Use the parser
+    p.parse(input_filename);
     p.execute();
 
-    GetPot input_file(input_filename);
-
-    
     TransientNonlinearImplicitSystem &system =
       Moose::equation_system->get_system<TransientNonlinearImplicitSystem>("NonlinearSystem");
 
