@@ -14,7 +14,7 @@ class SolidMechX : public SolidMech
 {
 public:
 
-  SolidMechX(std::string name,
+SolidMechX(std::string name,
              InputParameters parameters,
              std::string var_name,
              std::vector<std::string> coupled_to,

@@ -1,0 +1,46 @@
+#include "OutFlowBC.h"
+
+template<>
+InputParameters validParams<OutFlowBC>()
+{
+  InputParameters params;
+  params.set<Real>("thermal_conductivity") = 5.0;
+//  params.set<Real>("conductivity")= 0.0;
+  params.set<Real>("porosity")    = 1.0;
+  return params;
+}
+
+OutFlowBC::OutFlowBC(std::string name, InputParameters parameters, std::string var_name, unsigned int boundary_id, std::vector<std::string> coupled_to, std::vector<std::string> coupled_as)
+  :BoundaryCondition(name, parameters, var_name, true, boundary_id, coupled_to, coupled_as),
+//   _grad_p(coupledGradFace("p")),
+//   _cond(parameters.get<Real>("conductivity")),
+   _diff(parameters.get<Real>("thermal_conductivity")),
+   _porosity(parameters.get<Real>("porosity"))
+   
+  {
+  }
+
+Real
+OutFlowBC::computeQpResidual()
+  {
+//    RealGradient _Darcy_vel = -_cond*_grad_p[_qp];
+//    std::cout<<"Darcy velocity" << _Darcy_vel(1);
+//    std::cout << "porosity,diffusivity, cond " << _porosity <<" " << _diff <<" "<< _cond << std::endl;
+
+    Real _aa = -_phi_face[_i][_qp]*_porosity*_diff*_grad_u_face[_qp]*_normals_face[_qp];
+    
+//    if (_aa <= 1.0e-12)
+//      _aa=0.0;
+    
+//    std::cout << "utlet_flux " << _aa << std::endl;
+    
+    return _aa;
+  }
+
+
+Real
+OutFlowBC::computeQpJacobian()
+  {
+//    RealGradient _Darcy_vel = -_cond*_grad_p[_qp];
+    return -_phi_face[_i][_qp]*_porosity*_diff*_dphi_face[_j][_qp]*_normals_face[_qp];
+  }

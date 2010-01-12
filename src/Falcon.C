@@ -48,7 +48,7 @@
 
 #include "PressureNeumannBC.h"
 #include "GravityNeumannBC.h"
-//#include "OutFlowBC.h"
+#include "OutFlowBC.h"
 
 
 #include "Constant.h"
@@ -105,7 +105,7 @@ namespace Falcon
         
     BCFactory::instance()->registerBC<PressureNeumannBC>("PressureNeumannBC");
     BCFactory::instance()->registerBC<GravityNeumannBC>("GravityNeumannBC");
-    //BCFactory::instance()->registerBC<OutFlowBC>("OutFlowBC");
+    BCFactory::instance()->registerBC<OutFlowBC>("OutFlowBC");
 
     MaterialFactory::instance()->registerMaterial<Constant>("Constant");
     MaterialFactory::instance()->registerMaterial<DarcyWater>("DarcyWater");

@@ -18,13 +18,14 @@ SolidMechPoroCoupleX::SolidMechPoroCoupleX(std::string name,
 Real
 SolidMechPoroCoupleX::computeQpResidual()
   {
-    return _phi[_i][_qp]*(*_biot_coeff)[_qp]*_grad_pressure[_qp](0);
+    return -_dphi[_i][_qp](0)*(*_biot_coeff)[_qp]*_pressure_val[_qp];
+
   }
 
 Real
 SolidMechPoroCoupleX::computeQpOffDiagJacobian(unsigned int jvar)
   {
     if(jvar == _pressure_var)
-      return _phi[_i][_qp]*(*_biot_coeff)[_qp]*_dphi[_j][_qp](0);
+     return  -_dphi[_i][_qp](0)*(*_biot_coeff)[_qp]*_dphi[_j][_qp](0);
     return 0.0;
   }

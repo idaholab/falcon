@@ -14,7 +14,8 @@ SolidMechPoroCouple::SolidMechPoroCouple(std::string name,
                       std::vector<std::string> coupled_as)
     :SolidMech(name,parameters,var_name,coupled_to,coupled_as),
      _pressure_var(coupled("pressure")),
-     _grad_pressure(coupledGrad("pressure"))
+     _grad_pressure(coupledGrad("pressure")),
+     _pressure_val(coupledVal("pressure"))
   {}
 
 void

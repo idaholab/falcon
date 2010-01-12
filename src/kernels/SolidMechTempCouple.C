@@ -13,7 +13,7 @@ SolidMechTempCouple::SolidMechTempCouple(std::string name,
                       std::vector<std::string> coupled_to,
                       std::vector<std::string> coupled_as)
     :SolidMech(name,parameters,var_name,coupled_to,coupled_as),
-    _temp_var(coupled("temp"))
+    _temp_var(coupled("temperature"))
   {}
 
 void
