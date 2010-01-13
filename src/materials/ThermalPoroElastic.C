@@ -6,7 +6,7 @@ InputParameters validParams<ThermalPoroElastic>()
   InputParameters params;
   
   params.set<Real>("permeability")         =  1.0e-12; //intrinsic permeability, "k", in (m^2)
-  params.set<Real>("porosity")             =  0.16;    //dimensionless but variable
+  params.set<Real>("porosity")             =  0.2;    //dimensionless but variable
   params.set<Real>("rho_r")                =  2.50e3;  //rock density, in  (kg/m^3)
   params.set<Real>("rock_specific_heat")   =  0.92e3;  //units of (J/(kg K))
   params.set<Real>("thermal_conductivity") =  2.4;     //thermal thermal_conductivity, in (W/mK)

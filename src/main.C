@@ -233,7 +233,7 @@ int main (int argc, char** argv)
 
     if(Moose::execution_type != "Transient" && Moose::execution_type != "Steady")
       mooseError("Must specify either Transient or Steady for Execution/type");
-
+    
     unsigned int initial_adaptivity = 0;    
 
     if(Moose::equation_system->parameters.have_parameter<unsigned int>("initial_adaptivity"))
@@ -247,17 +247,20 @@ int main (int argc, char** argv)
       
       // Flag elements to be refined and coarsened
       Moose::mesh_refinement->flag_elements_by_error_fraction (*Moose::error);
-          
+      
+      Moose::mesh_refinement->uniformly_refine(1);
+      Moose::meshChanged();
+
       // Perform refinement and coarsening
-      Moose::mesh_refinement->refine_and_coarsen_elements();
+      //Moose::mesh_refinement->refine_and_coarsen_elements();
 
       // Tell MOOSE that the mesh has changed
       // this performs a lot of functions including projecting
       // the solution onto the new grid.
-      Moose::meshChanged();
+      //Moose::meshChanged();
 
       //reproject the initial condition
-      system.project_solution(Moose::init_value, NULL, Moose::equation_system->parameters);
+//      system.project_solution(Moose::init_value, NULL, Moose::equation_system->parameters);
     }    
 
     if(Moose::output_initial)
