@@ -1,6 +1,13 @@
 #include "TemperatureImplicitBackwardDifference2.h"
 #include "Material.h"
 
+template<>
+InputParameters validParams<TemperatureImplicitBackwardDifference2>()
+{
+  InputParameters params = validParams<ImplicitBackwardDifference2>();
+  return params;
+}
+
 TemperatureImplicitBackwardDifference2::TemperatureImplicitBackwardDifference2(std::string name,
                                        InputParameters parameters,
                                        std::string var_name,

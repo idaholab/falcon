@@ -28,12 +28,22 @@ protected:
 private:
 
   bool _has_temp;
+  bool _has_variable_density;
   bool _has_pressure;
+  bool _has_solid_mechanics;
+  bool _has_x_disp;
+  bool _has_y_disp;
+  bool _has_z_disp;
+
   std::vector<Real> & _temperature;
   std::vector<RealGradient> & _grad_temp;
   std::vector<Real> & _pressure;
   std::vector<RealGradient> & _grad_p;
-  
+
+  std::vector<RealGradient> & _grad_x_disp;
+  std::vector<RealGradient> & _grad_y_disp;
+  std::vector<RealGradient> & _grad_z_disp;
+
   Real _input_permeability;
   Real _input_porosity;
   Real _input_rho_r;
@@ -54,6 +64,12 @@ private:
   Real _gx;
   Real _gy;
   Real _gz;
+
+  Real _E;
+  Real _nu;
+  Real _c1;
+  Real _c2;
+  Real _c3;
 
   std::vector<Real> & _permeability;
   std::vector<Real> & _porosity;
@@ -77,6 +93,10 @@ private:
   
   std::vector<Real> & _gravity;
   std::vector<RealVectorValue> & _gravity_vector;
+  std::vector<RealVectorValue> & _stress_normal_vector;
+  std::vector<RealVectorValue> & _stress_shear_vector;
+  std::vector<RealVectorValue> & _strain_normal_vector;
+  std::vector<RealVectorValue> & _strain_shear_vector;  
 
 };
 

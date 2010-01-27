@@ -1,8 +1,9 @@
 [Mesh]
   dim = 2
-  file = elder_IC_2d_10m_out.e
+#  file = elder_IC_2d_10m_out.e
+  file = elder_2d_10m.e
 #  uniform_refine = 1
-[]
+[ ]
 
 [Variables]
   active = 'pressure temperature v_x v_y'
@@ -10,25 +11,25 @@
    [./pressure]
     order = FIRST
     family = LAGRANGE
-    initial_from_file_var = 'pressure'
-    initial_from_file_timestep = 2
-#     initial_condition = 150000
+#    initial_from_file_var = 'pressure'
+#    initial_from_file_timestep = 2
+     initial_condition = 100000
    [../]
 
   [./temperature]
     order = FIRST
     family = LAGRANGE
-    initial_from_file_var = 'temperature'
-    initial_from_file_timestep = 2
-#     [./InitialCondition]
-#       type = BoundingBoxIC
-#       inside = 20
-#       outside = 12
-#       x1 = 0
-#       y1 = -150
-#       x2 = 150
-#       y2 = -149.8
-#     [../]
+#    initial_from_file_var = 'temperature'
+#    initial_from_file_timestep = 2
+     [./InitialCondition]
+       type = BoundingBoxIC
+       inside = 20
+       outside = 12
+       x1 = 0
+       y1 = -150
+       x2 = 150
+       y2 = -149.8
+     [../]
    [../]
 
   [./v_x]
@@ -40,10 +41,11 @@
     order = FIRST
     family = LAGRANGE
    [../]
-[]
+[ ]
 
 [Kernels]
-  active = 'p_ie p_dmfp p_dmfz t_ie t_d t_c dv_x dv_y'
+#  active = 'p_ie p_dmfp p_dmfz t_ie t_d t_c dv_x dv_y'
+  active = 'p_dmfp p_dmfz  t_d dv_x dv_y'
 
   [./p_ie]
     type = DarcyImplicitEuler
@@ -89,7 +91,7 @@
 []
 
 [BCs]
-  active = 'top_p bot_t bot_t2 bot_t3'
+  active = 'top_p bot_t bot_t2'
 
   [./top_p]
     type = DirichletBC
@@ -126,7 +128,7 @@
     value = 20.0
   [../]
 
-[]
+[ ]
 
 [Materials]
   active = 'ThermalPoroElastic'
@@ -149,17 +151,16 @@
     water_specific_heat = 4186.0
     rock_specific_heat = 920.0
   [../]
-[]
+[ ]
 
 [Execution]
+
+#  active = 'Transient Adaptivity'
 #  type = Transient
-
-  type = Transient
-
-#  active = Transient
-
+  active = 'Steady Adaptivity'
+  type = Steady
   perf_log = true
-  petsc_options = '-snes_mf_operator' 
+  petsc_options = '-snes_mf_operator -ksp_monitor' 
   petsc_options_iname =  '-pc_type -pc_hypre_type -ksp_gmres_restart'
   petsc_options_value =  'hypre    boomeramg 100'                           
   l_max_its = 60
@@ -168,29 +169,29 @@
   [./Transient]
     start_time = 0.0
 #   end_time = 1.32e7
-    num_steps = 1000
+    num_steps = 1
     dt = 1.72e6
 #    trans_ss_check = true
 #    ss_check_tol = 1.0e-7
 #   sol_time_adaptive_time_stepping = true
   [../]
 
- [./Adaptivity]
-    initial_adaptivity = 3
+  [./Adaptivity]
+    initial_adaptivity = 0
     error_estimator = KellyErrorEstimator
     refine_fraction = 0.90
     coarsen_fraction = 0.01
-    max_h_level = 4
+    max_h_level = 5
 #    weight_names = temperature
 #    weight_values = 1
-    steps = 3
+    steps = 4
   [../]
-[]
+[ ]
 
 [Output]
-  file_base = elder_2d_trans_5_10m__a3_out
+  file_base = steady_no_amr
   output_initial = true
-  interval = 5
+  interval = 1
   exodus = true
-[]
+[ ]
     

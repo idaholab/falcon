@@ -53,6 +53,8 @@ protected:
 
   std::vector<Real> * _E_prop;
   std::vector<Real> * _nu_prop;
+  std::vector<RealVectorValue> * _stress_normal_vector;
+  std::vector<RealVectorValue> * _stress_shear_vector;
 };
  
 

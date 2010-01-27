@@ -20,6 +20,8 @@ SolidMech::subdomainSetup()
   {
     _E_prop = &_material->getRealProperty("youngs_modulus");
     _nu_prop = &_material->getRealProperty("poissons_ratio");
+    _stress_normal_vector = &_material->getRealVectorValueProperty("stress_normal_vector");
+    _stress_shear_vector  = &_material->getRealVectorValueProperty("stress_shear_vector");
   }
 
 void

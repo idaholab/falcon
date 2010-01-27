@@ -15,7 +15,7 @@ SolidMechZ::SolidMechZ(std::string name,
     _x_var(coupled("x")),
     _x(coupledVal("x")),
     _grad_x(coupledGrad("x")),
-    _y_var(coupled("y")),
+     _y_var(coupled("y")),
     _y(coupledVal("y")),
     _grad_y(coupledGrad("y"))
   {}
@@ -23,6 +23,7 @@ SolidMechZ::SolidMechZ(std::string name,
 Real
 SolidMechZ::computeQpResidual()
   {
+/*
     recomputeConstants();
 
     _strain(0,0) = _grad_x[_qp](0);
@@ -34,7 +35,12 @@ SolidMechZ::computeQpResidual()
     _stress(0) = _c1*_c3*_strain(0,2);
     _stress(1) = _c1*_c3*_strain(1,2);
     _stress(2) = _c1*_c2*_strain(0,0)+_c1*_c2*_strain(1,1)+_c1*_strain(2,2);
+*/
+    _stress(0) =  ( *_stress_shear_vector)[_qp](1); //tau_zx
+    _stress(1) =  ( *_stress_shear_vector)[_qp](2); //tau_zy
+    _stress(2) = ( *_stress_normal_vector)[_qp](2); //tau_zz
 
+    
     return (_stress*_dphi[_i][_qp]);
 
   }

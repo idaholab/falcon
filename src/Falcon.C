@@ -11,6 +11,9 @@
 #include "SolidMechZ.h"
 #include "SolidMechImplicitEuler.h"
 
+#include "StressCompute.h"
+#include "StrainCompute.h"
+
 #include "SolidMechTempCoupleX.h"
 #include "SolidMechTempCoupleY.h"
 #include "SolidMechTempCoupleZ.h"
@@ -66,6 +69,8 @@ namespace Falcon
     KernelFactory::instance()->registerKernel<SolidMechX>("SolidMechX");
     KernelFactory::instance()->registerKernel<SolidMechY>("SolidMechY");
     KernelFactory::instance()->registerKernel<SolidMechZ>("SolidMechZ");
+    KernelFactory::instance()->registerKernel<StressCompute>("StressCompute");
+    KernelFactory::instance()->registerKernel<StrainCompute>("StrainCompute");
     KernelFactory::instance()->registerKernel<SolidMechImplicitEuler>("SolidMechImplicitEuler");
     KernelFactory::instance()->registerKernel<SolidMechTempCoupleX>("SolidMechTempCoupleX");
     KernelFactory::instance()->registerKernel<SolidMechTempCoupleY>("SolidMechTempCoupleY");

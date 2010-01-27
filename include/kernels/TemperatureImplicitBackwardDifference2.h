@@ -3,7 +3,11 @@
 #ifndef TEMPERATUREIMPLICITBACKWARDDIFERENCE2
 #define TEMPERATUREIMPLICITBACKWARDDIFERENCE2
 
+//Forward Declarations
+class TemperatureImplicitBackwardDifference2;
 
+template<>
+InputParameters validParams<TemperatureImplicitBackwardDifference2>();
 
 class TemperatureImplicitBackwardDifference2 : public ImplicitBackwardDifference2
 {

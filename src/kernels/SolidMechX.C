@@ -23,6 +23,7 @@ SolidMechX::SolidMechX(std::string name,
 Real
 SolidMechX::computeQpResidual()
   {
+/*    
     recomputeConstants();
 
     _strain(0,0) = _grad_u[_qp](0); //s_xx
@@ -39,7 +40,12 @@ SolidMechX::computeQpResidual()
       _stress(0) += _c1*_c2*_strain(2,2);
       _stress(2) = _c1*_c3*_strain(0,2);   //tau_zx
     }
-
+*/
+      _stress(0) = ( *_stress_normal_vector)[_qp](0); //tau_xx
+      _stress(1) =  ( *_stress_shear_vector)[_qp](0); //tau_xy
+    if( 3 == _dim)
+      _stress(2) =  ( *_stress_shear_vector)[_qp](1); //tau_xz
+    
     Real value = (_stress*_dphi[_i][_qp]);
     
     return value;

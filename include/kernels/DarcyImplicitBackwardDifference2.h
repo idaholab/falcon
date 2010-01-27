@@ -3,6 +3,11 @@
 #ifndef DARCYIMPLICITBACKWARDDIFFERENCE2
 #define DARCYIMPLICITBACKWARDDIFFERENCE2
 
+//Forward Declarations
+class DarcyImplicitBackwardDifference2;
+
+template<>
+InputParameters validParams<DarcyImplicitBackwardDifference2>();
 
 
 class DarcyImplicitBackwardDifference2 : public ImplicitBackwardDifference2

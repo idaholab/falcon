@@ -1,6 +1,13 @@
 #include "DarcyImplicitBackwardDifference2.h"
 #include "Material.h"
 
+template<>
+InputParameters validParams<DarcyImplicitBackwardDifference2>()
+{
+  InputParameters params = validParams<ImplicitBackwardDifference2>();
+  return params;
+}
+
 DarcyImplicitBackwardDifference2::DarcyImplicitBackwardDifference2(std::string name,
                                        InputParameters parameters,
                                        std::string var_name,
