@@ -75,21 +75,21 @@
     type = SolidMechTempCoupleX
     variable = x_disp
     coupled_to = 'temp'
-    coupled_as = 'temp'
+    coupled_as = 'temperature'
   [../]
 
   [./solid_couple_y]
     type = SolidMechTempCoupleY
     variable = y_disp
     coupled_to = 'temp'
-    coupled_as = 'temp'
+    coupled_as = 'temperature'
   [../]
 
   [./solid_couple_z]
     type = SolidMechTempCoupleZ
     variable = z_disp
     coupled_to = 'temp'
-    coupled_as = 'temp'
+    coupled_as = 'temperature'
   [../]
 
   [./heat]
@@ -148,15 +148,17 @@
   active = 'constant'
   
   [./constant]
-    type = Constant
+    type = ThermalPoroElastic
     block = 1
-    coupled_to = 'temp'
-    coupled_as = 'temp'
+    coupled_to = 'temp        x_disp y_disp z_disp'
+    coupled_as = 'temperature x_disp y_disp z_disp'
     thermal_conductivity = 1.0
+    rho_r                = 1.0
+    rock_specific_heat   = 1.0
     youngs_modulus = 1.0
     poissons_ratio = .3
     thermal_expansion = 1e-5
-    t_ref = 0
+    t_ref = 300
   [../]
 []
 

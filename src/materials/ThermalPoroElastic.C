@@ -148,8 +148,8 @@ ThermalPoroElastic::computeProperties()
       _rho_w[qp]=1000.*(1-((pow((T-3.9863),2)/508929.2)*((T+288.9414)/(T+68.12963))));
       if (T < 0.)
        {
-         std::cerr << "T= " << T ;
-         mooseError("Temperature out of Range");
+//         std::cerr << "T= " << T ;
+//         mooseError("Temperature out of Range");
        }
     
       else if (T <= 40.)

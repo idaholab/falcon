@@ -21,7 +21,7 @@
   [../]
 
   [./ie]
-    type = HeatConductionImplicitEuler
+    type =  HeatConductionImplicitEuler
     variable = u
   [../]
 []
@@ -48,8 +48,12 @@
   active = 'constant'
   
   [./constant]
-    type = Constant
+    type = ThermalPoroElastic
     block = 1
+    rho_r                =   1.0
+    rock_specific_heat   =   1.0
+    thermal_conductivity =   1.0
+
   [../]
 []
 

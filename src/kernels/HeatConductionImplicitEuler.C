@@ -11,8 +11,8 @@ HeatConductionImplicitEuler::HeatConductionImplicitEuler(std::string name,
 void
 HeatConductionImplicitEuler::subdomainSetup()
   {
-    _specific_heat = &_material->getRealProperty("specific_heat");
-    _density = &_material->getRealProperty("density");
+    _specific_heat = &_material->getRealProperty("rock_specific_heat");
+    _density = &_material->getRealProperty("rho_r");
   }
 
 Real

@@ -79,8 +79,10 @@
   active = 'constant'
   
   [./constant]
-    type = Constant
+    type = ThermalPoroElastic
     block = 1
+    coupled_to = 'x_disp y_disp z_disp'
+    coupled_as = 'x_disp y_disp z_disp'
     youngs_modulus = 1e6
     poissons_ratio = .3
   [../]
