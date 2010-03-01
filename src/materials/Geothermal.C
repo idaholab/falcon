@@ -3,7 +3,10 @@
 template<>
 InputParameters validParams<Geothermal>()
 {
-  InputParameters params;
+  InputParameters params = validParams<PorousMedia>();
+  params += validParams<FluidFlow>();
+  params += validParams<HeatTransport>();
+  params += validParams<SolidMechanics>();
   return params;
 }
 
