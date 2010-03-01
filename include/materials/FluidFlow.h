@@ -13,7 +13,7 @@ InputParameters validParams<FluidFlow>();
 /**
  * Simple material with FluidFlow properties.
  */
-class FluidFlow : public PorousMedia
+class FluidFlow : virtual public PorousMedia
 {
 public:
   FluidFlow(std::string name,

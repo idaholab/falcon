@@ -13,7 +13,7 @@ InputParameters validParams<HeatTransport>();
 /**
  * Simple material with HeatTransport properties.
  */
-class HeatTransport : public PorousMedia
+class HeatTransport : virtual public PorousMedia
 {
 public:
   HeatTransport(std::string name,

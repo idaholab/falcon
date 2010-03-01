@@ -27,8 +27,7 @@ HeatTransport::HeatTransport(std::string name,
 { }
 
 void
-HeatTransport::computeProperties();
-
+HeatTransport::computeProperties()
 {
   PorousMedia::computeProperties();
   

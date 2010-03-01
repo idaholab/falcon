@@ -13,7 +13,7 @@ InputParameters validParams<SolidMechanics>();
 /**
  * Simple material with SolidMechanics properties.
  */
-class SolidMechanics : public PorousMedia
+class SolidMechanics : virtual public PorousMedia
 {
 public:
   SolidMechanics(std::string name,
