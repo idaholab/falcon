@@ -57,6 +57,11 @@
 #include "Constant.h"
 #include "DarcyWater.h"
 #include "ThermalPoroElastic.h"
+#include "PorousMedia.h"
+#include "FluidFlow.h"
+#include "HeatTransport.h"
+#include "SolidMechanics.h"
+#include "Geothermal.h"
 
 namespace Falcon
 {
@@ -115,6 +120,11 @@ namespace Falcon
     MaterialFactory::instance()->registerMaterial<Constant>("Constant");
     MaterialFactory::instance()->registerMaterial<DarcyWater>("DarcyWater");
     MaterialFactory::instance()->registerMaterial<ThermalPoroElastic>("ThermalPoroElastic");
+    MaterialFactory::instance()->registerMaterial<PorousMedia>("PorousMedia");
+    MaterialFactory::instance()->registerMaterial<FluidFlow>("FluidFlow");
+    MaterialFactory::instance()->registerMaterial<HeatTransport>("Heatransport");
+    MaterialFactory::instance()->registerMaterial<SolidMechanics>("SolidMechanics");
+    MaterialFactory::instance()->registerMaterial<Geothermal>("Geothermal");
     
   }
 }

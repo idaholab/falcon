@@ -7,7 +7,7 @@ InputParameters validParams<FluidFlow>()
   params.addParam<Real>("rho_w",1000.0,"fluid density in Kg/m^3");
   params.addParam<Real>("mu_w",0.001,"fluid dynamic viscosity in Pa.s");
   params.addParam<Real>("c_f", 4.6e-10,"fluid compressibility in 1/Pa");
-  params.set<bool>("temperature_dependent_fluid_density")  = false;
+  params.set<bool>("temp_dependent_density")  = true;
   return params;
 }
 
@@ -32,7 +32,7 @@ FluidFlow::FluidFlow(std::string name,
      _rho_w(declareRealProperty("rho_w")),
      _mu_w(declareRealProperty("mu_w")),
      _c_f(declareRealProperty("c_f")),
-     _has_variable_density(parameters.get<bool>("temperature_dependent_fluid_density")),
+     _has_variable_density(parameters.get<bool>("temp_dependent_density")),
      _darcy_params(declareRealProperty("darcy_params")),
      _darcy_flux(declareGradientProperty("darcy_flux")),
      _pore_velocity(declareGradientProperty("pore_velocity"))
