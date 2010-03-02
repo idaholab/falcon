@@ -162,18 +162,16 @@
   [../]
 []
 
-[Execution]
+[Executioner]
   type = Transient
   perf_log = true
   petsc_options = '-snes_mf_operator'
 
   nl_rel_tol = 1e-14
 
-  [./Transient]
-    start_time = 0.0
-    num_steps = 3
-    dt = 1
-  [../]
+  start_time = 0.0
+  num_steps = 3
+  dt = 1
 []
 
 [Output]

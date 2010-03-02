@@ -88,16 +88,14 @@
   [../]
 []
 
-[Execution]
+[Executioner]
   type = Steady #Transient
   perf_log = true
   petsc_options = '-snes_mf -ksp_monitor'
 
-  [./Transient]
-    start_time = 0.0
-    num_steps = 4
-    dt = 0.000005
-  [../]
+  start_time = 0.0
+  num_steps = 4
+  dt = 0.000005
 []
 
 [Output]

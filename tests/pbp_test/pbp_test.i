@@ -91,7 +91,7 @@
   [../]
 []
 
-[Execution]
+[Executioner]
   type = Steady
   perf_log = true
 
