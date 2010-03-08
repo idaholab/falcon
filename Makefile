@@ -59,11 +59,11 @@ fobjects        := $(patsubst %.f90, %.$(obj-suffix), $(fsrcfiles))
 falconPFobjects 	:= $(patsubst %.C, %-pf.$(obj-suffix), $(srcfiles))
 
 # include dirs
-libmesh_INCLUDE += -Iinclude -Iinclude/kernels -Iinclude/user -Iinclude/materials -Iinclude/steam_tables
+libmesh_INCLUDE += -Iinclude -Iinclude/kernels -Iinclude/bcs -Iinclude/base -Iinclude/materials -Iinclude/steam_tables
 ###############################################################################
 
 
-.PHONY: clean doc
+.PHONY: clean doc .depend
 
 ###############################################################################
 # Target:
@@ -100,6 +100,5 @@ print:
 #
 .depend:
 	@$(perl) $(meshdir)/contrib/bin/make_dependencies.pl -I. $(libmesh_INCLUDE) "-S\$$(obj-suffix)" $(srcfiles) > .depend
-	@echo "Updated .depend"
 
 ###############################################################################
