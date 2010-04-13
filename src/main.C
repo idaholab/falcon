@@ -4,6 +4,7 @@
 #include "Parser.h"
 #include "Moose.h"
 #include "Executioner.h"
+#include "MooseSystem.h"
 
 // C++ include files
 #include <iostream>
@@ -20,11 +21,13 @@ int main (int argc, char** argv)
 
   MooseInit init (argc, argv);
 
+  MooseSystem moose_system;
+
   srand(libMesh::processor_id());
 
   Falcon::registerObjects();  
 
-  Parser p;
+  Parser p(moose_system);
 
   std::string input_filename = "";
   if ( Moose::command_line->search("-i") )
