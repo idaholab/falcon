@@ -3,7 +3,7 @@
 template<>
 InputParameters validParams<PorousMedia>()
 {
-  InputParameters params;
+  InputParameters params = validParams<Material>();
   params.addParam<Real>("permeability",1.0e-12, "intrinsic permeability in m^2");
   params.addParam<Real>("porosity", 0.2, "rock porosity");
   params.addParam<Real>("rho_r", 2.50e3, "rock density in Kg/m^3");
@@ -17,11 +17,9 @@ InputParameters validParams<PorousMedia>()
 }
 
 PorousMedia::PorousMedia(std::string name,
-           InputParameters parameters,
-           unsigned int block_id,
-           std::vector<std::string> coupled_to,
-           std::vector<std::string> coupled_as)
-    :Material(name,parameters,block_id,coupled_to,coupled_as),
+                         MooseSystem & moose_system,
+                         InputParameters parameters)
+  :Material(name, moose_system, parameters),
      _input_permeability(parameters.get<Real>("permeability")),
      _input_porosity(parameters.get<Real>("porosity")),
      _input_rho_r(parameters.get<Real>("rho_r")),

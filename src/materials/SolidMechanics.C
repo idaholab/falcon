@@ -14,11 +14,9 @@ InputParameters validParams<SolidMechanics>()
 }
 
 SolidMechanics::SolidMechanics(std::string name,
-           InputParameters parameters,
-           unsigned int block_id,
-           std::vector<std::string> coupled_to,
-           std::vector<std::string> coupled_as)
-    :PorousMedia(name,parameters,block_id,coupled_to,coupled_as),
+                               MooseSystem & moose_system,
+                               InputParameters parameters)
+  :PorousMedia(name, moose_system, parameters),
      _has_temp(isCoupled("temperature")),
      _grad_temp  (_has_temp ? coupledGrad("temperature") : _grad_zero),
      _temperature(_has_temp ? coupledVal("temperature")  : _zero),

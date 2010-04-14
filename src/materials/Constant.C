@@ -3,7 +3,7 @@
 template<>
 InputParameters validParams<Constant>()
 {
-  InputParameters params;
+  InputParameters params = validParams<Material>();
   params.set<Real>("thermal_conductivity")=1.0;
   params.set<Real>("thermal_expansion")=1.0;
   params.set<Real>("specific_heat")=1.0;
@@ -18,11 +18,9 @@ InputParameters validParams<Constant>()
 }
 
 Constant::Constant(std::string name,
-           InputParameters parameters,
-           unsigned int block_id,
-           std::vector<std::string> coupled_to,
-           std::vector<std::string> coupled_as)
-    :Material(name,parameters,block_id,coupled_to,coupled_as),
+                   MooseSystem & moose_system,
+                   InputParameters parameters)
+  :Material(name, moose_system, parameters),
      _has_temp(isCoupled("temp")),
      _temp(_has_temp ? coupledVal("temp") : _zero),
      _my_thermal_conductivity(parameters.get<Real>("thermal_conductivity")),

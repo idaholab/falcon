@@ -11,14 +11,12 @@ InputParameters validParams<Geothermal>()
 }
 
 Geothermal::Geothermal(std::string name,
-           InputParameters parameters,
-           unsigned int block_id,
-           std::vector<std::string> coupled_to,
-           std::vector<std::string> coupled_as)
-  :PorousMedia(name,parameters,block_id,coupled_to,coupled_as),
-   FluidFlow(name,parameters,block_id,coupled_to,coupled_as),
-   HeatTransport(name,parameters,block_id,coupled_to,coupled_as),
-   SolidMechanics(name,parameters,block_id,coupled_to,coupled_as)
+                       MooseSystem & moose_system,
+                       InputParameters parameters)
+  :PorousMedia(name, moose_system, parameters),
+   FluidFlow(name, moose_system, parameters),
+   HeatTransport(name, moose_system, parameters),
+   SolidMechanics(name, moose_system, parameters)
 {}
 
 void

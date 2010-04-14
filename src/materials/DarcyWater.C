@@ -61,7 +61,7 @@ double viscosity_(double T)
 template<>
 InputParameters validParams<DarcyWater>()
 {
-  InputParameters params;
+  InputParameters params = validParams<Material>();
   params.set<Real>("permeability")=1.0E-12; //intrinsic permeability, "k", in (m^2)
   params.set<Real>("porosity")=0.10; //dimensionless but variable
   params.set<Real>("rho_w")=1000.0; //water density, variable, in (kg/m^3)
@@ -85,12 +85,9 @@ return params;
 }
 
 DarcyWater::DarcyWater(std::string name,
-                                 InputParameters parameters,
-                                 unsigned int block_id,
-                                 std::vector<std::string> coupled_to,
-                                 std::vector<std::string> coupled_as)
-  
-  :Material(name,parameters,block_id,coupled_to,coupled_as),
+                       MooseSystem & moose_system,
+                       InputParameters parameters)
+  :Material(name, moose_system, parameters),
    _input_permeability(parameters.get<Real>("permeability")),
    _input_porosity(parameters.get<Real>("porosity")),
    _input_rho_w(parameters.get<Real>("rho_w")),

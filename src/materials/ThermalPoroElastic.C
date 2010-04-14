@@ -3,7 +3,7 @@
 template<>
 InputParameters validParams<ThermalPoroElastic>()
 {
-  InputParameters params;
+  InputParameters params = validParams<Material>();
   
   params.set<Real>("permeability")         =  1.0e-12; //intrinsic permeability, "k", in (m^2)
   params.set<Real>("porosity")             =  0.2;    //dimensionless but variable
@@ -33,11 +33,9 @@ InputParameters validParams<ThermalPoroElastic>()
 }
 
 ThermalPoroElastic::ThermalPoroElastic(std::string name,
-           InputParameters parameters,
-           unsigned int block_id,
-           std::vector<std::string> coupled_to,
-           std::vector<std::string> coupled_as)
-    :Material(name,parameters,block_id,coupled_to,coupled_as),
+                                       MooseSystem & moose_system,
+                                       InputParameters parameters)
+  :Material(name, moose_system, parameters),
      _has_pressure(isCoupled("pressure")),
      _grad_p  (_has_pressure ? coupledGrad("pressure") : _grad_zero),
      _pressure(_has_pressure ? coupledVal("pressure")  : _zero),
