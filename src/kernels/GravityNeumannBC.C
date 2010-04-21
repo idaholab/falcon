@@ -3,15 +3,15 @@
 template<>
 InputParameters validParams<GravityNeumannBC>()
 {
-  InputParameters params;
+  InputParameters params = validParams<BoundaryCondition>();
   params.set<Real>("permeability") = 0;
   params.set<Real>("density") = 0;
   params.set<Real>("mu_w") = 0;
   return params;
 }
 
-GravityNeumannBC::GravityNeumannBC(std::string name, InputParameters parameters, std::string var_name, unsigned int boundary_id, std::vector<std::string> coupled_to, std::vector<std::string> coupled_as)
-    :BoundaryCondition(name, parameters, var_name, true, boundary_id, coupled_to, coupled_as),
+GravityNeumannBC::GravityNeumannBC(std::string name, MooseSystem & moose_system, InputParameters parameters)
+  :BoundaryCondition(name, moose_system, parameters),
      _permeability(_parameters.get<Real>("permeability")),
      _density(_parameters.get<Real>("density")),
      _mu_w(_parameters.get<Real>("mu_w")),

@@ -3,22 +3,20 @@
 template<>
 InputParameters validParams<OutFlowBC>()
 {
-  InputParameters params;
+  InputParameters params = validParams<BoundaryCondition>();
   params.set<Real>("thermal_conductivity") = 5.0;
 //  params.set<Real>("conductivity")= 0.0;
   params.set<Real>("porosity")    = 1.0;
   return params;
 }
 
-OutFlowBC::OutFlowBC(std::string name, InputParameters parameters, std::string var_name, unsigned int boundary_id, std::vector<std::string> coupled_to, std::vector<std::string> coupled_as)
-  :BoundaryCondition(name, parameters, var_name, true, boundary_id, coupled_to, coupled_as),
+OutFlowBC::OutFlowBC(std::string name, MooseSystem & moose_system, InputParameters parameters)
+  :BoundaryCondition(name, moose_system, parameters),
 //   _grad_p(coupledGradFace("p")),
 //   _cond(parameters.get<Real>("conductivity")),
    _diff(parameters.get<Real>("thermal_conductivity")),
    _porosity(parameters.get<Real>("porosity"))
-   
-  {
-  }
+{}
 
 Real
 OutFlowBC::computeQpResidual()

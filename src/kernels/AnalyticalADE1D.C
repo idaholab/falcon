@@ -3,18 +3,13 @@
 template<>
 InputParameters validParams<AnalyticalADE1D>()
 {
-  InputParameters params;
+  InputParameters params = validParams<AuxKernel>();
   return params;
 }
 
-AnalyticalADE1D::AnalyticalADE1D(std::string name,
-                         InputParameters parameters,
-                         std::string var_name,
-                         std::vector<std::string> coupled_to,
-                         std::vector<std::string> coupled_as)
-  :AuxKernel(name, parameters, var_name, coupled_to, coupled_as)
+AnalyticalADE1D::AnalyticalADE1D(std::string name, MooseSystem & moose_system, InputParameters parameters)
+  :AuxKernel(name, moose_system, parameters)
 {}
-
 
 Real
 AnalyticalADE1D::computeValue()

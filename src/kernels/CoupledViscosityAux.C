@@ -3,7 +3,7 @@
 template<>
 InputParameters validParams<CoupledViscosityAux>()
 {
-  InputParameters params;
+  InputParameters params = validParams<AuxKernel>();
   params.set<Real>("a")=0.0;
   params.set<Real>("b")=0.0;
   params.set<Real>("c")=0.0;
@@ -12,12 +12,8 @@ InputParameters validParams<CoupledViscosityAux>()
   return params;
 }
 
-CoupledViscosityAux::CoupledViscosityAux(std::string name,
-                         InputParameters parameters,
-                         std::string var_name,
-                         std::vector<std::string> coupled_to,
-                         std::vector<std::string> coupled_as)
-  :AuxKernel(name, parameters, var_name, coupled_to, coupled_as),
+CoupledViscosityAux::CoupledViscosityAux(std::string name, MooseSystem & moose_system, InputParameters parameters)
+  :AuxKernel(name, moose_system, parameters),
    _temperature(coupled("temperature")),
    _temperature_val(coupledValAux("temperature")),
    _a(_parameters.get<Real>("a")),
