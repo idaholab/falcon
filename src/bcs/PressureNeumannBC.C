@@ -9,7 +9,7 @@ InputParameters validParams<PressureNeumannBC>()
 }
 
 PressureNeumannBC::PressureNeumannBC(std::string name, MooseSystem & moose_system, InputParameters parameters)
-  :BoundaryCondition(name, moose_system, parameters),
+  :BoundaryCondition(name, moose_system, setIntegratedParam(parameters, true)),
     _pe_var(coupled("pe")),
     _pe(coupledValFace("pe")),
     _u_vel_var(coupled("u")),
