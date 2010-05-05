@@ -4,31 +4,28 @@
 template<>
 InputParameters validParams<EnergyViscousFlux>()
 {
-  InputParameters params;
+  InputParameters params = validParams<Kernel>();
   return params;
 }
-EnergyViscousFlux::EnergyViscousFlux(std::string name,
-                  InputParameters parameters,
-                  std::string var_name,
-                  std::vector<std::string> coupled_to,
-                  std::vector<std::string> coupled_as)
-    :Kernel(name,parameters,var_name,true,coupled_to,coupled_as),
-    _u_vel_var(coupled("u")),
-    _u_vel(coupledVal("u")),
-    _v_vel_var(coupled("v")),
-    _v_vel(coupledVal("v")),
-    _w_vel_var(_dim == 3 ? coupled("w") : 999999),
-    _w_vel(_dim == 3 ? coupledVal("w") : _zero),
-    _temp_var(coupled("temp")),
-    _grad_temp(coupledGrad("temp"))
-  {}
+
+EnergyViscousFlux::EnergyViscousFlux(std::string name, MooseSystem & moose_system, InputParameters parameters)
+  :Kernel(name, moose_system, parameters),
+   _u_vel_var(coupled("u")),
+   _u_vel(coupledVal("u")),
+   _v_vel_var(coupled("v")),
+   _v_vel(coupledVal("v")),
+   _w_vel_var(_dim == 3 ? coupled("w") : 999999),
+   _w_vel(_dim == 3 ? coupledVal("w") : _zero),
+   _temp_var(coupled("temp")),
+   _grad_temp(coupledGrad("temp"))
+{}
 
 void
 EnergyViscousFlux::subdomainSetup()
-  {
-    _viscous_stress_tensor = &_material->getTensorProperty("viscous_stress_tensor");
-    _thermal_conductivity  = &_material->getRealProperty("thermal_conductivity");
-  }
+{
+  _viscous_stress_tensor = &_material->getTensorProperty("viscous_stress_tensor");
+  _thermal_conductivity  = &_material->getRealProperty("thermal_conductivity");
+}
 
 Real
 EnergyViscousFlux::computeQpResidual()

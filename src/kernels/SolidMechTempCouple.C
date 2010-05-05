@@ -7,30 +7,26 @@ InputParameters validParams<SolidMechTempCouple>()
   return params;
 }
 
-SolidMechTempCouple::SolidMechTempCouple(std::string name,
-                      InputParameters parameters,
-                      std::string var_name,
-                      std::vector<std::string> coupled_to,
-                      std::vector<std::string> coupled_as)
-    :SolidMech(name,parameters,var_name,coupled_to,coupled_as),
-    _temp_var(coupled("temperature"))
-  {}
+SolidMechTempCouple::SolidMechTempCouple(std::string name, MooseSystem & moose_system, InputParameters parameters)
+  :SolidMech(name, moose_system, parameters),
+   _temp_var(coupled("temperature"))
+{}
 
 void
 SolidMechTempCouple::subdomainSetup()
-  {
-    SolidMech::subdomainSetup(); 
-    _thermal_strain = &_material->getRealProperty("thermal_strain");
-    _alpha = &_material->getRealProperty("alpha");
-  }
+{
+  SolidMech::subdomainSetup(); 
+  _thermal_strain = &_material->getRealProperty("thermal_strain");
+  _alpha = &_material->getRealProperty("alpha");
+}
 
 void
 SolidMechTempCouple::recomputeCouplingConstants()
-  {
-    recomputeConstants();
-
-    _c4 = _E/(1.-_nu);
-    
-    if( 3 == _dim )
-      _c4 = _E/(1.-2.*_nu);    
-  }
+{
+  recomputeConstants();
+  
+  _c4 = _E/(1.-_nu);
+  
+  if( 3 == _dim )
+    _c4 = _E/(1.-2.*_nu);    
+}

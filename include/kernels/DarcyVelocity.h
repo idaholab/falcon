@@ -15,11 +15,7 @@ class DarcyVelocity : public Kernel
 {
 public:
 
-  DarcyVelocity(std::string name,
-                InputParameters parameters,
-                std::string var_name,
-                std::vector<std::string> coupled_to=std::vector<std::string>(0),
-                std::vector<std::string> coupled_as=std::vector<std::string>(0));
+  DarcyVelocity(std::string name, MooseSystem & moose_system, InputParameters parameters);
   
   virtual void subdomainSetup();
 

@@ -9,11 +9,9 @@ InputParameters validParams<TemperatureImplicitBackwardDifference2>()
 }
 
 TemperatureImplicitBackwardDifference2::TemperatureImplicitBackwardDifference2(std::string name,
-                                       InputParameters parameters,
-                                       std::string var_name,
-                                       std::vector<std::string> coupled_to,
-                                       std::vector<std::string> coupled_as)
-  :ImplicitBackwardDifference2(name,parameters,var_name,coupled_to,coupled_as)
+                                                                               MooseSystem & moose_system,
+                                                                               InputParameters parameters)
+  :ImplicitBackwardDifference2(name, moose_system, parameters)
 {}
 
 void

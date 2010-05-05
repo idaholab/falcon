@@ -4,16 +4,16 @@
 #include "Diffusion.h"
 #include "Material.h"
 
+class TemperatureDiffusion;
+
+template<>
+InputParameters validParams<TemperatureDiffusion>();
 
 class TemperatureDiffusion : public Diffusion
 {
 public:
 
-  TemperatureDiffusion(std::string name,
-                InputParameters parameters,
-                std::string var_name,
-                std::vector<std::string> coupled_to,
-                std::vector<std::string> coupled_as);
+  TemperatureDiffusion(std::string name, MooseSystem & moose_system, InputParameters parameters);
     
   virtual void subdomainSetup();
 

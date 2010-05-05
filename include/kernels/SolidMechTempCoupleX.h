@@ -14,11 +14,7 @@ class SolidMechTempCoupleX : public SolidMechTempCouple
 {
 public:
 
-  SolidMechTempCoupleX(std::string name,
-                       InputParameters parameters,
-                       std::string var_name,
-                       std::vector<std::string> coupled_to,
-                       std::vector<std::string> coupled_as);
+  SolidMechTempCoupleX(std::string name, MooseSystem & moose_system, InputParameters parameters);
   
 protected:
   virtual Real computeQpResidual();

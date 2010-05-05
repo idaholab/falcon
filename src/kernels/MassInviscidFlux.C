@@ -3,23 +3,19 @@
 template<>
 InputParameters validParams<MassInviscidFlux>()
 {
-  InputParameters params;
+  InputParameters params = validParams<Kernel>();
   return params;
 }
 
-MassInviscidFlux::MassInviscidFlux(std::string name,
-                  InputParameters parameters,
-                  std::string var_name,
-                  std::vector<std::string> coupled_to,
-                  std::vector<std::string> coupled_as)
-    :Kernel(name,parameters,var_name,true,coupled_to,coupled_as),
-    _pu_var(coupled("pu")),
-    _pu(coupledVal("pu")),
-    _pv_var(coupled("pv")),
-    _pv(coupledVal("pv")),
-    _pw_var(_dim == 3 ? coupled("pw") : 999999),
-    _pw(_dim == 3 ? coupledVal("pw") : _zero)
-  {}
+MassInviscidFlux::MassInviscidFlux(std::string name, MooseSystem & moose_system, InputParameters parameters)
+  :Kernel(name, moose_system, parameters),
+   _pu_var(coupled("pu")),
+   _pu(coupledVal("pu")),
+   _pv_var(coupled("pv")),
+   _pv(coupledVal("pv")),
+   _pw_var(_dim == 3 ? coupled("pw") : 999999),
+   _pw(_dim == 3 ? coupledVal("pw") : _zero)
+{}
 
 Real
 MassInviscidFlux::computeQpResidual()

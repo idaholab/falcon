@@ -1,12 +1,17 @@
 #include "Material.h"
 #include "DarcyMassFluxPressure.h"
 
+template<>
+InputParameters validParams<DarcyMassFluxPressure>()
+{
+  InputParameters params = validParams<Diffusion>();
+  return params;
+}
+
 DarcyMassFluxPressure::DarcyMassFluxPressure(std::string name,
-                                             InputParameters parameters,
-                                             std::string var_name,
-                                             std::vector<std::string> coupled_to,
-                                             std::vector<std::string> coupled_as)
-  :Diffusion(name,parameters,var_name,coupled_to,coupled_as)
+                                             MooseSystem & moose_system,
+                                             InputParameters parameters)
+  :Diffusion(name, moose_system, parameters)
 {}
 
 void

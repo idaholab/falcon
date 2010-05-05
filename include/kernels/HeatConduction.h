@@ -15,11 +15,7 @@ class HeatConduction : public Diffusion
 {
 public:
 
-  HeatConduction(std::string name,
-                 InputParameters parameters,
-                 std::string var_name,
-                 std::vector<std::string> coupled_to=std::vector<std::string>(0),
-                 std::vector<std::string> coupled_as=std::vector<std::string>(0));
+  HeatConduction(std::string name, MooseSystem & moose_system, InputParameters parameters);
 
   virtual void subdomainSetup();
   

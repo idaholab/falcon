@@ -13,11 +13,7 @@ class TemperatureImplicitBackwardDifference2 : public ImplicitBackwardDifference
 {
 public:
 
-  TemperatureImplicitBackwardDifference2(std::string name,
-                     InputParameters parameters,
-                     std::string var_name,
-                     std::vector<std::string> coupled_to,
-                     std::vector<std::string> coupled_as);
+  TemperatureImplicitBackwardDifference2(std::string name, MooseSystem & moose_system, InputParameters parameters);
 
   virtual void subdomainSetup();
 

@@ -3,17 +3,17 @@
 #ifndef DARCYIMPLICITEULER
 #define DARCYIMPLICITEULER
 
+//Forward Declarations
+class DarcyImplicitEuler;
 
+template<>
+InputParameters validParams<DarcyImplicitEuler>();
 
 class DarcyImplicitEuler : public ImplicitEuler
 {
 public:
 
-  DarcyImplicitEuler(std::string name,
-                     InputParameters parameters,
-                     std::string var_name,
-                     std::vector<std::string> coupled_to,
-                     std::vector<std::string> coupled_as);
+  DarcyImplicitEuler(std::string name, MooseSystem & moose_system, InputParameters parameters);
 
   virtual void subdomainSetup();
 

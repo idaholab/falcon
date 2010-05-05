@@ -14,11 +14,7 @@ class PrescribedExpansion : public SolidMechTempCouple
 {
 public:
 
-  PrescribedExpansion(std::string name,
-                      InputParameters parameters,
-                      std::string var_name,
-                      std::vector<std::string> coupled_to,
-                      std::vector<std::string> coupled_as);
+  PrescribedExpansion(std::string name, MooseSystem & moose_system, InputParameters parameters);
   
 protected:
   virtual Real computeQpResidual();

@@ -6,66 +6,62 @@ InputParameters validParams<SolidMechZ>()
   return validParams<SolidMech>();
 }
 
-SolidMechZ::SolidMechZ(std::string name,
-             InputParameters parameters,
-             std::string var_name,
-             std::vector<std::string> coupled_to,
-             std::vector<std::string> coupled_as)
-    :SolidMech(name,parameters,var_name,coupled_to,coupled_as),
-    _x_var(coupled("x")),
-    _x(coupledVal("x")),
-    _grad_x(coupledGrad("x")),
-     _y_var(coupled("y")),
-    _y(coupledVal("y")),
-    _grad_y(coupledGrad("y"))
-  {}
+SolidMechZ::SolidMechZ(std::string name, MooseSystem & moose_system, InputParameters parameters)
+  :SolidMech(name, moose_system, parameters),
+   _x_var(coupled("x")),
+   _x(coupledVal("x")),
+   _grad_x(coupledGrad("x")),
+   _y_var(coupled("y")),
+   _y(coupledVal("y")),
+   _grad_y(coupledGrad("y"))
+{}
 
 Real
 SolidMechZ::computeQpResidual()
-  {
+{
 /*
-    recomputeConstants();
+  recomputeConstants();
 
-    _strain(0,0) = _grad_x[_qp](0);
-    _strain(1,1) = _grad_y[_qp](1);
-    _strain(2,2) = _grad_u[_qp](2);
-    _strain(1,2) = _grad_u[_qp](1)+_grad_y[_qp](2);
-    _strain(0,2) = _grad_x[_qp](2)+_grad_u[_qp](0);
+  _strain(0,0) = _grad_x[_qp](0);
+  _strain(1,1) = _grad_y[_qp](1);
+  _strain(2,2) = _grad_u[_qp](2);
+  _strain(1,2) = _grad_u[_qp](1)+_grad_y[_qp](2);
+  _strain(0,2) = _grad_x[_qp](2)+_grad_u[_qp](0);
 
-    _stress(0) = _c1*_c3*_strain(0,2);
-    _stress(1) = _c1*_c3*_strain(1,2);
-    _stress(2) = _c1*_c2*_strain(0,0)+_c1*_c2*_strain(1,1)+_c1*_strain(2,2);
+  _stress(0) = _c1*_c3*_strain(0,2);
+  _stress(1) = _c1*_c3*_strain(1,2);
+  _stress(2) = _c1*_c2*_strain(0,0)+_c1*_c2*_strain(1,1)+_c1*_strain(2,2);
 */
-    _stress(0) =  ( *_stress_shear_vector)[_qp](1); //tau_zx
-    _stress(1) =  ( *_stress_shear_vector)[_qp](2); //tau_zy
-    _stress(2) = ( *_stress_normal_vector)[_qp](2); //tau_zz
+  _stress(0) =  ( *_stress_shear_vector)[_qp](1); //tau_zx
+  _stress(1) =  ( *_stress_shear_vector)[_qp](2); //tau_zy
+  _stress(2) = ( *_stress_normal_vector)[_qp](2); //tau_zz
 
     
-    return (_stress*_dphi[_i][_qp]);
+  return (_stress*_dphi[_i][_qp]);
 
-  }
+}
 
 Real
 SolidMechZ::computeQpJacobian()
-  {
-    recomputeConstants();
+{
+  recomputeConstants();
 
-    Real value = _c1*(_dphi[_i][_qp]*(_B33*_dphi[_j][_qp]));
+  Real value = _c1*(_dphi[_i][_qp]*(_B33*_dphi[_j][_qp]));
 
-    return value;
-  }
+  return value;
+}
 
 Real
 SolidMechZ::computeQpOffDiagJacobian(unsigned int jvar)
-  {
-    recomputeConstants();
+{
+  recomputeConstants();
     
-    RealGradient value = 0;
+  RealGradient value = 0;
 
-    if(jvar == _x_var)
-      value += _B31*_dphi[_j][_qp];
-    else if(jvar == _y_var)
-      value += _B32*_dphi[_j][_qp];
+  if(jvar == _x_var)
+    value += _B31*_dphi[_j][_qp];
+  else if(jvar == _y_var)
+    value += _B32*_dphi[_j][_qp];
 
-    return _c1*(_dphi[_i][_qp]*value);
-  }
+  return _c1*(_dphi[_i][_qp]*value);
+}

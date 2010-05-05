@@ -15,14 +15,9 @@ class StressCompute : public Kernel
 {
 public:
 
-  StressCompute(std::string name,
-                InputParameters parameters,
-                std::string var_name,
-                std::vector<std::string> coupled_to=std::vector<std::string>(0),
-                std::vector<std::string> coupled_as=std::vector<std::string>(0));
+  StressCompute(std::string name, MooseSystem & moose_system, InputParameters parameters);
   
   virtual void subdomainSetup();
-
 
 protected:
   virtual Real computeQpResidual();

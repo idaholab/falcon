@@ -1,14 +1,16 @@
 #include "Material.h"
 #include "TemperatureDiffusion.h"
 
-TemperatureDiffusion::TemperatureDiffusion(std::string name,
-                                             InputParameters parameters,
-                                             std::string var_name,
-                                             std::vector<std::string> coupled_to,
-                                             std::vector<std::string> coupled_as)
-  :Diffusion(name,parameters,var_name,coupled_to,coupled_as)
-{}
+template<>
+InputParameters validParams<TemperatureDiffusion>()
+{
+  InputParameters params = validParams<Diffusion>();
+  return params;
+}
 
+TemperatureDiffusion::TemperatureDiffusion(std::string name, MooseSystem & moose_system, InputParameters parameters)
+  :Diffusion(name, moose_system, parameters)
+{}
 
 void
 TemperatureDiffusion::subdomainSetup()

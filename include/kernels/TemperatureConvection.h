@@ -4,16 +4,17 @@
 #include "Kernel.h"
 #include "Material.h"
 
+//Forward Declarations
+class TemperatureConvection;
+
+template<>
+InputParameters validParams<TemperatureConvection>();
 
 class TemperatureConvection : public Kernel
 {
 public:
 
-  TemperatureConvection(std::string name,
-                        InputParameters parameters,
-                        std::string var_name,
-                        std::vector<std::string> coupled_to,
-                        std::vector<std::string> coupled_as);
+  TemperatureConvection(std::string name, MooseSystem & moose_system, InputParameters parameters);
 
    virtual void subdomainSetup();
   

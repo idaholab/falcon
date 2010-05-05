@@ -4,16 +4,17 @@
 #include "Diffusion.h"
 #include "Material.h"
 
+//Forward Declarations
+class DarcyMassFluxPressure;
+
+template<>
+InputParameters validParams<DarcyMassFluxPressure>();
 
 class DarcyMassFluxPressure : public Diffusion
 {
 public:
 
-  DarcyMassFluxPressure(std::string name,
-                InputParameters parameters,
-                std::string var_name,
-                std::vector<std::string> coupled_to,
-                std::vector<std::string> coupled_as);
+  DarcyMassFluxPressure(std::string name, MooseSystem & moose_system, InputParameters parameters);
     
   virtual void subdomainSetup();
 

@@ -6,19 +6,15 @@ InputParameters validParams<SolidMechX>()
   return validParams<SolidMech>();
 }
 
-SolidMechX::SolidMechX(std::string name,
-             InputParameters parameters,
-             std::string var_name,
-             std::vector<std::string> coupled_to,
-             std::vector<std::string> coupled_as)
-    :SolidMech(name,parameters,var_name,coupled_to,coupled_as),
-     _y_var(coupled("y")),
-     _y(coupledVal("y")),
-     _grad_y(coupledGrad("y")),
-     _z_var(_dim == 3 ? coupled("z") : 1000000),
-     _z(_dim == 3 ? coupledVal("z") : _zero),
-     _grad_z(_dim == 3 ? coupledGrad("z"): _grad_zero)
-  {}
+SolidMechX::SolidMechX(std::string name, MooseSystem & moose_system, InputParameters parameters)
+  :SolidMech(name, moose_system, parameters),
+   _y_var(coupled("y")),
+   _y(coupledVal("y")),
+   _grad_y(coupledGrad("y")),
+   _z_var(_dim == 3 ? coupled("z") : 1000000),
+   _z(_dim == 3 ? coupledVal("z") : _zero),
+   _grad_z(_dim == 3 ? coupledGrad("z"): _grad_zero)
+{}
 
 Real
 SolidMechX::computeQpResidual()

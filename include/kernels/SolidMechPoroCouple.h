@@ -17,11 +17,7 @@ class SolidMechPoroCouple : public SolidMech
 {
 public:
 
-  SolidMechPoroCouple(std::string name,
-                      InputParameters parameters,
-                      std::string var_name,
-                      std::vector<std::string> coupled_to,
-                      std::vector<std::string> coupled_as);
+  SolidMechPoroCouple(std::string name, MooseSystem & moose_system, InputParameters parameters);
   
   virtual void subdomainSetup();
   

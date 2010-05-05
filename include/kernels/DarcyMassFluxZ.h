@@ -1,18 +1,19 @@
 #ifndef DARCYMASSFLUXZ
 #define DARCYMASSFLUXZ
 
-#include "Material.h"
+#include "Kernel.h"
 
+//Forward Declarations
+class DarcyMassFluxZ;
+
+template<>
+InputParameters validParams<DarcyMassFluxZ>();
 
 class DarcyMassFluxZ : public Kernel
 {
 public:
 
-  DarcyMassFluxZ(std::string name,
-                 InputParameters parameters,
-                 std::string var_name,
-                 std::vector<std::string> coupled_to,
-                 std::vector<std::string> coupled_as);
+  DarcyMassFluxZ(std::string name, MooseSystem & moose_system, InputParameters parameters);
     
   virtual void subdomainSetup();
 

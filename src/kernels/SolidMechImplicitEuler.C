@@ -1,28 +1,31 @@
 #include "SolidMechImplicitEuler.h"
 
-SolidMechImplicitEuler::SolidMechImplicitEuler(std::string name,
-                         InputParameters parameters,
-                         std::string var_name,
-                         std::vector<std::string> coupled_to,
-                         std::vector<std::string> coupled_as)
-    :SecondDerivativeImplicitEuler(name,parameters,var_name,coupled_to,coupled_as)
-  {}
+template<>
+InputParameters validParams<SolidMechImplicitEuler>()
+{
+  InputParameters params = validParams<SecondDerivativeImplicitEuler>();
+  return params;
+}
+
+SolidMechImplicitEuler::SolidMechImplicitEuler(std::string name, MooseSystem & moose_system, InputParameters parameters)
+  :SecondDerivativeImplicitEuler(name, moose_system, parameters)
+{}
 
 void
 SolidMechImplicitEuler::subdomainSetup()
-  {
-    _density = &_material->getRealProperty("rho_r");
-  }
+{
+  _density = &_material->getRealProperty("rho_r");
+}
 
 Real
 SolidMechImplicitEuler::computeQpResidual()
-  {
-    return (*_density)[_qp]*SecondDerivativeImplicitEuler::computeQpResidual();
-  }
+{
+  return (*_density)[_qp]*SecondDerivativeImplicitEuler::computeQpResidual();
+}
 
 Real
 SolidMechImplicitEuler::computeQpJacobian()
-  {
-    return (*_density)[_qp]*SecondDerivativeImplicitEuler::computeQpJacobian();
-  }
+{
+  return (*_density)[_qp]*SecondDerivativeImplicitEuler::computeQpJacobian();
+}
   
