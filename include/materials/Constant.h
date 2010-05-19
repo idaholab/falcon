@@ -37,15 +37,15 @@ private:
   Real _my_poissons_ratio;
   Real _my_t_ref;
 
-  std::vector<Real> & _thermal_conductivity;
-  std::vector<Real> & _thermal_strain;
-  std::vector<Real> & _alpha;
-  std::vector<Real> & _biot_coeff;
-  std::vector<Real> & _specific_heat;
-  std::vector<Real> & _density;
-  std::vector<Real> & _rho_r;
-  std::vector<Real> & _youngs_modulus;
-  std::vector<Real> & _poissons_ratio;
+  MooseArray<Real> & _thermal_conductivity;
+  MooseArray<Real> & _thermal_strain;
+  MooseArray<Real> & _alpha;
+  MooseArray<Real> & _biot_coeff;
+  MooseArray<Real> & _specific_heat;
+  MooseArray<Real> & _density;
+  MooseArray<Real> & _rho_r;
+  MooseArray<Real> & _youngs_modulus;
+  MooseArray<Real> & _poissons_ratio;
 };
 
 #endif //CONSTANT_H

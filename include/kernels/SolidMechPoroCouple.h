@@ -25,7 +25,7 @@ public:
   
 protected:
   unsigned int _pressure_var;
-  std::vector<Real> * _biot_coeff;
+  MooseArray<Real> * _biot_coeff;
   std::vector<RealGradient> & _grad_pressure;
   std::vector<Real> & _pressure_val;
 

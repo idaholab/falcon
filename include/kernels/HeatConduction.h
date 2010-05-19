@@ -25,6 +25,6 @@ protected:
   virtual Real computeQpJacobian();
   
 private:
-  std::vector<Real> * _k;
+  MooseArray<Real> * _k;
 };
 #endif //HEATCONDUCTION_H

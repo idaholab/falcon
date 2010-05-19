@@ -22,9 +22,9 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();  
 
-  std::vector<Real> *_water_specific_heat;
-  std::vector<RealGradient> *_darcy_flux;
-  std::vector<Real> *_rho_w;
+  MooseArray<Real> *_water_specific_heat;
+  MooseArray<RealGradient> *_darcy_flux;
+  MooseArray<Real> *_rho_w;
 //  std::vector<RealGradient> *_pore_velocity;
   
 };

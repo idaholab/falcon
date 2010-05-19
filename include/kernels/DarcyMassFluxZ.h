@@ -22,10 +22,10 @@ protected:
   
   virtual Real computeQpJacobian();
 
-  std::vector<Real> *_darcy_params;
-  std::vector<Real> *_gravity;
-  std::vector<Real> *_rho_w;
+  MooseArray<Real> *_darcy_params;
+  MooseArray<Real> *_gravity;
+  MooseArray<Real> *_rho_w;
   
-  std::vector<RealVectorValue> *_gravity_vector;
+  MooseArray<RealVectorValue> *_gravity_vector;
 };
 #endif //DARCYMASSFLUXZ

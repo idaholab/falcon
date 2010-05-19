@@ -20,7 +20,7 @@ protected:
   virtual Real computeQpResidual();
   
 private:
-  std::vector<Real> * _solid_swelling_strain;
+  MooseArray<Real> * _solid_swelling_strain;
 
   Real _burnup;
   int _component;

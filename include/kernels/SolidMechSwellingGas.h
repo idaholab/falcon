@@ -27,6 +27,6 @@ private:
   Real _burnup;
   int _component;
 
-  std::vector<Real> * _density;
+  MooseArray<Real> * _density;
 };
 #endif //SOLIDMECHSWELLINGGAS 

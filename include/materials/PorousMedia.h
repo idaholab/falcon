@@ -32,12 +32,12 @@ protected:
   Real _gy;
   Real _gz;
 
-  std::vector<Real> & _permeability;
-  std::vector<Real> & _porosity;
-  std::vector<Real> & _rho_r;
+  MooseArray<Real> & _permeability;
+  MooseArray<Real> & _porosity;
+  MooseArray<Real> & _rho_r;
   
-  std::vector<Real> & _gravity;
-  std::vector<RealVectorValue> & _gravity_vector;
+  MooseArray<Real> & _gravity;
+  MooseArray<RealVectorValue> & _gravity_vector;
 
 };
 

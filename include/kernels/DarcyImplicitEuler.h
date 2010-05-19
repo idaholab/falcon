@@ -22,9 +22,9 @@ protected:
 
   virtual Real computeQpJacobian();
 
-  std::vector<Real> * _c_f;
-  std::vector<Real> * _porosity;
-  std::vector<Real> * _rho_w;
+  MooseArray<Real> * _c_f;
+  MooseArray<Real> * _porosity;
+  MooseArray<Real> * _rho_w;
   
 };
 #endif //DARCYIMPLICITEULER

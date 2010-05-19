@@ -30,16 +30,16 @@ protected:
   Real _input_biot_coeff;
   Real _input_t_ref;
   
-  std::vector<Real> & _thermal_strain;
-  std::vector<Real> & _alpha;
-  std::vector<Real> & _youngs_modulus;
-  std::vector<Real> & _poissons_ratio;  
-  std::vector<Real> & _biot_coeff;
+  MooseArray<Real> & _thermal_strain;
+  MooseArray<Real> & _alpha;
+  MooseArray<Real> & _youngs_modulus;
+  MooseArray<Real> & _poissons_ratio;  
+  MooseArray<Real> & _biot_coeff;
 
-  std::vector<RealVectorValue> & _stress_normal_vector;
-  std::vector<RealVectorValue> & _stress_shear_vector;
-  std::vector<RealVectorValue> & _strain_normal_vector;
-  std::vector<RealVectorValue> & _strain_shear_vector;
+  MooseArray<RealVectorValue> & _stress_normal_vector;
+  MooseArray<RealVectorValue> & _stress_shear_vector;
+  MooseArray<RealVectorValue> & _strain_normal_vector;
+  MooseArray<RealVectorValue> & _strain_shear_vector;
   
 private:
 

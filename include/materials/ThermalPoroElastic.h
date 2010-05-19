@@ -69,32 +69,32 @@ private:
   Real _c2;
   Real _c3;
 
-  std::vector<Real> & _permeability;
-  std::vector<Real> & _porosity;
-  std::vector<Real> & _rho_r;
-  std::vector<Real> & _rock_specific_heat;
-  std::vector<Real> & _thermal_conductivity;
-  std::vector<Real> & _thermal_strain;
-  std::vector<Real> & _alpha;
-  std::vector<Real> & _youngs_modulus;
-  std::vector<Real> & _poissons_ratio;  
-  std::vector<Real> & _biot_coeff;
+  MooseArray<Real> & _permeability;
+  MooseArray<Real> & _porosity;
+  MooseArray<Real> & _rho_r;
+  MooseArray<Real> & _rock_specific_heat;
+  MooseArray<Real> & _thermal_conductivity;
+  MooseArray<Real> & _thermal_strain;
+  MooseArray<Real> & _alpha;
+  MooseArray<Real> & _youngs_modulus;
+  MooseArray<Real> & _poissons_ratio;  
+  MooseArray<Real> & _biot_coeff;
   
-  std::vector<Real> & _rho_w;
-  std::vector<Real> & _mu_w;
-  std::vector<Real> & _c_f;
-  std::vector<Real> & _water_specific_heat;
+  MooseArray<Real> & _rho_w;
+  MooseArray<Real> & _mu_w;
+  MooseArray<Real> & _c_f;
+  MooseArray<Real> & _water_specific_heat;
   
-  std::vector<Real> & _darcy_params;
-  std::vector<RealGradient> & _darcy_flux;
-  std::vector<RealGradient> & _pore_velocity;
+  MooseArray<Real> & _darcy_params;
+  MooseArray<RealGradient> & _darcy_flux;
+  MooseArray<RealGradient> & _pore_velocity;
   
-  std::vector<Real> & _gravity;
-  std::vector<RealVectorValue> & _gravity_vector;
-  std::vector<RealVectorValue> & _stress_normal_vector;
-  std::vector<RealVectorValue> & _stress_shear_vector;
-  std::vector<RealVectorValue> & _strain_normal_vector;
-  std::vector<RealVectorValue> & _strain_shear_vector;  
+  MooseArray<Real> & _gravity;
+  MooseArray<RealVectorValue> & _gravity_vector;
+  MooseArray<RealVectorValue> & _stress_normal_vector;
+  MooseArray<RealVectorValue> & _stress_shear_vector;
+  MooseArray<RealVectorValue> & _strain_normal_vector;
+  MooseArray<RealVectorValue> & _strain_shear_vector;  
 
 };
 

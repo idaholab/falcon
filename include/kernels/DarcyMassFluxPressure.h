@@ -23,6 +23,6 @@ protected:
 
   virtual Real computeQpJacobian();
 
-  std::vector<Real> *_darcy_params;
+  MooseArray<Real> *_darcy_params;
 };
 #endif //DARCYMASSFLUXPRESSURE

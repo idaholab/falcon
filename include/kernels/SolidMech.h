@@ -47,10 +47,10 @@ protected:
 
   Real _density;
 
-  std::vector<Real> * _E_prop;
-  std::vector<Real> * _nu_prop;
-  std::vector<RealVectorValue> * _stress_normal_vector;
-  std::vector<RealVectorValue> * _stress_shear_vector;
+  MooseArray<Real> * _E_prop;
+  MooseArray<Real> * _nu_prop;
+  MooseArray<RealVectorValue> * _stress_normal_vector;
+  MooseArray<RealVectorValue> * _stress_shear_vector;
 };
  
 

@@ -21,7 +21,7 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
 
-  std::vector<Real> *_thermal_conductivity;
+  MooseArray<Real> *_thermal_conductivity;
   
 };
 #endif //TEMPERATUREDIFFUSION

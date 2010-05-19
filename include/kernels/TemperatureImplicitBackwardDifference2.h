@@ -22,11 +22,11 @@ protected:
 
   virtual Real computeQpJacobian();
 
-  std::vector<Real> * _water_specific_heat;
-  std::vector<Real> * _rock_specific_heat;
-  std::vector<Real> * _porosity;
-  std::vector<Real> * _rho_w;
-  std::vector<Real> * _rho_r;
+  MooseArray<Real> * _water_specific_heat;
+  MooseArray<Real> * _rock_specific_heat;
+  MooseArray<Real> * _porosity;
+  MooseArray<Real> * _rho_w;
+  MooseArray<Real> * _rho_r;
   
 };
 #endif //TEMPERATUREIMPLICITBACKWARDDIFERENCE2

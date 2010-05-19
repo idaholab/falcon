@@ -26,13 +26,13 @@ protected:
   Real _input_mu_w;
   Real _input_c_f;
 
-  std::vector<Real> & _rho_w;
-  std::vector<Real> & _mu_w;
-  std::vector<Real> & _c_f;
+  MooseArray<Real> & _rho_w;
+  MooseArray<Real> & _mu_w;
+  MooseArray<Real> & _c_f;
   
-  std::vector<Real> & _darcy_params;
-  std::vector<RealGradient> & _darcy_flux;
-  std::vector<RealGradient> & _pore_velocity;
+  MooseArray<Real> & _darcy_params;
+  MooseArray<RealGradient> & _darcy_flux;
+  MooseArray<RealGradient> & _pore_velocity;
   
 private:
   bool _has_pressure;

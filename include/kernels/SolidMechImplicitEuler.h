@@ -25,6 +25,6 @@ protected:
   virtual Real computeQpJacobian();
   
 private:
-  std::vector<Real> * _density;
+  MooseArray<Real> * _density;
 };
 #endif //SOLIDMECHIMPLICITEULER_H
