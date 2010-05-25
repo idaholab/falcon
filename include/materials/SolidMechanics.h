@@ -48,12 +48,12 @@ private:
   bool _has_y_disp;
   bool _has_z_disp;
 
-  std::vector<Real> & _temperature;
-  std::vector<RealGradient> & _grad_temp;
+  MooseArray<Real> & _temperature;
+  MooseArray<RealGradient> & _grad_temp;
 
-  std::vector<RealGradient> & _grad_x_disp;
-  std::vector<RealGradient> & _grad_y_disp;
-  std::vector<RealGradient> & _grad_z_disp;
+  MooseArray<RealGradient> & _grad_x_disp;
+  MooseArray<RealGradient> & _grad_y_disp;
+  MooseArray<RealGradient> & _grad_z_disp;
   
   Real _E;
   Real _nu;

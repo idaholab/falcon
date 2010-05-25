@@ -33,14 +33,14 @@ private:
   bool _has_y_disp;
   bool _has_z_disp;
 
-  std::vector<Real> & _temperature;
-  std::vector<RealGradient> & _grad_temp;
-  std::vector<Real> & _pressure;
-  std::vector<RealGradient> & _grad_p;
+  MooseArray<Real> & _temperature;
+  MooseArray<RealGradient> & _grad_temp;
+  MooseArray<Real> & _pressure;
+  MooseArray<RealGradient> & _grad_p;
 
-  std::vector<RealGradient> & _grad_x_disp;
-  std::vector<RealGradient> & _grad_y_disp;
-  std::vector<RealGradient> & _grad_z_disp;
+  MooseArray<RealGradient> & _grad_x_disp;
+  MooseArray<RealGradient> & _grad_y_disp;
+  MooseArray<RealGradient> & _grad_z_disp;
 
   Real _input_permeability;
   Real _input_porosity;

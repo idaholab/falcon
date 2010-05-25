@@ -22,7 +22,7 @@ protected:
   virtual Real computeQpResidual();
   
 private:
-  std::vector<Real> & _temp;
+  MooseArray<Real> & _temp;
 
   Real _burnup;
   int _component;

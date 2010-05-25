@@ -25,7 +25,7 @@ protected:
   MooseArray<Real> *_water_specific_heat;
   MooseArray<RealGradient> *_darcy_flux;
   MooseArray<Real> *_rho_w;
-//  std::vector<RealGradient> *_pore_velocity;
+//  MooseArray<RealGradient> *_pore_velocity;
   
 };
 #endif //TEMPERATURECONVECTION

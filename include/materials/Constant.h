@@ -26,7 +26,7 @@ protected:
 private:
 
   bool _has_temp;
-  std::vector<Real> & _temp;
+  MooseArray<Real> & _temp;
 
   Real _my_thermal_conductivity;
   Real _my_thermal_expansion;

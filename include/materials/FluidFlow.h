@@ -38,9 +38,9 @@ private:
   bool _has_pressure;
   bool _has_temp;
   bool _has_variable_density;
-  std::vector<Real> & _pressure;
-  std::vector<RealGradient> & _grad_p;
-  std::vector<Real> & _temperature;
+  MooseArray<Real> & _pressure;
+  MooseArray<RealGradient> & _grad_p;
+  MooseArray<Real> & _temperature;
 
 };
 

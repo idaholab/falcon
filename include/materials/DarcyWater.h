@@ -50,10 +50,10 @@ private:
   MooseArray<RealGradient> & _darcy_flux;
   MooseArray<RealGradient> & _darcy_velocity;
   MooseArray<RealVectorValue> & _gravity_vector;
-  std::vector<RealGradient> & _grad_p;
-  std::vector<Real> & _pressure;
-  std::vector<Real> & _temperature;
-  std::vector<RealGradient> & _grad_T;
+  MooseArray<RealGradient> & _grad_p;
+  MooseArray<Real> & _pressure;
+  MooseArray<Real> & _temperature;
+  MooseArray<RealGradient> & _grad_T;
   
 };
 
