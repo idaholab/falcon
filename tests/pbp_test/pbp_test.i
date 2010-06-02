@@ -40,8 +40,7 @@
   [./conv_v]
     type = CoupledForce
     variable = v
-    coupled_to = u
-    coupled_as = v
+    v = u
   [../]
 
   [./diff_v]

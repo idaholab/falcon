@@ -43,8 +43,7 @@
   [./force]
     type = CoupledForce
     variable = u
-    coupled_to = 'one'
-    coupled_as = 'v'
+    v = one
   [../]
 []
 
@@ -63,8 +62,7 @@
     variable = coupled
     type = CoupledAux
     value = 2
-    coupled_to = 'u'
-    coupled_as = 'coupled'
+    coupled = u
   [../]
 []
 

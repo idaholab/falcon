@@ -48,8 +48,7 @@
   [./force]
     type = CoupledForce
     variable = u
-    coupled_to = 'one'
-    coupled_as = 'v'
+    v = one
   [../]
 []
 
@@ -68,8 +67,7 @@
     variable = coupled
     type = CoupledAux
     value = 2
-    coupled_to = 'five'
-    coupled_as = 'coupled'
+    coupled = five
   [../]
 
   #Shows coupling of Element to non-linear
@@ -77,8 +75,7 @@
     variable = coupled_nl
     type = CoupledAux
     value = 2
-    coupled_to = 'u'
-    coupled_as = 'coupled'
+    coupled = u
   [../]
 []
 

@@ -49,8 +49,7 @@
     type = MatchedValueBC
     variable = u
     boundary = 1
-    coupled_to = 'v'
-    coupled_as = 'v'
+    v = v
     value = 3
   [../]
 []
