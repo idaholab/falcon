@@ -8,23 +8,18 @@ InputParameters validParams<SolidMech>()
 }
 
 SolidMech::SolidMech(std::string name, MooseSystem & moose_system, InputParameters parameters)
-  :Kernel(name, moose_system, parameters)
+  :Kernel(name, moose_system, parameters),
+   _E_prop(getRealMaterialProperty("youngs_modulus")),
+   _nu_prop(getRealMaterialProperty("poissons_ratio")),
+   _stress_normal_vector(getRealVectorValueMaterialProperty("stress_normal_vector")),
+   _stress_shear_vector(getRealVectorValueMaterialProperty("stress_shear_vector"))
 {}
-
-void
-SolidMech::subdomainSetup()
-{
-  _E_prop = &_material->getRealProperty("youngs_modulus");
-  _nu_prop = &_material->getRealProperty("poissons_ratio");
-  _stress_normal_vector = &_material->getRealVectorValueProperty("stress_normal_vector");
-  _stress_shear_vector  = &_material->getRealVectorValueProperty("stress_shear_vector");
-}
 
 void
 SolidMech::recomputeConstants()
 {
-  _E = (*_E_prop)[_qp];
-  _nu = (*_nu_prop)[_qp];
+  _E = _E_prop[_qp];
+  _nu = _nu_prop[_qp];
 
   _c1 = _E*(1.-_nu)/(1.+_nu)/(1.-2.*_nu);
   _c2 = _nu/(1.-_nu);

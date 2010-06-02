@@ -9,23 +9,18 @@ InputParameters validParams<TemperatureDiffusion>()
 }
 
 TemperatureDiffusion::TemperatureDiffusion(std::string name, MooseSystem & moose_system, InputParameters parameters)
-  :Diffusion(name, moose_system, parameters)
+  :Diffusion(name, moose_system, parameters),
+   _thermal_conductivity(getRealMaterialProperty("thermal_conductivity"))
 {}
-
-void
-TemperatureDiffusion::subdomainSetup()
-{
-  _thermal_conductivity = &_material->getRealProperty("thermal_conductivity");
-}
 
 Real
 TemperatureDiffusion::computeQpResidual()
 {
-  return (*_thermal_conductivity)[_qp]*Diffusion::computeQpResidual();
+  return _thermal_conductivity[_qp]*Diffusion::computeQpResidual();
 }
 
 Real
 TemperatureDiffusion::computeQpJacobian()
 {
-  return (*_thermal_conductivity)[_qp]*Diffusion::computeQpJacobian();
+  return _thermal_conductivity[_qp]*Diffusion::computeQpJacobian();
 }

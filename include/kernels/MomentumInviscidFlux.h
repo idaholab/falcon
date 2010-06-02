@@ -14,9 +14,7 @@ class MomentumInviscidFlux : public Kernel
 public:
 
   MomentumInviscidFlux(std::string name, MooseSystem & moose_system, InputParameters parameters);
-  
-  virtual void subdomainSetup();
-  
+
 protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
@@ -33,7 +31,7 @@ protected:
 
   int _component;
 
-  MooseArray<Real> * _pressure;
+  MooseArray<Real> & _pressure;
 };
  
 #endif

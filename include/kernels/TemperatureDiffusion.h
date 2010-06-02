@@ -15,13 +15,11 @@ public:
 
   TemperatureDiffusion(std::string name, MooseSystem & moose_system, InputParameters parameters);
     
-  virtual void subdomainSetup();
-
 protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
 
-  MooseArray<Real> *_thermal_conductivity;
+  MooseArray<Real> &_thermal_conductivity;
   
 };
 #endif //TEMPERATUREDIFFUSION

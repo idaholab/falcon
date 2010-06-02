@@ -15,17 +15,15 @@ public:
 
   DarcyMassFluxZ(std::string name, MooseSystem & moose_system, InputParameters parameters);
     
-  virtual void subdomainSetup();
-
 protected:
   virtual Real computeQpResidual();
   
   virtual Real computeQpJacobian();
 
-  MooseArray<Real> *_darcy_params;
-  MooseArray<Real> *_gravity;
-  MooseArray<Real> *_rho_w;
+  MooseArray<Real> &_darcy_params;
+  MooseArray<Real> &_gravity;
+  MooseArray<Real> &_rho_w;
   
-  MooseArray<RealVectorValue> *_gravity_vector;
+  MooseArray<RealVectorValue> &_gravity_vector;
 };
 #endif //DARCYMASSFLUXZ

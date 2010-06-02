@@ -9,19 +9,13 @@ InputParameters validParams<TemperatureImplicitEuler>()
 }
 
 TemperatureImplicitEuler::TemperatureImplicitEuler(std::string name, MooseSystem & moose_system, InputParameters parameters)
-  :ImplicitEuler(name, moose_system, parameters)
+  :ImplicitEuler(name, moose_system, parameters),
+   _water_specific_heat(getRealMaterialProperty("water_specific_heat")),
+   _rock_specific_heat(getRealMaterialProperty("rock_specific_heat")),
+   _porosity(getRealMaterialProperty("porosity")),
+   _rho_w(getRealMaterialProperty("rho_w")),
+   _rho_r(getRealMaterialProperty("rho_r"))
 {}
-
-void
-TemperatureImplicitEuler::subdomainSetup()
-{
-  _water_specific_heat = &_material->getRealProperty("water_specific_heat");
-  _rock_specific_heat = &_material->getRealProperty("rock_specific_heat");
-  _porosity = &_material->getRealProperty("porosity");
-  _rho_w = &_material->getRealProperty("rho_w");
-  _rho_r = &_material->getRealProperty("rho_r");
-
-}
 
 Real
 TemperatureImplicitEuler::computeQpResidual()
@@ -32,11 +26,11 @@ Real _const =
 
     (
       (
-        (*_porosity)[_qp] * (*_rho_w)[_qp] * (*_water_specific_heat)[_qp]
+        _porosity[_qp] * _rho_w[_qp] * _water_specific_heat[_qp]
       )
       +
       (
-        (1.0 - (*_porosity)[_qp]) * (*_rho_r)[_qp] * (*_rock_specific_heat)[_qp]
+        (1.0 - _porosity[_qp]) * _rho_r[_qp] * _rock_specific_heat[_qp]
       )
       );
 
@@ -60,11 +54,11 @@ Real _const =
 
     (
       (
-        (*_porosity)[_qp] * (*_rho_w)[_qp] * (*_water_specific_heat)[_qp]
+        _porosity[_qp] * _rho_w[_qp] * _water_specific_heat[_qp]
       )
       +
       (
-        (1.0 - (*_porosity)[_qp]) * (*_rho_r)[_qp] * (*_rock_specific_heat)[_qp]
+        (1.0 - _porosity[_qp]) * _rho_r[_qp] * _rock_specific_heat[_qp]
       )
       );
 

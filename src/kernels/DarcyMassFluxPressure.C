@@ -11,23 +11,18 @@ InputParameters validParams<DarcyMassFluxPressure>()
 DarcyMassFluxPressure::DarcyMassFluxPressure(std::string name,
                                              MooseSystem & moose_system,
                                              InputParameters parameters)
-  :Diffusion(name, moose_system, parameters)
+  :Diffusion(name, moose_system, parameters),
+   _darcy_params(getRealMaterialProperty("darcy_params"))
 {}
-
-void
-DarcyMassFluxPressure::subdomainSetup()
-{
-  _darcy_params = &_material->getRealProperty("darcy_params");
-}
 
 Real
 DarcyMassFluxPressure::computeQpResidual()
 {
-  return (*_darcy_params)[_qp]*Diffusion::computeQpResidual();
+  return _darcy_params[_qp]*Diffusion::computeQpResidual();
 }
 
 Real
 DarcyMassFluxPressure::computeQpJacobian()
 {
-  return (*_darcy_params)[_qp]*Diffusion::computeQpJacobian();
+  return _darcy_params[_qp]*Diffusion::computeQpJacobian();
 }

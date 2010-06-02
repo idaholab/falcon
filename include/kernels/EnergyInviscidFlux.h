@@ -15,8 +15,6 @@ class EnergyInviscidFlux : public Kernel
 public:
 
   EnergyInviscidFlux(std::string name, MooseSystem & moose_system, InputParameters parameters);
-
-  virtual void subdomainSetup();
   
 protected:
   virtual Real computeQpResidual();
@@ -32,7 +30,7 @@ protected:
   unsigned int _w_vel_var;
   MooseArray<Real> & _w_vel;
 
-  MooseArray<Real> * _pressure;
+  MooseArray<Real> & _pressure;
 };
  
 #endif

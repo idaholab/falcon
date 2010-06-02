@@ -10,7 +10,8 @@ InputParameters validParams<SolidMechSwellingSolid>()
 }
 
 SolidMechSwellingSolid::SolidMechSwellingSolid(std::string name, MooseSystem & moose_system, InputParameters parameters)
-  :SolidMechTempCouple(name, moose_system, parameters)
+  :SolidMechTempCouple(name, moose_system, parameters),
+   _solid_swelling_strain(getRealMaterialProperty("solid_swelling_strain"))
 {
   _component = parameters.get<Real>("component");
 
@@ -21,19 +22,10 @@ SolidMechSwellingSolid::SolidMechSwellingSolid(std::string name, MooseSystem & m
   }
 }
 
-
-void
-SolidMechSwellingSolid::subdomainSetup()
-{
-  SolidMechTempCouple::subdomainSetup();
-    
-  _solid_swelling_strain = &_material->getRealProperty("solid_swelling_strain");
-}
-
 Real
 SolidMechSwellingSolid::computeQpResidual()
 {
   recomputeCouplingConstants();
 
-  return -(_c1*(1+2*_c2)*_dphi[_i][_qp](_component)*(*_solid_swelling_strain)[_qp]);
+  return -(_c1*(1+2*_c2)*_dphi[_i][_qp](_component)*_solid_swelling_strain[_qp]);
 }

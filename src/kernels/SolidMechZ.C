@@ -32,9 +32,9 @@ SolidMechZ::computeQpResidual()
   _stress(1) = _c1*_c3*_strain(1,2);
   _stress(2) = _c1*_c2*_strain(0,0)+_c1*_c2*_strain(1,1)+_c1*_strain(2,2);
 */
-  _stress(0) =  ( *_stress_shear_vector)[_qp](1); //tau_zx
-  _stress(1) =  ( *_stress_shear_vector)[_qp](2); //tau_zy
-  _stress(2) = ( *_stress_normal_vector)[_qp](2); //tau_zz
+  _stress(0) = _stress_shear_vector[_qp](1); //tau_zx
+  _stress(1) = _stress_shear_vector[_qp](2); //tau_zy
+  _stress(2) = _stress_normal_vector[_qp](2); //tau_zz
 
     
   return (_stress*_dphi[_i][_qp]);

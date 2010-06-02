@@ -10,14 +10,8 @@ InputParameters validParams<SolidMechPoroCouple>()
 SolidMechPoroCouple::SolidMechPoroCouple(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :SolidMech(name, moose_system, parameters),
    _pressure_var(coupled("pressure")),
+   _biot_coeff(getRealMaterialProperty("biot_coeff")),
    _grad_pressure(coupledGrad("pressure")),
    _pressure_val(coupledVal("pressure"))
 {}
-
-void
-SolidMechPoroCouple::subdomainSetup()
-{
-  SolidMech::subdomainSetup(); 
-  _biot_coeff = &_material->getRealProperty("biot_coeff");
-}
 

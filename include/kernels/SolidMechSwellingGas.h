@@ -16,8 +16,6 @@ class SolidMechSwellingGas : public Kernel
 public:
   SolidMechSwellingGas(std::string name, MooseSystem & moose_system, InputParameters parameters);
   
-  virtual void subdomainSetup();
-  
 protected:
   virtual Real computeQpResidual();
   
@@ -27,6 +25,6 @@ private:
   Real _burnup;
   int _component;
 
-  MooseArray<Real> * _density;
+  MooseArray<Real> & _density;
 };
 #endif //SOLIDMECHSWELLINGGAS 

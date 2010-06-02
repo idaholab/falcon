@@ -41,10 +41,10 @@ SolidMechY::computeQpResidual()
       _stress(2) = _c1*_c3*_strain(1,2);
       }
 */
-  _stress(0) =  ( *_stress_shear_vector)[_qp](0); //tau_yx
-  _stress(1) = ( *_stress_normal_vector)[_qp](1); //tau_yy
+  _stress(0) = _stress_shear_vector[_qp](0); //tau_yx
+  _stress(1) = _stress_normal_vector[_qp](1); //tau_yy
   if( 3 == _dim)
-    _stress(2) =  ( *_stress_shear_vector)[_qp](2); //tau_yz
+    _stress(2) = _stress_shear_vector[_qp](2); //tau_yz
 
   Real value = (_stress*_dphi[_i][_qp]);
     

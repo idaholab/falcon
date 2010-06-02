@@ -12,7 +12,8 @@ InputParameters validParams<SolidMechSwellingGas>()
 
 SolidMechSwellingGas::SolidMechSwellingGas(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
-   _temp(coupledVal("temp"))
+   _temp(coupledVal("temp")),
+   _density(getRealMaterialProperty("density"))
 {
   _burnup = parameters.get<Real>("burnup");
   _component = parameters.get<Real>("component");
@@ -24,16 +25,10 @@ SolidMechSwellingGas::SolidMechSwellingGas(std::string name, MooseSystem & moose
   }    
 }
 
-void
-SolidMechSwellingGas::subdomainSetup()
-{
-  _density = &_material->getRealProperty("density");
-}
-
 Real
 SolidMechSwellingGas::computeQpResidual()
 {
-  Real density = (*_density)[_qp];
+  Real density = _density[_qp];
 
   return -_dphi[_i][_qp](_component)*
     (

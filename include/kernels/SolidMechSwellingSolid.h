@@ -14,13 +14,11 @@ class SolidMechSwellingSolid : public SolidMechTempCouple
 public:
   SolidMechSwellingSolid(std::string name, MooseSystem & moose_system, InputParameters parameters);
   
-  virtual void subdomainSetup();
-  
 protected:
   virtual Real computeQpResidual();
   
 private:
-  MooseArray<Real> * _solid_swelling_strain;
+  MooseArray<Real> & _solid_swelling_strain;
 
   Real _burnup;
   int _component;

@@ -17,16 +17,11 @@ MomentumInviscidFlux::MomentumInviscidFlux(std::string name, MooseSystem & moose
    _v_vel(coupledVal("v")),
    _w_vel_var(_dim == 3 ? coupled("w") : 0),
    _w_vel(_dim == 3 ? coupledVal("w") : _zero),
-   _component(parameters.get<Real>("component"))
+   _component(parameters.get<Real>("component")),
+   _pressure(getRealMaterialProperty("pressure"))
 {
   if(_component < 0)
     mooseError("Must select a component for MomentumInviscidFlux");
-}
-
-void
-MomentumInviscidFlux::subdomainSetup()
-{
-  _pressure = &_material->getRealProperty("pressure");
 }
 
 Real
@@ -34,7 +29,7 @@ MomentumInviscidFlux::computeQpResidual()
 {
   RealVectorValue vec(_u[_qp]*_u_vel[_qp],_u[_qp]*_v_vel[_qp],_u[_qp]*_w_vel[_qp]);
 
-  vec(_component) += (*_pressure)[_qp];
+  vec(_component) += _pressure[_qp];
 
   return -(vec*_dphi[_i][_qp]);
 }

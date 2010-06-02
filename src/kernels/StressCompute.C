@@ -12,23 +12,18 @@ InputParameters validParams<StressCompute>()
 
 StressCompute::StressCompute(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
-   _component(parameters.get<int>("component"))
+   _component(parameters.get<int>("component")),
+   _stress_normal_vector(getRealVectorValueMaterialProperty("stress_normal_vector")),
+   _stress_shear_vector(getRealVectorValueMaterialProperty("stress_shear_vector"))
 {}
-
-void
-StressCompute::subdomainSetup()
-{
-  _stress_normal_vector = &_material->getRealVectorValueProperty("stress_normal_vector");
-  _stress_shear_vector  = &_material->getRealVectorValueProperty("stress_shear_vector");
-}
 
 Real
 StressCompute::computeQpResidual()
 {
   if ( _component <= 2)  
-    return (_u[_qp]-(*_stress_normal_vector)[_qp](_component)) * _phi[_i][_qp];
+    return (_u[_qp]-_stress_normal_vector[_qp](_component)) * _phi[_i][_qp];
   else
-    return (_u[_qp]-(*_stress_shear_vector)[_qp](_component-3)) * _phi[_i][_qp];
+    return (_u[_qp]-_stress_shear_vector[_qp](_component-3)) * _phi[_i][_qp];
 }
 
 Real

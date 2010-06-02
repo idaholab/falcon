@@ -16,13 +16,11 @@ public:
 
   DarcyMassFluxPressure(std::string name, MooseSystem & moose_system, InputParameters parameters);
     
-  virtual void subdomainSetup();
-
 protected:
   virtual Real computeQpResidual();
 
   virtual Real computeQpJacobian();
 
-  MooseArray<Real> *_darcy_params;
+  MooseArray<Real> &_darcy_params;
 };
 #endif //DARCYMASSFLUXPRESSURE
