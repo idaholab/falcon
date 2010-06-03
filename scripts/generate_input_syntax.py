@@ -1,14 +1,5 @@
 #!/usr/bin/env python
 import sys, os
-from socket import gethostname
-
-# if we're running this from the build system we only want to run it once instead
-# of on all four targets. So bitten passes the --helios-only option, then this
-# script does nothing if it is not run on helios
-if len(sys.argv) == 2 and sys.argv[1] == '--helios-only':
-  if gethostname() != 'helios':
-    print 'Syntax NOT generated because this is not helios'
-    sys.exit(0)
 
 # get the location of this application
 app_path = os.path.abspath(os.path.dirname(sys.argv[0]))
@@ -27,4 +18,4 @@ import genInputFileSyntaxHTML
 
 # this will automatically copy the documentation to the base directory
 # in a folder named syntax
-genInputFileSyntaxHTML.generateHTML(app_name, app_path, MOOSE_DIR)
+genInputFileSyntaxHTML.generateHTML(app_name, app_path, sys.argv, MOOSE_DIR)
