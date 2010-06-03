@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys, os
 
-# get the location of this application
+# get the location of this script
 app_path = os.path.abspath(os.path.dirname(sys.argv[0]))
 # this script is actually in the scripts subdirectory, so go up a level
 app_path += '/..'
