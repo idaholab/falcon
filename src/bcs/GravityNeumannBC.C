@@ -21,17 +21,17 @@ GravityNeumannBC::GravityNeumannBC(std::string name, MooseSystem & moose_system,
 Real
 GravityNeumannBC::computeQpResidual()
 {
-  return _phi_face[_i][_qp]*(
-    -(((_permeability*_density)/_mu_w)*_grad_u_face[_qp]*_normals_face[_qp])
+  return _phi[_i][_qp]*(
+    -(((_permeability*_density)/_mu_w)*_grad_u[_qp]*_normals[_qp])
     -
-    (((_permeability*_density*_density)/_mu_w)*_gravity*_normals_face[_qp])
+    (((_permeability*_density*_density)/_mu_w)*_gravity*_normals[_qp])
     );
 }
 
 Real
 GravityNeumannBC::computeQpJacobian()
 {
-  return _phi_face[_i][_qp]*(
-    -(((_permeability*_density)/_mu_w)*_dphi_face[_j][_qp]*_normals_face[_qp]));  
+  return _phi[_i][_qp]*(
+    -(((_permeability*_density)/_mu_w)*_dphi[_j][_qp]*_normals[_qp]));
 }
 

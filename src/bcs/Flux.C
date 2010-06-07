@@ -16,5 +16,5 @@ Flux::Flux(std::string name, MooseSystem & moose_system, InputParameters paramet
 Real
 Flux::computeQpIntegral()
 {
-  return -_coefficient * _grad_u_face[_qp] * _normals_face[_qp];
+  return -_coefficient * _grad_u[_qp] * _normals[_qp];
 }

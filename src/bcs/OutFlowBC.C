@@ -25,7 +25,7 @@ OutFlowBC::computeQpResidual()
 //    std::cout<<"Darcy velocity" << _Darcy_vel(1);
 //    std::cout << "porosity,diffusivity, cond " << _porosity <<" " << _diff <<" "<< _cond << std::endl;
 
-    Real _aa = -_phi_face[_i][_qp]*_porosity*_diff*_grad_u_face[_qp]*_normals_face[_qp];
+    Real _aa = -_phi[_i][_qp]*_porosity*_diff*_grad_u[_qp]*_normals[_qp];
     
 //    if (_aa <= 1.0e-12)
 //      _aa=0.0;
@@ -40,5 +40,5 @@ Real
 OutFlowBC::computeQpJacobian()
   {
 //    RealGradient _Darcy_vel = -_cond*_grad_p[_qp];
-    return -_phi_face[_i][_qp]*_porosity*_diff*_dphi_face[_j][_qp]*_normals_face[_qp];
+    return -_phi[_i][_qp]*_porosity*_diff*_dphi[_j][_qp]*_normals[_qp];
   }
