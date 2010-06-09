@@ -29,6 +29,11 @@ InputParameters validParams<ThermalPoroElastic>()
   params.set<Real>("gy") = 0.0;           //y component of the gravity pressure vector
   params.set<Real>("gz") = 1.0;           //z component of the gravity pressure vector
 
+  params.addCoupledVar("temperature", "TODO: add description");
+  params.addCoupledVar("x_disp", "TODO: add description");
+  params.addCoupledVar("y_disp", "TODO: add description");
+  params.addCoupledVar("z_disp", "TODO: add description");
+
   return params;
 }
 

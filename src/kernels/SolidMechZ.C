@@ -3,7 +3,10 @@
 template<>
 InputParameters validParams<SolidMechZ>()
 {
-  return validParams<SolidMech>();
+  InputParameters params = validParams<SolidMech>();
+  params.addRequiredCoupledVar("x", "Coupled Displacement in the x Direction");
+  params.addRequiredCoupledVar("y", "Coupled Displacement in the y Direction");
+  return params;
 }
 
 SolidMechZ::SolidMechZ(std::string name, MooseSystem & moose_system, InputParameters parameters)

@@ -38,43 +38,40 @@
   [./solid_x]
     type = SolidMechX
     variable = x_disp
-    coupled_to = 'y_disp z_disp'
-    coupled_as = 'y z'
+    y = y_disp
+    z = z_disp
   [../]
 
   [./solid_y]
     type = SolidMechY
     variable = y_disp
-    coupled_to = 'x_disp z_disp'
-    coupled_as = 'x z'
+    x = x_disp
+    z = z_disp
   [../]
 
   [./solid_z]
     type = SolidMechZ
     variable = z_disp
-    coupled_to = 'x_disp y_disp'
-    coupled_as = 'x y'
+    x = x_disp
+    y = y_disp
   [../]
 
   [./solid_couple_x]
     type = SolidMechTempCoupleX
     variable = x_disp
-    coupled_to = 'temp'
-    coupled_as = 'temperature'
+    temperature = temp
   [../]
 
   [./solid_couple_y]
     type = SolidMechTempCoupleY
     variable = y_disp
-    coupled_to = 'temp'
-    coupled_as = 'temperature'
+    temperature = temp
   [../]
 
   [./solid_couple_z]
     type = SolidMechTempCoupleZ
     variable = z_disp
-    coupled_to = 'temp'
-    coupled_as = 'temperature'
+    temperature = temp
   [../]
 
   [./heat]
@@ -129,8 +126,10 @@
   [./constant]
     type = ThermalPoroElastic
     block = 1
-    coupled_to = 'temp        x_disp y_disp z_disp'
-    coupled_as = 'temperature x_disp y_disp z_disp'
+    temperature = temp
+    x_disp = x_disp
+    y_disp = y_disp
+    z_disp = z_disp
     thermal_conductivity = 1.0
     youngs_modulus = 1.0
     poissons_ratio = .3
@@ -153,5 +152,3 @@
   output_initial = true
   exodus = true
 []
-   
-    

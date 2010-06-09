@@ -35,8 +35,8 @@
   [./solid_x]
     type = SolidMechX
     variable = x_disp
-    coupled_to = 'y_disp z_disp'
-    coupled_as = 'y z'
+    y = y_disp
+    z = z_disp
     E  = 2e11
     nu = .3
   [../]
@@ -44,8 +44,8 @@
   [./solid_y]
     type = SolidMechY
     variable = y_disp
-    coupled_to = 'x_disp z_disp'
-    coupled_as = 'x z'
+    x = x_disp
+    z = z_disp
     E  = 2e11
     nu = .3
   [../]
@@ -53,8 +53,8 @@
   [./solid_z]
     type = SolidMechZ
     variable = z_disp
-    coupled_to = 'y_disp x_disp'
-    coupled_as = 'y x'
+    y = y_disp
+    x = x_disp
     E  = 2e11
     nu = .3
   [../]
@@ -97,8 +97,9 @@
   [./constant]
    type = ThermalPoroElastic
     block = 1
-    coupled_to = 'x_disp y_disp z_disp'
-    coupled_as = 'x_disp y_disp z_disp'
+    x_disp = x_disp
+    y_disp = y_disp
+    z_disp = z_disp
     youngs_modulus = 2e11
     poissons_ratio = .3
   [../]
@@ -122,5 +123,3 @@
 #  gmv = true
 #  tecplot = true
 []
-   
-    

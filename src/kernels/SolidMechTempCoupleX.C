@@ -4,6 +4,7 @@ template<>
 InputParameters validParams<SolidMechTempCoupleX>()
 {
   InputParameters params = validParams<SolidMechTempCouple>();
+  params.addCoupledVar("temperature", "TODO: add description");
   return params;
 }
 
