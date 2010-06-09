@@ -45,7 +45,7 @@ Constant::Constant(std::string name,
 void
 Constant::computeProperties()
 {
-  for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
+  for(unsigned int qp=0; qp<_n_qpoints; qp++)
   {
     _density[qp] = _my_density;
     _rho_r[qp] = _my_density;

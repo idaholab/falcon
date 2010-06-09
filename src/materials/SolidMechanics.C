@@ -50,7 +50,7 @@ SolidMechanics::computeProperties()
 {
   PorousMedia::computeProperties();
   
-  for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
+  for(unsigned int qp=0; qp<_n_qpoints; qp++)
   {
 
     _alpha[qp]                = _input_thermal_expansion;

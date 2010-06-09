@@ -110,7 +110,7 @@ ThermalPoroElastic::ThermalPoroElastic(std::string name,
 void
 ThermalPoroElastic::computeProperties()
 {
-  for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
+  for(unsigned int qp=0; qp<_n_qpoints; qp++)
   {
 //rock properties
     _permeability[qp]         = _input_permeability;
