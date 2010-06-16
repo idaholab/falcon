@@ -31,7 +31,7 @@ MomentumInviscidFlux::computeQpResidual()
 
   vec(_component) += _pressure[_qp];
 
-  return -(vec*_dphi[_i][_qp]);
+  return -(vec*_grad_phi[_i][_qp]);
 }
 
 Real
@@ -39,7 +39,7 @@ MomentumInviscidFlux::computeQpJacobian()
 {
   RealVectorValue vec(_phi[_j][_qp]*_u_vel[_qp],_phi[_j][_qp]*_v_vel[_qp],_phi[_j][_qp]*_w_vel[_qp]);
 
-  return -(vec*_dphi[_i][_qp]);
+  return -(vec*_grad_phi[_i][_qp]);
 }
 
 Real
@@ -48,17 +48,17 @@ MomentumInviscidFlux::computeQpOffDiagJacobian(unsigned int jvar)
   if(jvar == _u_vel_var)
   {
     RealVectorValue vec(_u[_qp]*_phi[_j][_qp],0,0);
-    return -(vec*_dphi[_i][_qp]);
+    return -(vec*_grad_phi[_i][_qp]);
   }
   else if(jvar == _v_vel_var)
   {
     RealVectorValue vec(0,_u[_qp]*_phi[_j][_qp],0);
-    return -(vec*_dphi[_i][_qp]);
+    return -(vec*_grad_phi[_i][_qp]);
   }
   else if(jvar == _w_vel_var)
   {
     RealVectorValue vec(0,0,_u[_qp]*_phi[_j][_qp]);
-    return -(vec*_dphi[_i][_qp]);
+    return -(vec*_grad_phi[_i][_qp]);
   }
 
   return 0;

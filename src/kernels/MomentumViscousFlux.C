@@ -27,5 +27,5 @@ MomentumViscousFlux::computeQpResidual()
 
   RealVectorValue vec(vst(0,_component),vst(1,_component),vst(2,_component));
 
-  return vec*_dphi[_i][_qp];
+  return vec*_grad_phi[_i][_qp];
 }

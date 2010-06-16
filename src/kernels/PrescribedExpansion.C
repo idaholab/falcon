@@ -20,5 +20,5 @@ PrescribedExpansion::computeQpResidual()
 {
   recomputeCouplingConstants();
   
-  return -(_c1*(1+2*_c2)*_dphi[_i][_qp](_component)*0.01*_percent/3.0);
+  return -(_c1*(1+2*_c2)*_grad_phi[_i][_qp](_component)*0.01*_percent/3.0);
 }

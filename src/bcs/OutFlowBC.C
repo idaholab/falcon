@@ -40,5 +40,5 @@ Real
 OutFlowBC::computeQpJacobian()
   {
 //    RealGradient _Darcy_vel = -_cond*_grad_p[_qp];
-    return -_phi[_i][_qp]*_porosity*_diff*_dphi[_j][_qp]*_normals[_qp];
+    return -_phi[_i][_qp]*_porosity*_diff*_grad_phi[_j][_qp]*_normals[_qp];
   }

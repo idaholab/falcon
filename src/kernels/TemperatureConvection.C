@@ -26,5 +26,5 @@ Real TemperatureConvection::computeQpResidual()
 Real TemperatureConvection::computeQpJacobian()
 {
 //   return _darcy_flux[_qp]*_phi[_i][_qp]*_dphi[_j][_qp];
-   return _water_specific_heat[_qp]*_darcy_flux[_qp]*_rho_w[_qp]*_phi[_i][_qp]*_dphi[_j][_qp];
+   return _water_specific_heat[_qp]*_darcy_flux[_qp]*_rho_w[_qp]*_phi[_i][_qp]*_grad_phi[_j][_qp];
 }

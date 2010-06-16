@@ -19,7 +19,7 @@ DarcyMassFluxZ::DarcyMassFluxZ(std::string name, MooseSystem & moose_system, Inp
 Real
 DarcyMassFluxZ::computeQpResidual()
 {
-  return _darcy_params[_qp]*_gravity[_qp]*_rho_w[_qp]*_gravity_vector[_qp]*_dphi[_i][_qp];
+  return _darcy_params[_qp]*_gravity[_qp]*_rho_w[_qp]*_gravity_vector[_qp]*_grad_phi[_i][_qp];
 }
 
 Real

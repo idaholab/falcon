@@ -27,5 +27,5 @@ SolidMechSwellingSolid::computeQpResidual()
 {
   recomputeCouplingConstants();
 
-  return -(_c1*(1+2*_c2)*_dphi[_i][_qp](_component)*_solid_swelling_strain[_qp]);
+  return -(_c1*(1+2*_c2)*_grad_phi[_i][_qp](_component)*_solid_swelling_strain[_qp]);
 }

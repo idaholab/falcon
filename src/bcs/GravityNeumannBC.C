@@ -32,6 +32,6 @@ Real
 GravityNeumannBC::computeQpJacobian()
 {
   return _phi[_i][_qp]*(
-    -(((_permeability*_density)/_mu_w)*_dphi[_j][_qp]*_normals[_qp]));
+    -(((_permeability*_density)/_mu_w)*_grad_phi[_j][_qp]*_normals[_qp]));
 }
 

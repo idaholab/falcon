@@ -30,7 +30,7 @@ SolidMechSwellingGas::computeQpResidual()
 {
   Real density = _density[_qp];
 
-  return -_dphi[_i][_qp](_component)*
+  return -_grad_phi[_i][_qp](_component)*
     (
       2.25e-31*density*
       std::pow(2800-_temp[_qp],11.73)*

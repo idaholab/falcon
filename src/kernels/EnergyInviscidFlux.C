@@ -26,7 +26,7 @@ EnergyInviscidFlux::computeQpResidual()
                       _v_vel[_qp]*(_u[_qp]+_pressure[_qp]),
                       _w_vel[_qp]*(_u[_qp]+_pressure[_qp]));
 
-  return -(vec*_dphi[_i][_qp]);
+  return -(vec*_grad_phi[_i][_qp]);
 }
 
 
@@ -37,7 +37,7 @@ EnergyInviscidFlux::computeQpJacobian()
                       _v_vel[_qp]*_phi[_j][_qp],
                       _w_vel[_qp]*_phi[_j][_qp]);
 
-  return -(vec*_dphi[_i][_qp]);
+  return -(vec*_grad_phi[_i][_qp]);
 }
 
 Real
@@ -46,17 +46,17 @@ EnergyInviscidFlux::computeQpOffDiagJacobian(unsigned int jvar)
   if(jvar == _u_vel_var)
   {
     RealVectorValue vec(_phi[_j][_qp]*(_u[_qp]+_pressure[_qp]),0,0);
-    return -(vec*_dphi[_i][_qp]);
+    return -(vec*_grad_phi[_i][_qp]);
   }
   else if(jvar == _v_vel_var)
   {
     RealVectorValue vec(0,_phi[_j][_qp]*(_u[_qp]+_pressure[_qp]),0);
-    return -(vec*_dphi[_i][_qp]);
+    return -(vec*_grad_phi[_i][_qp]);
   }
   else if(jvar == _w_vel_var)
   {
     RealVectorValue vec(0,0,_phi[_j][_qp]*(_u[_qp]+_pressure[_qp]));
-    return -(vec*_dphi[_i][_qp]);
+    return -(vec*_grad_phi[_i][_qp]);
   }
 
   return 0;
