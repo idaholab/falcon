@@ -15,7 +15,7 @@ InputParameters validParams<CoupledViscosityAux>()
 CoupledViscosityAux::CoupledViscosityAux(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :AuxKernel(name, moose_system, parameters),
    _temperature(coupled("temperature")),
-   _temperature_val(coupledValAux("temperature")),
+   _temperature_val(coupledVal("temperature")),
    _a(_parameters.get<Real>("a")),
    _b(_parameters.get<Real>("b")),
    _c(_parameters.get<Real>("c")),
@@ -28,17 +28,17 @@ CoupledViscosityAux::computeValue()
 {
 
   
-  if (_temperature_val <= 40.)
+  if (_temperature_val[_qp] <= 40.)
   {
       _a = 1.787E-3;
-      _b = (-0.03288+(1.962E-4*_temperature_val))*_temperature_val;
+      _b = (-0.03288+(1.962E-4*_temperature_val[_qp]))*_temperature_val[_qp];
       _mu_w = _a * exp(_b);
   }
     
-  else if (_temperature_val <= 100.)
+  else if (_temperature_val[_qp] <= 100.)
   {
       _a = 1e-3;
-      _b = (1+(0.015512*(_temperature_val-20)));
+      _b = (1+(0.015512*(_temperature_val[_qp]-20)));
       _c = -1.572;
       _mu_w = _a * pow(_b,_c);
   }
@@ -46,7 +46,7 @@ CoupledViscosityAux::computeValue()
   else // (_temperature_val <= 300.)
   {
       _a = 0.2414;
-      _b = 247 / (_temperature_val+133.15);
+      _b = 247 / (_temperature_val[_qp]+133.15);
       _c = (_a * pow(10,_b));
       _mu_w = _c * 1E-4;
   }

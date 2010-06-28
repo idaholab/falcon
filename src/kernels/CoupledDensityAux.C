@@ -11,7 +11,7 @@ InputParameters validParams<CoupledDensityAux>()
 CoupledDensityAux::CoupledDensityAux(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :AuxKernel(name, moose_system, parameters),
    _temperature(coupled("temperature")),
-   _temperature_val(coupledValAux("temperature")),
+   _temperature_val(coupledVal("temperature")),
    _value(_parameters.get<Real>("value"))
 {}
 
@@ -19,5 +19,5 @@ CoupledDensityAux::CoupledDensityAux(std::string name, MooseSystem & moose_syste
 Real
 CoupledDensityAux::computeValue()
 {
-  return 1000.*(1-((pow(((_temperature_val)-3.9863),2)/508929.2)*(((_temperature_val)+288.9414)/((_temperature_val)+68.12963))));
+  return 1000.*(1-((pow(((_temperature_val[_qp])-3.9863),2)/508929.2)*(((_temperature_val[_qp])+288.9414)/((_temperature_val[_qp])+68.12963))));
 }
