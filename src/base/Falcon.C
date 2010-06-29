@@ -37,17 +37,25 @@
 #include "Velocity.h"
 #include "Temperature.h"
 #include "DarcyImplicitEuler.h"
+#include "CoupledDarcyImplicitEuler.h"
 #include "DarcyMassFluxPressure.h"
+#include "DarcyMassFluxPressureSteam.h"
 #include "DarcyMassFluxZ.h"
+#include "DarcyMassFluxZSteam.h"
 #include "TemperatureImplicitEuler.h"
 #include "TemperatureDiffusion.h"
 #include "TemperatureConvection.h"
+#include "EnthalpyImplicitEuler.h"
+#include "EnthalpyDiffusion.h"
+#include "EnthalpyConvectionWater.h"
+#include "EnthalpyConvectionSteam.h"
 #include "DarcyVelocity.h"
 #include "DarcyImplicitBackwardDifference2.h"
 #include "TemperatureImplicitBackwardDifference2.h"
 #include "CoupledDensityAux.h"
 #include "CoupledViscosityAux.h"
 #include "AnalyticalADE1D.h"
+#include "CoupledTemperatureAux.h"
 
 #include "PressureNeumannBC.h"
 #include "GravityNeumannBC.h"
@@ -59,6 +67,7 @@
 #include "ThermalPoroElastic.h"
 #include "PorousMedia.h"
 #include "FluidFlow.h"
+#include "FluidFlow2Phase.h"
 #include "HeatTransport.h"
 #include "SolidMechanics.h"
 #include "Geothermal.h"
@@ -100,18 +109,26 @@ namespace Falcon
     KernelFactory::instance()->registerKernel<Velocity>("Velocity");
     KernelFactory::instance()->registerKernel<Temperature>("Temperature");
     KernelFactory::instance()->registerKernel<DarcyImplicitEuler>("DarcyImplicitEuler");
+    KernelFactory::instance()->registerKernel<CoupledDarcyImplicitEuler>("CoupledDarcyImplicitEuler");
     KernelFactory::instance()->registerKernel<DarcyMassFluxPressure>("DarcyMassFluxPressure");
+    KernelFactory::instance()->registerKernel<DarcyMassFluxPressureSteam>("DarcyMassFluxPressureSteam");
     KernelFactory::instance()->registerKernel<DarcyMassFluxZ>("DarcyMassFluxZ");
+    KernelFactory::instance()->registerKernel<DarcyMassFluxZSteam>("DarcyMassFluxZSteam");
     KernelFactory::instance()->registerKernel<TemperatureImplicitEuler>("TemperatureImplicitEuler");
     KernelFactory::instance()->registerKernel<TemperatureDiffusion>("TemperatureDiffusion");
     KernelFactory::instance()->registerKernel<TemperatureConvection>("TemperatureConvection");
+    KernelFactory::instance()->registerKernel<EnthalpyImplicitEuler>("EnthalpyImplicitEuler");
+    KernelFactory::instance()->registerKernel<EnthalpyDiffusion>("EnthalpyDiffusion");
+    KernelFactory::instance()->registerKernel<EnthalpyConvectionWater>("EnthalpyConvectionWater");
+    KernelFactory::instance()->registerKernel<EnthalpyConvectionSteam>("EnthalpyConvectionSteam");
     KernelFactory::instance()->registerKernel<DarcyVelocity>("DarcyVelocity");
     KernelFactory::instance()->registerKernel<DarcyImplicitBackwardDifference2>("DarcyImplicitBackwardDifference2");
     KernelFactory::instance()->registerKernel<TemperatureImplicitBackwardDifference2>("TemperatureImplicitBackwardDifference2");
 
     AuxFactory::instance()->registerAux<CoupledDensityAux>("CoupledDensityAux");
     AuxFactory::instance()->registerAux<CoupledViscosityAux>("CoupledViscosityAux");
-    AuxFactory::instance()->registerAux<AnalyticalADE1D>("AnalyticalADE1D");    
+    AuxFactory::instance()->registerAux<AnalyticalADE1D>("AnalyticalADE1D");
+    AuxFactory::instance()->registerAux<CoupledTemperatureAux>("CoupledTemperatureAux");
         
     BCFactory::instance()->registerBC<PressureNeumannBC>("PressureNeumannBC");
     BCFactory::instance()->registerBC<GravityNeumannBC>("GravityNeumannBC");
@@ -122,6 +139,7 @@ namespace Falcon
     MaterialFactory::instance()->registerMaterial<ThermalPoroElastic>("ThermalPoroElastic");
     MaterialFactory::instance()->registerMaterial<PorousMedia>("PorousMedia");
     MaterialFactory::instance()->registerMaterial<FluidFlow>("FluidFlow");
+    MaterialFactory::instance()->registerMaterial<FluidFlow2Phase>("FluidFlow2Phase");
     MaterialFactory::instance()->registerMaterial<HeatTransport>("Heatransport");
     MaterialFactory::instance()->registerMaterial<SolidMechanics>("SolidMechanics");
     MaterialFactory::instance()->registerMaterial<Geothermal>("Geothermal");

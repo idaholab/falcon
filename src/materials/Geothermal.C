@@ -4,7 +4,8 @@ template<>
 InputParameters validParams<Geothermal>()
 {
   InputParameters params = validParams<PorousMedia>();
-  params += validParams<FluidFlow>();
+  // params += validParams<FluidFlow>();
+  params += validParams<FluidFlow2Phase>();
   params += validParams<HeatTransport>();
   params += validParams<SolidMechanics>();
   return params;
@@ -14,7 +15,8 @@ Geothermal::Geothermal(std::string name,
                        MooseSystem & moose_system,
                        InputParameters parameters)
   :PorousMedia(name, moose_system, parameters),
-   FluidFlow(name, moose_system, parameters),
+   // FluidFlow(name, moose_system, parameters),
+   FluidFlow2Phase(name, moose_system, parameters),
    HeatTransport(name, moose_system, parameters),
    SolidMechanics(name, moose_system, parameters)
 {}
@@ -22,7 +24,9 @@ Geothermal::Geothermal(std::string name,
 void
 Geothermal::computeProperties()
 {
-  FluidFlow::computeProperties();
+  
+  // FluidFlow::computeProperties();
+  FluidFlow2Phase::computeProperties();
   HeatTransport::computeProperties();
   SolidMechanics::computeProperties();
 }

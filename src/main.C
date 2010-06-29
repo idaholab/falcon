@@ -46,3 +46,4 @@ int main (int argc, char** argv)
 
   Moose::perf_log.pop("main()","Falcon");
 }
+

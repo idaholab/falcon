@@ -43,7 +43,7 @@ CoupledViscosityAux::computeValue()
       _mu_w = _a * pow(_b,_c);
   }
     
-  else // (_temperature_val <= 300.)
+  else // (_temperature_val[_qp] <= 300.)
   {
       _a = 0.2414;
       _b = 247 / (_temperature_val[_qp]+133.15);
@@ -54,7 +54,7 @@ CoupledViscosityAux::computeValue()
   /*
 
   _a = 1.787E-3;
-  _b = (-0.03288+(1.962E-4*_temperature_val))*_temperature_val;
+  _b = (-0.03288+(1.962E-4*_temperature_val[_qp]))*_temperature_val[_qp];
   return _a * exp(_b);
   */
   return (_mu_w);

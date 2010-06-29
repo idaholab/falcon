@@ -31,9 +31,9 @@ FluidFlow::FluidFlow(std::string name,
      _mu_w(declareRealProperty("mu_w")),
      _c_f(declareRealProperty("c_f")),
      _has_variable_density(parameters.get<bool>("temp_dependent_density")),
-     _darcy_params(declareRealProperty("darcy_params")),
-     _darcy_flux(declareGradientProperty("darcy_flux")),
-     _pore_velocity(declareGradientProperty("pore_velocity"))
+     _darcy_params_w(declareRealProperty("darcy_params_w")),
+     _darcy_flux_w(declareGradientProperty("darcy_flux_w")),
+     _pore_velocity_w(declareGradientProperty("pore_velocity_w"))
 { }
 
 void
@@ -96,9 +96,9 @@ FluidFlow::computeProperties()
 //  compute Darcy flux and pore water velicity on q-points
     if(_has_pressure)
     {
-      _darcy_params[qp] = _permeability[qp] * _rho_w[qp] / _mu_w[qp];
-      _darcy_flux[qp] =  -_permeability[qp] / _mu_w[qp] * ((_grad_p[qp])+(_rho_w[qp]*_gravity[qp]*_gravity_vector[qp]));
-      _pore_velocity[qp] = _darcy_flux[qp] / _porosity[qp];
+      _darcy_params_w[qp] = _permeability[qp] * _rho_w[qp] / _mu_w[qp];
+      _darcy_flux_w[qp] =  -_permeability[qp] / _mu_w[qp] * ((_grad_p[qp])+(_rho_w[qp]*_gravity[qp]*_gravity_vector[qp]));
+      _pore_velocity_w[qp] = _darcy_flux_w[qp] / _porosity[qp];
     }
   }
 }

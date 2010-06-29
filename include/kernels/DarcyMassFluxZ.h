@@ -20,7 +20,7 @@ protected:
   
   virtual Real computeQpJacobian();
 
-  MooseArray<Real> &_darcy_params;
+  MooseArray<Real> &_darcy_params_w;
   MooseArray<Real> &_gravity;
   MooseArray<Real> &_rho_w;
   

@@ -30,9 +30,9 @@ protected:
   MooseArray<Real> & _mu_w;
   MooseArray<Real> & _c_f;
   
-  MooseArray<Real> & _darcy_params;
-  MooseArray<RealGradient> & _darcy_flux;
-  MooseArray<RealGradient> & _pore_velocity;
+  MooseArray<Real> & _darcy_params_w;
+  MooseArray<RealGradient> & _darcy_flux_w;
+  MooseArray<RealGradient> & _pore_velocity_w;
   
 private:
   bool _has_pressure;
