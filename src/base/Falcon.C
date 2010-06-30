@@ -140,7 +140,7 @@ namespace Falcon
     MaterialFactory::instance()->registerMaterial<PorousMedia>("PorousMedia");
     MaterialFactory::instance()->registerMaterial<FluidFlow>("FluidFlow");
     MaterialFactory::instance()->registerMaterial<FluidFlow2Phase>("FluidFlow2Phase");
-    MaterialFactory::instance()->registerMaterial<HeatTransport>("Heatransport");
+    MaterialFactory::instance()->registerMaterial<HeatTransport>("HeatTransport");
     MaterialFactory::instance()->registerMaterial<SolidMechanics>("SolidMechanics");
     MaterialFactory::instance()->registerMaterial<Geothermal>("Geothermal");
     
