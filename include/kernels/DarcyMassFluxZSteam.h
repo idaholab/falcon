@@ -20,10 +20,10 @@ protected:
   
   virtual Real computeQpJacobian();
 
-  MooseArray<Real> &_darcy_params_s;
-  MooseArray<Real> &_gravity;
-  MooseArray<Real> &_rho_s;
+  MaterialProperty<Real> &_darcy_params_s;
+  MaterialProperty<Real> &_gravity;
+  MaterialProperty<Real> &_rho_s;
   
-  MooseArray<RealVectorValue> &_gravity_vector;
+  MaterialProperty<RealVectorValue> &_gravity_vector;
 };
 #endif //DARCYMASSFLUXZSTEAM

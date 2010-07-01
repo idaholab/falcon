@@ -22,7 +22,7 @@ protected:
   virtual Real computeQpOffDiagJacobian(unsigned int jvar);
 
   unsigned int _pv_var;
-  MooseArray<Real> & _pv;
+  VariableValue & _pv;
 
   Real _acceleration;
 };

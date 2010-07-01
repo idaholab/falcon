@@ -21,11 +21,11 @@ protected:
 
   virtual Real computeQpJacobian();
 
-  MooseArray<Real> & _temperature;
-  MooseArray<Real> & _temperature_old;
-  MooseArray<Real> & _porosity;
-  MooseArray<Real> & _rho_mix;
-  MooseArray<Real> & _rho_r;
+  VariableValue & _temperature;
+  VariableValue & _temperature_old;
+  MaterialProperty<Real> & _porosity;
+  MaterialProperty<Real> & _rho_mix;
+  MaterialProperty<Real> & _rho_r;
   
 };
 #endif //ENTHALPYIMPLICITEULER

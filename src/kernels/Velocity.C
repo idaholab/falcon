@@ -10,9 +10,9 @@ InputParameters validParams<Velocity>()
 Velocity::Velocity(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
    _p_var(coupled("p")),
-   _p(coupledVal("p")),
+   _p(coupledValue("p")),
    _momentum_var(coupled("momentum")),
-   _momentum(coupledVal("momentum"))
+   _momentum(coupledValue("momentum"))
 {}
 
 Real

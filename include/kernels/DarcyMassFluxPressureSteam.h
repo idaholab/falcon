@@ -21,6 +21,6 @@ protected:
 
   virtual Real computeQpJacobian();
 
-  MooseArray<Real> &_darcy_params_s;
+  MaterialProperty<Real> &_darcy_params_s;
 };
 #endif //DARCYMASSFLUXPRESSURESTEAM

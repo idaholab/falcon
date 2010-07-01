@@ -11,7 +11,7 @@ InputParameters validParams<SolidMechSwellingSolid>()
 
 SolidMechSwellingSolid::SolidMechSwellingSolid(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :SolidMechTempCouple(name, moose_system, parameters),
-   _solid_swelling_strain(getRealMaterialProperty("solid_swelling_strain"))
+   _solid_swelling_strain(getMaterialProperty<Real>("solid_swelling_strain"))
 {
   _component = parameters.get<Real>("component");
 

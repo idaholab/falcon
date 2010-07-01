@@ -20,10 +20,10 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();  
 
-  MooseArray<Real> & _pressure;
-  MooseArray<RealGradient> & _grad_p;
-  MooseArray<RealGradient> &_darcy_flux_w;
-  MooseArray<Real> &_rho_w;
+  VariableValue & _pressure;
+  VariableGradient & _grad_p;
+  MaterialProperty<RealGradient> &_darcy_flux_w;
+  MaterialProperty<Real> &_rho_w;
 
   
 };

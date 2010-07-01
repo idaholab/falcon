@@ -18,31 +18,31 @@ SolidMechanics::SolidMechanics(std::string name,
                                InputParameters parameters)
   :PorousMedia(name, moose_system, parameters),
      _has_temp(isCoupled("temperature")),
-     _grad_temp  (_has_temp ? coupledGrad("temperature") : _grad_zero),
-     _temperature(_has_temp ? coupledVal("temperature")  : _zero),
+     _grad_temp  (_has_temp ? coupledGradient("temperature") : _grad_zero),
+     _temperature(_has_temp ? coupledValue("temperature")  : _zero),
       _has_x_disp(isCoupled("x_disp")),
-     _grad_x_disp(_has_x_disp ? coupledGrad("x_disp") : _grad_zero),
+     _grad_x_disp(_has_x_disp ? coupledGradient("x_disp") : _grad_zero),
       _has_y_disp(isCoupled("y_disp")),
-     _grad_y_disp(_has_y_disp ? coupledGrad("y_disp") : _grad_zero),
+     _grad_y_disp(_has_y_disp ? coupledGradient("y_disp") : _grad_zero),
       _has_z_disp(isCoupled("z_disp")),
-     _grad_z_disp(_has_z_disp ? coupledGrad("z_disp") : _grad_zero),
+     _grad_z_disp(_has_z_disp ? coupledGradient("z_disp") : _grad_zero),
      
      _input_thermal_expansion(parameters.get<Real>("thermal_expansion")),
      _input_youngs_modulus(parameters.get<Real>("youngs_modulus")),
      _input_poissons_ratio(parameters.get<Real>("poissons_ratio")),
      _input_biot_coeff(parameters.get<Real>("biot_coeff")),     
      _input_t_ref(parameters.get<Real>("t_ref")),
-     //delcare material properties
-     _thermal_strain(declareRealProperty("thermal_strain")),
-     _alpha(declareRealProperty("alpha")),
-     _youngs_modulus(declareRealProperty("youngs_modulus")),
-     _poissons_ratio(declareRealProperty("poissons_ratio")),
-     _biot_coeff(declareRealProperty("biot_coeff")),     
+     //declare material properties
+     _thermal_strain(declareProperty<Real>("thermal_strain")),
+     _alpha(declareProperty<Real>("alpha")),
+     _youngs_modulus(declareProperty<Real>("youngs_modulus")),
+     _poissons_ratio(declareProperty<Real>("poissons_ratio")),
+     _biot_coeff(declareProperty<Real>("biot_coeff")),
      
-     _strain_normal_vector(declareRealVectorValueProperty("strain_normal_vector")),
-     _strain_shear_vector (declareRealVectorValueProperty("strain_shear_vector")),
-     _stress_normal_vector(declareRealVectorValueProperty("stress_normal_vector")),
-     _stress_shear_vector (declareRealVectorValueProperty("stress_shear_vector"))
+     _strain_normal_vector(declareProperty<RealVectorValue>("strain_normal_vector")),
+     _strain_shear_vector (declareProperty<RealVectorValue>("strain_shear_vector")),
+     _stress_normal_vector(declareProperty<RealVectorValue>("stress_normal_vector")),
+     _stress_shear_vector (declareProperty<RealVectorValue>("stress_shear_vector"))
 { }
 
 void

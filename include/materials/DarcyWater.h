@@ -35,25 +35,25 @@ private:
   Real _gy;
   Real _gz;  
 
-  MooseArray<Real> & _permeability;
-  MooseArray<Real> & _porosity;
-  MooseArray<Real> & _rho_w;
-  MooseArray<Real> & _mu_w;
-  MooseArray<Real> & _c_f;
-  MooseArray<Real> & _thermal_conductivity;
-  MooseArray<Real> & _time_coefficient;
-  MooseArray<Real> & _gravity;
-  MooseArray<Real> & _water_specific_heat;
-  MooseArray<Real> & _rock_specific_heat;
-  MooseArray<Real> & _rho_r;
-  MooseArray<Real> & _darcy_params;
-  MooseArray<RealGradient> & _darcy_flux;
-  MooseArray<RealGradient> & _darcy_velocity;
-  MooseArray<RealVectorValue> & _gravity_vector;
-  MooseArray<RealGradient> & _grad_p;
-  MooseArray<Real> & _pressure;
-  MooseArray<Real> & _temperature;
-  MooseArray<RealGradient> & _grad_T;
+  MaterialProperty<Real> & _permeability;
+  MaterialProperty<Real> & _porosity;
+  MaterialProperty<Real> & _rho_w;
+  MaterialProperty<Real> & _mu_w;
+  MaterialProperty<Real> & _c_f;
+  MaterialProperty<Real> & _thermal_conductivity;
+  MaterialProperty<Real> & _time_coefficient;
+  MaterialProperty<Real> & _gravity;
+  MaterialProperty<Real> & _water_specific_heat;
+  MaterialProperty<Real> & _rock_specific_heat;
+  MaterialProperty<Real> & _rho_r;
+  MaterialProperty<Real> & _darcy_params;
+  MaterialProperty<RealGradient> & _darcy_flux;
+  MaterialProperty<RealGradient> & _darcy_velocity;
+  MaterialProperty<RealVectorValue> & _gravity_vector;
+  VariableGradient & _grad_p;
+  VariableValue  & _pressure;
+  VariableValue  & _temperature;
+  VariableGradient & _grad_T;
   
 };
 

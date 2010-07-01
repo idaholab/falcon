@@ -30,12 +30,12 @@ PorousMedia::PorousMedia(std::string name,
      _gz(parameters.get<Real>("gz")),
 
    //delcare material properties
-     _permeability(declareRealProperty("permeability")),
-     _porosity(declareRealProperty("porosity")),
-     _rho_r(declareRealProperty("rho_r")),
+     _permeability(declareProperty<Real>("permeability")),
+     _porosity(declareProperty<Real>("porosity")),
+     _rho_r(declareProperty<Real>("rho_r")),
 
-     _gravity(declareRealProperty("gravity")),
-     _gravity_vector(declareRealVectorValueProperty("gravity_vector"))
+     _gravity(declareProperty<Real>("gravity")),
+     _gravity_vector(declareProperty<RealVectorValue>("gravity_vector"))
 { }
 
 void

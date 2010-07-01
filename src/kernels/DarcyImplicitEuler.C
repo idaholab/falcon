@@ -10,9 +10,9 @@ InputParameters validParams<DarcyImplicitEuler>()
 
 DarcyImplicitEuler::DarcyImplicitEuler(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :ImplicitEuler(name, moose_system, parameters),
-   _c_f(getRealMaterialProperty("c_f")),
-   _porosity(getRealMaterialProperty("porosity")),
-   _rho_w(getRealMaterialProperty("rho_w"))
+   _c_f(getMaterialProperty<Real>("c_f")),
+   _porosity(getMaterialProperty<Real>("porosity")),
+   _rho_w(getMaterialProperty<Real>("rho_w"))
 {}
 
 Real

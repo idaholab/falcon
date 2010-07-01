@@ -12,9 +12,9 @@ DarcyImplicitBackwardDifference2::DarcyImplicitBackwardDifference2(std::string n
                                                                    MooseSystem & moose_system,
                                                                    InputParameters parameters)
   :ImplicitBackwardDifference2(name, moose_system, parameters),
-   _c_f(getRealMaterialProperty("c_f")),
-   _porosity(getRealMaterialProperty("porosity")),
-   _rho_w(getRealMaterialProperty("rho_w"))
+   _c_f(getMaterialProperty<Real>("c_f")),
+   _porosity(getMaterialProperty<Real>("porosity")),
+   _rho_w(getMaterialProperty<Real>("rho_w"))
 {}
 
 Real

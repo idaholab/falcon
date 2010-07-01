@@ -33,14 +33,14 @@ private:
   bool _has_y_disp;
   bool _has_z_disp;
 
-  MooseArray<Real> & _temperature;
-  MooseArray<RealGradient> & _grad_temp;
-  MooseArray<Real> & _pressure;
-  MooseArray<RealGradient> & _grad_p;
+  VariableValue  & _temperature;
+  VariableGradient & _grad_temp;
+  VariableValue  & _pressure;
+  VariableGradient & _grad_p;
 
-  MooseArray<RealGradient> & _grad_x_disp;
-  MooseArray<RealGradient> & _grad_y_disp;
-  MooseArray<RealGradient> & _grad_z_disp;
+  VariableGradient & _grad_x_disp;
+  VariableGradient & _grad_y_disp;
+  VariableGradient & _grad_z_disp;
 
   Real _input_permeability;
   Real _input_porosity;
@@ -69,32 +69,32 @@ private:
   Real _c2;
   Real _c3;
 
-  MooseArray<Real> & _permeability;
-  MooseArray<Real> & _porosity;
-  MooseArray<Real> & _rho_r;
-  MooseArray<Real> & _rock_specific_heat;
-  MooseArray<Real> & _thermal_conductivity;
-  MooseArray<Real> & _thermal_strain;
-  MooseArray<Real> & _alpha;
-  MooseArray<Real> & _youngs_modulus;
-  MooseArray<Real> & _poissons_ratio;  
-  MooseArray<Real> & _biot_coeff;
+  MaterialProperty<Real> & _permeability;
+  MaterialProperty<Real> & _porosity;
+  MaterialProperty<Real> & _rho_r;
+  MaterialProperty<Real> & _rock_specific_heat;
+  MaterialProperty<Real> & _thermal_conductivity;
+  MaterialProperty<Real> & _thermal_strain;
+  MaterialProperty<Real> & _alpha;
+  MaterialProperty<Real> & _youngs_modulus;
+  MaterialProperty<Real> & _poissons_ratio;
+  MaterialProperty<Real> & _biot_coeff;
   
-  MooseArray<Real> & _rho_w;
-  MooseArray<Real> & _mu_w;
-  MooseArray<Real> & _c_f;
-  MooseArray<Real> & _water_specific_heat;
+  MaterialProperty<Real> & _rho_w;
+  MaterialProperty<Real> & _mu_w;
+  MaterialProperty<Real> & _c_f;
+  MaterialProperty<Real> & _water_specific_heat;
   
-  MooseArray<Real> & _darcy_params;
-  MooseArray<RealGradient> & _darcy_flux;
-  MooseArray<RealGradient> & _pore_velocity;
+  MaterialProperty<Real> & _darcy_params;
+  MaterialProperty<RealGradient> & _darcy_flux;
+  MaterialProperty<RealGradient> & _pore_velocity;
   
-  MooseArray<Real> & _gravity;
-  MooseArray<RealVectorValue> & _gravity_vector;
-  MooseArray<RealVectorValue> & _stress_normal_vector;
-  MooseArray<RealVectorValue> & _stress_shear_vector;
-  MooseArray<RealVectorValue> & _strain_normal_vector;
-  MooseArray<RealVectorValue> & _strain_shear_vector;  
+  MaterialProperty<Real> & _gravity;
+  MaterialProperty<RealVectorValue> & _gravity_vector;
+  MaterialProperty<RealVectorValue> & _stress_normal_vector;
+  MaterialProperty<RealVectorValue> & _stress_shear_vector;
+  MaterialProperty<RealVectorValue> & _strain_normal_vector;
+  MaterialProperty<RealVectorValue> & _strain_shear_vector;
 
 };
 

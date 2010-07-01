@@ -11,10 +11,10 @@ InputParameters validParams<EnthalpyConvectionSteam>()
 
 EnthalpyConvectionSteam::EnthalpyConvectionSteam(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
-   _pressure(coupledVal("pressure")),
-   _grad_p( coupledGrad("pressure")),
-   _darcy_flux_s(getGradientMaterialProperty("darcy_flux_s")),
-   _rho_s(getRealMaterialProperty("rho_s"))
+   _pressure(coupledValue("pressure")),
+   _grad_p( coupledGradient("pressure")),
+   _darcy_flux_s(getMaterialProperty<RealGradient>("darcy_flux_s")),
+   _rho_s(getMaterialProperty<Real>("rho_s"))
 {}
 
 Real EnthalpyConvectionSteam::computeQpResidual()

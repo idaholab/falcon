@@ -9,7 +9,7 @@ InputParameters validParams<SolidMechImplicitEuler>()
 
 SolidMechImplicitEuler::SolidMechImplicitEuler(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :SecondDerivativeImplicitEuler(name, moose_system, parameters),
-   _density(getRealMaterialProperty("rho_r"))
+   _density(getMaterialProperty<Real>("rho_r"))
 {}
 
 Real

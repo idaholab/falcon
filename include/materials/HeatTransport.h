@@ -27,9 +27,9 @@ protected:
   Real _input_thermal_conductivity;
   Real _input_water_specific_heat;
 
-  MooseArray<Real> & _rock_specific_heat;
-  MooseArray<Real> & _thermal_conductivity;
-  MooseArray<Real> & _water_specific_heat;
+  MaterialProperty<Real> & _rock_specific_heat;
+  MaterialProperty<Real> & _thermal_conductivity;
+  MaterialProperty<Real> & _water_specific_heat;
 };
 
 #endif //HEATTRANSPORT_H

@@ -20,11 +20,11 @@ protected:
   virtual Real computeQpResidual();
   
 private:
-  MooseArray<Real> & _temp;
+  VariableValue & _temp;
 
   Real _burnup;
   int _component;
 
-  MooseArray<Real> & _density;
+  MaterialProperty<Real> & _density;
 };
 #endif //SOLIDMECHSWELLINGGAS 

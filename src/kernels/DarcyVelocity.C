@@ -13,7 +13,7 @@ InputParameters validParams<DarcyVelocity>()
 DarcyVelocity::DarcyVelocity(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
    _component(parameters.get<int>("component")),
-   _pore_velocity_w(getGradientMaterialProperty("pore_velocity_w"))
+   _pore_velocity_w(getMaterialProperty<RealGradient>("pore_velocity_w"))
 {}
 
 Real

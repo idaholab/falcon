@@ -22,7 +22,7 @@ Constant::Constant(std::string name,
                    InputParameters parameters)
   :Material(name, moose_system, parameters),
      _has_temp(isCoupled("temp")),
-     _temp(_has_temp ? coupledVal("temp") : _zero),
+     _temp(_has_temp ? coupledValue("temp") : _zero),
      _my_thermal_conductivity(parameters.get<Real>("thermal_conductivity")),
      _my_thermal_expansion(parameters.get<Real>("thermal_expansion")),
      _my_specific_heat(parameters.get<Real>("specific_heat")),
@@ -31,15 +31,15 @@ Constant::Constant(std::string name,
      _my_poissons_ratio(parameters.get<Real>("poissons_ratio")),
      _my_biot_coeff(parameters.get<Real>("biot_coeff")),     
      _my_t_ref(parameters.get<Real>("t_ref")),
-     _thermal_conductivity(declareRealProperty("thermal_conductivity")),
-     _thermal_strain(declareRealProperty("thermal_strain")),
-     _alpha(declareRealProperty("alpha")),
-     _biot_coeff(declareRealProperty("biot_coeff")),     
-     _specific_heat(declareRealProperty("specific_heat")),
-     _density(declareRealProperty("density")),
-     _rho_r(declareRealProperty("rho_r")),
-     _youngs_modulus(declareRealProperty("youngs_modulus")),
-     _poissons_ratio(declareRealProperty("poissons_ratio"))
+     _thermal_conductivity(declareProperty<Real>("thermal_conductivity")),
+     _thermal_strain(declareProperty<Real>("thermal_strain")),
+     _alpha(declareProperty<Real>("alpha")),
+     _biot_coeff(declareProperty<Real>("biot_coeff")),
+     _specific_heat(declareProperty<Real>("specific_heat")),
+     _density(declareProperty<Real>("density")),
+     _rho_r(declareProperty<Real>("rho_r")),
+     _youngs_modulus(declareProperty<Real>("youngs_modulus")),
+     _poissons_ratio(declareProperty<Real>("poissons_ratio"))
   {}
 
 void

@@ -12,11 +12,11 @@ InputParameters validParams<EnthalpyDiffusion>()
 
 EnthalpyDiffusion::EnthalpyDiffusion(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :Diffusion(name, moose_system, parameters),
-   _grad_p( coupledGrad("pressure")),
-   _grad_T( coupledGrad("tempAux")),
-   _dTbydP_H(getRealMaterialProperty("dTbydP_H")),
-   _dTbydH_P(getRealMaterialProperty("dTbydH_P")),
-   _thermal_conductivity(getRealMaterialProperty("thermal_conductivity"))
+   _grad_p( coupledGradient("pressure")),
+   _grad_T( coupledGradient("tempAux")),
+   _dTbydP_H(getMaterialProperty<Real>("dTbydP_H")),
+   _dTbydH_P(getMaterialProperty<Real>("dTbydH_P")),
+   _thermal_conductivity(getMaterialProperty<Real>("thermal_conductivity"))
 {}
 
 Real

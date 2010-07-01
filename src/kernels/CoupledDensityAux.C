@@ -11,7 +11,7 @@ InputParameters validParams<CoupledDensityAux>()
 CoupledDensityAux::CoupledDensityAux(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :AuxKernel(name, moose_system, parameters),
    _temperature(coupled("temperature")),
-   _temperature_val(coupledVal("temperature")),
+   _temperature_val(coupledValue("temperature")),
    _value(_parameters.get<Real>("value"))
 {}
 

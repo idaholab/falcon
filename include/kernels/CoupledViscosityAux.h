@@ -37,7 +37,7 @@ protected:
 
   Real _temperature;
   
-  MooseArray<Real> & _temperature_val;
+  VariableValue & _temperature_val;
 };
 
 #endif //COUPLEDVISCOSITYAUX_H

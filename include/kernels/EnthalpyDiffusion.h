@@ -19,11 +19,11 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
 
-  MooseArray<Real> &_thermal_conductivity;
-  MooseArray<Real> &_dTbydP_H;
-  MooseArray<Real> &_dTbydH_P;
-  MooseArray<RealGradient> & _grad_p;
-  MooseArray<RealGradient> & _grad_T;
+  MaterialProperty<Real> &_thermal_conductivity;
+  MaterialProperty<Real> &_dTbydP_H;
+  MaterialProperty<Real> &_dTbydH_P;
+  VariableGradient & _grad_p;
+  VariableGradient & _grad_T;
   
 };
 #endif //ENTHALPYDIFFUSION

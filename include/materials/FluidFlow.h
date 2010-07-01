@@ -26,21 +26,21 @@ protected:
   Real _input_mu_w;
   Real _input_c_f;
 
-  MooseArray<Real> & _rho_w;
-  MooseArray<Real> & _mu_w;
-  MooseArray<Real> & _c_f;
+  MaterialProperty<Real> & _rho_w;
+  MaterialProperty<Real> & _mu_w;
+  MaterialProperty<Real> & _c_f;
   
-  MooseArray<Real> & _darcy_params_w;
-  MooseArray<RealGradient> & _darcy_flux_w;
-  MooseArray<RealGradient> & _pore_velocity_w;
+  MaterialProperty<Real> & _darcy_params_w;
+  MaterialProperty<RealGradient> & _darcy_flux_w;
+  MaterialProperty<RealGradient> & _pore_velocity_w;
   
 private:
   bool _has_pressure;
   bool _has_temp;
   bool _has_variable_density;
-  MooseArray<Real> & _pressure;
-  MooseArray<RealGradient> & _grad_p;
-  MooseArray<Real> & _temperature;
+  VariableValue  & _pressure;
+  VariableGradient & _grad_p;
+  VariableValue  & _temperature;
 
 };
 

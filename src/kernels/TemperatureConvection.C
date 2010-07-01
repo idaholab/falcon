@@ -10,10 +10,10 @@ InputParameters validParams<TemperatureConvection>()
 
 TemperatureConvection::TemperatureConvection(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
-   _water_specific_heat(getRealMaterialProperty("water_specific_heat")),
-   _darcy_flux_w(getGradientMaterialProperty("darcy_flux_w")),
-   _rho_w(getRealMaterialProperty("rho_w"))
-//   _pore_velocity_w(getGradientMaterialProperty("pore_velocity_w"))
+   _water_specific_heat(getMaterialProperty<Real>("water_specific_heat")),
+   _darcy_flux_w(getMaterialProperty<RealGradient>("darcy_flux_w")),
+   _rho_w(getMaterialProperty<Real>("rho_w"))
+//   _pore_velocity(getGradientMaterialProperty("pore_velocity"))
 {}
 
 Real TemperatureConvection::computeQpResidual()

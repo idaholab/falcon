@@ -12,11 +12,11 @@ TemperatureImplicitBackwardDifference2::TemperatureImplicitBackwardDifference2(s
                                                                                MooseSystem & moose_system,
                                                                                InputParameters parameters)
   :ImplicitBackwardDifference2(name, moose_system, parameters),
-   _water_specific_heat(getRealMaterialProperty("water_specific_heat")),
-   _rock_specific_heat(getRealMaterialProperty("rock_specific_heat")),
-   _porosity(getRealMaterialProperty("porosity")),
-   _rho_w(getRealMaterialProperty("rho_w")),
-   _rho_r(getRealMaterialProperty("rho_r"))
+   _water_specific_heat(getMaterialProperty<Real>("water_specific_heat")),
+   _rock_specific_heat(getMaterialProperty<Real>("rock_specific_heat")),
+   _porosity(getMaterialProperty<Real>("porosity")),
+   _rho_w(getMaterialProperty<Real>("rho_w")),
+   _rho_r(getMaterialProperty<Real>("rho_r"))
 {}
 
 Real

@@ -11,13 +11,13 @@ InputParameters validParams<EnthalpyImplicitEuler>()
 
 EnthalpyImplicitEuler::EnthalpyImplicitEuler(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :ImplicitEuler(name, moose_system, parameters),
-   _temperature(coupledVal("tempAux")),
-   _temperature_old(coupledValOld("tempAux")),
-   _porosity(getRealMaterialProperty("porosity")),
-//  _temperature(getRealMaterialProperty("tempMat")),
-//   _temperature_old(getRealMaterialPropertyOld("tempMat")),
-   _rho_mix(getRealMaterialProperty("rho_mix")),
-   _rho_r(getRealMaterialProperty("rho_r"))
+   _temperature(coupledValue("tempAux")),
+   _temperature_old(coupledValueOld("tempAux")),
+   _porosity(getMaterialProperty<Real>("porosity")),
+//  _temperature(getMaterialProperty<Real>("tempMat")),
+//   _temperature_old(getMaterialPropertyOld<Real>("tempMat")),
+   _rho_mix(getMaterialProperty<Real>("rho_mix")),
+   _rho_r(getMaterialProperty<Real>("rho_r"))
    
 {}
 

@@ -12,9 +12,9 @@ InputParameters validParams<CoupledDarcyImplicitEuler>()
 
 CoupledDarcyImplicitEuler::CoupledDarcyImplicitEuler(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
-     _porosity(getRealMaterialProperty("porosity")),
-     _enthalpy(coupledVal("enthalpy")),
-     _enthalpy_old(coupledValOld("enthalpy"))
+     _porosity(getMaterialProperty<Real>("porosity")),
+     _enthalpy(coupledValue("enthalpy")),
+     _enthalpy_old(coupledValueOld("enthalpy"))
    
 {}
 

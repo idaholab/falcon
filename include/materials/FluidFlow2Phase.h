@@ -30,37 +30,37 @@ protected:
   Real _input_rel_perm_w;
   Real _input_rel_perm_s;
   
-  MooseArray<Real> & _rho_w;
-  MooseArray<Real> & _rho_s;
-  MooseArray<Real> & _rho_mix;
-  MooseArray<Real> & _c_f;
-  MooseArray<Real> & _mu_w;
-  MooseArray<Real> & _mu_s;
-  MooseArray<Real> & _rel_perm_w;
-  MooseArray<Real> & _rel_perm_s;
+  MaterialProperty<Real> & _rho_w;
+  MaterialProperty<Real> & _rho_s;
+  MaterialProperty<Real> & _rho_mix;
+  MaterialProperty<Real> & _c_f;
+  MaterialProperty<Real> & _mu_w;
+  MaterialProperty<Real> & _mu_s;
+  MaterialProperty<Real> & _rel_perm_w;
+  MaterialProperty<Real> & _rel_perm_s;
 
-  MooseArray<Real> & _temp;
-//  MooseArray<Real> & _temp_old;
-  MooseArray<Real> & _sat_w;
-  MooseArray<Real> & _sat_s;
-  MooseArray<Real> & _dTbydP_H;
-  MooseArray<Real> & _dTbydH_P;
-  MooseArray<Real> & _sat_enthalpy_w;
-  MooseArray<Real> & _sat_enthalpy_s;
-  MooseArray<Real> & _darcy_params_w;
-  MooseArray<Real> & _darcy_params_s;
-  MooseArray<RealGradient> & _darcy_flux_w;
-  MooseArray<RealGradient> & _darcy_flux_s;
-  MooseArray<RealGradient> & _pore_velocity_w;
-  MooseArray<RealGradient> & _pore_velocity_s;
+  VariableValue & _temp;
+//  VariableValue & _temp_old;
+  MaterialProperty<Real> & _sat_w;
+  MaterialProperty<Real> & _sat_s;
+  MaterialProperty<Real> & _dTbydP_H;
+  MaterialProperty<Real> & _dTbydH_P;
+  MaterialProperty<Real> & _sat_enthalpy_w;
+  MaterialProperty<Real> & _sat_enthalpy_s;
+  MaterialProperty<Real> & _darcy_params_w;
+  MaterialProperty<Real> & _darcy_params_s;
+  MaterialProperty<RealGradient> & _darcy_flux_w;
+  MaterialProperty<RealGradient> & _darcy_flux_s;
+  MaterialProperty<RealGradient> & _pore_velocity_w;
+  MaterialProperty<RealGradient> & _pore_velocity_s;
   
 private:
 
   bool _has_pressure;
   bool _has_enthalpy;
-  MooseArray<Real> & _pressure;
-  MooseArray<RealGradient> & _grad_p;
-  MooseArray<Real> & _enthalpy;
+  VariableValue & _pressure;
+  VariableGradient & _grad_p;
+  VariableValue & _enthalpy;
 
 };
 

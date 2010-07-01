@@ -12,7 +12,7 @@ DarcyMassFluxPressure::DarcyMassFluxPressure(std::string name,
                                              MooseSystem & moose_system,
                                              InputParameters parameters)
   :Diffusion(name, moose_system, parameters),
-   _darcy_params_w(getRealMaterialProperty("darcy_params_w"))
+   _darcy_params_w(getMaterialProperty<Real>("darcy_params_w"))
 {}
 
 Real

@@ -12,10 +12,10 @@ InputParameters validParams<EnthalpyConvectionWater>()
 EnthalpyConvectionWater::EnthalpyConvectionWater(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
 
-   _pressure( coupledVal("pressure")),
-   _grad_p( coupledGrad("pressure")),
-   _darcy_flux_w(getGradientMaterialProperty("darcy_flux_w")),
-   _rho_w(getRealMaterialProperty("rho_w"))
+   _pressure( coupledValue("pressure")),
+   _grad_p( coupledGradient("pressure")),
+   _darcy_flux_w(getMaterialProperty<RealGradient>("darcy_flux_w")),
+   _rho_w(getMaterialProperty<Real>("rho_w"))
 
 {}
 

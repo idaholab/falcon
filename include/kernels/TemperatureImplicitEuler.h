@@ -20,11 +20,11 @@ protected:
 
   virtual Real computeQpJacobian();
 
-  MooseArray<Real> & _water_specific_heat;
-  MooseArray<Real> & _rock_specific_heat;
-  MooseArray<Real> & _porosity;
-  MooseArray<Real> & _rho_w;
-  MooseArray<Real> & _rho_r;
+  MaterialProperty<Real> & _water_specific_heat;
+  MaterialProperty<Real> & _rock_specific_heat;
+  MaterialProperty<Real> & _porosity;
+  MaterialProperty<Real> & _rho_w;
+  MaterialProperty<Real> & _rho_r;
   
 };
 #endif //TEMPERATUREIMPLICITEULER

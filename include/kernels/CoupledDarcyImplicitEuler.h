@@ -21,9 +21,9 @@ protected:
   virtual Real computeQpJacobian();
 
   bool _has_enthalpy;
-  MooseArray<Real> & _enthalpy;
-  MooseArray<Real> & _enthalpy_old;
-  MooseArray<Real> & _porosity;
+  VariableValue & _enthalpy;
+  VariableValue & _enthalpy_old;
+  MaterialProperty<Real> & _porosity;
   
   
 };

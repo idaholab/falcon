@@ -21,8 +21,8 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
   int _component;
-  MooseArray<RealVectorValue> &_stress_normal_vector;
-  MooseArray<RealVectorValue> &_stress_shear_vector;
+  MaterialProperty<RealVectorValue> &_stress_normal_vector;
+  MaterialProperty<RealVectorValue> &_stress_shear_vector;
 };
  
 #endif

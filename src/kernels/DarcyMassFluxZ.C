@@ -10,10 +10,10 @@ InputParameters validParams<DarcyMassFluxZ>()
 
 DarcyMassFluxZ::DarcyMassFluxZ(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
-   _darcy_params_w(getRealMaterialProperty("darcy_params_w")),
-   _gravity(getRealMaterialProperty("gravity")),
-   _rho_w(getRealMaterialProperty("rho_w")),
-   _gravity_vector(getRealVectorValueMaterialProperty("gravity_vector"))
+   _darcy_params_w(getMaterialProperty<Real>("darcy_params_w")),
+   _gravity(getMaterialProperty<Real>("gravity")),
+   _rho_w(getMaterialProperty<Real>("rho_w")),
+   _gravity_vector(getMaterialProperty<RealVectorValue>("gravity_vector"))
 {}
 
 Real

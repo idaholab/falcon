@@ -18,7 +18,7 @@ protected:
   virtual Real computeQpResidual();
   
 private:
-  MooseArray<Real> & _solid_swelling_strain;
+  MaterialProperty<Real> & _solid_swelling_strain;
 
   Real _burnup;
   int _component;

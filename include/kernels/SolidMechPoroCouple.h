@@ -23,9 +23,9 @@ public:
   
 protected:
   unsigned int _pressure_var;
-  MooseArray<Real> & _biot_coeff;
-  MooseArray<RealGradient> & _grad_pressure;
-  MooseArray<Real> & _pressure_val;
+  MaterialProperty<Real> & _biot_coeff;
+  VariableGradient & _grad_pressure;
+  VariableValue  & _pressure_val;
 
 };
  

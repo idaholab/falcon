@@ -32,12 +32,12 @@ protected:
   Real _gy;
   Real _gz;
 
-  MooseArray<Real> & _permeability;
-  MooseArray<Real> & _porosity;
-  MooseArray<Real> & _rho_r;
+  MaterialProperty<Real> & _permeability;
+  MaterialProperty<Real> & _porosity;
+  MaterialProperty<Real> & _rho_r;
   
-  MooseArray<Real> & _gravity;
-  MooseArray<RealVectorValue> & _gravity_vector;
+  MaterialProperty<Real> & _gravity;
+  MaterialProperty<RealVectorValue> & _gravity_vector;
 
 };
 

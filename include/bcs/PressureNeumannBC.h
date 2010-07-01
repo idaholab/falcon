@@ -29,16 +29,16 @@ protected:
   virtual Real computeQpResidual();
   
   unsigned int _pe_var;
-  MooseArray<Real> & _pe;
+  VariableValue & _pe;
 
   unsigned int _u_vel_var;
-  MooseArray<Real> & _u_vel;
+  VariableValue & _u_vel;
 
   unsigned int _v_vel_var;
-  MooseArray<Real> & _v_vel;
+  VariableValue & _v_vel;
 
   unsigned int _w_vel_var;
-  MooseArray<Real> & _w_vel;
+  VariableValue & _w_vel;
 
   int _component;
 };

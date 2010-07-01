@@ -20,9 +20,9 @@ protected:
 
   virtual Real computeQpJacobian();
 
-  MooseArray<Real> & _c_f;
-  MooseArray<Real> & _porosity;
-  MooseArray<Real> & _rho_w;
+  MaterialProperty<Real> & _c_f;
+  MaterialProperty<Real> & _porosity;
+  MaterialProperty<Real> & _rho_w;
   
 };
 #endif //DARCYIMPLICITBACKWARDDIFFERENCE2

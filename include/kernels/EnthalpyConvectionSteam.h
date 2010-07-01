@@ -21,10 +21,10 @@ protected:
   virtual Real computeQpJacobian();  
 
   
-  MooseArray<Real> & _pressure;
-  MooseArray<RealGradient> & _grad_p;
-  MooseArray<RealGradient> &_darcy_flux_s;
-  MooseArray<Real> &_rho_s;
+  VariableValue & _pressure;
+  VariableGradient & _grad_p;
+  MaterialProperty<RealGradient> &_darcy_flux_s;
+  MaterialProperty<Real> &_rho_s;
   
 };
 #endif //ENTHALPYCONVECTIONSTEAM

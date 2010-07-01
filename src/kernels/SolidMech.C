@@ -9,10 +9,10 @@ InputParameters validParams<SolidMech>()
 
 SolidMech::SolidMech(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
-   _E_prop(getRealMaterialProperty("youngs_modulus")),
-   _nu_prop(getRealMaterialProperty("poissons_ratio")),
-   _stress_normal_vector(getRealVectorValueMaterialProperty("stress_normal_vector")),
-   _stress_shear_vector(getRealVectorValueMaterialProperty("stress_shear_vector"))
+   _E_prop(getMaterialProperty<Real>("youngs_modulus")),
+   _nu_prop(getMaterialProperty<Real>("poissons_ratio")),
+   _stress_normal_vector(getMaterialProperty<RealVectorValue>("stress_normal_vector")),
+   _stress_shear_vector(getMaterialProperty<RealVectorValue>("stress_shear_vector"))
 {}
 
 void

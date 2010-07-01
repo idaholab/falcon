@@ -30,16 +30,16 @@ protected:
   Real _input_biot_coeff;
   Real _input_t_ref;
   
-  MooseArray<Real> & _thermal_strain;
-  MooseArray<Real> & _alpha;
-  MooseArray<Real> & _youngs_modulus;
-  MooseArray<Real> & _poissons_ratio;  
-  MooseArray<Real> & _biot_coeff;
+  MaterialProperty<Real> & _thermal_strain;
+  MaterialProperty<Real> & _alpha;
+  MaterialProperty<Real> & _youngs_modulus;
+  MaterialProperty<Real> & _poissons_ratio;
+  MaterialProperty<Real> & _biot_coeff;
 
-  MooseArray<RealVectorValue> & _stress_normal_vector;
-  MooseArray<RealVectorValue> & _stress_shear_vector;
-  MooseArray<RealVectorValue> & _strain_normal_vector;
-  MooseArray<RealVectorValue> & _strain_shear_vector;
+  MaterialProperty<RealVectorValue> & _stress_normal_vector;
+  MaterialProperty<RealVectorValue> & _stress_shear_vector;
+  MaterialProperty<RealVectorValue> & _strain_normal_vector;
+  MaterialProperty<RealVectorValue> & _strain_shear_vector;
   
 private:
 
@@ -48,12 +48,12 @@ private:
   bool _has_y_disp;
   bool _has_z_disp;
 
-  MooseArray<Real> & _temperature;
-  MooseArray<RealGradient> & _grad_temp;
+  VariableValue  & _temperature;
+  VariableGradient & _grad_temp;
 
-  MooseArray<RealGradient> & _grad_x_disp;
-  MooseArray<RealGradient> & _grad_y_disp;
-  MooseArray<RealGradient> & _grad_z_disp;
+  VariableGradient & _grad_x_disp;
+  VariableGradient & _grad_y_disp;
+  VariableGradient & _grad_z_disp;
   
   Real _E;
   Real _nu;

@@ -19,7 +19,7 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
 
-  MooseArray<Real> &_thermal_conductivity;
+  MaterialProperty<Real> &_thermal_conductivity;
   
 };
 #endif //TEMPERATUREDIFFUSION

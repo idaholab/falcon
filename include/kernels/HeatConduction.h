@@ -23,6 +23,6 @@ protected:
   virtual Real computeQpJacobian();
   
 private:
-  MooseArray<Real> & _k;
+  MaterialProperty<Real> & _k;
 };
 #endif //HEATCONDUCTION_H

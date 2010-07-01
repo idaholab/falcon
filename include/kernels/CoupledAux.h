@@ -31,7 +31,7 @@ protected:
   Real _value;
 
   int _coupled;
-  MooseArray<Real> & _coupled_val[_qp];
+  VariableValue & _coupled_val[_qp];
 };
 
 #endif //COUPLEDAUX_H

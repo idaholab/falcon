@@ -16,24 +16,24 @@ FluidFlow::FluidFlow(std::string name,
                      InputParameters parameters)
   :PorousMedia(name, moose_system, parameters),
      _has_pressure(isCoupled("pressure")),
-     _grad_p  (_has_pressure ? coupledGrad("pressure") : _grad_zero),
-     _pressure(_has_pressure ? coupledVal("pressure")  : _zero),
+     _grad_p  (_has_pressure ? coupledGradient("pressure") : _grad_zero),
+     _pressure(_has_pressure ? coupledValue("pressure")  : _zero),
      
      _has_temp(isCoupled("temperature")),
-     _temperature(_has_temp ? coupledVal("temperature")  : _zero),
+     _temperature(_has_temp ? coupledValue("temperature")  : _zero),
      
      _input_rho_w(parameters.get<Real>("rho_w")),
      _input_mu_w(parameters.get<Real>("mu_w")),
      _input_c_f(parameters.get<Real>("c_f")),
 
    //delcare material properties
-     _rho_w(declareRealProperty("rho_w")),
-     _mu_w(declareRealProperty("mu_w")),
-     _c_f(declareRealProperty("c_f")),
+     _rho_w(declareProperty<Real>("rho_w")),
+     _mu_w(declareProperty<Real>("mu_w")),
+     _c_f(declareProperty<Real>("c_f")),
      _has_variable_density(parameters.get<bool>("temp_dependent_density")),
-     _darcy_params_w(declareRealProperty("darcy_params_w")),
-     _darcy_flux_w(declareGradientProperty("darcy_flux_w")),
-     _pore_velocity_w(declareGradientProperty("pore_velocity_w"))
+     _darcy_params_w(declareProperty<Real>("darcy_params_w")),
+     _darcy_flux_w(declareProperty<RealGradient>("darcy_flux_w")),
+     _pore_velocity_w(declareProperty<RealGradient>("pore_velocity_w"))
 { }
 
 void

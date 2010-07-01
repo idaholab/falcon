@@ -45,10 +45,10 @@ protected:
 
   Real _density;
 
-  MooseArray<Real> & _E_prop;
-  MooseArray<Real> & _nu_prop;
-  MooseArray<RealVectorValue> & _stress_normal_vector;
-  MooseArray<RealVectorValue> & _stress_shear_vector;
+  MaterialProperty<Real> & _E_prop;
+  MaterialProperty<Real> & _nu_prop;
+  MaterialProperty<RealVectorValue> & _stress_normal_vector;
+  MaterialProperty<RealVectorValue> & _stress_shear_vector;
 };
  
 

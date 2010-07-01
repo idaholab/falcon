@@ -11,8 +11,8 @@ HeatConductionImplicitEuler::HeatConductionImplicitEuler(std::string name,
                                                          MooseSystem & moose_system,
                                                          InputParameters parameters)
   :ImplicitEuler(name, moose_system, parameters),
-   _specific_heat(getRealMaterialProperty("rock_specific_heat")),
-   _density(getRealMaterialProperty("rho_r"))
+   _specific_heat(getMaterialProperty<Real>("rock_specific_heat")),
+   _density(getMaterialProperty<Real>("rho_r"))
 {}
 
 Real

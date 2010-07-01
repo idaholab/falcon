@@ -12,7 +12,7 @@ DarcyMassFluxPressureSteam::DarcyMassFluxPressureSteam(std::string name,
                                              MooseSystem & moose_system,
                                              InputParameters parameters)
   :Diffusion(name, moose_system, parameters),
-   _darcy_params_s(getRealMaterialProperty("darcy_params_s"))
+   _darcy_params_s(getMaterialProperty<Real>("darcy_params_s"))
 {}
 
 Real

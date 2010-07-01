@@ -26,7 +26,7 @@ protected:
 private:
 
   bool _has_temp;
-  MooseArray<Real> & _temp;
+  VariableValue & _temp;
 
   Real _my_thermal_conductivity;
   Real _my_thermal_expansion;
@@ -37,15 +37,15 @@ private:
   Real _my_poissons_ratio;
   Real _my_t_ref;
 
-  MooseArray<Real> & _thermal_conductivity;
-  MooseArray<Real> & _thermal_strain;
-  MooseArray<Real> & _alpha;
-  MooseArray<Real> & _biot_coeff;
-  MooseArray<Real> & _specific_heat;
-  MooseArray<Real> & _density;
-  MooseArray<Real> & _rho_r;
-  MooseArray<Real> & _youngs_modulus;
-  MooseArray<Real> & _poissons_ratio;
+  MaterialProperty<Real> & _thermal_conductivity;
+  MaterialProperty<Real> & _thermal_strain;
+  MaterialProperty<Real> & _alpha;
+  MaterialProperty<Real> & _biot_coeff;
+  MaterialProperty<Real> & _specific_heat;
+  MaterialProperty<Real> & _density;
+  MaterialProperty<Real> & _rho_r;
+  MaterialProperty<Real> & _youngs_modulus;
+  MaterialProperty<Real> & _poissons_ratio;
 };
 
 #endif //CONSTANT_H
