@@ -104,6 +104,10 @@ FluidFlow2Phase::computeProperties()
 {
   PorousMedia::computeProperties();
 
+  try 
+  {
+    
+  
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
 
@@ -212,7 +216,14 @@ FluidFlow2Phase::computeProperties()
 //   compute Darcy flux and pore water velicity on q-points
      
      _darcy_params_w[qp] = _permeability[qp] * _rel_perm_w[qp] * _rho_w[qp] / _mu_w[qp];
+     
+     mooseAssert(std::fabs(_mu_w[qp]) > 1e-5, "_mu_w is zero: ");
+     mooseAssert(!std::isnan(_darcy_params_w[qp]), "_darcy_params_w is NaN");
+                 
      _darcy_flux_w[qp] =  -_permeability[qp] * _rel_perm_w[qp] / _mu_w[qp] * ((_grad_p[qp])+(_rho_w[qp]*_gravity[qp]*_gravity_vector[qp]));
+
+     
+     
      _pore_velocity_w[qp] = _darcy_flux_w[qp] / _porosity[qp];
      _darcy_params_s[qp] = _permeability[qp] * _rel_perm_s[qp] * _rho_s[qp] / _mu_s[qp];
      _darcy_flux_s[qp] =  -_permeability[qp] * _rel_perm_s[qp] / _mu_s[qp] * ((_grad_p[qp])+(_rho_s[qp]*_gravity[qp]*_gravity_vector[qp]));
@@ -220,5 +231,11 @@ FluidFlow2Phase::computeProperties()
 
      
      
+  }
+
+  }
+  catch(...)
+  {
+    std::cout << "exception caught in FluidFlow2Phase.C";
   }
 }
