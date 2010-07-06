@@ -28,9 +28,15 @@ public:
 protected:
   virtual Real computeValue();
 
+  Real E3;
+  Real E5;
+  Real E6;
+  
     
-  MooseArray<Real> & _enthalpy;
-  MooseArray<Real> & _pressure;
+  VariableValue & _enthalpy;
+  VariableValue & _pressure;
+  MaterialProperty<Real> & _Hw;
+  MaterialProperty<Real> & _Hs;
 };
 
 #endif //COUPLEDTEMPERATUREAUX_H

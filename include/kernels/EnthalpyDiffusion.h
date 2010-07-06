@@ -20,9 +20,6 @@ protected:
   virtual Real computeQpJacobian();
 
   MaterialProperty<Real> &_thermal_conductivity;
-  MaterialProperty<Real> &_dTbydP_H;
-  MaterialProperty<Real> &_dTbydH_P;
-  VariableGradient & _grad_p;
   VariableGradient & _grad_T;
   
 };

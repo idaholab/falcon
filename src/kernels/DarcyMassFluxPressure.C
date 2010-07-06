@@ -18,10 +18,6 @@ DarcyMassFluxPressure::DarcyMassFluxPressure(std::string name,
 Real
 DarcyMassFluxPressure::computeQpResidual()
 {
-  //Real residue2;
-  //   residue2 = _darcy_params_w[_qp]*Diffusion::computeQpResidual();
-
-  //   std::cout << "residue2" << residue2 <<" .\n";
   return _darcy_params_w[_qp]*Diffusion::computeQpResidual();
 }
 

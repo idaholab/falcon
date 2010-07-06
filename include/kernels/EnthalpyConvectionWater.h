@@ -20,9 +20,8 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();  
 
-  VariableValue & _pressure;
-  VariableGradient & _grad_p;
   MaterialProperty<RealGradient> &_darcy_flux_w;
+  MaterialProperty<RealGradient> &_GHw;
   MaterialProperty<Real> &_rho_w;
 
   

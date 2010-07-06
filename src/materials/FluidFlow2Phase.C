@@ -9,8 +9,6 @@ InputParameters validParams<FluidFlow2Phase>()
      params.addParam<Real>("c_f", 4.6e-10,"fluid compressibility in 1/Pa");
      params.addParam<Real>("mu_w",0.001,"fluid dynamic viscosity in Pa.s");
      params.addParam<Real>("mu_s",0.001,"steam dynamic viscosity in Pa.s");
-     params.addParam<Real>("rel_perm_w", 1.0,"Relative permeability of water phase");
-     params.addParam<Real>("rel_perm_s", 1.0,"Relative permeability of steam phase");
      params.addCoupledVar("pressure", "TODO: add description");
      params.addCoupledVar("enthalpy", "TODO: add description");
      params.addCoupledVar("tempAux", "TODO: add description");
@@ -21,9 +19,12 @@ FluidFlow2Phase::FluidFlow2Phase(std::string name,
                      MooseSystem & moose_system,
                      InputParameters parameters)
   :PorousMedia(name, moose_system, parameters),
+
      _grad_p  ( coupledGradient("pressure")),
      _pressure( coupledValue("pressure")),
+     _pressure_old( coupledValueOld("pressure")),
      _enthalpy( coupledValue("enthalpy")),
+     _enthalpy_old( coupledValueOld("enthalpy")),
      _temp( coupledValue("tempAux")),
 
      
@@ -32,13 +33,14 @@ FluidFlow2Phase::FluidFlow2Phase(std::string name,
      _input_c_f(parameters.get<Real>("c_f")),
      _input_mu_w(parameters.get<Real>("mu_w")),
      _input_mu_s(parameters.get<Real>("mu_s")),
-     _input_rel_perm_w(parameters.get<Real>("rel_perm_w")),
-     _input_rel_perm_s(parameters.get<Real>("rel_perm_s")),
+
    
    //delcare material properties
+
      _rho_w(declareProperty<Real>("rho_w")),
      _rho_s(declareProperty<Real>("rho_s")),
-     _rho_mix(declareProperty<Real>("rho_mix")),
+     _rho(declareProperty<Real>("rho")),
+     _rho_old(declareProperty<Real>("rho_old")),
      _c_f(declareProperty<Real>("c_f")),
      _mu_w(declareProperty<Real>("mu_w")),
      _mu_s(declareProperty<Real>("mu_s")),
@@ -48,22 +50,60 @@ FluidFlow2Phase::FluidFlow2Phase(std::string name,
    // _temp_old(declarePropertyOld<Real>("tempMat")),
      _sat_w(declareProperty<Real>("sat_w")),
      _sat_s(declareProperty<Real>("sat_s")),
-     _dTbydP_H(declareProperty<Real>("dTbydP_H")),
-     _dTbydH_P(declareProperty<Real>("dTbydH_P")),
-     _sat_enthalpy_w(declareProperty<Real>("sat_enthalpy_w")),
-     _sat_enthalpy_s(declareProperty<Real>("sat_enthalpy_s")),
+     _Hw(declareProperty<Real>("sat_enthalpy_w")),
+     _Hs(declareProperty<Real>("sat_enthalpy_s")),
+     _GHw(declareProperty<RealGradient>("grad_sat_enthalpy_w")),
+     _GHs(declareProperty<RealGradient>("grad_sat_enthalpy_s")),
      _darcy_params_w(declareProperty<Real>("darcy_params_w")),
      _darcy_params_s(declareProperty<Real>("darcy_params_s")),
      _darcy_flux_w(declareProperty<RealGradient>("darcy_flux_w")),
      _darcy_flux_s(declareProperty<RealGradient>("darcy_flux_s")),
      _pore_velocity_w(declareProperty<RealGradient>("pore_velocity_w")),
      _pore_velocity_s(declareProperty<RealGradient>("pore_velocity_s"))
-{ }
+
+{
+     E3 = pow(10,3);
+     E6 = pow(10,6);
+     E5 = pow(10,-5);
+     E7 = pow(10,-7);
+
+// coefficients related to rho_w empirical equation     
+     a1 = 0.989875;
+     a2 = 4.00894*pow(10,-4);
+     a3 = 4.00489*E5;
+     a4 = 2.66608;
+     a5 = 5.46283*E7;
+     a6 = 1.29958*E7;
+
+// coefficients related to rho_s empirical equation
+     b1 = -2.26162*E5;
+     b2 = 0.0438441;
+     b3 = 1.79088*E5;
+     b4 = 3.69276*pow(10,-8);
+     b5 = 5.17644*pow(10,-13);
+
+// coefficients related to Hs empirical equation     
+     c1 = 2822.82;
+     c2 = 39.952;
+     c3 = 2.54342;
+     c4 = 0.938879;
+
+// coefficients related to Hw empirical equation     
+     d1 = 809.674;
+     d2 = 94.465;
+     d3 = 4.502;
+     d4 = 0.120265;
+     d5 = 162.7;
+     d6 = 29.8163;
+     d7 = 1.75623;
+     
+}
 
 void
 FluidFlow2Phase::computeProperties()
 {
   PorousMedia::computeProperties();
+
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
 
@@ -73,93 +113,97 @@ FluidFlow2Phase::computeProperties()
 
 
 //   For two phase ie water and steam
-//   mean time we are using temperature as enthalpy......
+//   we are using empirical equations to get thermodynamic data which are in Mpa and j/g......
 //   we need to convert pressure from pa to Mpa and Enthalpy from J/kg to J/g
 //
-     Real H = pow(10,-3)*_enthalpy[qp];
-     Real P = pow(10,-6)*_pressure[qp];
 
-     // std:: cout << "enthalpy"<< H << ".\n";
-     // std:: cout << "pressure"<< P << ".\n";
-       
-       
-     _sat_enthalpy_s[qp] = 2822.82-(39.952/P)+(2.54342/pow(P,2))-(0.938879*pow(P,2));
-     _sat_enthalpy_w[qp] = 809.674+(94.465*P)-(4.502*pow(P,2))+(0.120265*pow(P,3))-(162.7/P)+(29.8163/pow(P,2))-(1.75623/pow(P,3));
-
-//     std:: cout << "sat_enthalpy_s"<<_sat_enthalpy_s[qp] << ".\n";
-//     std:: cout << "sat_enthalpy_w"<< _sat_enthalpy_w[qp] << ".\n";
-       
-//   compressed water zone
-     if (H < _sat_enthalpy_w[qp])
-     {
-     _rho_w[qp] = pow(10,3)*(0.989875+(4.00894*pow(10,-4)*P)-(4.00489*pow(10,-5)*H)+(2.66608/H)+(5.46283*pow(10,-7)*P*H)-(1.29958*pow(10,-7)*pow(H,2)));
-     _sat_w[qp] = 1.0;
-//     _temp[qp] = -28.15155-(0.137458*P)+(0.3011117*H)+(3536.37/H)-(4.31919*pow(10,-5)*pow(H,2));
-//     _dTbydP_H[qp] = pow(10,-6)*(-0.137458);
-//     _dTbydH_P[qp] = pow(10,-3)*(0.301117-(3536.37/pow(H,2))-(8.63838*pow(10,-5)*H));
-     // std:: cout << "Water Zone"<< ".\n";
+     Real H = _enthalpy[qp]/E3;
+     Real P = _pressure[qp]/E6;
+     Real P2 = pow(P,2);  
+     Real P3 = pow(P,3);
      
+     _Hs[qp]  = c1-(c2/P)+(c3/P2)-(c4*P2);
+     _GHs[qp] = _grad_p[qp]/E3*((c2/P2)-(c3*2/P3)-(c4*2*P));  
+     _Hw[qp]  = d1+(d2*P)-(d3*P2)+(d4*P3)-(d5/P)+(d6/P2)-(d7/P3);
+     _GHw[qp] = _grad_p[qp]/E3*((d2)-(d3*2*P)+(d4*3*P2)+(d5/P2)-(d6*2/P3)+(d7*3*pow(P,-4)));
+     
+//   compressed water zone
+     if (H < _Hw[qp])
+     {
+     _rho_w[qp] = E3*(a1+(a2*P)-(a3*H)+(a4/H)+(a5*P*H)-(a6*pow(H,2)));
+     _sat_w[qp] = 1.0;
      }
 //   super heated steam zone
-     else if (H > _sat_enthalpy_s[qp])
+     else if (H > _Hs[qp])
      {
-     _rho_s[qp] = pow(10,3)*((-2.26162*pow(10,-5))+(0.0438441*P)-(1.79088*pow(10,-5)*P*H)+(3.69276*pow(10,-8)*pow(P,4))+(5.17644*pow(10,-13)*P*pow(H,3)));
+     _rho_s[qp] = E3*(b1+(b2*P)-(b3*P*H)+(b4*pow(P,4))+(b5*P*pow(H,3)));
      _sat_w[qp] = 0.0;
-/*     _temp[qp] = -374.669+(47.9921*P)-(0.633606*pow(P,2))+(7.39386*pow(10,-5)*pow(H,2))
-                  -(3.33372*pow(10,-6)/(pow(P,2)*pow(H,2)))+(0.0357154/pow(P,3))-(1.1725*pow(10,-9)*pow(H,3)*P)
-                  -(2.26861*pow(10,15)/pow(H,4));
-     _dTbydP_H[qp] = pow(10,-6)*(47.9921-(1.267212*P)+(6.6744*pow(10,-6)/(pow(P,3)*pow(H,2)))
-                                     -(1071462/pow(P,4))-(1.1725*pow(10,-9)*pow(H,3)));
-     _dTbydH_P[qp] = pow(10,-3)*((14.78772*pow(10,-5)*H)+(6.6744*pow(10,-6)/(pow(P,2)*pow(H,3)))
-                                     -(3.5175*pow(10,-9)*pow(H,2)*P)+(9.07444*pow(10,-5/pow(H,5))));
-*/
-//    std:: cout << "temperature"<< _temperature[qp];            
-     std:: cout << "Steam Zone" << ".\n";    
      }
 //   Mixed Phase Zone(Two-phase exists)
      else 
      {
-     Real Hw = _sat_enthalpy_w[qp];
-     Real Hs = _sat_enthalpy_s[qp];
-     _rho_w[qp] = pow(10,3)*(0.989875+(4.00894*pow(10,-4)*P)-(4.00489*pow(10,-5)*Hw)+(2.66608/Hw)+(5.46283*pow(10,-7)*P*Hw)-(1.29958*pow(10,-7)*pow(Hw,2)));
-     _rho_s[qp] = pow(10,3)*((-2.26162*pow(10,-5))+(0.0438441*P)-(1.79088*pow(10,-5)*P*Hs)+(3.69276*pow(10,-8)*pow(P,4))+(5.17644*pow(10,-13)*P*pow(Hs,3)));
+     _rho_w[qp] = E3*(a1+(a2*P)-(a3*_Hw[qp])+(a4/_Hw[qp])+(a5*P*_Hw[qp])-(a6*pow(_Hw[qp],2)));
+     _rho_s[qp] = E3*(b1+(b2*P)-(b3*P*_Hs[qp])+(b4*pow(P,4))+(b5*P*pow(_Hs[qp],3)));
 
-     double a = _rho_s[qp]*(Hs-H);
+     double a = _rho_s[qp]*(_Hs[qp]-H);
      double b = H*(_rho_w[qp]-_rho_s[qp]);
-     double c = (Hw * _rho_w[qp])-(Hs * _rho_s[qp]);
+     double c = (_Hw[qp] * _rho_w[qp])-(_Hs[qp] * _rho_s[qp]);
      _sat_w[qp] = a/(b-c);
-         
-//   Real Tw = -28.15155-(0.137458*P)+(0.3011117*Hw)+(3536.37/Hw)-(4.31919*pow(10,-5)*pow(Hw,2));
-//   Real Ts = -374.669+(47.9921*P)-(0.633606*pow(P,2))+(7.39386*pow(10,-5)*pow(Hs,2))
-//                  -(3.33372*pow(10,-6)/(pow(P,2)*pow(Hs,2)))+(0.0357154/pow(P,3))-(1.1725*pow(10,-9)*pow(Hs,3)*P)
-//                  -(2.26861*pow(10,15)/pow(Hs,4));
-//   _temp[qp] = (Tw+Ts)/2.0;
-//
-/*     double d = 12.598833-log(10*P);
-     _temp[qp] = (4667.0754/d)-273.15;
-     _dTbydP_H[qp] = pow(10,-6)*4667.0754/(P*pow(d,2));
-     _dTbydH_P[qp] = 0.0;
-*/
-     // std:: cout << "two-phase Zone"<< ".\n";
-
      }
-     _mu_s[qp] = pow(10,-7)*((0.407*_temp[qp])+80.4);
-     double e = 247.8/(_temp[qp]+133.15);
-     _mu_w[qp] = pow(10,-7)*241.4*pow(10,e);
      _sat_s[qp] = 1.0-_sat_w[qp];
-     _rho_mix[qp] = (_sat_w[qp]*_rho_w[qp])+(_sat_s[qp]*_rho_s[qp]);
+     _rho[qp] = (_sat_w[qp]*_rho_w[qp])+(_sat_s[qp]*_rho_s[qp]);
+
+//   this section is for computing _rho_old     
+     Real H_o = _enthalpy_old[qp]/E3;
+     Real P_o = _pressure_old[qp]/E6;
+     Real P2_o = pow(P,2);  
+     Real P3_o = pow(P,3);
+     Real _Hs_o;
+     Real _Hw_o;
+     Real _rho_w_o;
+     Real _rho_s_o;
+     Real _sat_w_o;
+     Real _sat_s_o;
+     
+     
+     _Hs_o = 2822.82-(39.952/P_o)+(2.54342/P2_o)-(0.938879*P2_o);
+     _Hw_o = 809.674+(94.465*P_o)-(4.502*P2_o)+(0.120265*P3_o)-(162.7/P_o)+(29.8163/P2_o)-(1.75623/P3_o);
+
+//   compressed water zone
+     if (H_o < _Hw_o)
+     {
+     _rho_w_o = E3*(a1+(a2*P_o)-(a3*H_o)+(a4/H_o)+(a5*P_o*H_o)-(a6*pow(H_o,2)));
+     _sat_w_o = 1.0;
+     }
+//   super heated steam zone
+     else if (H_o > _Hs_o)
+     {
+     _rho_s_o = E3*(b1+(b2*P_o)-(b3*P_o*H_o)+(b4*pow(P_o,4))+(b5*P_o*pow(H_o,3)));
+     _sat_w_o = 0.0;
+     }
+//   Mixed Phase Zone(Two-phase exists)
+     else 
+     {
+     _rho_w_o = E3*(a1+(a2*P_o)-(a3*_Hw_o)+(a4/_Hw_o)+(a5*P_o*_Hw_o)-(a6*pow(_Hw_o,2)));
+     _rho_s_o = E3*(b1+(b2*P_o)-(b3*P_o*_Hs_o)+(b4*pow(P_o,4))+(b5*P_o*pow(_Hs_o,3)));
+
+     double d = _rho_s_o*(_Hs_o-H_o);
+     double e = H_o*(_rho_w_o-_rho_s_o);
+     double f = (_Hw_o * _rho_w_o)-(_Hs_o * _rho_s_o);
+     _sat_w_o = d/(e-f);
+     }
+           
+     _sat_s_o = 1.0-_sat_w_o;
+     _rho_old[qp] = (_sat_w_o*_rho_w_o)+(_sat_s_o*_rho_s_o);
+
+     _mu_s[qp] = E7*((0.407*_temp[qp])+80.4);
+     double g = 247.8/(_temp[qp]+133.15);
+     _mu_w[qp] = E7*241.4*pow(10,g);
+
      
      _rel_perm_w[qp] = pow(_sat_w[qp],2);
      _rel_perm_s[qp] = pow(_sat_s[qp],2);
 
-//     std::cout << "rel_perm_w" << _rel_perm_w[qp]<<".\n";
-//     std::cout << "rel_perm_s" << _rel_perm_s[qp]<<".\n";
-//     std::cout << "mu_s" << _mu_s[qp]<<".\n";
-//     std::cout << "rel_perm_s" << _rel_perm_s[qp]<<".\n";
-//          std::cout << "rel_perm_w" << _rel_perm_w[qp]<<".\n";
-//     std::cout << "rel_perm_s" << _rel_perm_s[qp]<<".\n";
-//          std::cout << "rel_perm_w" << _rel_perm_w[qp]<<".\n";
-//     std::cout << "rel_perm_s" << _rel_perm_s[qp]<<".\n";
      
      
 //   we used simple relative permeability function for now. we need to modify to
@@ -174,9 +218,7 @@ FluidFlow2Phase::computeProperties()
      _darcy_flux_s[qp] =  -_permeability[qp] * _rel_perm_s[qp] / _mu_s[qp] * ((_grad_p[qp])+(_rho_s[qp]*_gravity[qp]*_gravity_vector[qp]));
      _pore_velocity_s[qp] = _darcy_flux_s[qp] / _porosity[qp];
 
-     // std::cout << "darcy_params_w" << _darcy_params_w[qp]<<".\n";
-     //std::cout << "darcy_params_s" << _darcy_params_s[qp]<<".\n";
-     //std::cout << "darcy_flux_w" << _darcy_flux_w[qp]<<".\n";
-     //std::cout << "darcy_flux_s" << _darcy_flux_s[qp]<<".\n";
+     
+     
   }
 }

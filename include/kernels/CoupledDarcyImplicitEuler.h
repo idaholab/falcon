@@ -20,11 +20,25 @@ protected:
 
   virtual Real computeQpJacobian();
 
-  bool _has_enthalpy;
-  VariableValue & _enthalpy;
-  VariableValue & _enthalpy_old;
-  MaterialProperty<Real> & _porosity;
-  
+   VariableValue & _enthalpy;
+
+
+   MaterialProperty<Real> & _porosity;
+   MaterialProperty<Real> & _rho;
+   MaterialProperty<Real> & _rho_old;
+   MaterialProperty<Real> & _sat_w;
+   MaterialProperty<Real> & _sat_s;
+   MaterialProperty<Real> & _Hw;
+   MaterialProperty<Real> & _Hs;
+
+     Real E3;
+     Real E6;
+     Real a1;
+     Real a2;
+     Real b1;
+     Real b2;
+     Real b3;
+     Real b4; 
   
 };
 #endif //COUPLEDDARCYIMPLICITEULER

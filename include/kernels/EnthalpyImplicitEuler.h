@@ -24,7 +24,7 @@ protected:
   VariableValue & _temperature;
   VariableValue & _temperature_old;
   MaterialProperty<Real> & _porosity;
-  MaterialProperty<Real> & _rho_mix;
+  MaterialProperty<Real> & _rho;
   MaterialProperty<Real> & _rho_r;
   
 };
