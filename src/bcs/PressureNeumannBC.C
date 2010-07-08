@@ -18,26 +18,24 @@ PressureNeumannBC::PressureNeumannBC(std::string name, MooseSystem & moose_syste
     _v_vel(coupledValue("v")),
     _w_vel_var(_dim == 3 ? coupled("w") : 0),
     _w_vel(_dim == 3 ? coupledValue("w") : _zero),
-    _component(parameters.get<Real>("component"))
+    _component(parameters.get<Real>("component")),
+    _gamma(getMaterialProperty<Real>("gamma"))
+{
+  if(_component < 0)
   {
-    if(_component < 0)
-    {
-      std::cout<<"Must select a component for PressureNeumannBC"<<std::endl;
-      libmesh_error();
-    }
+    std::cout<<"Must select a component for PressureNeumannBC"<<std::endl;
+    libmesh_error();
   }
+}
 
 Real
 PressureNeumannBC::pressure()
-  {
-    //Only CONSTANT Real properties can be used by BCs
-    MaterialProperty<Real> gamma = _material->getProperty<Real>("gamma");
-
-    return (gamma[_qp] - 1)*(_pe[_qp] - (0.5 * (_u_vel[_qp]*_u_vel[_qp] + _v_vel[_qp]*_v_vel[_qp] + _w_vel[_qp]*_w_vel[_qp])));
-  }
+{
+  return (_gamma[_qp] - 1)*(_pe[_qp] - (0.5 * (_u_vel[_qp]*_u_vel[_qp] + _v_vel[_qp]*_v_vel[_qp] + _w_vel[_qp]*_w_vel[_qp])));
+}
 
 Real
 PressureNeumannBC::computeQpResidual()
-  {
-    return pressure()*_normals[_qp](_component)*_phi[_i][_qp];
-  }
+{
+  return pressure()*_normals[_qp](_component)*_phi[_i][_qp];
+}

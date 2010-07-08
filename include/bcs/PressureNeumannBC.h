@@ -41,6 +41,8 @@ protected:
   VariableValue & _w_vel;
 
   int _component;
+
+  MaterialProperty<Real> & _gamma;
 };
 
 #endif //PRESSURENEUMANNBC_H
