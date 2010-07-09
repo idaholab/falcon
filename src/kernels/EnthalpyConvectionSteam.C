@@ -20,7 +20,12 @@ EnthalpyConvectionSteam::EnthalpyConvectionSteam(std::string name, MooseSystem &
 Real EnthalpyConvectionSteam::computeQpResidual()
 {
 
-   return  _darcy_flux_s[_qp]*_rho_s[_qp]*_test[_i][_qp]*_GHs[_qp];
+   mooseAssert(std::!nan(_w[qp]), "darcy_params_w is NAN number");
+   mooseAssert(std::!nan(_darcy_params_s[qp]), "darcy_params_s is NAN number");
+
+
+
+  return  _darcy_flux_s[_qp]*_rho_s[_qp]*_test[_i][_qp]*_GHs[_qp];
 }
 
 Real EnthalpyConvectionSteam::computeQpJacobian()

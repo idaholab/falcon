@@ -14,13 +14,13 @@ InputParameters validParams<CoupledDarcyImplicitEuler>()
 CoupledDarcyImplicitEuler::CoupledDarcyImplicitEuler(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
 
-   _enthalpy(coupledValue("enthalpy")),
-   
-//     _rho(coupledVal("rhoAux")),
-//     _rho_old(coupledValOld("rhoAux")),
+//     _rho(coupledValue("rhoAux")),
+//     _rho_old(coupledValueOld("rhoAux")),
+
    _rho(getMaterialProperty<Real>("rho")),
    _rho_old(getMaterialProperty<Real>("rho_old")),
 
+   _enthalpy(coupledValue("enthalpy")),
    _porosity(getMaterialProperty<Real>("porosity")),
    _sat_w(getMaterialProperty<Real>("sat_w")),
    _sat_s(getMaterialProperty<Real>("sat_s")),
@@ -42,7 +42,7 @@ CoupledDarcyImplicitEuler::CoupledDarcyImplicitEuler(std::string name, MooseSyst
 Real
 CoupledDarcyImplicitEuler::computeQpResidual()
 { 
-
+    
      return _porosity[_qp]*_test[_i][_qp]*(_rho[_qp] -_rho_old[_qp])/_dt;
 }
 
@@ -79,4 +79,7 @@ CoupledDarcyImplicitEuler::computeQpJacobian()
      }
      return _porosity[_qp]*_test[_i][_qp]*(_drho)/_dt;
 
+
+//     return 0;
+     
 }

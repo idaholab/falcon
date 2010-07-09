@@ -38,6 +38,12 @@ protected:
   MaterialProperty<Real> & _rel_perm_w;
   MaterialProperty<Real> & _rel_perm_s;
 
+
+  MaterialProperty<Real> & _temp;
+  MaterialProperty<Real> & _temp_old;
+  MaterialProperty<Real> & _dTbydP_H;
+  MaterialProperty<Real> & _dTbydH_P;
+  
   MaterialProperty<Real> & _sat_w;
   MaterialProperty<Real> & _sat_s;
   MaterialProperty<Real> & _Hw;
@@ -88,7 +94,7 @@ protected:
        
 private:
 
-  VariableValue & _temp;
+//  VariableValue & _temp_old;
   VariableValue & _pressure;
   VariableValue & _pressure_old;
   VariableGradient & _grad_p;

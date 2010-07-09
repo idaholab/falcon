@@ -47,6 +47,7 @@
 #include "TemperatureConvection.h"
 #include "EnthalpyImplicitEuler.h"
 #include "EnthalpyDiffusion.h"
+#include "EnthalpyConvection.h"
 #include "EnthalpyConvectionWater.h"
 #include "EnthalpyConvectionSteam.h"
 #include "DarcyVelocity.h"
@@ -121,6 +122,7 @@ namespace Falcon
     KernelFactory::instance()->registerKernel<TemperatureConvection>("TemperatureConvection");
     KernelFactory::instance()->registerKernel<EnthalpyImplicitEuler>("EnthalpyImplicitEuler");
     KernelFactory::instance()->registerKernel<EnthalpyDiffusion>("EnthalpyDiffusion");
+    KernelFactory::instance()->registerKernel<EnthalpyConvection>("EnthalpyConvection");
     KernelFactory::instance()->registerKernel<EnthalpyConvectionWater>("EnthalpyConvectionWater");
     KernelFactory::instance()->registerKernel<EnthalpyConvectionSteam>("EnthalpyConvectionSteam");
     KernelFactory::instance()->registerKernel<DarcyVelocity>("DarcyVelocity");

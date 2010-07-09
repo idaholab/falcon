@@ -20,7 +20,12 @@ protected:
   virtual Real computeQpJacobian();
 
   MaterialProperty<Real> &_thermal_conductivity;
-  VariableGradient & _grad_T;
+  MaterialProperty<Real> &_dTbydP_H;
+  MaterialProperty<Real> &_dTbydH_P;
+  VariableGradient & _grad_p;
+  VariableValue & _pressure;
+
+//  VariableGradient & _grad_T;
   
 };
 #endif //ENTHALPYDIFFUSION
