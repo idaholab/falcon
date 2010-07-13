@@ -14,7 +14,7 @@ EnergyInviscidFlux::EnergyInviscidFlux(std::string name, MooseSystem & moose_sys
    _u_vel(coupledValue("u")),
    _v_vel_var(coupled("v")),
    _v_vel(coupledValue("v")),
-   _w_vel_var(_dim == 3 ? coupled("w") : 9999999),
+   _w_vel_var(_dim == 3 ? coupled("w") : std::numeric_limits<unsigned int>::max()),
    _w_vel(_dim == 3 ? coupledValue("w") : _zero),
    _pressure(getMaterialProperty<Real>("pressure"))
 {}
