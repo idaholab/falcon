@@ -5,8 +5,8 @@ template<>
 InputParameters validParams<EnthalpyImplicitEuler>()
 {
   InputParameters params = validParams<ImplicitEuler>();
-//  params.addCoupledVar("tempAux", "TODO: add description");
-//  params.addCoupledVar("rhoAux", "TODO: add description");
+  params.addCoupledVar("tempAux", "TODO: add description");
+  params.addCoupledVar("rhoAux", "TODO: add description");
   return params;
 }
 
@@ -31,8 +31,7 @@ EnthalpyImplicitEuler::EnthalpyImplicitEuler(std::string name, MooseSystem & moo
 Real
 EnthalpyImplicitEuler::computeQpResidual()
 {
-
-  
+     
   Real Heat = (_porosity[_qp]* _rho[_qp]*_u[_qp])+((1-_porosity[_qp])*_rho_r[_qp]*879*_temperature[_qp]);
   Real Heat_old = (_porosity[_qp]* _rho_old[_qp]*_u_old[_qp])+((1-_porosity[_qp])*_rho_r[_qp]*879*_temperature_old[_qp]);
     

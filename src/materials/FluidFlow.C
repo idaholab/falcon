@@ -42,15 +42,14 @@ FluidFlow::computeProperties()
   PorousMedia::computeProperties();
   
   for(unsigned int qp=0; qp<_n_qpoints; qp++)
-  {
-
+  {     
 // fluid properties
     _rho_w[qp]               = _input_rho_w;
     _mu_w[qp]                = _input_mu_w;
     _c_f[qp]                 = _input_c_f; 
 
 // temperature dependent fluid density & viscosity
-    if(_has_temp && _has_variable_density) 
+/*    if(_has_temp && _has_variable_density) 
     {
       Real T = _temperature[qp];
       double a;
@@ -93,12 +92,16 @@ FluidFlow::computeProperties()
         mooseError("Temperature out of Range");
       }
     }
+*/    
 //  compute Darcy flux and pore water velicity on q-points
-    if(_has_pressure)
-    {
+//    if(_has_pressure)
+//    {
       _darcy_params_w[qp] = _permeability[qp] * _rho_w[qp] / _mu_w[qp];
       _darcy_flux_w[qp] =  -_permeability[qp] / _mu_w[qp] * ((_grad_p[qp])+(_rho_w[qp]*_gravity[qp]*_gravity_vector[qp]));
       _pore_velocity_w[qp] = _darcy_flux_w[qp] / _porosity[qp];
-    }
+//    }
+
+//    std::cout<<"darcy_params "<<_darcy_params_w[qp]<<".\n";
+    
   }
 }

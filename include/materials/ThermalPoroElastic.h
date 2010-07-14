@@ -85,9 +85,9 @@ private:
   MaterialProperty<Real> & _c_f;
   MaterialProperty<Real> & _water_specific_heat;
   
-  MaterialProperty<Real> & _darcy_params;
-  MaterialProperty<RealGradient> & _darcy_flux;
-  MaterialProperty<RealGradient> & _pore_velocity;
+  MaterialProperty<Real> & _darcy_params_w;
+  MaterialProperty<RealGradient> & _darcy_flux_w;
+  MaterialProperty<RealGradient> & _pore_velocity_w;
   
   MaterialProperty<Real> & _gravity;
   MaterialProperty<RealVectorValue> & _gravity_vector;

@@ -46,9 +46,9 @@ private:
   MaterialProperty<Real> & _water_specific_heat;
   MaterialProperty<Real> & _rock_specific_heat;
   MaterialProperty<Real> & _rho_r;
-  MaterialProperty<Real> & _darcy_params;
-  MaterialProperty<RealGradient> & _darcy_flux;
-  MaterialProperty<RealGradient> & _darcy_velocity;
+  MaterialProperty<Real> & _darcy_params_w;
+  MaterialProperty<RealGradient> & _darcy_flux_w;
+  MaterialProperty<RealGradient> & _darcy_velocity_w;
   MaterialProperty<RealVectorValue> & _gravity_vector;
   VariableGradient & _grad_p;
   VariableValue  & _pressure;

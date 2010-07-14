@@ -95,9 +95,9 @@ ThermalPoroElastic::ThermalPoroElastic(std::string name,
      _c_f(declareProperty<Real>("c_f")),
      _water_specific_heat(declareProperty<Real>("water_specific_heat")),
      
-     _darcy_params(declareProperty<Real>("darcy_params")),
-     _darcy_flux(declareProperty<RealGradient>("darcy_flux")),
-     _pore_velocity(declareProperty<RealGradient>("pore_velocity")),
+     _darcy_params_w(declareProperty<Real>("darcy_params_w")),
+     _darcy_flux_w(declareProperty<RealGradient>("darcy_flux_w")),
+     _pore_velocity_w(declareProperty<RealGradient>("pore_velocity_w")),
 
      _gravity(declareProperty<Real>("gravity")),
      _gravity_vector(declareProperty<RealVectorValue>("gravity_vector")),
@@ -188,9 +188,9 @@ ThermalPoroElastic::computeProperties()
 //  compute Darcy flux and pore water velicity on q-points
     if(_has_pressure)
     {
-      _darcy_params[qp] = _permeability[qp] * _rho_w[qp] / _mu_w[qp];
-      _darcy_flux[qp] =  -_permeability[qp] / _mu_w[qp] * ((_grad_p[qp])+(_rho_w[qp]*_gravity[qp]*_gravity_vector[qp]));
-      _pore_velocity[qp] = _darcy_flux[qp] / _porosity[qp];
+      _darcy_params_w[qp] = _permeability[qp] * _rho_w[qp] / _mu_w[qp];
+      _darcy_flux_w[qp] =  -_permeability[qp] / _mu_w[qp] * ((_grad_p[qp])+(_rho_w[qp]*_gravity[qp]*_gravity_vector[qp]));
+      _pore_velocity_w[qp] = _darcy_flux_w[qp] / _porosity[qp];
     }
 
     if(_has_solid_mechanics)

@@ -21,13 +21,7 @@ protected:
   virtual Real computeQpJacobian();  
 
   
-  MaterialProperty<RealGradient> &_darcy_flux_s;
-  MaterialProperty<RealGradient> &_darcy_flux_w;
-  MaterialProperty<RealGradient> &_GHs;
-  MaterialProperty<RealGradient> &_GHw;
-  MaterialProperty<Real> &_rho_s;
-  MaterialProperty<Real> &_rho_w;
-  
+ 
   MaterialProperty<Real> &_Hs;
   MaterialProperty<Real> &_Hw;
   MaterialProperty<Real> &_darcy_params_s;

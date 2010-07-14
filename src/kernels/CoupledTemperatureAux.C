@@ -19,7 +19,7 @@ CoupledTemperatureAux::CoupledTemperatureAux(std::string name, MooseSystem & moo
      E3 = 1e-3;
      E5 = 1e-5;
      E6 = 1e-6;
-  
+
 }
 
 

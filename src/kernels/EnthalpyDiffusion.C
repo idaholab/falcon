@@ -28,8 +28,8 @@ EnthalpyDiffusion::computeQpResidual()
 
    
    return _thermal_conductivity[_qp]*((_dTbydP_H[_qp]*_grad_p[_qp]*_grad_test[_i][_qp])+(_dTbydH_P[_qp]*Diffusion::computeQpResidual()));
-  
-  // return  _thermal_conductivity[_qp]*(_grad_T[_qp]*_grad_test[_i][_qp]);
+
+//       return  _thermal_conductivity[_qp]*(_grad_T[_qp]*_grad_test[_i][_qp]);
   
 }
 

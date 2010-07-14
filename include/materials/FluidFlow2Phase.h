@@ -43,6 +43,8 @@ protected:
   MaterialProperty<Real> & _temp_old;
   MaterialProperty<Real> & _dTbydP_H;
   MaterialProperty<Real> & _dTbydH_P;
+  MaterialProperty<Real> & _drhobydP_H;
+  MaterialProperty<Real> & _drhobydH_P;
   
   MaterialProperty<Real> & _sat_w;
   MaterialProperty<Real> & _sat_s;
@@ -54,8 +56,6 @@ protected:
   MaterialProperty<Real> & _darcy_params_s;
   MaterialProperty<RealGradient> & _darcy_flux_w;
   MaterialProperty<RealGradient> & _darcy_flux_s;
-  MaterialProperty<RealGradient> & _pore_velocity_w;
-  MaterialProperty<RealGradient> & _pore_velocity_s;
 
      Real E3;
      Real E6;

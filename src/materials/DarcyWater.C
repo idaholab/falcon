@@ -116,11 +116,11 @@ DarcyWater::DarcyWater(std::string name,
    _rock_specific_heat(declareProperty<Real>("rock_specific_heat")),
    _rho_r(declareProperty<Real>("rho_r")),
 
-   _darcy_params(declareProperty<Real>("darcy_params")),
+   _darcy_params_w(declareProperty<Real>("darcy_params_w")),
    
    //  _darcy_flux(declareGradientProperty("darcy_pressure")),
-   _darcy_flux(declareProperty<RealGradient>("darcy_flux")),
-   _darcy_velocity(declareProperty<RealGradient>("darcy_velocity")),
+   _darcy_flux_w(declareProperty<RealGradient>("darcy_flux_w")),
+   _darcy_velocity_w(declareProperty<RealGradient>("darcy_velocity_w")),
    _gravity_vector(declareProperty<RealVectorValue>("gravity_vector")),
    _grad_p(coupledGradient("pressure")),
    _pressure(coupledValue("pressure")),
@@ -158,9 +158,9 @@ DarcyWater::computeProperties()
     //
     // _mu_w[qp] = viscosity_((_temperature)[qp]);
 
-    _darcy_params[qp] = ((_permeability[qp] * _rho_w[qp]) / _mu_w[qp]);
-    _darcy_flux[qp] = -((_permeability)[qp] / (_mu_w)[qp]) * ((_grad_p[qp])+((_rho_w)[qp]*(_gravity)[qp]*(_gravity_vector)[qp]));
-    _darcy_velocity[qp] = (_darcy_flux[qp]) / _porosity[qp];
+    _darcy_params_w[qp] = ((_permeability[qp] * _rho_w[qp]) / _mu_w[qp]);
+    _darcy_flux_w[qp] = -((_permeability)[qp] / (_mu_w)[qp]) * ((_grad_p[qp])+((_rho_w)[qp]*(_gravity)[qp]*(_gravity_vector)[qp]));
+    _darcy_velocity_w[qp] = (_darcy_flux_w[qp]) / _porosity[qp];
     
     
     //std::cerr << "Pressure  =   " <<(_pressure)[qp]<<"   Temp =  "<<(_temperature)[qp]<<"\n";

@@ -9,7 +9,7 @@ class CoupledDarcyImplicitEuler;
 template<>
 InputParameters validParams<CoupledDarcyImplicitEuler>();
 
-class CoupledDarcyImplicitEuler : public Kernel
+class CoupledDarcyImplicitEuler : public ImplicitEuler
 {
 public:
 
@@ -20,10 +20,10 @@ protected:
 
   virtual Real computeQpJacobian();
 
-   VariableValue & _enthalpy;
+//   VariableValue & _enthalpy;
 //   VariableValue & _rho;
 //   VariableValue & _rho_old;  
-    MaterialProperty<Real> & _rho;
+   MaterialProperty<Real> & _rho;
    MaterialProperty<Real> & _rho_old;
    MaterialProperty<Real> & _porosity;
    MaterialProperty<Real> & _sat_w;

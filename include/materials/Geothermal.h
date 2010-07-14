@@ -1,7 +1,7 @@
 #ifndef GEOTHERMAL_H
 #define GEOTHERMAL_H
 
-#include "FluidFlow2Phase.h"
+#include "FluidFlow.h"
 #include "HeatTransport.h"
 #include "SolidMechanics.h"
 
@@ -15,7 +15,7 @@ InputParameters validParams<Geothermal>();
 /**
  * Simple material with Geothermal properties.
  */
-class Geothermal : public FluidFlow2Phase, public HeatTransport, public SolidMechanics
+class Geothermal : public FluidFlow, public HeatTransport, public SolidMechanics
 {
 public:
   Geothermal(std::string name,

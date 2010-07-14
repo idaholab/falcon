@@ -23,7 +23,7 @@ protected:
   MaterialProperty<Real> &_water_specific_heat;
   MaterialProperty<RealGradient> &_darcy_flux_w;
   MaterialProperty<Real> &_rho_w;
-//  MooseArray<RealGradient> &_pore_velocity;
+//  MooseArray<RealGradient> &_pore_velocity_w;
   
 };
 #endif //TEMPERATURECONVECTION

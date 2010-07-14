@@ -74,6 +74,7 @@
 #include "HeatTransport.h"
 #include "SolidMechanics.h"
 #include "Geothermal.h"
+#include "Geothermal2Phase.h"
 
 namespace Falcon
 {
@@ -148,6 +149,7 @@ namespace Falcon
     MaterialFactory::instance()->registerMaterial<HeatTransport>("HeatTransport");
     MaterialFactory::instance()->registerMaterial<SolidMechanics>("SolidMechanics");
     MaterialFactory::instance()->registerMaterial<Geothermal>("Geothermal");
+    MaterialFactory::instance()->registerMaterial<Geothermal2Phase>("Geothermal2Phase");
     
   }
 }

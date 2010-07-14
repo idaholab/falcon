@@ -16,6 +16,7 @@ TemperatureDiffusion::TemperatureDiffusion(std::string name, MooseSystem & moose
 Real
 TemperatureDiffusion::computeQpResidual()
 {
+  
   return _thermal_conductivity[_qp]*Diffusion::computeQpResidual();
 }
 

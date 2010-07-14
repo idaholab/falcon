@@ -18,7 +18,7 @@ DarcyMassFluxPressure::DarcyMassFluxPressure(std::string name,
 Real
 DarcyMassFluxPressure::computeQpResidual()
 {
-    
+ 
   return _darcy_params_w[_qp]*Diffusion::computeQpResidual();
 }
 
