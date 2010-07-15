@@ -20,7 +20,7 @@ CoupledDarcyImplicitEuler::CoupledDarcyImplicitEuler(std::string name, MooseSyst
    _rho(getMaterialProperty<Real>("rho")),
    _rho_old(getMaterialProperty<Real>("rho_old")),
 
-//   _enthalpy(coupledValue("enthalpy")),
+   _enthalpy(coupledValue("enthalpy")),
    _porosity(getMaterialProperty<Real>("porosity")),
    _sat_w(getMaterialProperty<Real>("sat_w")),
    _sat_s(getMaterialProperty<Real>("sat_s")),
@@ -31,12 +31,14 @@ CoupledDarcyImplicitEuler::CoupledDarcyImplicitEuler(std::string name, MooseSyst
 {
      E3 = pow(10,3);
      E6 = pow(10,6);
-     a1 = 4.00894*pow(10,-4);
-     a2 = 5.46283*pow(10,-7);
-     b1 = 0.0438441;
-     b2 = 1.79088*pow(10,-5);
-     b3 = 3.69276*pow(10,-8);
-     b4 = 5.17644*pow(10,-13);
+     
+     a2 = 4.00894*pow(10,-4);
+     a5 = 5.46283*pow(10,-7);
+     
+     b2 = 0.0438441;
+     b3 = 1.79088*pow(10,-5);
+     b4 = 3.69276*pow(10,-8);
+     b5 = 5.17644*pow(10,-13);
 }
 
 Real
@@ -48,38 +50,43 @@ CoupledDarcyImplicitEuler::computeQpResidual()
 
 Real
 CoupledDarcyImplicitEuler::computeQpJacobian()
-{
-    
-/*     
-     Real H = _enthalpy[_qp]/ E3;
-     Real P = _u[_qp] /E6;
-     Real P3= pow(P,3);
-     Real  _drho;
-     Real  _drho_s;
-     Real  _drho_w;
+{    
+  Real H = _enthalpy[_qp]/E3;
+  Real P = _u[_qp]/E6;
+  Real P2 = pow(P,2);  
+  Real P3 = pow(P,3);
+  Real P4 = pow(P,4);
+  Real H2 = pow(H,2);
+  Real H3 = pow(H,3);
+  
+  Real  drhodp;
+  Real  drho_s_dp = 0;
+  Real  drho_w_dp = 0;
+
+  Real phij = _phi[_j][_qp];
      
-//   compressed water zone
-     if ( H < _Hw[_qp])
-     {
-     _drho = E3*((a1*_phi[_j][_qp])+(a2*_phi[_j][_qp]*H));
-     }
+  //   compressed water zone
+  if (H < _Hw[_qp])
+  {
+    if (H >200.0)
+      drho_w_dp = E3*((a2*phij)+(a5*phij*H));
+  }
+  
 
-//   super heated steam zone
-     else if (H > _Hs[_qp])
-     {
-     _drho = E3*((b1*_phi[_j][_qp])-(b2*_phi[_j][_qp]*H)+(b3*4*P3*_phi[_j][_qp])+(b4*_phi[_j][_qp]*pow(H,3)));
-     }
+  // Super heated steam zone
+  else if (H > _Hs[_qp])
+  {
+    drho_s_dp = E3*((b2*phij)-(b3*phij*H)+(b4*4*P3*phij)+(b5*phij*H3));
+  }
 
-//   Mixed Phase Zone(Two-phase exists)
-     else 
-     {
-     _drho_w = E3*((a1*_phi[_j][_qp])+(a2*_phi[_j][_qp]*_Hw[_qp]));
-     _drho_s = E3*((b1*_phi[_j][_qp])-(b2*_phi[_j][_qp]*_Hs[_qp])+(b3*4*P3*_phi[_j][_qp])+(b4*_phi[_j][_qp]*pow(_Hs[_qp],3)));
-     _drho = (_sat_w[_qp] * _drho_w)+((_sat_s[_qp])*_drho_s);
-     }
-     return _porosity[_qp]*_test[_i][_qp]*(_drho)/_dt;
+  // Mixed phase
+  else 
+  {
+    drho_w_dp = E3*((a2*phij)+(a5*phij*_Hw[_qp]));
+    drho_s_dp = E3*((b2*phij)-(b3*phij*_Hs[_qp])+(b4*4*P3*phij)+(b5*phij*pow(_Hs[_qp],3)));
+  }
 
+  drhodp = (_sat_w[_qp]*drho_w_dp)+(_sat_s[_qp]*drho_s_dp);
 
-// */     return 0;
-     
+  return _porosity[_qp]*_test[_i][_qp]*drhodp/_dt;   
 }
