@@ -50,6 +50,11 @@
 #include "EnthalpyConvection.h"
 #include "EnthalpyConvectionWater.h"
 #include "EnthalpyConvectionSteam.h"
+#include "HuyakornMassImplicitEuler.h"
+#include "HuyakornMassConvection.h"
+#include "HuyakornEnthalpyImplicitEuler.h"
+#include "HuyakornEnthalpyDiffusion.h"
+#include "HuyakornEnthalpyConvection.h"
 #include "DarcyVelocity.h"
 #include "DarcyImplicitBackwardDifference2.h"
 #include "TemperatureImplicitBackwardDifference2.h"
@@ -57,7 +62,8 @@
 #include "CoupledDensityAux.h"
 #include "CoupledViscosityAux.h"
 #include "AnalyticalADE1D.h"
-#include "CoupledTemperatureAux.h"
+#include "TemperatureAux.h"
+#include "WaterSatAux.h"
 #include "CoupledRhoAux.h"
 
 #include "PressureNeumannBC.h"
@@ -71,6 +77,7 @@
 #include "PorousMedia.h"
 #include "FluidFlow.h"
 #include "FluidFlow2Phase.h"
+#include "HuyakornFluidFlow2Phase.h"
 #include "HeatTransport.h"
 #include "SolidMechanics.h"
 #include "Geothermal.h"
@@ -114,7 +121,9 @@ namespace Falcon
     KernelFactory::instance()->registerKernel<Temperature>("Temperature");
     KernelFactory::instance()->registerKernel<DarcyImplicitEuler>("DarcyImplicitEuler");
     KernelFactory::instance()->registerKernel<CoupledDarcyImplicitEuler>("CoupledDarcyImplicitEuler");
+    KernelFactory::instance()->registerKernel<HuyakornMassImplicitEuler>("HuyakornMassImplicitEuler");
     KernelFactory::instance()->registerKernel<DarcyMassFluxPressure>("DarcyMassFluxPressure");
+    KernelFactory::instance()->registerKernel<HuyakornMassConvection>("HuyakornMassConvection");
     KernelFactory::instance()->registerKernel<DarcyMassFluxPressureSteam>("DarcyMassFluxPressureSteam");
     KernelFactory::instance()->registerKernel<DarcyMassFluxZ>("DarcyMassFluxZ");
     KernelFactory::instance()->registerKernel<DarcyMassFluxZSteam>("DarcyMassFluxZSteam");
@@ -122,8 +131,11 @@ namespace Falcon
     KernelFactory::instance()->registerKernel<TemperatureDiffusion>("TemperatureDiffusion");
     KernelFactory::instance()->registerKernel<TemperatureConvection>("TemperatureConvection");
     KernelFactory::instance()->registerKernel<EnthalpyImplicitEuler>("EnthalpyImplicitEuler");
+    KernelFactory::instance()->registerKernel<HuyakornEnthalpyImplicitEuler>("HuyakornEnthalpyImplicitEuler");
     KernelFactory::instance()->registerKernel<EnthalpyDiffusion>("EnthalpyDiffusion");
+    KernelFactory::instance()->registerKernel<HuyakornEnthalpyDiffusion>("HuyakornEnthalpyDiffusion");
     KernelFactory::instance()->registerKernel<EnthalpyConvection>("EnthalpyConvection");
+    KernelFactory::instance()->registerKernel<HuyakornEnthalpyConvection>("HuyakornEnthalpyConvection");
     KernelFactory::instance()->registerKernel<EnthalpyConvectionWater>("EnthalpyConvectionWater");
     KernelFactory::instance()->registerKernel<EnthalpyConvectionSteam>("EnthalpyConvectionSteam");
     KernelFactory::instance()->registerKernel<DarcyVelocity>("DarcyVelocity");
@@ -133,7 +145,8 @@ namespace Falcon
     AuxFactory::instance()->registerAux<CoupledDensityAux>("CoupledDensityAux");
     AuxFactory::instance()->registerAux<CoupledViscosityAux>("CoupledViscosityAux");
     AuxFactory::instance()->registerAux<AnalyticalADE1D>("AnalyticalADE1D");
-    AuxFactory::instance()->registerAux<CoupledTemperatureAux>("CoupledTemperatureAux");
+    AuxFactory::instance()->registerAux<TemperatureAux>("TemperatureAux");
+    AuxFactory::instance()->registerAux<WaterSatAux>("WaterSatAux");
     AuxFactory::instance()->registerAux<CoupledRhoAux>("CoupledRhoAux");
         
     BCFactory::instance()->registerBC<PressureNeumannBC>("PressureNeumannBC");
@@ -146,6 +159,7 @@ namespace Falcon
     MaterialFactory::instance()->registerMaterial<PorousMedia>("PorousMedia");
     MaterialFactory::instance()->registerMaterial<FluidFlow>("FluidFlow");
     MaterialFactory::instance()->registerMaterial<FluidFlow2Phase>("FluidFlow2Phase");
+    MaterialFactory::instance()->registerMaterial<HuyakornFluidFlow2Phase>("HuyakornFluidFlow2Phase");
     MaterialFactory::instance()->registerMaterial<HeatTransport>("HeatTransport");
     MaterialFactory::instance()->registerMaterial<SolidMechanics>("SolidMechanics");
     MaterialFactory::instance()->registerMaterial<Geothermal>("Geothermal");

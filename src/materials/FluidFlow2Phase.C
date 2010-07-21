@@ -251,16 +251,16 @@ FluidFlow2Phase::computeProperties()
 //******************************************************************************
 //  ************* this section is for computing _rho_old and _temp_old **********   
 //******************************************************************************
-    Real H_o = _enthalpy[qp]/E3;
-    Real P_o = _pressure_old[qp]/E6;
-    Real P2_o = pow(P,2);  
-    Real P3_o = pow(P,3);
-    Real _Hs_o;
-    Real _Hw_o;
-    Real _rho_w_o;
-    Real _rho_s_o;
-    Real _sat_w_o;
-    Real _sat_s_o;
+     Real H_o = _enthalpy_old[qp]/E3;
+     Real P_o = _pressure_old[qp]/E6;
+     Real P2_o = pow(P_o,2);  
+     Real P3_o = pow(P_o,3);
+     Real _Hs_o;
+     Real _Hw_o;
+     Real _rho_w_o;
+     Real _rho_s_o;
+     Real _sat_w_o;
+     Real _sat_s_o;
 
     _Hs_o = 2822.82-(39.952/P_o)+(2.54342/P2_o)-(0.938879*P2_o);
     _Hw_o = 809.674+(94.465*P_o)-(4.502*P2_o)+(0.120265*P3_o)-(162.7/P_o)+(29.8163/P2_o)-(1.75623/P3_o);
