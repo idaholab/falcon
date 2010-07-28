@@ -21,8 +21,7 @@ protected:
 
   virtual Real computeQpJacobian();
 
-  MaterialProperty<Real> &_darcy_params_w;
-  MaterialProperty<Real> &_darcy_params_s;
+  MaterialProperty<Real> &_tau;
 
   
 };

@@ -28,15 +28,8 @@ public:
 protected:
   virtual Real computeValue();
 
-  Real E3;
-  Real E5;
-  Real E6;
+  MaterialProperty<Real> & _temp;
   
-    
-  VariableValue & _enthalpy;
-  VariableValue & _pressure;
-  MaterialProperty<Real> & _Hw;
-  MaterialProperty<Real> & _Hs;
 };
 
 #endif //TEMPERATUREAUX_H

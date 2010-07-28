@@ -21,10 +21,6 @@ protected:
 
   virtual Real computeQpJacobian();
 
-//  VariableValue & _temperature;
-//  VariableValue & _temperature_old;
-//  VariableValue & _rho;
-//  VariableValue & _rho_old;
   
   MaterialProperty<Real> & _temperature;
   MaterialProperty<Real> & _temperature_old;

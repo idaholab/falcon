@@ -20,8 +20,7 @@ protected:
   virtual Real computeQpJacobian();
 
 
-  MaterialProperty<Real> &_thermal_conductivity;
-  MaterialProperty<Real> &_dTbydH_P;
+  MaterialProperty<Real> &_beta;
   
 };
 #endif //HUYAKORNENTHALPYDIFFUSION

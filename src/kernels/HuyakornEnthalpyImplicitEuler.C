@@ -5,8 +5,6 @@ template<>
 InputParameters validParams<HuyakornEnthalpyImplicitEuler>()
 {
   InputParameters params = validParams<ImplicitEuler>();
-  params.addCoupledVar("tempAux", "TODO: add description");
-  params.addCoupledVar("rhoAux", "TODO: add description");
   return params;
 }
 

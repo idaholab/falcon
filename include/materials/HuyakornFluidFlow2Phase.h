@@ -22,45 +22,36 @@ public:
   
 protected:
   virtual void computeProperties();
-  Real _input_rho_w;
-  Real _input_rho_s;
-  Real _input_c_f;
-  Real _input_mu_w;
-  Real _input_mu_s;
+
+  Real _input_thermal_conductivity;
+  MaterialProperty<Real> & _km;
   
+  MaterialProperty<Real> & _Hw;
+  MaterialProperty<Real> & _Hs;
+  MaterialProperty<Real> & _EOS;
   MaterialProperty<Real> & _rho_w;
   MaterialProperty<Real> & _rho_s;
-  MaterialProperty<Real> & _rho;
-  MaterialProperty<Real> & _rho_old;
-  MaterialProperty<Real> & _c_f;
-  MaterialProperty<Real> & _mu_w;
-  MaterialProperty<Real> & _mu_s;
-  MaterialProperty<Real> & _rel_perm_w;
-  MaterialProperty<Real> & _rel_perm_s;
-
-
+  MaterialProperty<Real> & _sat_w;
+  MaterialProperty<Real> & _sat_s;
   MaterialProperty<Real> & _temp;
   MaterialProperty<Real> & _temp_old;
   MaterialProperty<Real> & _dTbydP_H;
   MaterialProperty<Real> & _dTbydH_P;
-  MaterialProperty<Real> & _drhobydP_H;
-  MaterialProperty<Real> & _drhobydH_P;
-  
-  MaterialProperty<Real> & _sat_w;
-  MaterialProperty<Real> & _sat_s;
-  MaterialProperty<Real> & _Hw;
-  MaterialProperty<Real> & _Hs;
-  MaterialProperty<RealGradient> & _GHw;
-  MaterialProperty<RealGradient> & _GHs;
+  MaterialProperty<Real> & _rho;
+  MaterialProperty<Real> & _rho_old;
+  MaterialProperty<Real> & _mu_w;
+  MaterialProperty<Real> & _mu_s;
+  MaterialProperty<Real> & _rel_perm_w;
+  MaterialProperty<Real> & _rel_perm_s;
   MaterialProperty<Real> & _darcy_params_w;
   MaterialProperty<Real> & _darcy_params_s;
-  MaterialProperty<RealGradient> & _darcy_flux_w;
-  MaterialProperty<RealGradient> & _darcy_flux_s;
+  MaterialProperty<Real> & _tau;
+  MaterialProperty<Real> & _lamda;
+  MaterialProperty<Real> & _beta;
 
-  
+   
      Real E3;
      Real E6;
-     Real E5;
      Real E7;
 
 // coefficients related to rho_w empirical equation     
@@ -113,12 +104,10 @@ protected:
   
 private:
 
-//  VariableValue & _temp_old;
   VariableValue & _pressure;
   VariableValue & _pressure_old;
-  VariableGradient & _grad_p;
-//  VariableValue & _enthalpy;
-//  VariableValue & _enthalpy_old;
+  VariableValue & _enthalpy;
+  VariableValue & _enthalpy_old;
 
 };
 

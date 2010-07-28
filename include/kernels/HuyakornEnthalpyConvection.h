@@ -22,13 +22,7 @@ protected:
 
   
  
-  MaterialProperty<Real> &_dTbydP_H;
-  MaterialProperty<Real> &_Hs;
-  MaterialProperty<Real> &_Hw;
-  MaterialProperty<Real> &_thermal_conductivity;
-  MaterialProperty<Real> &_darcy_params_s;
-  MaterialProperty<Real> &_darcy_params_w;
+  MaterialProperty<Real> &_lamda;
   VariableGradient & _grad_p;
-  
 };
 #endif //HUYAKORNENTHALPYCONVECTION

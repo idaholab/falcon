@@ -17,6 +17,6 @@ Real
 WaterSatAux::computeValue()
 {
              
- return 1.0* _sat_w[_qp];
+ return  _sat_w[_qp];
 
 }

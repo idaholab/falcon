@@ -20,17 +20,12 @@ HuyakornMassImplicitEuler::HuyakornMassImplicitEuler(std::string name, MooseSyst
 
 Real
 HuyakornMassImplicitEuler::computeQpResidual()
-{ 
-  if ((_u[_qp] < 10000) || (_u[_qp] >20000000))
-       {
-         std::cout<<"pressure "<<_u[_qp]<<".\n";
-         std::cout<<"_rho[_qp] "<<_rho[_qp]<<".\n";
-         std::cout<<"_rho_old[_qp] "<<_rho_old[_qp]<<".\n";
-         std::cout<<"porosity "<<_porosity[_qp]<<".\n";
-         mooseError("pressure out of Range");
-       }
+{
+  Real cf = 1e-5;
   
-     return _porosity[_qp]*_test[_i][_qp]*(_rho[_qp] -_rho_old[_qp])/_dt;
+  // return _porosity[_qp]*cf*_rho[_qp]*ImplicitEuler::computeQpResidual();
+  
+  return _porosity[_qp]*_test[_i][_qp]*(_rho[_qp] -_rho_old[_qp])/_dt;
 }
 
 Real
