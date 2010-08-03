@@ -13,7 +13,7 @@ meshdir := $(LIBMESH_DIR)
 # link with the library.
 #include $(meshdir)/Make.common
 
-include $(MOOSE_DIR)/Makefile.export
+-include $(MOOSE_DIR)/Makefile.export
 
 mpif77_command := $(libmesh_F77)
 
@@ -88,7 +88,7 @@ clean:
 	@rm -f .depend
 
 # include the dependency list
-include .depend
+-include .depend
 
 print:
 	@echo $(mpif77_command)
