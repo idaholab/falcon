@@ -45,9 +45,12 @@ protected:
   MaterialProperty<Real> & _rel_perm_s;
   MaterialProperty<Real> & _darcy_params_w;
   MaterialProperty<Real> & _darcy_params_s;
+  MaterialProperty<RealGradient> & _darcy_flux_w;
   MaterialProperty<Real> & _tau;
   MaterialProperty<Real> & _lamda;
   MaterialProperty<Real> & _beta;
+  MaterialProperty<Real> & _heat;
+  MaterialProperty<Real> & _heat_old;
 
    
      Real E3;
@@ -105,6 +108,7 @@ protected:
 private:
 
   VariableValue & _pressure;
+  VariableGradient & _grad_p;
   VariableValue & _pressure_old;
   VariableValue & _enthalpy;
   VariableValue & _enthalpy_old;

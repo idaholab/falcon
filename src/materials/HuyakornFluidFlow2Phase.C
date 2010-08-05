@@ -17,6 +17,7 @@ HuyakornFluidFlow2Phase::HuyakornFluidFlow2Phase(std::string name,
    
      _pressure(coupledValue("pressure")),
      _pressure_old(coupledValueOld("pressure")),
+     _grad_p(coupledGradient("pressure")),
      _enthalpy(coupledValue("enthalpy")),
      _enthalpy_old(coupledValueOld("enthalpy")),
 
@@ -44,9 +45,12 @@ HuyakornFluidFlow2Phase::HuyakornFluidFlow2Phase(std::string name,
      _rel_perm_s(declareProperty<Real>("rel_perm_s")),
      _darcy_params_w(declareProperty<Real>("darcy_params_w")),
      _darcy_params_s(declareProperty<Real>("darcy_params_s")),
+     _darcy_flux_w(declareProperty<RealGradient>("darcy_flux_w")),
      _beta(declareProperty<Real>("beta")),
      _tau(declareProperty<Real>("tau")),
-     _lamda(declareProperty<Real>("lamda"))
+     _lamda(declareProperty<Real>("lamda")),
+     _heat(declareProperty<Real>("heat")),
+     _heat_old(declareProperty<Real>("heat_old"))
    
     
 {
@@ -238,7 +242,13 @@ HuyakornFluidFlow2Phase::computeProperties()
      
      _darcy_params_w[qp] = _permeability[qp] * _rel_perm_w[qp] * _rho_w[qp] / _mu_w[qp];
      _darcy_params_s[qp] = _permeability[qp] * _rel_perm_s[qp] * _rho_s[qp] / _mu_s[qp];
+   
+      _darcy_flux_w[qp] =  -_permeability[qp] * _rel_perm_w[qp] / _mu_w[qp] * ((_grad_p[qp])+(_rho_w[qp]*_gravity[qp]*_gravity_vector[qp]));
 
+      
+      //std::cout<<"velocity "<<_darcy_flux_w[qp]<<".\n";
+      
+      
      _tau[qp] = _darcy_params_w[qp]+_darcy_params_s[qp]; 
 
      if (_EOS[qp] == 2.0 )
@@ -250,7 +260,8 @@ HuyakornFluidFlow2Phase::computeProperties()
           _lamda[qp] = (_km[qp]*_dTbydP_H[qp])+(_tau[qp]*_enthalpy[qp]);
        }
      _beta[qp] = _km[qp]*_dTbydH_P[qp];
- 
+
+     _heat[qp] = (_porosity[qp]* _rho[qp]*_enthalpy[qp])+((1-_porosity[qp])*_rho_r[qp]*879*_temp[qp]);
        
      
      
@@ -336,7 +347,8 @@ HuyakornFluidFlow2Phase::computeProperties()
        }
      _sat_s_o = 1.0-_sat_w_o;
      _rho_old[qp] = (_sat_w_o*_rho_w_o)+(_sat_s_o*_rho_s_o);
-
+     _heat_old[qp] = (_porosity[qp]* _rho_old[qp]*_enthalpy_old[qp])+((1-_porosity[qp])*_rho_r[qp]*879*_temp_old[qp]);
+     
 
 //****************************************************************
 // ******* END of _rho_old and _temp_old calculation*****************

@@ -48,8 +48,8 @@
 #include "EnthalpyImplicitEuler.h"
 #include "EnthalpyDiffusion.h"
 #include "EnthalpyConvection.h"
-#include "EnthalpyConvectionWater.h"
-#include "EnthalpyConvectionSteam.h"
+#include "EnthalpyConvectionZWater.h"
+#include "EnthalpyConvectionZSteam.h"
 #include "HuyakornMassImplicitEuler.h"
 #include "HuyakornMassConvection.h"
 #include "HuyakornEnthalpyImplicitEuler.h"
@@ -69,7 +69,7 @@
 #include "PressureNeumannBC.h"
 #include "GravityNeumannBC.h"
 #include "OutFlowBC.h"
-#include "HuyakornEx1BC.h"
+#include "HuyakornBC.h"
 
 #include "Constant.h"
 #include "DarcyWater.h"
@@ -136,8 +136,8 @@ namespace Falcon
     KernelFactory::instance()->registerKernel<HuyakornEnthalpyDiffusion>("HuyakornEnthalpyDiffusion");
     KernelFactory::instance()->registerKernel<EnthalpyConvection>("EnthalpyConvection");
     KernelFactory::instance()->registerKernel<HuyakornEnthalpyConvection>("HuyakornEnthalpyConvection");
-    KernelFactory::instance()->registerKernel<EnthalpyConvectionWater>("EnthalpyConvectionWater");
-    KernelFactory::instance()->registerKernel<EnthalpyConvectionSteam>("EnthalpyConvectionSteam");
+    KernelFactory::instance()->registerKernel<EnthalpyConvectionZWater>("EnthalpyConvectionZWater");
+    KernelFactory::instance()->registerKernel<EnthalpyConvectionZSteam>("EnthalpyConvectionZSteam");
     KernelFactory::instance()->registerKernel<DarcyVelocity>("DarcyVelocity");
     KernelFactory::instance()->registerKernel<DarcyImplicitBackwardDifference2>("DarcyImplicitBackwardDifference2");
     KernelFactory::instance()->registerKernel<TemperatureImplicitBackwardDifference2>("TemperatureImplicitBackwardDifference2");
@@ -152,7 +152,7 @@ namespace Falcon
     BCFactory::instance()->registerBC<PressureNeumannBC>("PressureNeumannBC");
     BCFactory::instance()->registerBC<GravityNeumannBC>("GravityNeumannBC");
     BCFactory::instance()->registerBC<OutFlowBC>("OutFlowBC");
-    BCFactory::instance()->registerBC<HuyakornEx1BC>("HuyakornEx1BC");
+    BCFactory::instance()->registerBC<HuyakornBC>("HuyakornBC");
 
     MaterialFactory::instance()->registerMaterial<Constant>("Constant");
     MaterialFactory::instance()->registerMaterial<DarcyWater>("DarcyWater");

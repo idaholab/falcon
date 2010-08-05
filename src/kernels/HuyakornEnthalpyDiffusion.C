@@ -24,6 +24,6 @@ HuyakornEnthalpyDiffusion::computeQpResidual()
 Real
 HuyakornEnthalpyDiffusion::computeQpJacobian()
 {
-  return 0;
+  return _beta[_qp]*Diffusion::computeQpJacobian();
    
 }
