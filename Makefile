@@ -40,6 +40,14 @@ ifneq (,$(findstring g95,$(mpif77_command)))
   libmesh_FFLAGS += -r8
 endif
 
+# pass the parameter coverage=true if you want to support gcov
+ifeq ($(coverage),true)
+	ifneq (,$(findstring gcc,$(GXX-VERSION)))
+		libmesh_CXXFLAGS += --coverage
+		libmesh_LDFLAGS += --coverage
+	endif
+endif
+
 ###############################################################################
 # File management.  This is where the source, header, and object files are
 # defined
