@@ -1,13 +1,13 @@
-#include "SolidMech.h"
+#include "SolidMechFalcon.h"
 
 template<>
-InputParameters validParams<SolidMech>()
+InputParameters validParams<SolidMechFalcon>()
 {
   InputParameters params = validParams<Kernel>();
   return params;
 }
 
-SolidMech::SolidMech(std::string name, MooseSystem & moose_system, InputParameters parameters)
+SolidMechFalcon::SolidMechFalcon(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
    _E_prop(getMaterialProperty<Real>("youngs_modulus")),
    _nu_prop(getMaterialProperty<Real>("poissons_ratio")),
@@ -16,7 +16,7 @@ SolidMech::SolidMech(std::string name, MooseSystem & moose_system, InputParamete
 {}
 
 void
-SolidMech::recomputeConstants()
+SolidMechFalcon::recomputeConstants()
 {
   _E = _E_prop[_qp];
   _nu = _nu_prop[_qp];

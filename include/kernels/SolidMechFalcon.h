@@ -1,5 +1,5 @@
-#ifndef SOLIDMECH_H
-#define SOLIDMECH_H
+#ifndef SOLIDMECHFALCON_H
+#define SOLIDMECHFALCON_H
 
 #include "Kernel.h"
 #include "Material.h"
@@ -10,16 +10,16 @@
 
 
 //Forward Declarations
-class SolidMech;
+class SolidMechFalcon;
 
 template<>
-InputParameters validParams<SolidMech>();
+InputParameters validParams<SolidMechFalcon>();
 
-class SolidMech : public Kernel
+class SolidMechFalcon : public Kernel
 {
 public:
 
-  SolidMech(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  SolidMechFalcon(std::string name, MooseSystem & moose_system, InputParameters parameters);
   
   void recomputeConstants();
   
@@ -52,4 +52,4 @@ protected:
 };
  
 
-#endif //SOLIDMECH_H
+#endif //SOLIDMECHFALCON_H

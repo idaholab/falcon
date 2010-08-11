@@ -1,20 +1,20 @@
-#ifndef SOLIDMECHY
-#define SOLIDMECHY
+#ifndef SOLIDMECHYFALCON
+#define SOLIDMECHYFALCON
 
-#include "SolidMech.h"
+#include "SolidMechFalcon.h"
 
 
 //Forward Declarations
-class SolidMechY;
+class SolidMechYFalcon;
 
 template<>
-InputParameters validParams<SolidMechY>();
+InputParameters validParams<SolidMechYFalcon>();
 
-class SolidMechY : public SolidMech
+class SolidMechYFalcon : public SolidMechFalcon
 {
 public:
 
-  SolidMechY(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  SolidMechYFalcon(std::string name, MooseSystem & moose_system, InputParameters parameters);
   
 protected:
   virtual Real computeQpResidual();
@@ -32,4 +32,4 @@ private:
   VariableValue  & _z;
   VariableGradient & _grad_z;
 };
-#endif //SOLIDMECHY 
+#endif //SOLIDMECHYFALCON 

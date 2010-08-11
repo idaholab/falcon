@@ -6,9 +6,9 @@
 
 #include "HeatConduction.h"
 #include "HeatConductionImplicitEuler.h"
-#include "SolidMechX.h"
-#include "SolidMechY.h"
-#include "SolidMechZ.h"
+#include "SolidMechXFalcon.h"
+#include "SolidMechYFalcon.h"
+#include "SolidMechZFalcon.h"
 #include "SolidMechImplicitEuler.h"
 
 #include "StressCompute.h"
@@ -66,7 +66,7 @@
 #include "WaterSatAux.h"
 #include "CoupledRhoAux.h"
 
-#include "PressureNeumannBC.h"
+#include "PressureNeumannBC2.h"
 #include "GravityNeumannBC.h"
 #include "OutFlowBC.h"
 #include "HuyakornBC.h"
@@ -91,9 +91,9 @@ namespace Falcon
     
     KernelFactory::instance()->registerKernel<HeatConduction>("HeatConduction");
     KernelFactory::instance()->registerKernel<HeatConductionImplicitEuler>("HeatConductionImplicitEuler");
-    KernelFactory::instance()->registerKernel<SolidMechX>("SolidMechX");
-    KernelFactory::instance()->registerKernel<SolidMechY>("SolidMechY");
-    KernelFactory::instance()->registerKernel<SolidMechZ>("SolidMechZ");
+    KernelFactory::instance()->registerKernel<SolidMechXFalcon>("SolidMechX");
+    KernelFactory::instance()->registerKernel<SolidMechYFalcon>("SolidMechY");
+    KernelFactory::instance()->registerKernel<SolidMechZFalcon>("SolidMechZ");
     KernelFactory::instance()->registerKernel<StressCompute>("StressCompute");
     KernelFactory::instance()->registerKernel<StrainCompute>("StrainCompute");
     KernelFactory::instance()->registerKernel<SolidMechImplicitEuler>("SolidMechImplicitEuler");
@@ -149,7 +149,7 @@ namespace Falcon
     AuxFactory::instance()->registerAux<WaterSatAux>("WaterSatAux");
     AuxFactory::instance()->registerAux<CoupledRhoAux>("CoupledRhoAux");
         
-    BCFactory::instance()->registerBC<PressureNeumannBC>("PressureNeumannBC");
+    BCFactory::instance()->registerBC<PressureNeumannBC2>("PressureNeumannBC2");
     BCFactory::instance()->registerBC<GravityNeumannBC>("GravityNeumannBC");
     BCFactory::instance()->registerBC<OutFlowBC>("OutFlowBC");
     BCFactory::instance()->registerBC<HuyakornBC>("HuyakornBC");

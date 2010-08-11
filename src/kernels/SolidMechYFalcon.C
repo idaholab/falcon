@@ -1,16 +1,16 @@
-#include "SolidMechY.h"
+#include "SolidMechYFalcon.h"
 
 template<>
-InputParameters validParams<SolidMechY>()
+InputParameters validParams<SolidMechYFalcon>()
 {
-  InputParameters params = validParams<SolidMech>();
+  InputParameters params = validParams<SolidMechFalcon>();
   params.addRequiredCoupledVar("x", "Coupled Displacement in the x Direction");
   params.addCoupledVar("z", "Coupled Displacement in the z Direction");
   return params;
 }
 
-SolidMechY::SolidMechY(std::string name, MooseSystem & moose_system, InputParameters parameters)
-  :SolidMech(name, moose_system, parameters),
+SolidMechYFalcon::SolidMechYFalcon(std::string name, MooseSystem & moose_system, InputParameters parameters)
+  :SolidMechFalcon(name, moose_system, parameters),
    _x_var(coupled("x")),
    _x(coupledValue("x")),
    _grad_x(coupledGradient("x")),
@@ -20,7 +20,7 @@ SolidMechY::SolidMechY(std::string name, MooseSystem & moose_system, InputParame
 {}
 
 Real
-SolidMechY::computeQpResidual()
+SolidMechYFalcon::computeQpResidual()
 {
 /*    
       recomputeConstants();
@@ -55,7 +55,7 @@ SolidMechY::computeQpResidual()
 }
 
 Real
-SolidMechY::computeQpJacobian()
+SolidMechYFalcon::computeQpJacobian()
 {
   recomputeConstants();
 
@@ -65,7 +65,7 @@ SolidMechY::computeQpJacobian()
 }
 
 Real
-SolidMechY::computeQpOffDiagJacobian(unsigned int jvar)
+SolidMechYFalcon::computeQpOffDiagJacobian(unsigned int jvar)
 {
   recomputeConstants();
     

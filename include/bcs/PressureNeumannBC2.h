@@ -1,23 +1,23 @@
-#ifndef PRESSURENEUMANNBC_H
-#define PRESSURENEUMANNBC_H
+#ifndef PRESSURENEUMANNBC2_H
+#define PRESSURENEUMANNBC2_H
 
 #include "BoundaryCondition.h"
 #include "Material.h"
 
 
 //Forward Declarations
-class PressureNeumannBC;
+class PressureNeumannBC2;
 
 template<>
-InputParameters validParams<PressureNeumannBC>();
+InputParameters validParams<PressureNeumannBC2>();
 
-class PressureNeumannBC : public BoundaryCondition
+class PressureNeumannBC2 : public BoundaryCondition
 {
 public:
 
-  PressureNeumannBC(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  PressureNeumannBC2(std::string name, MooseSystem & moose_system, InputParameters parameters);
 
-  virtual ~PressureNeumannBC(){}
+  virtual ~PressureNeumannBC2(){}
 
 protected:
 
@@ -45,4 +45,4 @@ protected:
   MaterialProperty<Real> & _gamma;
 };
 
-#endif //PRESSURENEUMANNBC_H
+#endif //PRESSURENEUMANNBC2_H
