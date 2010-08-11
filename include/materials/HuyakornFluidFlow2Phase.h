@@ -46,6 +46,7 @@ protected:
   MaterialProperty<Real> & _darcy_params_w;
   MaterialProperty<Real> & _darcy_params_s;
   MaterialProperty<RealGradient> & _darcy_flux_w;
+  MaterialProperty<RealGradient> & _pore_velocity_w;
   MaterialProperty<Real> & _tau;
   MaterialProperty<Real> & _lamda;
   MaterialProperty<Real> & _beta;

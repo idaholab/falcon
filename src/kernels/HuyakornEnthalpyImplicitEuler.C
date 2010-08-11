@@ -29,7 +29,7 @@ HuyakornEnthalpyImplicitEuler::computeQpResidual()
   Real Heat = (_porosity[_qp]* _rho[_qp]*_u[_qp])+((1-_porosity[_qp])*_rho_r[_qp]*879*_temperature[_qp]);
   Real Heat_old = (_porosity[_qp]* _rho_old[_qp]*_u_old[_qp])+((1-_porosity[_qp])*_rho_r[_qp]*879*_temperature_old[_qp]);
     
-  return _test[_i][_qp]*(Heat-Heat_old)/_dt;
+  return _phi[_i][_qp]*(Heat-Heat_old)/_dt;
 }
 
 Real

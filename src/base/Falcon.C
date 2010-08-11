@@ -6,17 +6,17 @@
 
 #include "HeatConduction.h"
 #include "HeatConductionImplicitEuler.h"
-#include "SolidMechXFalcon.h"
-#include "SolidMechYFalcon.h"
-#include "SolidMechZFalcon.h"
+#include "SolidMechX.h"
+#include "SolidMechY.h"
+#include "SolidMechZ.h"
 #include "SolidMechImplicitEuler.h"
 
 #include "StressCompute.h"
 #include "StrainCompute.h"
 
-#include "SolidMechTempCoupleXFalcon.h"
-#include "SolidMechTempCoupleYFalcon.h"
-#include "SolidMechTempCoupleZFalcon.h"
+#include "SolidMechTempCoupleX.h"
+#include "SolidMechTempCoupleY.h"
+#include "SolidMechTempCoupleZ.h"
 
 #include "SolidMechPoroCoupleX.h"
 #include "SolidMechPoroCoupleY.h"
@@ -65,11 +65,13 @@
 #include "TemperatureAux.h"
 #include "WaterSatAux.h"
 #include "CoupledRhoAux.h"
+#include "VelocityAux.h"
 
-#include "PressureNeumannBC2.h"
+#include "PressureNeumannBC.h"
 #include "GravityNeumannBC.h"
 #include "OutFlowBC.h"
 #include "HuyakornBC.h"
+#include "StepDirichletBC.h"
 
 #include "Constant.h"
 #include "DarcyWater.h"
@@ -91,15 +93,15 @@ namespace Falcon
     
     KernelFactory::instance()->registerKernel<HeatConduction>("HeatConduction");
     KernelFactory::instance()->registerKernel<HeatConductionImplicitEuler>("HeatConductionImplicitEuler");
-    KernelFactory::instance()->registerKernel<SolidMechXFalcon>("SolidMechX");
-    KernelFactory::instance()->registerKernel<SolidMechYFalcon>("SolidMechY");
-    KernelFactory::instance()->registerKernel<SolidMechZFalcon>("SolidMechZ");
+    KernelFactory::instance()->registerKernel<SolidMechX>("SolidMechX");
+    KernelFactory::instance()->registerKernel<SolidMechY>("SolidMechY");
+    KernelFactory::instance()->registerKernel<SolidMechZ>("SolidMechZ");
     KernelFactory::instance()->registerKernel<StressCompute>("StressCompute");
     KernelFactory::instance()->registerKernel<StrainCompute>("StrainCompute");
     KernelFactory::instance()->registerKernel<SolidMechImplicitEuler>("SolidMechImplicitEuler");
-    KernelFactory::instance()->registerKernel<SolidMechTempCoupleXFalcon>("SolidMechTempCoupleX");
-    KernelFactory::instance()->registerKernel<SolidMechTempCoupleYFalcon>("SolidMechTempCoupleY");
-    KernelFactory::instance()->registerKernel<SolidMechTempCoupleZFalcon>("SolidMechTempCoupleZ");
+    KernelFactory::instance()->registerKernel<SolidMechTempCoupleX>("SolidMechTempCoupleX");
+    KernelFactory::instance()->registerKernel<SolidMechTempCoupleY>("SolidMechTempCoupleY");
+    KernelFactory::instance()->registerKernel<SolidMechTempCoupleZ>("SolidMechTempCoupleZ");
 
     KernelFactory::instance()->registerKernel<SolidMechPoroCoupleX>("SolidMechPoroCoupleX");
     KernelFactory::instance()->registerKernel<SolidMechPoroCoupleY>("SolidMechPoroCoupleY");
@@ -148,11 +150,13 @@ namespace Falcon
     AuxFactory::instance()->registerAux<TemperatureAux>("TemperatureAux");
     AuxFactory::instance()->registerAux<WaterSatAux>("WaterSatAux");
     AuxFactory::instance()->registerAux<CoupledRhoAux>("CoupledRhoAux");
+    AuxFactory::instance()->registerAux<VelocityAux>("VelocityAux");
         
-    BCFactory::instance()->registerBC<PressureNeumannBC2>("PressureNeumannBC2");
+    BCFactory::instance()->registerBC<PressureNeumannBC>("PressureNeumannBC");
     BCFactory::instance()->registerBC<GravityNeumannBC>("GravityNeumannBC");
     BCFactory::instance()->registerBC<OutFlowBC>("OutFlowBC");
     BCFactory::instance()->registerBC<HuyakornBC>("HuyakornBC");
+    BCFactory::instance()->registerBC<StepDirichletBC>("StepDirichletBC");
 
     MaterialFactory::instance()->registerMaterial<Constant>("Constant");
     MaterialFactory::instance()->registerMaterial<DarcyWater>("DarcyWater");

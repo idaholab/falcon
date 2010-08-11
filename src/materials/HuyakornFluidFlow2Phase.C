@@ -46,6 +46,7 @@ HuyakornFluidFlow2Phase::HuyakornFluidFlow2Phase(std::string name,
      _darcy_params_w(declareProperty<Real>("darcy_params_w")),
      _darcy_params_s(declareProperty<Real>("darcy_params_s")),
      _darcy_flux_w(declareProperty<RealGradient>("darcy_flux_w")),
+     _pore_velocity_w(declareProperty<RealGradient>("pore_velocity_w")),
      _beta(declareProperty<Real>("beta")),
      _tau(declareProperty<Real>("tau")),
      _lamda(declareProperty<Real>("lamda")),
@@ -243,11 +244,10 @@ HuyakornFluidFlow2Phase::computeProperties()
      _darcy_params_w[qp] = _permeability[qp] * _rel_perm_w[qp] * _rho_w[qp] / _mu_w[qp];
      _darcy_params_s[qp] = _permeability[qp] * _rel_perm_s[qp] * _rho_s[qp] / _mu_s[qp];
    
-      _darcy_flux_w[qp] =  -_permeability[qp] * _rel_perm_w[qp] / _mu_w[qp] * ((_grad_p[qp])+(_rho_w[qp]*_gravity[qp]*_gravity_vector[qp]));
+     _darcy_flux_w[qp] = ( -_permeability[qp] * _rel_perm_w[qp] / _mu_w[qp]) * (_grad_p[qp]);
 
-      
-      //std::cout<<"velocity "<<_darcy_flux_w[qp]<<".\n";
-      
+     _pore_velocity_w[qp] = _darcy_flux_w[qp]/_porosity[qp];
+     
       
      _tau[qp] = _darcy_params_w[qp]+_darcy_params_s[qp]; 
 
