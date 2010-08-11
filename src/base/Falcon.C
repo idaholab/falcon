@@ -14,9 +14,9 @@
 #include "StressCompute.h"
 #include "StrainCompute.h"
 
-#include "SolidMechTempCoupleX.h"
-#include "SolidMechTempCoupleY.h"
-#include "SolidMechTempCoupleZ.h"
+#include "SolidMechTempCoupleXFalcon.h"
+#include "SolidMechTempCoupleYFalcon.h"
+#include "SolidMechTempCoupleZFalcon.h"
 
 #include "SolidMechPoroCoupleX.h"
 #include "SolidMechPoroCoupleY.h"
@@ -97,9 +97,9 @@ namespace Falcon
     KernelFactory::instance()->registerKernel<StressCompute>("StressCompute");
     KernelFactory::instance()->registerKernel<StrainCompute>("StrainCompute");
     KernelFactory::instance()->registerKernel<SolidMechImplicitEuler>("SolidMechImplicitEuler");
-    KernelFactory::instance()->registerKernel<SolidMechTempCoupleX>("SolidMechTempCoupleX");
-    KernelFactory::instance()->registerKernel<SolidMechTempCoupleY>("SolidMechTempCoupleY");
-    KernelFactory::instance()->registerKernel<SolidMechTempCoupleZ>("SolidMechTempCoupleZ");
+    KernelFactory::instance()->registerKernel<SolidMechTempCoupleXFalcon>("SolidMechTempCoupleX");
+    KernelFactory::instance()->registerKernel<SolidMechTempCoupleYFalcon>("SolidMechTempCoupleY");
+    KernelFactory::instance()->registerKernel<SolidMechTempCoupleZFalcon>("SolidMechTempCoupleZ");
 
     KernelFactory::instance()->registerKernel<SolidMechPoroCoupleX>("SolidMechPoroCoupleX");
     KernelFactory::instance()->registerKernel<SolidMechPoroCoupleY>("SolidMechPoroCoupleY");
