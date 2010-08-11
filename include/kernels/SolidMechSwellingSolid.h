@@ -1,7 +1,7 @@
 #ifndef SOLIDMECHSWELLINGSOLID
 #define SOLIDMECHSWELLINGSOLID
 
-#include "SolidMechTempCouple.h"
+#include "SolidMechTempCoupleFalcon.h"
 
 //Forward Declarations
 class SolidMechSwellingSolid;
@@ -9,7 +9,7 @@ class SolidMechSwellingSolid;
 template<>
 InputParameters validParams<SolidMechSwellingSolid>();
 
-class SolidMechSwellingSolid : public SolidMechTempCouple
+class SolidMechSwellingSolid : public SolidMechTempCoupleFalcon
 {
 public:
   SolidMechSwellingSolid(std::string name, MooseSystem & moose_system, InputParameters parameters);

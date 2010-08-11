@@ -19,7 +19,7 @@
 ###############################################################################
 CURR_DIR	?= $(shell pwd)
 MOOSE_DIR	?= $(shell pwd)/../moose
-ENABLE_ELK 	:= yes
+ENABLE_ELK 	:= no 
 
 MAKE_LIBRARY := no
 APPLICATION_NAME := falcon

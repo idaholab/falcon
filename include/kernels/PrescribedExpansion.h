@@ -1,7 +1,7 @@
 #ifndef PRESCRIBEDEXPANSIONX
 #define PRESCRIBEDEXPANSIONX
 
-#include "SolidMechTempCouple.h"
+#include "SolidMechTempCoupleFalcon.h"
 
 
 //Forward Declarations
@@ -10,7 +10,7 @@ class PrescribedExpansion;
 template<>
 InputParameters validParams<PrescribedExpansion>();
 
-class PrescribedExpansion : public SolidMechTempCouple
+class PrescribedExpansion : public SolidMechTempCoupleFalcon
 {
 public:
 

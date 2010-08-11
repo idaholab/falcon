@@ -1,7 +1,7 @@
 #ifndef SOLIDMECHPOROCOUPLE_H
 #define SOLIDMECHPOROCOUPLE_H
 
-#include "SolidMech.h"
+#include "SolidMechFalcon.h"
 
 //libMesh includes
 #include "tensor_value.h"
@@ -13,7 +13,7 @@ class SolidMechPoroCouple;
 template<>
 InputParameters validParams<SolidMechPoroCouple>();
 
-class SolidMechPoroCouple : public SolidMech
+class SolidMechPoroCouple : public SolidMechFalcon
 {
 public:
 
