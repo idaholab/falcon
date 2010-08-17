@@ -25,7 +25,7 @@ HuyakornMassImplicitEuler::computeQpResidual()
   
   // return _porosity[_qp]*cf*_rho[_qp]*ImplicitEuler::computeQpResidual();
   
-   return _porosity[_qp]*_phi[_i][_qp]*(_rho[_qp] -_rho_old[_qp])/_dt;
+   return _porosity[_qp]*_test[_i][_qp]*(_rho[_qp] -_rho_old[_qp])/_dt;
 }
 
 Real

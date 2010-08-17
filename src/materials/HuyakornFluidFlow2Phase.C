@@ -5,6 +5,7 @@ InputParameters validParams<HuyakornFluidFlow2Phase>()
 {
      InputParameters params = validParams<PorousMedia>();
      params.addParam<Real>("thermal_conductivity",2.4,"thermal thermal_conductivity in (W/mK)");
+     params.addParam<Real>("cp_r",1000,"specific heat of rock in (J/kgK)");
      params.addCoupledVar("pressure", "TODO: add description");
      params.addCoupledVar("enthalpy", "TODO: add description");
      return params;
@@ -22,10 +23,12 @@ HuyakornFluidFlow2Phase::HuyakornFluidFlow2Phase(std::string name,
      _enthalpy_old(coupledValueOld("enthalpy")),
 
      _input_thermal_conductivity(parameters.get<Real>("thermal_conductivity")),
+     _input_cp_r(parameters.get<Real>("cp_r")),
    
    //delcare material properties
 
      _km(declareProperty<Real>("thermal_conductivity")),
+     _cp_r(declareProperty<Real>("cp_r")),
      _Hw(declareProperty<Real>("sat_enthalpy_w")),
      _Hs(declareProperty<Real>("sat_enthalpy_s")),
      _EOS(declareProperty<Real>("EOS")),
@@ -35,6 +38,8 @@ HuyakornFluidFlow2Phase::HuyakornFluidFlow2Phase(std::string name,
      _sat_s(declareProperty<Real>("sat_s")),
      _temp(declareProperty<Real>("temperature")),
      _temp_old(declareProperty<Real>("temperature_old")),
+     _Heat(declareProperty<Real>("Heat")),
+     _Heat_old(declareProperty<Real>("Heat_old")),
      _dTbydP_H(declareProperty<Real>("dTbydP_H")),
      _dTbydH_P(declareProperty<Real>("dTbydH_P")),
      _rho(declareProperty<Real>("rho")),
@@ -46,14 +51,13 @@ HuyakornFluidFlow2Phase::HuyakornFluidFlow2Phase(std::string name,
      _darcy_params_w(declareProperty<Real>("darcy_params_w")),
      _darcy_params_s(declareProperty<Real>("darcy_params_s")),
      _darcy_flux_w(declareProperty<RealGradient>("darcy_flux_w")),
+     _darcy_flux_s(declareProperty<RealGradient>("darcy_flux_s")),
      _pore_velocity_w(declareProperty<RealGradient>("pore_velocity_w")),
+     _pore_velocity_s(declareProperty<RealGradient>("pore_velocity_s")),
      _beta(declareProperty<Real>("beta")),
      _tau(declareProperty<Real>("tau")),
-     _lamda(declareProperty<Real>("lamda")),
-     _heat(declareProperty<Real>("heat")),
-     _heat_old(declareProperty<Real>("heat_old"))
-   
-    
+     _lamda(declareProperty<Real>("lamda"))
+     
 {
      E3 = 1e+3;
      E6 = 1e+6;
@@ -121,6 +125,7 @@ HuyakornFluidFlow2Phase::computeProperties()
 //   we need to convert pressure from pa to Mpa and Enthalpy from J/kg to J/g
 
      _km[qp] = _input_thermal_conductivity;
+     _cp_r[qp] = _input_cp_r;
          
      Real H  = _enthalpy[qp]/E3;
      Real P  = _pressure[qp]/E6;
@@ -164,9 +169,13 @@ HuyakornFluidFlow2Phase::computeProperties()
      if (H < Hw)
        {
          _EOS[qp] = 1.0;
+                            
          if (H >200.0)
            {
+//comment the following line of code for FaustEx1 and
+//uncomment next line of code             
              _rho_w[qp] = E3*(a1+(a2*P)-(a3*H)+(a4/H)+(a5*P*H)-(a6*H2));
+//             _rho_w[qp] = 989.75+(4.00894e-7*_pressure[qp]);
            }
          else
            {
@@ -175,9 +184,17 @@ HuyakornFluidFlow2Phase::computeProperties()
          _sat_w[qp] = 1.0;
          psi_1 = -w1-(w2*P)+(w3*H)+(w4/H)-(w5*H2);
          psi_1_Hw = -w1-(w2*P)+(w3*Hw)+(w4/Hw)-(w5*Hw2);
+
+//comment the following three lines of code for FaustEx1 and
+//uncomment next three line of code
          _temp[qp] = psi_1 + (sat_T -psi_1_Hw);
          _dTbydP_H[qp] = (-w2)/E6;
          _dTbydH_P[qp] = (w3-(w4/H2)-(2*w5*H))/E3;
+
+/*         _temp[qp] = -0.0208+(2.39e-4*_enthalpy[qp]);
+         _dTbydP_H[qp] = 0.0;
+         _dTbydH_P[qp] = 2.39e-4;
+*/
        }
 
 //   *****************super heated steam zone****************
@@ -245,27 +262,29 @@ HuyakornFluidFlow2Phase::computeProperties()
      _darcy_params_s[qp] = _permeability[qp] * _rel_perm_s[qp] * _rho_s[qp] / _mu_s[qp];
    
      _darcy_flux_w[qp] = ( -_permeability[qp] * _rel_perm_w[qp] / _mu_w[qp]) * (_grad_p[qp]);
+     _darcy_flux_s[qp] = ( -_permeability[qp] * _rel_perm_s[qp] / _mu_s[qp]) * (_grad_p[qp]);
 
      _pore_velocity_w[qp] = _darcy_flux_w[qp]/_porosity[qp];
-     
+     _pore_velocity_s[qp] = _darcy_flux_s[qp]/_porosity[qp];
+
+
       
      _tau[qp] = _darcy_params_w[qp]+_darcy_params_s[qp]; 
 
      if (_EOS[qp] == 2.0 )
        {
           _lamda[qp] = (_km[qp]*_dTbydP_H[qp])+(_Hw[qp]*_darcy_params_w[qp])+(_Hs[qp]*_darcy_params_s[qp]);
+          _Heat[qp] = _porosity[qp]*((_rho_w[qp]*_sat_w[qp]*_Hw[qp])+(_rho_s[qp]*_sat_s[qp]*_Hs[qp]))+((1-_porosity[qp])*_rho_r[qp]*_cp_r[qp]*_temp[qp]);
+          
        }
      else
        {
           _lamda[qp] = (_km[qp]*_dTbydP_H[qp])+(_tau[qp]*_enthalpy[qp]);
+          _Heat[qp] = (_porosity[qp]*_rho[qp]*_enthalpy[qp])+((1-_porosity[qp])*_rho_r[qp]*_cp_r[qp]*_temp[qp]);
        }
      _beta[qp] = _km[qp]*_dTbydH_P[qp];
 
-     _heat[qp] = (_porosity[qp]* _rho[qp]*_enthalpy[qp])+((1-_porosity[qp])*_rho_r[qp]*879*_temp[qp]);
-       
      
-     
-
      
 //******************************************************************************
 //  ************* this section is for computing _rho_old and _temp_old **********   
@@ -293,6 +312,8 @@ HuyakornFluidFlow2Phase::computeProperties()
      
      Hs_o  = c1-(c2/P_o)+(c3/P2_o)-(c4*P2_o);
      Hw_o  = d1+(d2*P_o)-(d3*P2_o)+(d4*P3_o)-(d5/P_o)+(d6/P2_o)-(d7/P3_o);
+     Real _Hw_o = E3*Hw_o;
+     Real _Hs_o = E3*Hs_o;
      Real Hs2_o = pow(Hs_o,2);
      Real Hs3_o = pow(Hs_o,3);
      Real Hs4_o = pow(Hs_o,4);
@@ -305,7 +326,12 @@ HuyakornFluidFlow2Phase::computeProperties()
        {
         if (H_o >200.0)
           {
+
+//comment the following line of code for FaustEx1 and
+//uncomment next line of code            
            _rho_w_o = E3*(a1+(a2*P_o)-(a3*H_o)+(a4/H_o)+(a5*P_o*H_o)-(a6*H2_o));
+//           _rho_w_o = 989.75+(4.00894e-7*_pressure_old[qp]);
+
           }
         else
           {
@@ -314,7 +340,14 @@ HuyakornFluidFlow2Phase::computeProperties()
        _sat_w_o = 1.0;
        _psi_1_o = -w1-(w2*P_o)+(w3*H_o)+(w4/H_o)-(w5*H2_o);
        _psi_1_Hw_o = -w1-(w2*P_o)+(w3*Hw_o)+(w4/Hw_o)-(w5*Hw2_o);
-       _temp_old[qp] = _psi_1_o + (_sat_T_o -_psi_1_Hw_o);
+
+//comment the following line of code for FaustEx1 and
+//uncomment next line of code            
+         _temp_old[qp] = _psi_1_o + (_sat_T_o -_psi_1_Hw_o);
+//         _temp_old[qp] = -0.0208+(2.39e-4*_enthalpy_old[qp]);
+
+         _Heat_old[qp] = (_porosity[qp]*_rho_w_o*_enthalpy_old[qp])+((1-_porosity[qp])*_rho_r[qp]*_cp_r[qp]*_temp_old[qp]);
+       
      
        }
 
@@ -329,6 +362,7 @@ HuyakornFluidFlow2Phase::computeProperties()
        _psi_2_Hs_o = -s1+(s2*P_o)-(s3*P2_o)+(s4*Hs2_o)-(s5/(P2_o*Hs2_o))+(s6/P3_o)-(s7*Hs3_o*P_o)-(s8/Hs4_o);
      
        _temp_old[qp] = _psi_2_o + (_sat_T_o -_psi_2_Hs_o);
+       _Heat_old[qp] = (_porosity[qp]*_rho_s_o*_enthalpy_old[qp])+((1-_porosity[qp])*_rho_r[qp]*_cp_r[qp]*_temp_old[qp]);
 
        }
 
@@ -344,11 +378,11 @@ HuyakornFluidFlow2Phase::computeProperties()
        c = (Hw_o * _rho_w_o)-(Hs_o * _rho_s_o);
        _sat_w_o = a/(b-c);
        _temp_old[qp] = _sat_T_o;
+       _Heat_old[qp] = _porosity[qp]*((_rho_w_o*_sat_w_o*_Hw_o)+(_rho_s_o*_sat_s_o*_Hs_o))+((1-_porosity[qp])*_rho_r[qp]*_cp_r[qp]*_temp_old[qp]);
        }
      _sat_s_o = 1.0-_sat_w_o;
      _rho_old[qp] = (_sat_w_o*_rho_w_o)+(_sat_s_o*_rho_s_o);
-     _heat_old[qp] = (_porosity[qp]* _rho_old[qp]*_enthalpy_old[qp])+((1-_porosity[qp])*_rho_r[qp]*879*_temp_old[qp]);
-     
+
 
 //****************************************************************
 // ******* END of _rho_old and _temp_old calculation*****************

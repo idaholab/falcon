@@ -28,7 +28,11 @@ protected:
   MaterialProperty<Real> & _rho_old;
 
   MaterialProperty<Real> & _rho_r;
+  MaterialProperty<Real> & _cp_r;
   MaterialProperty<Real> & _porosity;
-  
+
+  MaterialProperty<Real> & _Heat;
+  MaterialProperty<Real> & _Heat_old;
+
 };
 #endif //HUYAKORNENTHALPYIMPLICITEULER
