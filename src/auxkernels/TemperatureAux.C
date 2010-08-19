@@ -16,6 +16,10 @@ TemperatureAux::TemperatureAux(std::string name, MooseSystem & moose_system, Inp
      _temp(getMaterialProperty<Real>("temperature"))
    
 {
+     E3 = 1e+3;
+     E6 = 1e+6;
+     E7 = 1e+7;
+     
 // coefficients related to Tw (temperature) empirical equation     
      w1 = 28.1515;
      w2 = 0.137458;

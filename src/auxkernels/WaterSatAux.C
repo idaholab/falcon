@@ -100,7 +100,7 @@ WaterSatAux::computeValue()
          saturation = a/(b-c);
        }
  
- return _sat_w[_qp];
+// return _sat_w[_qp];
  return saturation;
  
 }
