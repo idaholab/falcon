@@ -40,8 +40,8 @@ HuyakornFluidFlow2Phase::HuyakornFluidFlow2Phase(std::string name,
      _temp_old(declareProperty<Real>("temperature_old")),
      _Heat(declareProperty<Real>("Heat")),
      _Heat_old(declareProperty<Real>("Heat_old")),
-     _dTbydP_H(declareProperty<Real>("dTbydP_H")),
-     _dTbydH_P(declareProperty<Real>("dTbydH_P")),
+     _dT_dP(declareProperty<Real>("dT_dP")),
+     _dT_dH(declareProperty<Real>("dT_dH")),
      _rho(declareProperty<Real>("rho")),
      _rho_old(declareProperty<Real>("rho_old")),
      _mu_w(declareProperty<Real>("mu_w")),
@@ -188,12 +188,12 @@ HuyakornFluidFlow2Phase::computeProperties()
 //comment the following three lines of code for FaustEx1 and
 //uncomment next three line of code
          _temp[qp] = psi_1 + (sat_T -psi_1_Hw);
-         _dTbydP_H[qp] = (-w2)/E6;
-         _dTbydH_P[qp] = (w3-(w4/H2)-(2*w5*H))/E3;
+         _dT_dP[qp] = (-w2)/E6;
+         _dT_dH[qp] = (w3-(w4/H2)-(2*w5*H))/E3;
 
 /*         _temp[qp] = -0.0208+(2.39e-4*_enthalpy[qp]);
-         _dTbydP_H[qp] = 0.0;
-         _dTbydH_P[qp] = 2.39e-4;
+         _dT_dP[qp] = 0.0;
+         _dT_dH[qp] = 2.39e-4;
 */
        }
 
@@ -208,8 +208,8 @@ HuyakornFluidFlow2Phase::computeProperties()
          psi_2_Hs = -s1+(s2*P)-(s3*P2)+(s4*Hs2)-(s5/(P2*Hs2))+(s6/P3)-(s7*Hs3*P)-(s8/Hs4);
 
          _temp[qp]  = psi_2 + (sat_T -psi_2_Hs);
-         _dTbydP_H[qp] = (s2-(2*s3*P)+(2*s5/(P3*H2))-(3*s6/P4)-(s7*H3))/E6;
-         _dTbydH_P[qp] = ((2*s4*H)+(2*s5*P2*H3)-(3*s7*P*H2)+(4*s8/H5))/E3;
+         _dT_dP[qp] = (s2-(2*s3*P)+(2*s5/(P3*H2))-(3*s6/P4)-(s7*H3))/E6;
+         _dT_dH[qp] = ((2*s4*H)+(2*s5/(P2*H3))-(3*s7*P*H2)+(4*s8/H5))/E3;
 
        }
      
@@ -227,8 +227,8 @@ HuyakornFluidFlow2Phase::computeProperties()
          _sat_w[qp] = a/(b-c);
 
          _temp[qp] = sat_T;
-         _dTbydP_H[qp] = dsat_T_dp/E6;
-         _dTbydH_P[qp] = 0.0;
+         _dT_dP[qp] = dsat_T_dp/E6;
+         _dT_dH[qp] = 0.0;
        }
 
      _sat_s[qp] = 1.0-_sat_w[qp];
@@ -273,21 +273,21 @@ HuyakornFluidFlow2Phase::computeProperties()
 
      if (_EOS[qp] == 2.0 )
        {
-          _lamda[qp] = (_km[qp]*_dTbydP_H[qp])+(_Hw[qp]*_darcy_params_w[qp])+(_Hs[qp]*_darcy_params_s[qp]);
+          _lamda[qp] = (_km[qp]*_dT_dP[qp])+(_Hw[qp]*_darcy_params_w[qp])+(_Hs[qp]*_darcy_params_s[qp]);
           _Heat[qp] = _porosity[qp]*((_rho_w[qp]*_sat_w[qp]*_Hw[qp])+(_rho_s[qp]*_sat_s[qp]*_Hs[qp]))+((1-_porosity[qp])*_rho_r[qp]*_cp_r[qp]*_temp[qp]);
           
        }
      else
        {
-          _lamda[qp] = (_km[qp]*_dTbydP_H[qp])+(_tau[qp]*_enthalpy[qp]);
+          _lamda[qp] = (_km[qp]*_dT_dP[qp])+(_tau[qp]*_enthalpy[qp]);
           _Heat[qp] = (_porosity[qp]*_rho[qp]*_enthalpy[qp])+((1-_porosity[qp])*_rho_r[qp]*_cp_r[qp]*_temp[qp]);
        }
-     _beta[qp] = _km[qp]*_dTbydH_P[qp];
+     _beta[qp] = _km[qp]*_dT_dH[qp];
 
      
      
 //******************************************************************************
-//  ************* this section is for computing _rho_old and _temp_old **********   
+//  ************* this section is for computing _rho_old, _temp_old and Heat_old **********   
 //******************************************************************************
 
      Real H_o = _enthalpy_old[qp]/E3;
@@ -312,8 +312,6 @@ HuyakornFluidFlow2Phase::computeProperties()
      
      Hs_o  = c1-(c2/P_o)+(c3/P2_o)-(c4*P2_o);
      Hw_o  = d1+(d2*P_o)-(d3*P2_o)+(d4*P3_o)-(d5/P_o)+(d6/P2_o)-(d7/P3_o);
-     Real _Hw_o = E3*Hw_o;
-     Real _Hs_o = E3*Hs_o;
      Real Hs2_o = pow(Hs_o,2);
      Real Hs3_o = pow(Hs_o,3);
      Real Hs4_o = pow(Hs_o,4);
@@ -378,7 +376,7 @@ HuyakornFluidFlow2Phase::computeProperties()
        c = (Hw_o * _rho_w_o)-(Hs_o * _rho_s_o);
        _sat_w_o = a/(b-c);
        _temp_old[qp] = _sat_T_o;
-       _Heat_old[qp] = _porosity[qp]*((_rho_w_o*_sat_w_o*_Hw_o)+(_rho_s_o*_sat_s_o*_Hs_o))+((1-_porosity[qp])*_rho_r[qp]*_cp_r[qp]*_temp_old[qp]);
+       _Heat_old[qp] = _porosity[qp]*E3*((_rho_w_o*_sat_w_o*Hw_o)+(_rho_s_o*_sat_s_o*Hs_o))+((1-_porosity[qp])*_rho_r[qp]*_cp_r[qp]*_temp_old[qp]);
        }
      _sat_s_o = 1.0-_sat_w_o;
      _rho_old[qp] = (_sat_w_o*_rho_w_o)+(_sat_s_o*_rho_s_o);

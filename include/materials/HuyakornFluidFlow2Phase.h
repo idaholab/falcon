@@ -39,8 +39,8 @@ protected:
   MaterialProperty<Real> & _Heat_old;
   MaterialProperty<Real> & _temp;
   MaterialProperty<Real> & _temp_old;
-  MaterialProperty<Real> & _dTbydP_H;
-  MaterialProperty<Real> & _dTbydH_P;
+  MaterialProperty<Real> & _dT_dP;
+  MaterialProperty<Real> & _dT_dH;
   MaterialProperty<Real> & _rho;
   MaterialProperty<Real> & _rho_old;
   MaterialProperty<Real> & _mu_w;

@@ -22,8 +22,8 @@ protected:
   virtual Real computeQpJacobian();
 
   
-  MaterialProperty<Real> & _temperature;
-  MaterialProperty<Real> & _temperature_old;
+  MaterialProperty<Real> & _temp;
+  MaterialProperty<Real> & _temp_old;
   MaterialProperty<Real> & _rho;
   MaterialProperty<Real> & _rho_old;
 

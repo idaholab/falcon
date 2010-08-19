@@ -31,7 +31,7 @@ protected:
   
   MaterialProperty<Real> &_lamda;
   MaterialProperty<Real> &_km;
-  MaterialProperty<Real> &_dTbydP_H;
+  MaterialProperty<Real> &_dT_dP;
   VariableGradient & _grad_p;  
 private:
   Real _value;

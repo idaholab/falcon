@@ -11,8 +11,8 @@ InputParameters validParams<HuyakornEnthalpyImplicitEuler>()
 HuyakornEnthalpyImplicitEuler::HuyakornEnthalpyImplicitEuler(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :ImplicitEuler(name, moose_system, parameters),
    
-   _temperature(getMaterialProperty<Real>("temperature")),
-   _temperature_old(getMaterialProperty<Real>("temperature_old")),
+   _temp(getMaterialProperty<Real>("temperature")),
+   _temp_old(getMaterialProperty<Real>("temperature_old")),
    _rho(getMaterialProperty<Real>("rho")),
    _rho_old(getMaterialProperty<Real>("rho_old")),
 
@@ -30,10 +30,10 @@ Real
 HuyakornEnthalpyImplicitEuler::computeQpResidual()
 {
      
-  Real heat = (_porosity[_qp]* _rho[_qp]*_u[_qp])+((1-_porosity[_qp])*_rho_r[_qp]*_cp_r[_qp]*_temperature[_qp]);
-  Real heat_old = (_porosity[_qp]* _rho_old[_qp]*_u_old[_qp])+((1-_porosity[_qp])*_rho_r[_qp]*_cp_r[_qp]*_temperature_old[_qp]);
+  Real H = (_porosity[_qp]* _rho[_qp]*_u[_qp])+((1-_porosity[_qp])*_rho_r[_qp]*_cp_r[_qp]*_temp[_qp]);
+  Real H_old = (_porosity[_qp]* _rho_old[_qp]*_u_old[_qp])+((1-_porosity[_qp])*_rho_r[_qp]*_cp_r[_qp]*_temp_old[_qp]);
     
-  return _test[_i][_qp]*(heat-heat_old)/_dt;
+  return _test[_i][_qp]*(H-H_old)/_dt;
 //  return _test[_i][_qp]*(_Heat[_qp]-_Heat_old[_qp])/_dt;
 }
 

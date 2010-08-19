@@ -21,13 +21,11 @@ FluidFlow2Phase::FluidFlow2Phase(std::string name,
                                  InputParameters parameters)
   :PorousMedia(name, moose_system, parameters),
 
-   _grad_p  (coupledGradient("pressure")),
+   _grad_p(coupledGradient("pressure")),
    _pressure(coupledValue("pressure")),
    _pressure_old(coupledValueOld("pressure")),
    _enthalpy(coupledValue("enthalpy")),
    _enthalpy_old(coupledValueOld("enthalpy")),
-//   _temp(coupledValue("tempAux")),
-//   _temp_old(coupledValueOld("tempAux")),
 
    
    _input_rho_w(parameters.get<Real>("rho_w")),
@@ -72,7 +70,6 @@ FluidFlow2Phase::FluidFlow2Phase(std::string name,
 {
   E3 = 1e3;
   E6 = 1e6;
-  E5 = 1e-5;
   E7 = 1e-7;
 
 // coefficients related to rho_w empirical equation     
@@ -84,7 +81,7 @@ FluidFlow2Phase::FluidFlow2Phase(std::string name,
   a6 = 1.29958e-7;
 
 // coefficients related to rho_s empirical equation
-  b1 = -2.26162e-5;
+  b1 = 2.26162e-5;
   b2 = 0.0438441;
   b3 = 1.79088e-5;
   b4 = 3.69276e-8;
@@ -104,7 +101,7 @@ FluidFlow2Phase::FluidFlow2Phase(std::string name,
   d5 = 162.7;
   d6 = 29.8163;
   d7 = 1.75623;
-     
+
 }
 
 void
@@ -177,7 +174,7 @@ FluidFlow2Phase::computeProperties()
 //   ********************************************************  
     else if (H > _Hs[qp])
     {
-      _rho_s[qp] = E3*(b1+(b2*P)-(b3*P*H)+(b4*P4)+(b5*P*H3));
+      _rho_s[qp] = E3*(-b1+(b2*P)-(b3*P*H)+(b4*P4)+(b5*P*H3));
 //   _drho_sbydP_H = ((b2)-(b3*H)+(4*b4*P3)+(b5*H3))/E3;
 //   _drho_sbydH_P = -(b3*P)+(3*b5*P*H2);
       _sat_w[qp] = 0.0;
@@ -195,7 +192,7 @@ FluidFlow2Phase::computeProperties()
     else 
     {
       _rho_w[qp] = E3*(a1+(a2*P)-(a3*_Hw[qp])+(a4/_Hw[qp])+(a5*P*_Hw[qp])-(a6*pow(_Hw[qp],2)));
-      _rho_s[qp] = E3*(b1+(b2*P)-(b3*P*_Hs[qp])+(b4*P4)+(b5*P*pow(_Hs[qp],3)));
+      _rho_s[qp] = E3*(-b1+(b2*P)-(b3*P*_Hs[qp])+(b4*P4)+(b5*P*pow(_Hs[qp],3)));
      
 //     _drho_wbydP_H = ((a2)+(a5*_Hw[qp]))/E3;
 //     _drho_wbydH_P = -(a3)-(a4/pow(_Hw[qp],2))+(a5*P)-(2*a6*_Hw[qp]);
@@ -275,7 +272,7 @@ FluidFlow2Phase::computeProperties()
 //   super heated steam zone
     else if (H_o > _Hs_o)
     {
-      _rho_s_o = E3*(b1+(b2*P_o)-(b3*P_o*H_o)+(b4*pow(P_o,4))+(b5*P_o*pow(H_o,3)));
+      _rho_s_o = E3*(-b1+(b2*P_o)-(b3*P_o*H_o)+(b4*pow(P_o,4))+(b5*P_o*pow(H_o,3)));
       _sat_w_o = 0.0;
       _temp_old[qp] = -374.669+(47.9921*P_o)-(0.633606*pow(P_o,2))+(7.39386*pow(10,-5)*pow(H_o,2))
         -(3.33372*pow(10,-6)/(pow(P_o,2)*pow(H_o,2)))+(0.0357154/pow(P_o,3))-(1.1725*pow(10,-9)*pow(H_o,3)*P_o)
@@ -285,7 +282,7 @@ FluidFlow2Phase::computeProperties()
     else 
     {
       _rho_w_o = E3*(a1+(a2*P_o)-(a3*_Hw_o)+(a4/_Hw_o)+(a5*P_o*_Hw_o)-(a6*pow(_Hw_o,2)));
-      _rho_s_o = E3*(b1+(b2*P_o)-(b3*P_o*_Hs_o)+(b4*pow(P_o,4))+(b5*P_o*pow(_Hs_o,3)));
+      _rho_s_o = E3*(-b1+(b2*P_o)-(b3*P_o*_Hs_o)+(b4*pow(P_o,4))+(b5*P_o*pow(_Hs_o,3)));
 
       a = _rho_s_o*(_Hs_o-H_o);
       b = H_o*(_rho_w_o-_rho_s_o);
