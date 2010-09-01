@@ -12,7 +12,7 @@ CoupledDensityAux::CoupledDensityAux(std::string name, MooseSystem & moose_syste
   :AuxKernel(name, moose_system, parameters),
    _temperature(coupled("temperature")),
    _temperature_val(coupledValue("temperature")),
-   _value(_parameters.get<Real>("value"))
+   _value(getParam<Real>("value"))
 {}
 
 

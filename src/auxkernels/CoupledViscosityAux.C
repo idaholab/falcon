@@ -16,10 +16,10 @@ CoupledViscosityAux::CoupledViscosityAux(std::string name, MooseSystem & moose_s
   :AuxKernel(name, moose_system, parameters),
    _temperature(coupled("temperature")),
    _temperature_val(coupledValue("temperature")),
-   _a(_parameters.get<Real>("a")),
-   _b(_parameters.get<Real>("b")),
-   _c(_parameters.get<Real>("c")),
-   _mu_w(_parameters.get<Real>("_mu_w"))
+   _a(getParam<Real>("a")),
+   _b(getParam<Real>("b")),
+   _c(getParam<Real>("c")),
+   _mu_w(getParam<Real>("_mu_w"))
 {}
 
 

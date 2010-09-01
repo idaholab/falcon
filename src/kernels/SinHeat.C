@@ -12,9 +12,9 @@ InputParameters validParams<SinHeat>()
 
 SinHeat::SinHeat(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
-   _qdotzero(_parameters.get<Real>("qdotzero")),
-   _qmax(_parameters.get<Real>("qmax")),
-   _duration(_parameters.get<Real>("duration"))
+   _qdotzero(getParam<Real>("qdotzero")),
+   _qmax(getParam<Real>("qmax")),
+   _duration(getParam<Real>("duration"))
 {}
 
 Real

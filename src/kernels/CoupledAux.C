@@ -15,7 +15,7 @@ CoupledAux::CoupledAux(std::string name, MooseSystem & moose_system, InputParame
   :AuxKernel(name, moose_system, parameters),
    _coupled(coupled("coupled")),
    _coupled_val(coupledValue("coupled")),
-   _value(_parameters.get<Real>("value"))
+   _value(getParam<Real>("value"))
 {}
 
 
