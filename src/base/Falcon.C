@@ -1,8 +1,5 @@
 #include "Moose.h"
-#include "KernelFactory.h"
-#include "BCFactory.h"
-#include "MaterialFactory.h"
-#include "AuxFactory.h"
+#include "MooseFactory.h"
 
 #include "HeatConduction.h"
 #include "HeatConductionImplicitEuler.h"
@@ -91,84 +88,84 @@ namespace Falcon
   {
     Moose::registerObjects();
     
-    KernelFactory::instance()->registerKernel<HeatConduction>("HeatConduction");
-    KernelFactory::instance()->registerKernel<HeatConductionImplicitEuler>("HeatConductionImplicitEuler");
-    KernelFactory::instance()->registerKernel<SolidMechXFalcon>("SolidMechX");
-    KernelFactory::instance()->registerKernel<SolidMechYFalcon>("SolidMechY");
-    KernelFactory::instance()->registerKernel<SolidMechZFalcon>("SolidMechZ");
-    KernelFactory::instance()->registerKernel<StressCompute>("StressCompute");
-    KernelFactory::instance()->registerKernel<StrainCompute>("StrainCompute");
-    KernelFactory::instance()->registerKernel<SolidMechImplicitEuler>("SolidMechImplicitEuler");
-    KernelFactory::instance()->registerKernel<SolidMechTempCoupleXFalcon>("SolidMechTempCoupleX");
-    KernelFactory::instance()->registerKernel<SolidMechTempCoupleYFalcon>("SolidMechTempCoupleY");
-    KernelFactory::instance()->registerKernel<SolidMechTempCoupleZFalcon>("SolidMechTempCoupleZ");
+    registerKernel(HeatConduction);
+    registerKernel(HeatConductionImplicitEuler);
+    registerNamedKernel(SolidMechXFalcon, "SolidMechX");
+    registerNamedKernel(SolidMechYFalcon, "SolidMechY");
+    registerNamedKernel(SolidMechZFalcon, "SolidMechZ");
+    registerKernel(StressCompute);
+    registerKernel(StrainCompute);
+    registerKernel(SolidMechImplicitEuler);
+    registerNamedKernel(SolidMechTempCoupleXFalcon, "SolidMechTempCoupleX");
+    registerNamedKernel(SolidMechTempCoupleYFalcon, "SolidMechTempCoupleY");
+    registerNamedKernel(SolidMechTempCoupleZFalcon, "SolidMechTempCoupleZ");
 
-    KernelFactory::instance()->registerKernel<SolidMechPoroCoupleX>("SolidMechPoroCoupleX");
-    KernelFactory::instance()->registerKernel<SolidMechPoroCoupleY>("SolidMechPoroCoupleY");
-    KernelFactory::instance()->registerKernel<SolidMechPoroCoupleZ>("SolidMechPoroCoupleZ");
+    registerKernel(SolidMechPoroCoupleX);
+    registerKernel(SolidMechPoroCoupleY);
+    registerKernel(SolidMechPoroCoupleZ);
 
-    KernelFactory::instance()->registerKernel<SolidMechSwellingSolid>("SolidMechSwellingSolid");
-    KernelFactory::instance()->registerKernel<SolidMechSwellingGas>("SolidMechSwellingGas");
-    KernelFactory::instance()->registerKernel<SinHeat>("SinHeat");
-    KernelFactory::instance()->registerKernel<PrescribedExpansion>("PrescribedExpansion");
+    registerKernel(SolidMechSwellingSolid);
+    registerKernel(SolidMechSwellingGas);
+    registerKernel(SinHeat);
+    registerKernel(PrescribedExpansion);
 
-    KernelFactory::instance()->registerKernel<MassInviscidFlux>("MassInviscidFlux");
-    KernelFactory::instance()->registerKernel<MomentumInviscidFlux>("MomentumInviscidFlux");
-    KernelFactory::instance()->registerKernel<MomentumViscousFlux>("MomentumViscousFlux");
-    KernelFactory::instance()->registerKernel<EnergyInviscidFlux>("EnergyInviscidFlux");
-    KernelFactory::instance()->registerKernel<EnergyViscousFlux>("EnergyViscousFlux");
-    KernelFactory::instance()->registerKernel<GravityForce>("GravityForce");
-    KernelFactory::instance()->registerKernel<GravityPower>("GravityPower");
-    KernelFactory::instance()->registerKernel<Velocity>("Velocity");
-    KernelFactory::instance()->registerKernel<Temperature>("Temperature");
-    KernelFactory::instance()->registerKernel<DarcyImplicitEuler>("DarcyImplicitEuler");
-    KernelFactory::instance()->registerKernel<CoupledDarcyImplicitEuler>("CoupledDarcyImplicitEuler");
-    KernelFactory::instance()->registerKernel<HuyakornMassImplicitEuler>("HuyakornMassImplicitEuler");
-    KernelFactory::instance()->registerKernel<DarcyMassFluxPressure>("DarcyMassFluxPressure");
-    KernelFactory::instance()->registerKernel<HuyakornMassConvection>("HuyakornMassConvection");
-    KernelFactory::instance()->registerKernel<DarcyMassFluxPressureSteam>("DarcyMassFluxPressureSteam");
-    KernelFactory::instance()->registerKernel<DarcyMassFluxZ>("DarcyMassFluxZ");
-    KernelFactory::instance()->registerKernel<DarcyMassFluxZSteam>("DarcyMassFluxZSteam");
-    KernelFactory::instance()->registerKernel<TemperatureImplicitEuler>("TemperatureImplicitEuler");
-    KernelFactory::instance()->registerKernel<TemperatureDiffusion>("TemperatureDiffusion");
-    KernelFactory::instance()->registerKernel<TemperatureConvection>("TemperatureConvection");
-    KernelFactory::instance()->registerKernel<EnthalpyImplicitEuler>("EnthalpyImplicitEuler");
-    KernelFactory::instance()->registerKernel<HuyakornEnthalpyImplicitEuler>("HuyakornEnthalpyImplicitEuler");
-    KernelFactory::instance()->registerKernel<EnthalpyDiffusion>("EnthalpyDiffusion");
-    KernelFactory::instance()->registerKernel<HuyakornEnthalpyDiffusion>("HuyakornEnthalpyDiffusion");
-    KernelFactory::instance()->registerKernel<EnthalpyConvection>("EnthalpyConvection");
-    KernelFactory::instance()->registerKernel<HuyakornEnthalpyConvection>("HuyakornEnthalpyConvection");
-    KernelFactory::instance()->registerKernel<EnthalpyConvectionZWater>("EnthalpyConvectionZWater");
-    KernelFactory::instance()->registerKernel<EnthalpyConvectionZSteam>("EnthalpyConvectionZSteam");
-    KernelFactory::instance()->registerKernel<DarcyVelocity>("DarcyVelocity");
-    KernelFactory::instance()->registerKernel<DarcyImplicitBackwardDifference2>("DarcyImplicitBackwardDifference2");
-    KernelFactory::instance()->registerKernel<TemperatureImplicitBackwardDifference2>("TemperatureImplicitBackwardDifference2");
+    registerKernel(MassInviscidFlux);
+    registerKernel(MomentumInviscidFlux);
+    registerKernel(MomentumViscousFlux);
+    registerKernel(EnergyInviscidFlux);
+    registerKernel(EnergyViscousFlux);
+    registerKernel(GravityForce);
+    registerKernel(GravityPower);
+    registerKernel(Velocity);
+    registerKernel(Temperature);
+    registerKernel(DarcyImplicitEuler);
+    registerKernel(CoupledDarcyImplicitEuler);
+    registerKernel(HuyakornMassImplicitEuler);
+    registerKernel(DarcyMassFluxPressure);
+    registerKernel(HuyakornMassConvection);
+    registerKernel(DarcyMassFluxPressureSteam);
+    registerKernel(DarcyMassFluxZ);
+    registerKernel(DarcyMassFluxZSteam);
+    registerKernel(TemperatureImplicitEuler);
+    registerKernel(TemperatureDiffusion);
+    registerKernel(TemperatureConvection);
+    registerKernel(EnthalpyImplicitEuler);
+    registerKernel(HuyakornEnthalpyImplicitEuler);
+    registerKernel(EnthalpyDiffusion);
+    registerKernel(HuyakornEnthalpyDiffusion);
+    registerKernel(EnthalpyConvection);
+    registerKernel(HuyakornEnthalpyConvection);
+    registerKernel(EnthalpyConvectionZWater);
+    registerKernel(EnthalpyConvectionZSteam);
+    registerKernel(DarcyVelocity);
+    registerKernel(DarcyImplicitBackwardDifference2);
+    registerKernel(TemperatureImplicitBackwardDifference2);
 
-    AuxFactory::instance()->registerAux<CoupledDensityAux>("CoupledDensityAux");
-    AuxFactory::instance()->registerAux<CoupledViscosityAux>("CoupledViscosityAux");
-    AuxFactory::instance()->registerAux<AnalyticalADE1D>("AnalyticalADE1D");
-    AuxFactory::instance()->registerAux<TemperatureAux>("TemperatureAux");
-    AuxFactory::instance()->registerAux<WaterSatAux>("WaterSatAux");
-    AuxFactory::instance()->registerAux<CoupledRhoAux>("CoupledRhoAux");
-    AuxFactory::instance()->registerAux<VelocityAux>("VelocityAux");
+    registerAux(CoupledDensityAux);
+    registerAux(CoupledViscosityAux);
+    registerAux(AnalyticalADE1D);
+    registerAux(TemperatureAux);
+    registerAux(WaterSatAux);
+    registerAux(CoupledRhoAux);
+    registerAux(VelocityAux);
         
-    BCFactory::instance()->registerBC<PressureNeumannBC2>("PressureNeumannBC");
-    BCFactory::instance()->registerBC<GravityNeumannBC>("GravityNeumannBC");
-    BCFactory::instance()->registerBC<OutFlowBC>("OutFlowBC");
-    BCFactory::instance()->registerBC<HuyakornBC>("HuyakornBC");
-    BCFactory::instance()->registerBC<StepDirichletBC>("StepDirichletBC");
+    registerNamedBC(PressureNeumannBC2, "PressureNeumannBC");
+    registerBC(GravityNeumannBC);
+    registerBC(OutFlowBC);
+    registerBC(HuyakornBC);
+    registerBC(StepDirichletBC);
 
-    MaterialFactory::instance()->registerMaterial<Constant>("Constant");
-    MaterialFactory::instance()->registerMaterial<DarcyWater>("DarcyWater");
-    MaterialFactory::instance()->registerMaterial<ThermalPoroElastic>("ThermalPoroElastic");
-    MaterialFactory::instance()->registerMaterial<PorousMedia>("PorousMedia");
-    MaterialFactory::instance()->registerMaterial<FluidFlow>("FluidFlow");
-    MaterialFactory::instance()->registerMaterial<FluidFlow2Phase>("FluidFlow2Phase");
-    MaterialFactory::instance()->registerMaterial<HuyakornFluidFlow2Phase>("HuyakornFluidFlow2Phase");
-    MaterialFactory::instance()->registerMaterial<HeatTransport>("HeatTransport");
-    MaterialFactory::instance()->registerMaterial<SolidMechanics>("SolidMechanics");
-    MaterialFactory::instance()->registerMaterial<Geothermal>("Geothermal");
-    MaterialFactory::instance()->registerMaterial<Geothermal2Phase>("Geothermal2Phase");
+    registerMaterial(Constant);
+    registerMaterial(DarcyWater);
+    registerMaterial(ThermalPoroElastic);
+    registerMaterial(PorousMedia);
+    registerMaterial(FluidFlow);
+    registerMaterial(FluidFlow2Phase);
+    registerMaterial(HuyakornFluidFlow2Phase);
+    registerMaterial(HeatTransport);
+    registerMaterial(SolidMechanics);
+    registerMaterial(Geothermal);
+    registerMaterial(Geothermal2Phase);
     
   }
 }
