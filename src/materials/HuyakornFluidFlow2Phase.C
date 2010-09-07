@@ -301,7 +301,7 @@ HuyakornFluidFlow2Phase::computeProperties()
      Real _rho_w_o;
      Real _rho_s_o;
      Real _sat_w_o;
-     Real _sat_s_o;
+     Real _sat_s_o = 0;
      Real _sat_T_o;
      Real _psi_1_o;
      Real _psi_1_Hw_o;
