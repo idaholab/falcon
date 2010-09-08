@@ -14,7 +14,7 @@ class EnthalpyImplicitEuler : public ImplicitEuler
 {
 public:
 
-  EnthalpyImplicitEuler(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  EnthalpyImplicitEuler(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
 
 protected:
   virtual Real computeQpResidual();

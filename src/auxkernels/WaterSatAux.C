@@ -9,7 +9,7 @@ InputParameters validParams<WaterSatAux>()
   return params;
 }
 
-WaterSatAux::WaterSatAux(std::string name, MooseSystem & moose_system, InputParameters parameters)
+WaterSatAux::WaterSatAux(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :AuxKernel(name, moose_system, parameters),
     _pressure(coupledValue("pressure")),
     _enthalpy(coupledValue("enthalpy")),

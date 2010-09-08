@@ -8,7 +8,7 @@ InputParameters validParams<DarcyImplicitBackwardDifference2>()
   return params;
 }
 
-DarcyImplicitBackwardDifference2::DarcyImplicitBackwardDifference2(std::string name,
+DarcyImplicitBackwardDifference2::DarcyImplicitBackwardDifference2(const std::string & name,
                                                                    MooseSystem & moose_system,
                                                                    InputParameters parameters)
   :ImplicitBackwardDifference2(name, moose_system, parameters),

@@ -17,7 +17,7 @@ InputParameters validParams<Constant>()
   return params;
 }
 
-Constant::Constant(std::string name,
+Constant::Constant(const std::string & name,
                    MooseSystem & moose_system,
                    InputParameters parameters)
   :Material(name, moose_system, parameters),

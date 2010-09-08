@@ -22,7 +22,7 @@ public:
    * Factory constructor, takes parameters so that all derived classes can be built using the same
    * constructor.
    */
-  HuyakornBC(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  HuyakornBC(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
   
 virtual ~HuyakornBC() {}
 

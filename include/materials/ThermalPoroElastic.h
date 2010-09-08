@@ -16,7 +16,7 @@ InputParameters validParams<ThermalPoroElastic>();
 class ThermalPoroElastic : public Material
 {
 public:
-  ThermalPoroElastic(std::string name,
+  ThermalPoroElastic(const std::string & name,
                      MooseSystem & moose_system,
                      InputParameters parameters);
   

@@ -17,7 +17,7 @@ class SolidMechTempCoupleFalcon : public SolidMechFalcon
 {
 public:
 
-  SolidMechTempCoupleFalcon(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  SolidMechTempCoupleFalcon(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
   
   void recomputeCouplingConstants();
   

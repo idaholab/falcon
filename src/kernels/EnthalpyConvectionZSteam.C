@@ -8,7 +8,7 @@ InputParameters validParams<EnthalpyConvectionZSteam>()
   return params;
 }
 
-EnthalpyConvectionZSteam::EnthalpyConvectionZSteam(std::string name, MooseSystem & moose_system, InputParameters parameters)
+EnthalpyConvectionZSteam::EnthalpyConvectionZSteam(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
    _darcy_params_s(getMaterialProperty<Real>("darcy_params_s")),
    _gravity(getMaterialProperty<Real>("gravity")),

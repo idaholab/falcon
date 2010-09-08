@@ -10,7 +10,7 @@ InputParameters validParams<EnthalpyDiffusion>()
   return params;
 }
 
-EnthalpyDiffusion::EnthalpyDiffusion(std::string name, MooseSystem & moose_system, InputParameters parameters)
+EnthalpyDiffusion::EnthalpyDiffusion(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :Diffusion(name, moose_system, parameters),
    
 //   _grad_T(coupledGradient("tempAux")),

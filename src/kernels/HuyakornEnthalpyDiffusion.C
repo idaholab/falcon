@@ -8,7 +8,7 @@ InputParameters validParams<HuyakornEnthalpyDiffusion>()
   return params;
 }
 
-HuyakornEnthalpyDiffusion::HuyakornEnthalpyDiffusion(std::string name, MooseSystem & moose_system, InputParameters parameters)
+HuyakornEnthalpyDiffusion::HuyakornEnthalpyDiffusion(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :Diffusion(name, moose_system, parameters),
    
    _beta(getMaterialProperty<Real>("beta"))

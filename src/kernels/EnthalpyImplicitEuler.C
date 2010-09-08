@@ -10,7 +10,7 @@ InputParameters validParams<EnthalpyImplicitEuler>()
   return params;
 }
 
-EnthalpyImplicitEuler::EnthalpyImplicitEuler(std::string name, MooseSystem & moose_system, InputParameters parameters)
+EnthalpyImplicitEuler::EnthalpyImplicitEuler(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :ImplicitEuler(name, moose_system, parameters),
    
    _temperature(getMaterialProperty<Real>("temperature")),

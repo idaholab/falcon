@@ -16,7 +16,7 @@ InputParameters validParams<Constant>();
 class Constant : public Material
 {
 public:
-  Constant(std::string name,
+  Constant(const std::string & name,
            MooseSystem & moose_system,
            InputParameters parameters);
   

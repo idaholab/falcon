@@ -14,7 +14,7 @@ class TemperatureConvection : public Kernel
 {
 public:
 
-  TemperatureConvection(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  TemperatureConvection(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
 
 protected:
   virtual Real computeQpResidual();

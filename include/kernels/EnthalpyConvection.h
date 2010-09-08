@@ -14,7 +14,7 @@ class EnthalpyConvection : public Kernel
 {
 public:
 
-  EnthalpyConvection(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  EnthalpyConvection(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
 
 protected:
   virtual Real computeQpResidual();

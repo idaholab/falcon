@@ -19,7 +19,7 @@ class SolidMechFalcon : public Kernel
 {
 public:
 
-  SolidMechFalcon(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  SolidMechFalcon(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
   
   void recomputeConstants();
   

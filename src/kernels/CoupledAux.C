@@ -11,7 +11,7 @@ InputParameters validParams<CoupledAux>()
   return params;
 }
 
-CoupledAux::CoupledAux(std::string name, MooseSystem & moose_system, InputParameters parameters)
+CoupledAux::CoupledAux(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :AuxKernel(name, moose_system, parameters),
    _coupled(coupled("coupled")),
    _coupled_val(coupledValue("coupled")),

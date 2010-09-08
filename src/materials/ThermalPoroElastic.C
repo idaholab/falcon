@@ -37,7 +37,7 @@ InputParameters validParams<ThermalPoroElastic>()
   return params;
 }
 
-ThermalPoroElastic::ThermalPoroElastic(std::string name,
+ThermalPoroElastic::ThermalPoroElastic(const std::string & name,
                                        MooseSystem & moose_system,
                                        InputParameters parameters)
   :Material(name, moose_system, parameters),

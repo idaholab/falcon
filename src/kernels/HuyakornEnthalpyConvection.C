@@ -9,7 +9,7 @@ InputParameters validParams<HuyakornEnthalpyConvection>()
   return params;
 }
 
-HuyakornEnthalpyConvection::HuyakornEnthalpyConvection(std::string name, MooseSystem & moose_system, InputParameters parameters)
+HuyakornEnthalpyConvection::HuyakornEnthalpyConvection(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
 
    _grad_p(coupledGradient("pressure")),

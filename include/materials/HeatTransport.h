@@ -16,7 +16,7 @@ InputParameters validParams<HeatTransport>();
 class HeatTransport : virtual public PorousMedia
 {
 public:
-  HeatTransport(std::string name,
+  HeatTransport(const std::string & name,
                 MooseSystem & moose_system,
                 InputParameters parameters);
   

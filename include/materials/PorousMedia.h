@@ -16,7 +16,7 @@ InputParameters validParams<PorousMedia>();
 class PorousMedia : public Material
 {
 public:
-  PorousMedia(std::string name,
+  PorousMedia(const std::string & name,
               MooseSystem & moose_system,
               InputParameters parameters);
   

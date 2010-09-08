@@ -7,7 +7,7 @@ InputParameters validParams<SolidMechPoroCouple>()
   return params;
 }
 
-SolidMechPoroCouple::SolidMechPoroCouple(std::string name, MooseSystem & moose_system, InputParameters parameters)
+SolidMechPoroCouple::SolidMechPoroCouple(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :SolidMechFalcon(name, moose_system, parameters),
    _pressure_var(coupled("pressure")),
    _biot_coeff(getMaterialProperty<Real>("biot_coeff")),

@@ -14,7 +14,7 @@ class PrescribedExpansion : public SolidMechTempCoupleFalcon
 {
 public:
 
-  PrescribedExpansion(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  PrescribedExpansion(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
   
 protected:
   virtual Real computeQpResidual();

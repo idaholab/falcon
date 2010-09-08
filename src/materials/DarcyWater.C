@@ -84,7 +84,7 @@ InputParameters validParams<DarcyWater>()
 return params;
 }
 
-DarcyWater::DarcyWater(std::string name,
+DarcyWater::DarcyWater(const std::string & name,
                        MooseSystem & moose_system,
                        InputParameters parameters)
   :Material(name, moose_system, parameters),

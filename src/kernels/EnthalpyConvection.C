@@ -9,7 +9,7 @@ InputParameters validParams<EnthalpyConvection>()
   return params;
 }
 
-EnthalpyConvection::EnthalpyConvection(std::string name, MooseSystem & moose_system, InputParameters parameters)
+EnthalpyConvection::EnthalpyConvection(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
 
    

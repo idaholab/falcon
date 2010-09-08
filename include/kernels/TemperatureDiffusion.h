@@ -13,7 +13,7 @@ class TemperatureDiffusion : public Diffusion
 {
 public:
 
-  TemperatureDiffusion(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  TemperatureDiffusion(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
     
 protected:
   virtual Real computeQpResidual();

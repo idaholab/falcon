@@ -16,7 +16,7 @@ InputParameters validParams<SolidMechanics>();
 class SolidMechanics : virtual public PorousMedia
 {
 public:
-  SolidMechanics(std::string name,
+  SolidMechanics(const std::string & name,
                  MooseSystem & moose_system,
                  InputParameters parameters);
   

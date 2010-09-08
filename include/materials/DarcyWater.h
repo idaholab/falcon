@@ -12,7 +12,7 @@ InputParameters validParams<DarcyWater>();
 class DarcyWater : public Material
 {
 public:
-  DarcyWater(std::string name,
+  DarcyWater(const std::string & name,
              MooseSystem & moose_system,
              InputParameters parameters);
 

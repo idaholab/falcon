@@ -10,7 +10,7 @@ InputParameters validParams<Geothermal2Phase>()
   return params;
 }
 
-Geothermal2Phase::Geothermal2Phase(std::string name,
+Geothermal2Phase::Geothermal2Phase(const std::string & name,
                        MooseSystem & moose_system,
                        InputParameters parameters)
   :PorousMedia(name, moose_system, parameters),

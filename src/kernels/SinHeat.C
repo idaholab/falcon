@@ -10,7 +10,7 @@ InputParameters validParams<SinHeat>()
   return params;
 }
 
-SinHeat::SinHeat(std::string name, MooseSystem & moose_system, InputParameters parameters)
+SinHeat::SinHeat(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
    _qdotzero(getParam<Real>("qdotzero")),
    _qmax(getParam<Real>("qmax")),

@@ -15,7 +15,7 @@ class HeatConductionImplicitEuler : public ImplicitEuler
 {
 public:
 
-  HeatConductionImplicitEuler(std::string name,
+  HeatConductionImplicitEuler(const std::string & name,
                               MooseSystem & moose_system,
                               InputParameters parameters);
 

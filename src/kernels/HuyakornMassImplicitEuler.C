@@ -9,7 +9,7 @@ InputParameters validParams<HuyakornMassImplicitEuler>()
      return params;
 }
 
-HuyakornMassImplicitEuler::HuyakornMassImplicitEuler(std::string name, MooseSystem & moose_system, InputParameters parameters)
+HuyakornMassImplicitEuler::HuyakornMassImplicitEuler(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :ImplicitEuler(name, moose_system, parameters),
 
    _rho(getMaterialProperty<Real>("rho")),

@@ -13,7 +13,7 @@ InputParameters validParams<SolidMechanics>()
   
 }
 
-SolidMechanics::SolidMechanics(std::string name,
+SolidMechanics::SolidMechanics(const std::string & name,
                                MooseSystem & moose_system,
                                InputParameters parameters)
   :PorousMedia(name, moose_system, parameters),

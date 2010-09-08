@@ -13,7 +13,7 @@ class EnthalpyDiffusion : public Diffusion
 {
 public:
 
-  EnthalpyDiffusion(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  EnthalpyDiffusion(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
     
 protected:
   virtual Real computeQpResidual();

@@ -18,7 +18,7 @@ InputParameters validParams<Geothermal>();
 class Geothermal : public FluidFlow, public HeatTransport, public SolidMechanics
 {
 public:
-  Geothermal(std::string name,
+  Geothermal(const std::string & name,
              MooseSystem & moose_system,
              InputParameters parameters);
 

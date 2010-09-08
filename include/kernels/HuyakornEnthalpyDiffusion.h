@@ -13,7 +13,7 @@ class HuyakornEnthalpyDiffusion : public Diffusion
 {
 public:
 
-  HuyakornEnthalpyDiffusion(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  HuyakornEnthalpyDiffusion(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
     
 protected:
   virtual Real computeQpResidual();

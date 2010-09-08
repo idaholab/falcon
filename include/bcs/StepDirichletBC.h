@@ -15,7 +15,7 @@ class StepDirichletBC : public BoundaryCondition
 {
 public:
 
-  StepDirichletBC(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  StepDirichletBC(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
   
 protected:
   virtual Real computeQpResidual();

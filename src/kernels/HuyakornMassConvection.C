@@ -8,7 +8,7 @@ InputParameters validParams<HuyakornMassConvection>()
   return params;
 }
 
-HuyakornMassConvection::HuyakornMassConvection(std::string name,
+HuyakornMassConvection::HuyakornMassConvection(const std::string & name,
                                              MooseSystem & moose_system,
                                              InputParameters parameters)
   :Diffusion(name, moose_system, parameters),

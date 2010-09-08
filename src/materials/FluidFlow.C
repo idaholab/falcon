@@ -11,7 +11,7 @@ InputParameters validParams<FluidFlow>()
   return params;
 }
 
-FluidFlow::FluidFlow(std::string name,
+FluidFlow::FluidFlow(const std::string & name,
                      MooseSystem & moose_system,
                      InputParameters parameters)
   :PorousMedia(name, moose_system, parameters),

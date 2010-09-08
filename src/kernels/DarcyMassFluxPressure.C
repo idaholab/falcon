@@ -8,7 +8,7 @@ InputParameters validParams<DarcyMassFluxPressure>()
   return params;
 }
 
-DarcyMassFluxPressure::DarcyMassFluxPressure(std::string name,
+DarcyMassFluxPressure::DarcyMassFluxPressure(const std::string & name,
                                              MooseSystem & moose_system,
                                              InputParameters parameters)
   :Diffusion(name, moose_system, parameters),

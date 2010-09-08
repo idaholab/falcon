@@ -13,7 +13,7 @@ class TemperatureImplicitEuler : public ImplicitEuler
 {
 public:
 
-  TemperatureImplicitEuler(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  TemperatureImplicitEuler(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
 
 protected:
   virtual Real computeQpResidual();

@@ -14,7 +14,7 @@ class SolidMechPoroCoupleY : public SolidMechPoroCouple
 {
 public:
 
-  SolidMechPoroCoupleY(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  SolidMechPoroCoupleY(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
   
 protected:
   virtual Real computeQpResidual();

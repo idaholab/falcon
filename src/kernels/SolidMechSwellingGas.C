@@ -10,7 +10,7 @@ InputParameters validParams<SolidMechSwellingGas>()
   return params;
 }
 
-SolidMechSwellingGas::SolidMechSwellingGas(std::string name, MooseSystem & moose_system, InputParameters parameters)
+SolidMechSwellingGas::SolidMechSwellingGas(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
    _temp(coupledValue("temp")),
    _density(getMaterialProperty<Real>("density"))

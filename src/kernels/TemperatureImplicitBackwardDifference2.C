@@ -8,7 +8,7 @@ InputParameters validParams<TemperatureImplicitBackwardDifference2>()
   return params;
 }
 
-TemperatureImplicitBackwardDifference2::TemperatureImplicitBackwardDifference2(std::string name,
+TemperatureImplicitBackwardDifference2::TemperatureImplicitBackwardDifference2(const std::string & name,
                                                                                MooseSystem & moose_system,
                                                                                InputParameters parameters)
   :ImplicitBackwardDifference2(name, moose_system, parameters),

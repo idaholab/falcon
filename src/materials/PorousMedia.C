@@ -16,7 +16,7 @@ InputParameters validParams<PorousMedia>()
   return params;
 }
 
-PorousMedia::PorousMedia(std::string name,
+PorousMedia::PorousMedia(const std::string & name,
                          MooseSystem & moose_system,
                          InputParameters parameters)
   :Material(name, moose_system, parameters),

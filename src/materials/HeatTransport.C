@@ -11,7 +11,7 @@ InputParameters validParams<HeatTransport>()
   return params;
 }
 
-HeatTransport::HeatTransport(std::string name,
+HeatTransport::HeatTransport(const std::string & name,
                              MooseSystem & moose_system,
                              InputParameters parameters)
   :PorousMedia(name, moose_system, parameters),

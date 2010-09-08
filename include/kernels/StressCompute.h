@@ -15,7 +15,7 @@ class StressCompute : public Kernel
 {
 public:
 
-  StressCompute(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  StressCompute(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
   
 protected:
   virtual Real computeQpResidual();

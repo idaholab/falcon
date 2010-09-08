@@ -7,7 +7,7 @@ InputParameters validParams<HeatConductionImplicitEuler>()
   return params;
 }
 
-HeatConductionImplicitEuler::HeatConductionImplicitEuler(std::string name,
+HeatConductionImplicitEuler::HeatConductionImplicitEuler(const std::string & name,
                                                          MooseSystem & moose_system,
                                                          InputParameters parameters)
   :ImplicitEuler(name, moose_system, parameters),

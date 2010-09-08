@@ -14,7 +14,7 @@ class SolidMechXFalcon : public SolidMechFalcon
 {
 public:
 
-  SolidMechXFalcon(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  SolidMechXFalcon(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
   
 protected:
   virtual Real computeQpResidual();

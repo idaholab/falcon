@@ -7,7 +7,7 @@ InputParameters validParams<AnalyticalADE1D>()
   return params;
 }
 
-AnalyticalADE1D::AnalyticalADE1D(std::string name, MooseSystem & moose_system, InputParameters parameters)
+AnalyticalADE1D::AnalyticalADE1D(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :AuxKernel(name, moose_system, parameters)
 {}
 

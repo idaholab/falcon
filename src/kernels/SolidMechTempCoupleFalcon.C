@@ -7,7 +7,7 @@ InputParameters validParams<SolidMechTempCoupleFalcon>()
   return params;
 }
 
-SolidMechTempCoupleFalcon::SolidMechTempCoupleFalcon(std::string name, MooseSystem & moose_system, InputParameters parameters)
+SolidMechTempCoupleFalcon::SolidMechTempCoupleFalcon(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :SolidMechFalcon(name, moose_system, parameters),
    _temp_var(coupled("temperature")),
    _thermal_strain(getMaterialProperty<Real>("thermal_strain")),

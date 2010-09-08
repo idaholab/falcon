@@ -13,7 +13,7 @@ class EnthalpyConvectionZSteam : public Kernel
 {
 public:
 
-  EnthalpyConvectionZSteam(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  EnthalpyConvectionZSteam(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
     
 protected:
   virtual Real computeQpResidual();

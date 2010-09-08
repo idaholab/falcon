@@ -9,7 +9,7 @@ InputParameters validParams<TemperatureAux>()
      return params;
 }
 
-TemperatureAux::TemperatureAux(std::string name, MooseSystem & moose_system, InputParameters parameters)
+TemperatureAux::TemperatureAux(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :AuxKernel(name, moose_system, parameters),
      _pressure(coupledValue("pressure")),
      _enthalpy(coupledValue("enthalpy")),

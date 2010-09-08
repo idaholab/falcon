@@ -8,7 +8,7 @@ InputParameters validParams<EnthalpyConvectionWater>()
   return params;
 }
 
-EnthalpyConvectionWater::EnthalpyConvectionWater(std::string name, MooseSystem & moose_system, InputParameters parameters)
+EnthalpyConvectionWater::EnthalpyConvectionWater(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
 
    _darcy_flux_w(getMaterialProperty<RealGradient>("darcy_flux_w")),

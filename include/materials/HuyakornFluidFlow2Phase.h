@@ -16,7 +16,7 @@ InputParameters validParams<HuyakornFluidFlow2Phase>();
 class HuyakornFluidFlow2Phase : virtual public PorousMedia
 {
 public:
-  HuyakornFluidFlow2Phase(std::string name,
+  HuyakornFluidFlow2Phase(const std::string & name,
             MooseSystem & moose_system,
            InputParameters parameters);
   

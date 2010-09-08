@@ -14,7 +14,7 @@ InputParameters validParams<SolidMechSwellingGas>();
 class SolidMechSwellingGas : public Kernel
 {
 public:
-  SolidMechSwellingGas(std::string name, MooseSystem & moose_system, InputParameters parameters);
+  SolidMechSwellingGas(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
   
 protected:
   virtual Real computeQpResidual();

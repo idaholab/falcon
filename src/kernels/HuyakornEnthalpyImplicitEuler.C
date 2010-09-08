@@ -8,7 +8,7 @@ InputParameters validParams<HuyakornEnthalpyImplicitEuler>()
   return params;
 }
 
-HuyakornEnthalpyImplicitEuler::HuyakornEnthalpyImplicitEuler(std::string name, MooseSystem & moose_system, InputParameters parameters)
+HuyakornEnthalpyImplicitEuler::HuyakornEnthalpyImplicitEuler(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :ImplicitEuler(name, moose_system, parameters),
    
    _temp(getMaterialProperty<Real>("temperature")),

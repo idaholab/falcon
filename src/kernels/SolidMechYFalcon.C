@@ -9,7 +9,7 @@ InputParameters validParams<SolidMechYFalcon>()
   return params;
 }
 
-SolidMechYFalcon::SolidMechYFalcon(std::string name, MooseSystem & moose_system, InputParameters parameters)
+SolidMechYFalcon::SolidMechYFalcon(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :SolidMechFalcon(name, moose_system, parameters),
    _x_var(coupled("x")),
    _x(coupledValue("x")),

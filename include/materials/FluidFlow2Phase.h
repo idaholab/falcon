@@ -16,7 +16,7 @@ InputParameters validParams<FluidFlow2Phase>();
 class FluidFlow2Phase : virtual public PorousMedia
 {
 public:
-  FluidFlow2Phase(std::string name,
+  FluidFlow2Phase(const std::string & name,
             MooseSystem & moose_system,
                   InputParameters parameters);
   

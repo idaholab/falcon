@@ -7,7 +7,7 @@ InputParameters validParams<SolidMechPoroCoupleZ>()
   return params;
 }
 
-SolidMechPoroCoupleZ::SolidMechPoroCoupleZ(std::string name, MooseSystem & moose_system, InputParameters parameters)
+SolidMechPoroCoupleZ::SolidMechPoroCoupleZ(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :SolidMechPoroCouple(name, moose_system, parameters)
 {}
 

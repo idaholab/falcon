@@ -10,7 +10,7 @@ InputParameters validParams<StressCompute>()
   return params;
 }
 
-StressCompute::StressCompute(std::string name, MooseSystem & moose_system, InputParameters parameters)
+StressCompute::StressCompute(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :Kernel(name, moose_system, parameters),
    _component(getParam<int>("component")),
    _stress_normal_vector(getMaterialProperty<RealVectorValue>("stress_normal_vector")),

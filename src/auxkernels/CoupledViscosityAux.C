@@ -12,7 +12,7 @@ InputParameters validParams<CoupledViscosityAux>()
   return params;
 }
 
-CoupledViscosityAux::CoupledViscosityAux(std::string name, MooseSystem & moose_system, InputParameters parameters)
+CoupledViscosityAux::CoupledViscosityAux(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :AuxKernel(name, moose_system, parameters),
    _temperature(coupled("temperature")),
    _temperature_val(coupledValue("temperature")),

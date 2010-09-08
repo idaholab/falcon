@@ -8,7 +8,7 @@ InputParameters validParams<SolidMechTempCoupleZFalcon>()
   return params;
 }
 
-SolidMechTempCoupleZFalcon::SolidMechTempCoupleZFalcon(std::string name, MooseSystem & moose_system, InputParameters parameters)
+SolidMechTempCoupleZFalcon::SolidMechTempCoupleZFalcon(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :SolidMechTempCoupleFalcon(name, moose_system, parameters)
 {}
 
