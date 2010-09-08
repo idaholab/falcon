@@ -11,8 +11,8 @@ InputParameters validParams<PrescribedExpansion>()
 
 PrescribedExpansion::PrescribedExpansion(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :SolidMechTempCoupleFalcon(name, moose_system, parameters),
-   _component(parameters.get<Real>("component")),
-   _percent(parameters.get<Real>("percent"))
+   _component(getParam<Real>("component")),
+   _percent(getParam<Real>("percent"))
 {}
 
 Real

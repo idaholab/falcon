@@ -13,7 +13,7 @@ SolidMechSwellingSolid::SolidMechSwellingSolid(std::string name, MooseSystem & m
   :SolidMechTempCoupleFalcon(name, moose_system, parameters),
    _solid_swelling_strain(getMaterialProperty<Real>("solid_swelling_strain"))
 {
-  _component = parameters.get<Real>("component");
+  _component = getParam<Real>("component");
 
   if(_component < 0)
   {

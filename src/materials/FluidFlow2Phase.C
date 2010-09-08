@@ -28,11 +28,11 @@ FluidFlow2Phase::FluidFlow2Phase(std::string name,
    _enthalpy_old(coupledValueOld("enthalpy")),
 
    
-   _input_rho_w(parameters.get<Real>("rho_w")),
-   _input_rho_s(parameters.get<Real>("rho_s")),
-   _input_c_f(parameters.get<Real>("c_f")),
-   _input_mu_w(parameters.get<Real>("mu_w")),
-   _input_mu_s(parameters.get<Real>("mu_s")),
+   _input_rho_w(getParam<Real>("rho_w")),
+   _input_rho_s(getParam<Real>("rho_s")),
+   _input_c_f(getParam<Real>("c_f")),
+   _input_mu_w(getParam<Real>("mu_w")),
+   _input_mu_s(getParam<Real>("mu_s")),
 
    
    //delcare material properties

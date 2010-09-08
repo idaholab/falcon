@@ -13,9 +13,9 @@ InputParameters validParams<OutFlowBC>()
 OutFlowBC::OutFlowBC(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :BoundaryCondition(name, moose_system, parameters),
 //   _grad_p(coupledGradient("p")),
-//   _cond(parameters.get<Real>("conductivity")),
-   _diff(parameters.get<Real>("thermal_conductivity")),
-   _porosity(parameters.get<Real>("porosity"))
+//   _cond(getParam<Real>("conductivity")),
+   _diff(getParam<Real>("thermal_conductivity")),
+   _porosity(getParam<Real>("porosity"))
 {}
 
 Real

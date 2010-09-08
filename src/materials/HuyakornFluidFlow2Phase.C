@@ -22,8 +22,8 @@ HuyakornFluidFlow2Phase::HuyakornFluidFlow2Phase(std::string name,
      _enthalpy(coupledValue("enthalpy")),
      _enthalpy_old(coupledValueOld("enthalpy")),
 
-     _input_thermal_conductivity(parameters.get<Real>("thermal_conductivity")),
-     _input_cp_r(parameters.get<Real>("cp_r")),
+     _input_thermal_conductivity(getParam<Real>("thermal_conductivity")),
+     _input_cp_r(getParam<Real>("cp_r")),
    
    //delcare material properties
 

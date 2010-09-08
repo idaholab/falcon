@@ -22,15 +22,15 @@ FluidFlow::FluidFlow(std::string name,
      _has_temp(isCoupled("temperature")),
      _temperature(_has_temp ? coupledValue("temperature")  : _zero),
      
-     _input_rho_w(parameters.get<Real>("rho_w")),
-     _input_mu_w(parameters.get<Real>("mu_w")),
-     _input_c_f(parameters.get<Real>("c_f")),
+     _input_rho_w(getParam<Real>("rho_w")),
+     _input_mu_w(getParam<Real>("mu_w")),
+     _input_c_f(getParam<Real>("c_f")),
 
    //delcare material properties
      _rho_w(declareProperty<Real>("rho_w")),
      _mu_w(declareProperty<Real>("mu_w")),
      _c_f(declareProperty<Real>("c_f")),
-     _has_variable_density(parameters.get<bool>("temp_dependent_density")),
+     _has_variable_density(getParam<bool>("temp_dependent_density")),
      _darcy_params_w(declareProperty<Real>("darcy_params_w")),
      _darcy_flux_w(declareProperty<RealGradient>("darcy_flux_w")),
      _pore_velocity_w(declareProperty<RealGradient>("pore_velocity_w"))

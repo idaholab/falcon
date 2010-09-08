@@ -10,7 +10,7 @@ InputParameters validParams<Flux>()
 
 Flux::Flux(std::string name, MooseSystem & moose_system, InputParameters parameters)
   :BoundaryCondition(name, moose_system, parameters),
-   _coefficient(parameters.get<Real>("coefficient"))
+   _coefficient(getParam<Real>("coefficient"))
 {}
 
 Real

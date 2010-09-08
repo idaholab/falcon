@@ -20,14 +20,14 @@ PorousMedia::PorousMedia(std::string name,
                          MooseSystem & moose_system,
                          InputParameters parameters)
   :Material(name, moose_system, parameters),
-     _input_permeability(parameters.get<Real>("permeability")),
-     _input_porosity(parameters.get<Real>("porosity")),
-     _input_rho_r(parameters.get<Real>("rho_r")),
+     _input_permeability(getParam<Real>("permeability")),
+     _input_porosity(getParam<Real>("porosity")),
+     _input_rho_r(getParam<Real>("rho_r")),
      
-     _input_gravity(parameters.get<Real>("gravity")),
-     _gx(parameters.get<Real>("gx")),
-     _gy(parameters.get<Real>("gy")),
-     _gz(parameters.get<Real>("gz")),
+     _input_gravity(getParam<Real>("gravity")),
+     _gx(getParam<Real>("gx")),
+     _gy(getParam<Real>("gy")),
+     _gz(getParam<Real>("gz")),
 
    //delcare material properties
      _permeability(declareProperty<Real>("permeability")),

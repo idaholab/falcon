@@ -15,9 +15,9 @@ HeatTransport::HeatTransport(std::string name,
                              MooseSystem & moose_system,
                              InputParameters parameters)
   :PorousMedia(name, moose_system, parameters),
-     _input_rock_specific_heat(parameters.get<Real>("rock_specific_heat")),
-     _input_thermal_conductivity(parameters.get<Real>("thermal_conductivity")),
-     _input_water_specific_heat(parameters.get<Real>("water_specific_heat")),     
+     _input_rock_specific_heat(getParam<Real>("rock_specific_heat")),
+     _input_thermal_conductivity(getParam<Real>("thermal_conductivity")),
+     _input_water_specific_heat(getParam<Real>("water_specific_heat")),     
      //declare material properties
      _rock_specific_heat(declareProperty<Real>("rock_specific_heat")),
      _thermal_conductivity(declareProperty<Real>("thermal_conductivity")),

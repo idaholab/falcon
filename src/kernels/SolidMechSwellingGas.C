@@ -15,8 +15,8 @@ SolidMechSwellingGas::SolidMechSwellingGas(std::string name, MooseSystem & moose
    _temp(coupledValue("temp")),
    _density(getMaterialProperty<Real>("density"))
 {
-  _burnup = parameters.get<Real>("burnup");
-  _component = parameters.get<Real>("component");
+  _burnup = getParam<Real>("burnup");
+  _component = getParam<Real>("component");
   
   if(_component < 0)
   {
