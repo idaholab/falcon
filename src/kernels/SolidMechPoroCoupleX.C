@@ -4,11 +4,13 @@ template<>
 InputParameters validParams<SolidMechPoroCoupleX>()
 {
   InputParameters params = validParams<SolidMechPoroCouple>();
+  params.addRequiredCoupledVar("pressure", "Coupled Pressure");
   return params;
 }
 
 SolidMechPoroCoupleX::SolidMechPoroCoupleX(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
   :SolidMechPoroCouple(name, moose_system, parameters)
+   
 {}
 
 Real

@@ -1,9 +1,11 @@
+
 #include "SolidMechPoroCoupleY.h"
 
 template<>
 InputParameters validParams<SolidMechPoroCoupleY>()
 {
   InputParameters params = validParams<SolidMechPoroCouple>();
+  params.addRequiredCoupledVar("pressure", "Coupled Pressure");
   return params;
 }
 

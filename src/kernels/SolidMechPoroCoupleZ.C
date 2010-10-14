@@ -4,6 +4,7 @@ template<>
 InputParameters validParams<SolidMechPoroCoupleZ>()
 {
   InputParameters params = validParams<SolidMechPoroCouple>();
+  params.addRequiredCoupledVar("pressure", "Coupled Pressure");
   return params;
 }
 
