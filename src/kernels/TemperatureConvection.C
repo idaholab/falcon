@@ -19,14 +19,21 @@ TemperatureConvection::TemperatureConvection(const std::string & name, MooseSyst
 Real TemperatureConvection::computeQpResidual()
 {
 
+ 
+  
 if(_u[_qp]< 0.0)
   {
-    
-//  std::cout<<"temperature "<<_u[_qp]<<".\n";
-//  std::cout<<"darcy_params_w "<<_darcy_params_w[_qp]<<".\n";
   }
-      
+
+
+
+ std::cerr<<"darcy_flux_w "<<_darcy_flux_w[_qp]<<".\n";
+
+//   std::cerr<<"water  "<<_rho_w[_qp]<<".\n";
 //  return _darcy_flux_w_w[_qp]*_phi[_i][_qp]*_grad_u[_qp];
+
+ //std::cerr<<"water  "<<_water_specific_heat[_qp]*_darcy_flux_w[_qp]*_rho_w[_qp]*_phi[_i][_qp]*_grad_u[_qp]<<".\n";
+
   return _water_specific_heat[_qp]*_darcy_flux_w[_qp]*_rho_w[_qp]*_phi[_i][_qp]*_grad_u[_qp];
 }
 

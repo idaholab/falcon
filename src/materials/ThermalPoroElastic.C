@@ -1,4 +1,5 @@
 #include "ThermalPoroElastic.h"
+#include  <iostream>
 
 template<>
 InputParameters validParams<ThermalPoroElastic>()
@@ -22,7 +23,7 @@ InputParameters validParams<ThermalPoroElastic>()
   params.set<Real>("water_specific_heat")  = 4.186e3;   //units of (J/(kg K))
 
   params.set<bool>("temp_dependent_density")  = true;
-  params.set<bool>("has_solid_mechanics") = true;
+  params.set<bool>("has_solid_mechanics")     = true;
 
   params.set<Real>("gravity") = 9.80665; //gravity acceleration, in (m/s^2)
   params.set<Real>("gx") = 0.0;           //x component of the gravity pressure vector
@@ -33,6 +34,7 @@ InputParameters validParams<ThermalPoroElastic>()
   params.addCoupledVar("x_disp", "TODO: add description");
   params.addCoupledVar("y_disp", "TODO: add description");
   params.addCoupledVar("z_disp", "TODO: add description");
+  params.addCoupledVar("pressure", "TODO:  add description");
 
   return params;
 }
@@ -41,22 +43,38 @@ ThermalPoroElastic::ThermalPoroElastic(const std::string & name,
                                        MooseSystem & moose_system,
                                        InputParameters parameters)
   :Material(name, moose_system, parameters),
-     _has_pressure(isCoupled("pressure")),
-     _grad_p  (_has_pressure ? coupledGradient("pressure") : _grad_zero),
-     _pressure(_has_pressure ? coupledValue("pressure")  : _zero),
 
+
+//RKP debugging 10/15/10
+       _has_pressure(isCoupled("pressure")),
+       _grad_p  (_has_pressure ? coupledGradient("pressure") : _grad_zero),
+       _pressure(_has_pressure ? coupledValue("pressure")  : _zero),
+
+   // _grad_p(coupledGradient("pressure")),
+   //  _pressure(coupledValue("pressure")),
+
+//end RKP debugging
+
+   
      _has_temp(isCoupled("temperature")),
      _grad_temp  (_has_temp ? coupledGradient("temperature") : _grad_zero),
      _temperature(_has_temp ? coupledValue("temperature")  : _zero),
+   
       _has_x_disp(isCoupled("x_disp")),
      _grad_x_disp(_has_x_disp ? coupledGradient("x_disp") : _grad_zero),
+   
       _has_y_disp(isCoupled("y_disp")),
      _grad_y_disp(_has_y_disp ? coupledGradient("y_disp") : _grad_zero),
+   
       _has_z_disp(isCoupled("z_disp")),
      _grad_z_disp(_has_z_disp ? coupledGradient("z_disp") : _grad_zero),
      
      _has_solid_mechanics(getParam<bool>("has_solid_mechanics")),
+   
      _has_variable_density(getParam<bool>("temp_dependent_density")),
+
+
+   
      _input_permeability(getParam<Real>("permeability")),
      _input_porosity(getParam<Real>("porosity")),
      _input_rho_r(getParam<Real>("rho_r")),
@@ -84,6 +102,7 @@ ThermalPoroElastic::ThermalPoroElastic(const std::string & name,
      _rho_r(declareProperty<Real>("rho_r")),
      _rock_specific_heat(declareProperty<Real>("rock_specific_heat")),
      _thermal_conductivity(declareProperty<Real>("thermal_conductivity")),
+   
      _thermal_strain(declareProperty<Real>("thermal_strain")),
      _alpha(declareProperty<Real>("alpha")),
      _youngs_modulus(declareProperty<Real>("youngs_modulus")),
@@ -101,17 +120,22 @@ ThermalPoroElastic::ThermalPoroElastic(const std::string & name,
 
      _gravity(declareProperty<Real>("gravity")),
      _gravity_vector(declareProperty<RealVectorValue>("gravity_vector")),
+   
      _strain_normal_vector(declareProperty<RealVectorValue>("strain_normal_vector")),
      _strain_shear_vector (declareProperty<RealVectorValue>("strain_shear_vector")),
      _stress_normal_vector(declareProperty<RealVectorValue>("stress_normal_vector")),
      _stress_shear_vector (declareProperty<RealVectorValue>("stress_shear_vector"))
 { }
 
+
+
+
 void
 ThermalPoroElastic::computeProperties()
 {
   for(unsigned int qp=0; qp<_n_qpoints; qp++)
   {
+
 //rock properties
     _permeability[qp]         = _input_permeability;
     _porosity[qp]             = _input_porosity;
@@ -120,7 +144,14 @@ ThermalPoroElastic::computeProperties()
     _rock_specific_heat[qp]  = _input_rock_specific_heat;
     _thermal_conductivity[qp] = _input_thermal_conductivity;
     _alpha[qp]                = _input_thermal_expansion;
+
+
     
+    //std::cerr << "test =  " << (_permeability[qp])    <<"\n";
+
+
+
+     
     if(_has_temp && _has_solid_mechanics)
       _thermal_strain[qp] = _input_thermal_expansion*(_temperature[qp] - _input_t_ref);
     else
@@ -135,6 +166,7 @@ ThermalPoroElastic::computeProperties()
     _mu_w[qp]                = _input_mu_w;
     _c_f[qp]                 = _input_c_f; 
     _water_specific_heat[qp] = _input_water_specific_heat;
+    
 //  gravity    
     _gravity_vector[qp](0) = _gx; 
     _gravity_vector[qp](1) = _gy;
@@ -186,13 +218,33 @@ ThermalPoroElastic::computeProperties()
     }
 
 //  compute Darcy flux and pore water velicity on q-points
-    if(_has_pressure)
-    {
-      _darcy_params_w[qp] = _permeability[qp] * _rho_w[qp] / _mu_w[qp];
-      _darcy_flux_w[qp] =  -_permeability[qp] / _mu_w[qp] * ((_grad_p[qp])+(_rho_w[qp]*_gravity[qp]*_gravity_vector[qp]));
-      _pore_velocity_w[qp] = _darcy_flux_w[qp] / _porosity[qp];
-    }
 
+    //RKP debugging 10/15/10
+
+    
+    // _darcy_params_w[qp] = _permeability[qp] * _rho_w[qp] / _mu_w[qp];
+      
+    // _darcy_flux_w[qp] =  -(_permeability[qp] / _mu_w[qp]) * ((_grad_p[qp])+(_rho_w[qp]*_gravity[qp]*_gravity_vector[qp]));
+    // _pore_velocity_w[qp] = _darcy_flux_w[qp] / _porosity[qp];
+
+      
+      //   std::cout << "Darcy Flux Vector =  " << (_darcy_flux_w)[qp];    //<<"\n";
+
+       
+   if(_has_pressure)
+      {
+       _darcy_params_w[qp] = _permeability[qp] * _rho_w[qp] / _mu_w[qp];
+       _darcy_flux_w[qp] =  -(_permeability[qp] / _mu_w[qp]) * ((_grad_p[qp])+(_rho_w[qp]*_gravity[qp]*_gravity_vector[qp]));
+       _pore_velocity_w[qp] = _darcy_flux_w[qp] / _porosity[qp];
+
+
+       //  std::cout << "Darcy Flux Vector =  " << (_darcy_flux_w)[qp];    //<<"\n";
+      }
+     
+//end RKP debug effort
+
+
+     
     if(_has_solid_mechanics)
     {
       _E  =  _youngs_modulus[qp];
@@ -223,5 +275,19 @@ ThermalPoroElastic::computeProperties()
       if (_dim == 3)
         _stress_shear_vector[qp](2) = _c1*_c3*2.0*_strain_shear_vector[qp](2); //tau_yz
     }
+
+    // std::cerr << "Pressure  =   " <<(_pressure)[qp]<<"   Temp =  "<<(_temperature)[qp]<<"\n";
+    //  std::cerr << (_mu_w)[qp] <<" * "<< (_rho_w)[qp] <<" * "<< (_permeability)[qp] << "\n";
+    //std::cerr << "Darcy Flux Vector =  " << (_darcy_flux)[qp];//<<"\n";
+    //std::cerr << "gravity Vector =  " << (_gravity_vector)[qp];//<<"\n";
+    //  std::cerr << "Point =   " <<_q_point[qp]<<"\n";
+
+
+
+
+    
   }
+
+  
 }
+

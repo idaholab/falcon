@@ -14,12 +14,17 @@ DarcyVelocity::DarcyVelocity(const std::string & name, MooseSystem & moose_syste
   :Kernel(name, moose_system, parameters),
    _component(getParam<int>("component")),
    _pore_velocity_w(getMaterialProperty<RealGradient>("pore_velocity_w"))
+
+   
 {}
 
 Real
 DarcyVelocity::computeQpResidual()
 {
+
   return ((_u[_qp]-_pore_velocity_w[_qp](_component) )) *_phi[_i][_qp];
+  
+ 
 }
 
 
