@@ -27,7 +27,7 @@ if(_u[_qp]< 0.0)
 
 
 
- std::cerr<<"darcy_flux_w "<<_darcy_flux_w[_qp]<<".\n";
+// std::cerr<<"darcy_flux_w "<<_darcy_flux_w[_qp]<<".\n";
 
 //   std::cerr<<"water  "<<_rho_w[_qp]<<".\n";
 //  return _darcy_flux_w_w[_qp]*_phi[_i][_qp]*_grad_u[_qp];

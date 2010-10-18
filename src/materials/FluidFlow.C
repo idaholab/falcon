@@ -8,6 +8,7 @@ InputParameters validParams<FluidFlow>()
   params.addParam<Real>("mu_w",0.001,"fluid dynamic viscosity in Pa.s");
   params.addParam<Real>("c_f", 4.6e-10,"fluid compressibility in 1/Pa");
   params.set<bool>("temp_dependent_density")  = true;
+  params.addCoupledVar("pressure", "TODO:  add description");//Hai forgot this
   return params;
 }
 
@@ -101,7 +102,7 @@ FluidFlow::computeProperties()
       _pore_velocity_w[qp] = _darcy_flux_w[qp] / _porosity[qp];
 //    }
 
-//    std::cout<<"darcy_params "<<_darcy_params_w[qp]<<".\n";
+      // std::cerr<<"darcy_x "<<_pore_velocity_w[qp]<<".\n";
     
   }
 }
