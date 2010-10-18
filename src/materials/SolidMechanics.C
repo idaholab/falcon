@@ -9,6 +9,8 @@ InputParameters validParams<SolidMechanics>()
   params.addParam<Real>("poissons_ratio",0.2,"dimensionless");
   params.addParam<Real>("biot_coeff",0.0,"dimensionless");
   params.addParam<Real>("t_ref",293.15,"initial temperature");
+  params.addCoupledVar("temperature", "TODO:  add description");//Hai forgot this
+  // params.addCoupledVar("pressure", "TODO:  add description");//Hai forgot this
   return params;
   
 }
