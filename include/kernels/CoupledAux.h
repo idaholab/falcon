@@ -31,7 +31,7 @@ protected:
   Real _value;
 
   int _coupled;
-  VariableValue & _coupled_val[_qp];
+  VariableValue & _coupled_val;
 };
 
 #endif //COUPLEDAUX_H
