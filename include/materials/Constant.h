@@ -30,11 +30,11 @@ private:
 
   Real _my_thermal_conductivity;
   Real _my_thermal_expansion;
-  Real _my_biot_coeff;  
   Real _my_specific_heat;
   Real _my_density;
   Real _my_youngs_modulus;
   Real _my_poissons_ratio;
+  Real _my_biot_coeff;  
   Real _my_t_ref;
 
   MaterialProperty<Real> & _thermal_conductivity;

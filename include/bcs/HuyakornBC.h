@@ -29,10 +29,10 @@ virtual ~HuyakornBC() {}
 protected:
   virtual Real computeQpResidual();
   
+  VariableGradient & _grad_p;  
   MaterialProperty<Real> &_lamda;
   MaterialProperty<Real> &_km;
   MaterialProperty<Real> &_dT_dP;
-  VariableGradient & _grad_p;  
 private:
   Real _value;
 };

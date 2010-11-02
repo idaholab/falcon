@@ -22,7 +22,7 @@ protected:
 
   
  
-  MaterialProperty<Real> &_lamda;
   VariableGradient & _grad_p;
+  MaterialProperty<Real> &_lamda;
 };
 #endif //HUYAKORNENTHALPYCONVECTION

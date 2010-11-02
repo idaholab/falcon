@@ -22,6 +22,14 @@ public:
   
 protected:
   virtual void computeProperties();
+
+  bool _has_pressure;
+  VariableGradient & _grad_p;
+  VariableValue  & _pressure;
+
+  bool _has_temp;
+  VariableValue  & _temperature;
+
   Real _input_rho_w;
   Real _input_mu_w;
   Real _input_c_f;
@@ -30,17 +38,11 @@ protected:
   MaterialProperty<Real> & _mu_w;
   MaterialProperty<Real> & _c_f;
   
+  bool _has_variable_density;
   MaterialProperty<Real> & _darcy_params_w;
   MaterialProperty<RealGradient> & _darcy_flux_w;
   MaterialProperty<RealGradient> & _pore_velocity_w;
   
-private:
-  bool _has_pressure;
-  bool _has_temp;
-  bool _has_variable_density;
-  VariableValue  & _pressure;
-  VariableGradient & _grad_p;
-  VariableValue  & _temperature;
 
 };
 

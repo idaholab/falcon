@@ -22,8 +22,8 @@ protected:
 
   MaterialProperty<Real> &_darcy_params_s;
   MaterialProperty<Real> &_gravity;
-  MaterialProperty<Real> &_rho_s;
   MaterialProperty<Real> &_Hs;
+  MaterialProperty<Real> &_rho_s;
   
   MaterialProperty<RealVectorValue> &_gravity_vector;
 };

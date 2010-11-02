@@ -121,10 +121,10 @@ ThermalPoroElastic::ThermalPoroElastic(const std::string & name,
      _gravity(declareProperty<Real>("gravity")),
      _gravity_vector(declareProperty<RealVectorValue>("gravity_vector")),
    
-     _strain_normal_vector(declareProperty<RealVectorValue>("strain_normal_vector")),
-     _strain_shear_vector (declareProperty<RealVectorValue>("strain_shear_vector")),
      _stress_normal_vector(declareProperty<RealVectorValue>("stress_normal_vector")),
-     _stress_shear_vector (declareProperty<RealVectorValue>("stress_shear_vector"))
+     _stress_shear_vector (declareProperty<RealVectorValue>("stress_shear_vector")),
+     _strain_normal_vector(declareProperty<RealVectorValue>("strain_normal_vector")),
+     _strain_shear_vector (declareProperty<RealVectorValue>("strain_shear_vector"))
 { }
 
 

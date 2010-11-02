@@ -23,6 +23,13 @@ public:
 protected:
   virtual void computeProperties();
 
+  VariableValue & _pressure;
+  VariableValue & _pressure_old;
+  VariableGradient & _grad_p;
+  VariableValue & _enthalpy;
+  VariableValue & _enthalpy_old;
+
+
   Real _input_thermal_conductivity;
   Real _input_cp_r;
   MaterialProperty<Real> & _km;
@@ -35,10 +42,10 @@ protected:
   MaterialProperty<Real> & _rho_s;
   MaterialProperty<Real> & _sat_w;
   MaterialProperty<Real> & _sat_s;
-  MaterialProperty<Real> & _Heat;
-  MaterialProperty<Real> & _Heat_old;
   MaterialProperty<Real> & _temp;
   MaterialProperty<Real> & _temp_old;
+  MaterialProperty<Real> & _Heat;
+  MaterialProperty<Real> & _Heat_old;
   MaterialProperty<Real> & _dT_dP;
   MaterialProperty<Real> & _dT_dH;
   MaterialProperty<Real> & _rho;
@@ -50,8 +57,8 @@ protected:
   MaterialProperty<Real> & _darcy_params_w;
   MaterialProperty<Real> & _darcy_params_s;
   MaterialProperty<RealGradient> & _darcy_flux_w;
-  MaterialProperty<RealGradient> & _pore_velocity_w;
   MaterialProperty<RealGradient> & _darcy_flux_s;
+  MaterialProperty<RealGradient> & _pore_velocity_w;
   MaterialProperty<RealGradient> & _pore_velocity_s;
   MaterialProperty<Real> & _tau;
   MaterialProperty<Real> & _lamda;
@@ -110,14 +117,6 @@ protected:
      Real s8;
 
   
-private:
-
-  VariableValue & _pressure;
-  VariableGradient & _grad_p;
-  VariableValue & _pressure_old;
-  VariableValue & _enthalpy;
-  VariableValue & _enthalpy_old;
-
 };
 
 #endif //HUYAKORNFLUIDFLOW2PHASE_H

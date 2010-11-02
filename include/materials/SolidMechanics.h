@@ -23,6 +23,17 @@ public:
 protected:
   virtual void computeProperties();
 
+  bool _has_temp;
+  VariableGradient & _grad_temp;
+  VariableValue  & _temperature;
+   
+  bool _has_x_disp;
+  VariableGradient & _grad_x_disp;
+  bool _has_y_disp;
+  VariableGradient & _grad_y_disp;
+  bool _has_z_disp;
+  VariableGradient & _grad_z_disp;
+
   Real _input_thermal_expansion;
   Real _input_youngs_modulus;
   Real _input_poissons_ratio;
@@ -40,20 +51,6 @@ protected:
   MaterialProperty<RealVectorValue> & _stress_shear_vector;
   MaterialProperty<RealVectorValue> & _strain_normal_vector;
   MaterialProperty<RealVectorValue> & _strain_shear_vector;
-  
-private:
-
-  bool _has_temp;
-  bool _has_x_disp;
-  bool _has_y_disp;
-  bool _has_z_disp;
-
-  VariableValue  & _temperature;
-  VariableGradient & _grad_temp;
-
-  VariableGradient & _grad_x_disp;
-  VariableGradient & _grad_y_disp;
-  VariableGradient & _grad_z_disp;
   
   Real _E;
   Real _nu;

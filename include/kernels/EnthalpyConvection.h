@@ -21,12 +21,12 @@ protected:
   virtual Real computeQpJacobian();  
 
   
+  VariableGradient & _grad_p;
  
-  MaterialProperty<Real> &_Hs;
   MaterialProperty<Real> &_Hw;
+  MaterialProperty<Real> &_Hs;
   MaterialProperty<Real> &_darcy_params_s;
   MaterialProperty<Real> &_darcy_params_w;
-  VariableGradient & _grad_p;
   
 };
 #endif //ENTHALPYCONVECTION

@@ -54,9 +54,9 @@ HuyakornFluidFlow2Phase::HuyakornFluidFlow2Phase(const std::string & name,
      _darcy_flux_s(declareProperty<RealGradient>("darcy_flux_s")),
      _pore_velocity_w(declareProperty<RealGradient>("pore_velocity_w")),
      _pore_velocity_s(declareProperty<RealGradient>("pore_velocity_s")),
-     _beta(declareProperty<Real>("beta")),
      _tau(declareProperty<Real>("tau")),
-     _lamda(declareProperty<Real>("lamda"))
+     _lamda(declareProperty<Real>("lamda")),
+     _beta(declareProperty<Real>("beta"))
      
 {
      E3 = 1e+3;

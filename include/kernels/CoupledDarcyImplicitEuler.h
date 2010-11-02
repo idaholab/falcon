@@ -20,11 +20,12 @@ protected:
 
   virtual Real computeQpJacobian();
 
-  VariableValue & _enthalpy;
 //   VariableValue & _rho;
 //   VariableValue & _rho_old;  
   MaterialProperty<Real> & _rho;
   MaterialProperty<Real> & _rho_old;
+
+  VariableValue & _enthalpy;
   MaterialProperty<Real> & _porosity;
   MaterialProperty<Real> & _sat_w;
   MaterialProperty<Real> & _sat_s;

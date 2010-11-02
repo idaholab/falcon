@@ -24,23 +24,25 @@ protected:
   virtual void computeProperties();
 
 private:
+  bool _has_pressure;
+  VariableGradient & _grad_p;
+  VariableValue  & _pressure;
 
   bool _has_temp;
-  bool _has_variable_density;
-  bool _has_pressure;
-  bool _has_solid_mechanics;
-  bool _has_x_disp;
-  bool _has_y_disp;
-  bool _has_z_disp;
-
-  VariableValue  & _temperature;
   VariableGradient & _grad_temp;
-  VariableValue  & _pressure;
-  VariableGradient & _grad_p;
+  VariableValue  & _temperature;
 
+  bool _has_x_disp;
   VariableGradient & _grad_x_disp;
+  bool _has_y_disp;
   VariableGradient & _grad_y_disp;
+  bool _has_z_disp;
   VariableGradient & _grad_z_disp;
+
+  bool _has_solid_mechanics;
+  bool _has_variable_density;
+
+
 
   Real _input_permeability;
   Real _input_porosity;

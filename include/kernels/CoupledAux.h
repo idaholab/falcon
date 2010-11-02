@@ -28,10 +28,9 @@ public:
 protected:
   virtual Real computeValue();
 
-  Real _value;
-
   int _coupled;
   VariableValue & _coupled_val;
+  Real _value;
 };
 
 #endif //COUPLEDAUX_H

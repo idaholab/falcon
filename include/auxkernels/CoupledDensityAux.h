@@ -28,11 +28,11 @@ public:
 protected:
   virtual Real computeValue();
 
-  Real _value;
-
   Real _temperature;
   
   VariableValue & _temperature_val;
+
+  Real _value;
 };
 
 #endif //COUPLEDDENSITYAUX_H

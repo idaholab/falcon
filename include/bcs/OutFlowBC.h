@@ -37,7 +37,7 @@ private:
   /**
    * Vector to dot with the normal.
    */
-  Real _cond,_porosity,_diff;
+  Real _cond,_diff,_porosity;
   
 //  std::vector<RealGradient> & _grad_p;
   

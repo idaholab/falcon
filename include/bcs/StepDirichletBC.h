@@ -21,10 +21,9 @@ protected:
   virtual Real computeQpResidual();
 
 private:
-  std::vector<Real> _time;
-  std::vector<Real> _value;
   Real _size;
-  
+  std::vector<Real> _time;
+  std::vector<Real> _value;  
 };
  
 #endif

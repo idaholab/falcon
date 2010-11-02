@@ -28,9 +28,9 @@ public:
 protected:
   virtual Real computeValue();
 
-  MaterialProperty<Real> & _temp;
   VariableValue & _pressure;
   VariableValue & _enthalpy;
+  MaterialProperty<Real> & _temp;
 
      Real E3;
      Real E6;

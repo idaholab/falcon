@@ -29,9 +29,9 @@ protected:
   virtual Real computeValue();
 
     
-  MaterialProperty<Real> & _sat_w;
   VariableValue & _pressure;
   VariableValue & _enthalpy;
+  MaterialProperty<Real> & _sat_w;
 
   
      Real E3;

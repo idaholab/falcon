@@ -22,6 +22,13 @@ public:
   
 protected:
   virtual void computeProperties();
+
+  VariableGradient & _grad_p;
+  VariableValue & _pressure;
+  VariableValue & _pressure_old;
+  VariableValue & _enthalpy;
+  VariableValue & _enthalpy_old;
+
   Real _input_rho_w;
   Real _input_rho_s;
   Real _input_c_f;
@@ -30,22 +37,22 @@ protected:
   
   MaterialProperty<Real> & _rho_w;
   MaterialProperty<Real> & _rho_s;
-  MaterialProperty<Real> & _rho;
-  MaterialProperty<Real> & _rho_old;
   MaterialProperty<Real> & _c_f;
   MaterialProperty<Real> & _mu_w;
   MaterialProperty<Real> & _mu_s;
   MaterialProperty<Real> & _rel_perm_w;
   MaterialProperty<Real> & _rel_perm_s;
 
-
   MaterialProperty<Real> & _temp;
   MaterialProperty<Real> & _temp_old;
   MaterialProperty<Real> & _dTbydP_H;
   MaterialProperty<Real> & _dTbydH_P;
+  
+  MaterialProperty<Real> & _rho;
+  MaterialProperty<Real> & _rho_old;
   MaterialProperty<Real> & _drhobydP_H;
   MaterialProperty<Real> & _drhobydH_P;
-  
+
   MaterialProperty<Real> & _sat_w;
   MaterialProperty<Real> & _sat_s;
   MaterialProperty<Real> & _Hw;
@@ -92,15 +99,7 @@ protected:
   Real d6;
   Real d7;
        
-private:
-
 //  VariableValue & _temp_old;
-  VariableValue & _pressure;
-  VariableValue & _pressure_old;
-  VariableGradient & _grad_p;
-  VariableValue & _enthalpy;
-  VariableValue & _enthalpy_old;
-
 };
 
 #endif //FLUIDFLOW2PHASE_H

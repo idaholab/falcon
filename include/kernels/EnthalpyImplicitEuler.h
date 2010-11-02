@@ -31,8 +31,8 @@ protected:
   MaterialProperty<Real> & _rho;
   MaterialProperty<Real> & _rho_old;
 
-  MaterialProperty<Real> & _rho_r;
   MaterialProperty<Real> & _porosity;
+  MaterialProperty<Real> & _rho_r;
   
 };
 #endif //ENTHALPYIMPLICITEULER
