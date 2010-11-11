@@ -149,11 +149,11 @@ namespace Falcon
     registerAux(CoupledRhoAux);
     registerAux(VelocityAux);
         
-    registerNamedBC(PressureNeumannBC2, "PressureNeumannBC");
-    registerBC(GravityNeumannBC);
-    registerBC(OutFlowBC);
-    registerBC(HuyakornBC);
-    registerBC(StepDirichletBC);
+    registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
+    registerBoundaryCondition(GravityNeumannBC);
+    registerBoundaryCondition(OutFlowBC);
+    registerBoundaryCondition(HuyakornBC);
+    registerBoundaryCondition(StepDirichletBC);
 
     registerMaterial(Constant);
     registerMaterial(DarcyWater);
