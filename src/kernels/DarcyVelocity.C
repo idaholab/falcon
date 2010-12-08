@@ -10,8 +10,8 @@ InputParameters validParams<DarcyVelocity>()
   return params;
 }
 
-DarcyVelocity::DarcyVelocity(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :Kernel(name, moose_system, parameters),
+DarcyVelocity::DarcyVelocity(const std::string & name, InputParameters parameters)
+  :Kernel(name, parameters),
    _component(getParam<int>("component")),
    _pore_velocity_w(getMaterialProperty<RealGradient>("pore_velocity_w"))
 

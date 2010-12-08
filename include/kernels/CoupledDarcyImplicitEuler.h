@@ -13,7 +13,7 @@ class CoupledDarcyImplicitEuler : public ImplicitEuler
 {
 public:
 
-  CoupledDarcyImplicitEuler(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
+  CoupledDarcyImplicitEuler(const std::string & name, InputParameters parameters);
 
 protected:
   virtual Real computeQpResidual();

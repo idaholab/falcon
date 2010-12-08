@@ -13,7 +13,7 @@ class DarcyMassFluxZ : public Kernel
 {
 public:
 
-  DarcyMassFluxZ(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
+  DarcyMassFluxZ(const std::string & name, InputParameters parameters);
     
 protected:
   virtual Real computeQpResidual();

@@ -17,9 +17,8 @@ InputParameters validParams<FluidFlow2Phase>()
 }
 
 FluidFlow2Phase::FluidFlow2Phase(const std::string & name,
-                                 MooseSystem & moose_system,
                                  InputParameters parameters)
-  :PorousMedia(name, moose_system, parameters),
+  :PorousMedia(name, parameters),
 
    _grad_p(coupledGradient("pressure")),
    _pressure(coupledValue("pressure")),

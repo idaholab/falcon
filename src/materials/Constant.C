@@ -18,9 +18,8 @@ InputParameters validParams<Constant>()
 }
 
 Constant::Constant(const std::string & name,
-                   MooseSystem & moose_system,
                    InputParameters parameters)
-  :Material(name, moose_system, parameters),
+  :Material(name, parameters),
      _has_temp(isCoupled("temp")),
      _temp(_has_temp ? coupledValue("temp") : _zero),
      _my_thermal_conductivity(getParam<Real>("thermal_conductivity")),

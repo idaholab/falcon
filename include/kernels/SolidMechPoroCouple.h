@@ -17,7 +17,7 @@ class SolidMechPoroCouple : public SolidMechFalcon
 {
 public:
 
-  SolidMechPoroCouple(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
+  SolidMechPoroCouple(const std::string & name, InputParameters parameters);
   
   void recomputeCouplingConstants();
   

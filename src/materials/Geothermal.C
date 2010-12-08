@@ -11,12 +11,11 @@ InputParameters validParams<Geothermal>()
 }
 
 Geothermal::Geothermal(const std::string & name,
-                       MooseSystem & moose_system,
                        InputParameters parameters)
-  :PorousMedia(name, moose_system, parameters),
-   FluidFlow(name, moose_system, parameters),
-   HeatTransport(name, moose_system, parameters),
-   SolidMechanics(name, moose_system, parameters)
+  :PorousMedia(name, parameters),
+   FluidFlow(name, parameters),
+   HeatTransport(name, parameters),
+   SolidMechanics(name, parameters)
 {}
 
 void

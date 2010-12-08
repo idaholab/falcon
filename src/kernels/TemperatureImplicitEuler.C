@@ -8,8 +8,8 @@ InputParameters validParams<TemperatureImplicitEuler>()
   return params;
 }
 
-TemperatureImplicitEuler::TemperatureImplicitEuler(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :ImplicitEuler(name, moose_system, parameters),
+TemperatureImplicitEuler::TemperatureImplicitEuler(const std::string & name, InputParameters parameters)
+  :ImplicitEuler(name, parameters),
    _water_specific_heat(getMaterialProperty<Real>("water_specific_heat")),
    _rock_specific_heat(getMaterialProperty<Real>("rock_specific_heat")),
    _porosity(getMaterialProperty<Real>("porosity")),

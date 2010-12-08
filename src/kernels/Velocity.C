@@ -7,8 +7,8 @@ InputParameters validParams<Velocity>()
   return params;
 }
 
-Velocity::Velocity(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :Kernel(name, moose_system, parameters),
+Velocity::Velocity(const std::string & name, InputParameters parameters)
+  :Kernel(name, parameters),
    _p_var(coupled("p")),
    _p(coupledValue("p")),
    _momentum_var(coupled("momentum")),

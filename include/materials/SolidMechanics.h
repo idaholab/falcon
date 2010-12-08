@@ -17,7 +17,6 @@ class SolidMechanics : virtual public PorousMedia
 {
 public:
   SolidMechanics(const std::string & name,
-                 MooseSystem & moose_system,
                  InputParameters parameters);
   
 protected:

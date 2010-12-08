@@ -10,8 +10,8 @@ InputParameters validParams<OutFlowBC>()
   return params;
 }
 
-OutFlowBC::OutFlowBC(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :BoundaryCondition(name, moose_system, parameters),
+OutFlowBC::OutFlowBC(const std::string & name, InputParameters parameters)
+  :BoundaryCondition(name, parameters),
 //   _grad_p(coupledGradient("p")),
 //   _cond(getParam<Real>("conductivity")),
    _diff(getParam<Real>("thermal_conductivity")),

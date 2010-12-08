@@ -8,8 +8,8 @@ InputParameters validParams<VelocityAux>()
      return params;
 }
 
-VelocityAux::VelocityAux(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :AuxKernel(name, moose_system, parameters),
+VelocityAux::VelocityAux(const std::string & name, InputParameters parameters)
+  :AuxKernel(name, parameters),
     _i(getParam<int>("component")),
     _pore_velocity_w(getMaterialProperty<RealGradient>("pore_velocity_w"))   
 {}

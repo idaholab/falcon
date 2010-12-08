@@ -13,7 +13,7 @@ class TemperatureImplicitBackwardDifference2 : public ImplicitBackwardDifference
 {
 public:
 
-  TemperatureImplicitBackwardDifference2(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
+  TemperatureImplicitBackwardDifference2(const std::string & name, InputParameters parameters);
 
 protected:
   virtual Real computeQpResidual();

@@ -21,7 +21,7 @@ public:
    * Factory constructor, takes parameters so that all derived classes can be built using the same
    * constructor.
    */
-  AnalyticalADE1D(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
+  AnalyticalADE1D(const std::string & name, InputParameters parameters);
 
   virtual ~AnalyticalADE1D() {}
   

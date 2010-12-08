@@ -7,8 +7,8 @@ InputParameters validParams<AnalyticalADE1D>()
   return params;
 }
 
-AnalyticalADE1D::AnalyticalADE1D(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :AuxKernel(name, moose_system, parameters)
+AnalyticalADE1D::AnalyticalADE1D(const std::string & name, InputParameters parameters)
+  :AuxKernel(name, parameters)
 {}
 
 Real

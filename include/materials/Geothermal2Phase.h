@@ -19,7 +19,6 @@ class Geothermal2Phase : public FluidFlow2Phase, public HeatTransport, public So
 {
 public:
   Geothermal2Phase(const std::string & name,
-             MooseSystem & moose_system,
              InputParameters parameters);
 
 protected:

@@ -9,9 +9,8 @@ InputParameters validParams<DarcyImplicitBackwardDifference2>()
 }
 
 DarcyImplicitBackwardDifference2::DarcyImplicitBackwardDifference2(const std::string & name,
-                                                                   MooseSystem & moose_system,
                                                                    InputParameters parameters)
-  :ImplicitBackwardDifference2(name, moose_system, parameters),
+  :ImplicitBackwardDifference2(name, parameters),
    _c_f(getMaterialProperty<Real>("c_f")),
    _porosity(getMaterialProperty<Real>("porosity")),
    _rho_w(getMaterialProperty<Real>("rho_w"))

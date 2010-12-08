@@ -9,8 +9,8 @@ InputParameters validParams<SolidMechZFalcon>()
   return params;
 }
 
-SolidMechZFalcon::SolidMechZFalcon(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :SolidMechFalcon(name, moose_system, parameters),
+SolidMechZFalcon::SolidMechZFalcon(const std::string & name, InputParameters parameters)
+  :SolidMechFalcon(name, parameters),
    _x_var(coupled("x")),
    _x(coupledValue("x")),
    _grad_x(coupledGradient("x")),

@@ -17,7 +17,6 @@ class Constant : public Material
 {
 public:
   Constant(const std::string & name,
-           MooseSystem & moose_system,
            InputParameters parameters);
   
 protected:

@@ -17,8 +17,7 @@ class FluidFlow : virtual public PorousMedia
 {
 public:
   FluidFlow(const std::string & name,
-            MooseSystem & moose_system,
-           InputParameters parameters);
+            InputParameters parameters);
   
 protected:
   virtual void computeProperties();

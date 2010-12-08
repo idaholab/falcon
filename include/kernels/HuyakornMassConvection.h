@@ -14,7 +14,7 @@ class HuyakornMassConvection : public Diffusion
 {
 public:
 
-  HuyakornMassConvection(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
+  HuyakornMassConvection(const std::string & name, InputParameters parameters);
     
 protected:
   virtual Real computeQpResidual();

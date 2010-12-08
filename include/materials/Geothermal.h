@@ -19,7 +19,6 @@ class Geothermal : public FluidFlow, public HeatTransport, public SolidMechanics
 {
 public:
   Geothermal(const std::string & name,
-             MooseSystem & moose_system,
              InputParameters parameters);
 
 protected:

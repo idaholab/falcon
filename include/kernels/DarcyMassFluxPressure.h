@@ -14,7 +14,7 @@ class DarcyMassFluxPressure : public Diffusion
 {
 public:
 
-  DarcyMassFluxPressure(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
+  DarcyMassFluxPressure(const std::string & name, InputParameters parameters);
     
 protected:
   virtual Real computeQpResidual();

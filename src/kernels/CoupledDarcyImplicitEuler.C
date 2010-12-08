@@ -11,8 +11,8 @@ InputParameters validParams<CoupledDarcyImplicitEuler>()
      return params;
 }
 
-CoupledDarcyImplicitEuler::CoupledDarcyImplicitEuler(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :ImplicitEuler(name, moose_system, parameters),
+CoupledDarcyImplicitEuler::CoupledDarcyImplicitEuler(const std::string & name, InputParameters parameters)
+  :ImplicitEuler(name, parameters),
 
 //     _rho(coupledValue("rhoAux")),
 //     _rho_old(coupledValueOld("rhoAux")),

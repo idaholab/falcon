@@ -13,9 +13,8 @@ InputParameters validParams<FluidFlow>()
 }
 
 FluidFlow::FluidFlow(const std::string & name,
-                     MooseSystem & moose_system,
                      InputParameters parameters)
-  :PorousMedia(name, moose_system, parameters),
+  :PorousMedia(name, parameters),
      _has_pressure(isCoupled("pressure")),
      _grad_p  (_has_pressure ? coupledGradient("pressure") : _grad_zero),
      _pressure(_has_pressure ? coupledValue("pressure")  : _zero),

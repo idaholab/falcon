@@ -13,7 +13,7 @@ class Flux : public BoundaryCondition
 {
 public:
 
-  Flux(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
+  Flux(const std::string & name, InputParameters parameters);
   
   virtual ~Flux(){}
 

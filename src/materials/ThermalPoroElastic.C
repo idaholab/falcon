@@ -40,9 +40,8 @@ InputParameters validParams<ThermalPoroElastic>()
 }
 
 ThermalPoroElastic::ThermalPoroElastic(const std::string & name,
-                                       MooseSystem & moose_system,
                                        InputParameters parameters)
-  :Material(name, moose_system, parameters),
+  :Material(name, parameters),
 
 
 //RKP debugging 10/15/10

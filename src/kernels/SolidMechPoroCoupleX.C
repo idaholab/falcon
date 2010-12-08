@@ -8,8 +8,8 @@ InputParameters validParams<SolidMechPoroCoupleX>()
   return params;
 }
 
-SolidMechPoroCoupleX::SolidMechPoroCoupleX(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :SolidMechPoroCouple(name, moose_system, parameters)
+SolidMechPoroCoupleX::SolidMechPoroCoupleX(const std::string & name, InputParameters parameters)
+  :SolidMechPoroCouple(name, parameters)
    
 {}
 

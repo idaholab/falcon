@@ -15,7 +15,7 @@ class SinHeat : public Kernel
 {
 public:
 
-  SinHeat(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
+  SinHeat(const std::string & name, InputParameters parameters);
   
 protected:
   virtual Real computeQpResidual();

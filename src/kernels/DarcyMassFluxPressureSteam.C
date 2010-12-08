@@ -9,9 +9,8 @@ InputParameters validParams<DarcyMassFluxPressureSteam>()
 }
 
 DarcyMassFluxPressureSteam::DarcyMassFluxPressureSteam(const std::string & name,
-                                             MooseSystem & moose_system,
                                              InputParameters parameters)
-  :Diffusion(name, moose_system, parameters),
+  :Diffusion(name, parameters),
    _darcy_params_s(getMaterialProperty<Real>("darcy_params_s"))
 {}
 

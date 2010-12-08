@@ -12,9 +12,8 @@ InputParameters validParams<HeatTransport>()
 }
 
 HeatTransport::HeatTransport(const std::string & name,
-                             MooseSystem & moose_system,
                              InputParameters parameters)
-  :PorousMedia(name, moose_system, parameters),
+  :PorousMedia(name, parameters),
      _input_rock_specific_heat(getParam<Real>("rock_specific_heat")),
      _input_thermal_conductivity(getParam<Real>("thermal_conductivity")),
      _input_water_specific_heat(getParam<Real>("water_specific_heat")),     

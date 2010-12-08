@@ -9,9 +9,8 @@ InputParameters validParams<TemperatureImplicitBackwardDifference2>()
 }
 
 TemperatureImplicitBackwardDifference2::TemperatureImplicitBackwardDifference2(const std::string & name,
-                                                                               MooseSystem & moose_system,
                                                                                InputParameters parameters)
-  :ImplicitBackwardDifference2(name, moose_system, parameters),
+  :ImplicitBackwardDifference2(name, parameters),
    _water_specific_heat(getMaterialProperty<Real>("water_specific_heat")),
    _rock_specific_heat(getMaterialProperty<Real>("rock_specific_heat")),
    _porosity(getMaterialProperty<Real>("porosity")),

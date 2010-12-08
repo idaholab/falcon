@@ -9,9 +9,8 @@ InputParameters validParams<HuyakornMassConvection>()
 }
 
 HuyakornMassConvection::HuyakornMassConvection(const std::string & name,
-                                             MooseSystem & moose_system,
                                              InputParameters parameters)
-  :Diffusion(name, moose_system, parameters),
+  :Diffusion(name, parameters),
     _tau(getMaterialProperty<Real>("tau"))
 {}
 

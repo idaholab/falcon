@@ -12,9 +12,8 @@ InputParameters validParams<HuyakornFluidFlow2Phase>()
 }
 
 HuyakornFluidFlow2Phase::HuyakornFluidFlow2Phase(const std::string & name,
-                     MooseSystem & moose_system,
                      InputParameters parameters)
-  :PorousMedia(name, moose_system, parameters),
+  :PorousMedia(name, parameters),
    
      _pressure(coupledValue("pressure")),
      _pressure_old(coupledValueOld("pressure")),

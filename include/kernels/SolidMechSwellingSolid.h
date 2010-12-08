@@ -12,7 +12,7 @@ InputParameters validParams<SolidMechSwellingSolid>();
 class SolidMechSwellingSolid : public SolidMechTempCoupleFalcon
 {
 public:
-  SolidMechSwellingSolid(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
+  SolidMechSwellingSolid(const std::string & name, InputParameters parameters);
   
 protected:
   virtual Real computeQpResidual();

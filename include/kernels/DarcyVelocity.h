@@ -15,7 +15,7 @@ class DarcyVelocity : public Kernel
 {
 public:
 
-  DarcyVelocity(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
+  DarcyVelocity(const std::string & name, InputParameters parameters);
   
 
 protected:

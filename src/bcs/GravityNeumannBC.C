@@ -10,8 +10,8 @@ InputParameters validParams<GravityNeumannBC>()
   return params;
 }
 
-GravityNeumannBC::GravityNeumannBC(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :BoundaryCondition(name, moose_system, parameters),
+GravityNeumannBC::GravityNeumannBC(const std::string & name, InputParameters parameters)
+  :BoundaryCondition(name, parameters),
      _permeability(getParam<Real>("permeability")),
      _density(getParam<Real>("density")),
      _mu_w(getParam<Real>("mu_w")),

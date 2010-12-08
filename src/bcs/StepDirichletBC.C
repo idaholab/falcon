@@ -12,8 +12,8 @@ InputParameters validParams<StepDirichletBC>()
   return params;
 }
 
-StepDirichletBC::StepDirichletBC(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :BoundaryCondition(name, moose_system, parameters),
+StepDirichletBC::StepDirichletBC(const std::string & name, InputParameters parameters)
+  :BoundaryCondition(name, parameters),
    _size(getParam<Real>("size")),
    _time(getParam<std::vector<Real> >("time")),
    _value(getParam<std::vector<Real> >("value"))

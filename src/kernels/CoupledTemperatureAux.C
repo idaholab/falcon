@@ -9,8 +9,8 @@ InputParameters validParams<CoupledTemperatureAux>()
      return params;
 }
 
-CoupledTemperatureAux::CoupledTemperatureAux(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :AuxKernel(name, moose_system, parameters),
+CoupledTemperatureAux::CoupledTemperatureAux(const std::string & name, InputParameters parameters)
+  :AuxKernel(name, parameters),
      _enthalpy(coupledValue("enthalpy")),
      _pressure(coupledValue("pressure")),
      _Hw(getMaterialProperty<Real>("sat_enthalpy_w")),

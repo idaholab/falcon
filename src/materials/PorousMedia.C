@@ -17,9 +17,8 @@ InputParameters validParams<PorousMedia>()
 }
 
 PorousMedia::PorousMedia(const std::string & name,
-                         MooseSystem & moose_system,
                          InputParameters parameters)
-  :Material(name, moose_system, parameters),
+  :Material(name, parameters),
      _input_permeability(getParam<Real>("permeability")),
      _input_porosity(getParam<Real>("porosity")),
      _input_rho_r(getParam<Real>("rho_r")),

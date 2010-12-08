@@ -8,8 +8,8 @@ InputParameters validParams<DarcyImplicitEuler>()
   return params;
 }
 
-DarcyImplicitEuler::DarcyImplicitEuler(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :ImplicitEuler(name, moose_system, parameters),
+DarcyImplicitEuler::DarcyImplicitEuler(const std::string & name, InputParameters parameters)
+  :ImplicitEuler(name, parameters),
    _c_f(getMaterialProperty<Real>("c_f")),
    _porosity(getMaterialProperty<Real>("porosity")),
    _rho_w(getMaterialProperty<Real>("rho_w"))

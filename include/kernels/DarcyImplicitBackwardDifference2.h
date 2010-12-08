@@ -13,7 +13,7 @@ class DarcyImplicitBackwardDifference2 : public ImplicitBackwardDifference2
 {
 public:
 
-  DarcyImplicitBackwardDifference2(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
+  DarcyImplicitBackwardDifference2(const std::string & name, InputParameters parameters);
 
 protected:
   virtual Real computeQpResidual();

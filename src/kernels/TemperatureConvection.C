@@ -8,8 +8,8 @@ InputParameters validParams<TemperatureConvection>()
   return params;
 }
 
-TemperatureConvection::TemperatureConvection(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :Kernel(name, moose_system, parameters),
+TemperatureConvection::TemperatureConvection(const std::string & name, InputParameters parameters)
+  :Kernel(name, parameters),
    _water_specific_heat(getMaterialProperty<Real>("water_specific_heat")),
    _darcy_flux_w(getMaterialProperty<RealGradient>("darcy_flux_w")),
    _rho_w(getMaterialProperty<Real>("rho_w"))

@@ -7,8 +7,8 @@ InputParameters validParams<SolidMechFalcon>()
   return params;
 }
 
-SolidMechFalcon::SolidMechFalcon(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :Kernel(name, moose_system, parameters),
+SolidMechFalcon::SolidMechFalcon(const std::string & name, InputParameters parameters)
+  :Kernel(name, parameters),
    _E_prop(getMaterialProperty<Real>("youngs_modulus")),
    _nu_prop(getMaterialProperty<Real>("poissons_ratio")),
    _stress_normal_vector(getMaterialProperty<RealVectorValue>("stress_normal_vector")),

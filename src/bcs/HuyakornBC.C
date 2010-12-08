@@ -8,8 +8,8 @@ InputParameters validParams<HuyakornBC>()
   return params;
 }
 
-HuyakornBC::HuyakornBC(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :BoundaryCondition(name, moose_system, parameters),
+HuyakornBC::HuyakornBC(const std::string & name, InputParameters parameters)
+  :BoundaryCondition(name, parameters),
    _grad_p(coupledGradient("pressure")),
    _lamda(getMaterialProperty<Real>("lamda")),
    _km(getMaterialProperty<Real>("thermal_conductivity")),

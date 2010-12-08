@@ -15,7 +15,7 @@ class PressureNeumannBC2 : public BoundaryCondition
 {
 public:
 
-  PressureNeumannBC2(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
+  PressureNeumannBC2(const std::string & name, InputParameters parameters);
 
   virtual ~PressureNeumannBC2(){}
 

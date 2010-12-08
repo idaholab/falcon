@@ -85,9 +85,8 @@ return params;
 }
 
 DarcyWater::DarcyWater(const std::string & name,
-                       MooseSystem & moose_system,
                        InputParameters parameters)
-  :Material(name, moose_system, parameters),
+  :Material(name, parameters),
    _input_permeability(getParam<Real>("permeability")),
    _input_porosity(getParam<Real>("porosity")),
    _input_rho_w(getParam<Real>("rho_w")),

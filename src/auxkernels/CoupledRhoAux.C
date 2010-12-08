@@ -7,8 +7,8 @@ InputParameters validParams<CoupledRhoAux>()
   return params;
 }
 
-CoupledRhoAux::CoupledRhoAux(const std::string & name, MooseSystem & moose_system, InputParameters parameters)
-  :AuxKernel(name, moose_system, parameters),
+CoupledRhoAux::CoupledRhoAux(const std::string & name, InputParameters parameters)
+  :AuxKernel(name, parameters),
    _rho_w(getMaterialProperty<Real>("rho_w")),
    _rho_s(getMaterialProperty<Real>("rho_s")),
    _sat_w(getMaterialProperty<Real>("sat_w")),

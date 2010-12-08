@@ -15,7 +15,7 @@ class Velocity : public Kernel
 {
 public:
 
-  Velocity(const std::string & name, MooseSystem & moose_system, InputParameters parameters);
+  Velocity(const std::string & name, InputParameters parameters);
   
 protected:
   virtual Real computeQpResidual();

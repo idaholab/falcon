@@ -17,7 +17,6 @@ class HeatTransport : virtual public PorousMedia
 {
 public:
   HeatTransport(const std::string & name,
-                MooseSystem & moose_system,
                 InputParameters parameters);
   
 protected:
