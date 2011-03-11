@@ -22,16 +22,16 @@
 #include "SolidMechSwellingSolid.h"
 #include "SolidMechSwellingGas.h"
 #include "SinHeat.h"
-#include "PrescribedExpansion.h"
+//#include "PrescribedExpansion.h"
 
-#include "MassInviscidFlux.h"
-#include "MomentumInviscidFlux.h"
-#include "MomentumViscousFlux.h"
-#include "EnergyInviscidFlux.h"
-#include "EnergyViscousFlux.h"
-#include "GravityForce.h"
-#include "GravityPower.h"
-#include "Velocity.h"
+//#include "MassInviscidFlux.h"
+//#include "MomentumInviscidFlux.h"
+//#include "MomentumViscousFlux.h"
+//#include "EnergyInviscidFlux.h"
+//#include "EnergyViscousFlux.h"
+//#include "GravityForce.h"
+//#include "GravityPower.h"
+//#include "Velocity.h"
 #include "Temperature.h"
 #include "DarcyImplicitEuler.h"
 #include "CoupledDarcyImplicitEuler.h"
@@ -107,16 +107,16 @@ namespace Falcon
     registerKernel(SolidMechSwellingSolid);
     registerKernel(SolidMechSwellingGas);
     registerKernel(SinHeat);
-    registerKernel(PrescribedExpansion);
+//    registerKernel(PrescribedExpansion);
 
-    registerKernel(MassInviscidFlux);
-    registerKernel(MomentumInviscidFlux);
-    registerKernel(MomentumViscousFlux);
-    registerKernel(EnergyInviscidFlux);
-    registerKernel(EnergyViscousFlux);
-    registerKernel(GravityForce);
-    registerKernel(GravityPower);
-    registerKernel(Velocity);
+//    registerKernel(MassInviscidFlux);
+//    registerKernel(MomentumInviscidFlux);
+//    registerKernel(MomentumViscousFlux);
+//    registerKernel(EnergyInviscidFlux);
+//    registerKernel(EnergyViscousFlux);
+//    registerKernel(GravityForce);
+//    registerKernel(GravityPower);
+//    registerKernel(Velocity);
     registerKernel(Temperature);
     registerKernel(DarcyImplicitEuler);
     registerKernel(CoupledDarcyImplicitEuler);
