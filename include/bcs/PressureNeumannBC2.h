@@ -1,7 +1,7 @@
 #ifndef PRESSURENEUMANNBC2_H
 #define PRESSURENEUMANNBC2_H
 
-#include "BoundaryCondition.h"
+#include "IntegratedBC.h"
 #include "Material.h"
 
 
@@ -11,7 +11,7 @@ class PressureNeumannBC2;
 template<>
 InputParameters validParams<PressureNeumannBC2>();
 
-class PressureNeumannBC2 : public BoundaryCondition
+class PressureNeumannBC2 : public IntegratedBC
 {
 public:
 

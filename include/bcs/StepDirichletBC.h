@@ -2,7 +2,7 @@
 #define STEPDIRICHLETBC_H
 
 #include "libmesh_common.h"
-#include "BoundaryCondition.h"
+#include "NodalBC.h"
 
 
 //Forward Declarations
@@ -11,7 +11,7 @@ class StepDirichletBC;
 template<>
 InputParameters validParams<StepDirichletBC>();
 
-class StepDirichletBC : public BoundaryCondition
+class StepDirichletBC : public NodalBC
 {
 public:
 

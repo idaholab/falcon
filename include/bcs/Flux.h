@@ -1,7 +1,7 @@
 #ifndef FLUX_H
 #define FLUX_H
 
-#include "BoundaryCondition.h"
+#include "IntegratedBC.h"
 
 //Forward Declarations
 class Flux;
@@ -9,7 +9,7 @@ class Flux;
 template<>
 InputParameters validParams<Flux>();
 
-class Flux : public BoundaryCondition
+class Flux : public IntegratedBC
 {
 public:
 

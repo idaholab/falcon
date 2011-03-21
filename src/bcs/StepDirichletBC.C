@@ -1,19 +1,18 @@
 #include "StepDirichletBC.h"
-#include "MooseSystem.h"
  
 template<>
 InputParameters validParams<StepDirichletBC>()
 {
-  InputParameters params = validParams<BoundaryCondition>();
+  InputParameters params = validParams<NodalBC>();
   params.set<Real>("size")=1.0;
   params.addRequiredParam<std::vector<Real> >("time","The time step ");
-  params.addRequiredParam<std::vector<Real> >("value","The values of varable at particular time");
+  params.addRequiredParam<std::vector<Real> >("value","The values of variable at particular time");
 
   return params;
 }
 
 StepDirichletBC::StepDirichletBC(const std::string & name, InputParameters parameters)
-  :BoundaryCondition(name, parameters),
+  :NodalBC(name, parameters),
    _size(getParam<Real>("size")),
    _time(getParam<std::vector<Real> >("time")),
    _value(getParam<std::vector<Real> >("value"))
@@ -27,7 +26,7 @@ StepDirichletBC::computeQpResidual()
 
    for (unsigned int i=0; i<_size; ++i)
       {
-        if(_moose_system._t >= _time[i])
+        if(_t >= _time[i])
         {
           u = _value[i];
           break;

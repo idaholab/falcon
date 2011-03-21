@@ -3,7 +3,7 @@
 template<>
 InputParameters validParams<OutFlowBC>()
 {
-  InputParameters params = validParams<BoundaryCondition>();
+  InputParameters params = validParams<IntegratedBC>();
   params.set<Real>("thermal_conductivity") = 5.0;
 //  params.set<Real>("conductivity")= 0.0;
   params.set<Real>("porosity")    = 1.0;
@@ -11,7 +11,7 @@ InputParameters validParams<OutFlowBC>()
 }
 
 OutFlowBC::OutFlowBC(const std::string & name, InputParameters parameters)
-  :BoundaryCondition(name, parameters),
+  :IntegratedBC(name, parameters),
 //   _grad_p(coupledGradient("p")),
 //   _cond(getParam<Real>("conductivity")),
    _diff(getParam<Real>("thermal_conductivity")),

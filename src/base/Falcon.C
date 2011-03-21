@@ -1,5 +1,5 @@
 #include "Moose.h"
-#include "MooseFactory.h"
+#include "Factory.h"
 
 #include "HeatConduction.h"
 #include "HeatConductionImplicitEuler.h"

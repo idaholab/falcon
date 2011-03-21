@@ -1,7 +1,7 @@
 #ifndef HUYAKORNBC_H
 #define HUYAKORNBC_H
 
-#include "BoundaryCondition.h"
+#include "IntegratedBC.h"
 
 
 //Forward Declarations
@@ -14,7 +14,7 @@ InputParameters validParams<HuyakornBC>();
  * Implements a simple constant Huyakorn BC where grad(u)=value on the boundary.
  * Uses the term produced from integrating the diffusion operator by parts.
  */
-class HuyakornBC : public BoundaryCondition
+class HuyakornBC : public IntegratedBC
 {
 public:
 

@@ -3,13 +3,13 @@
 template<>
 InputParameters validParams<Flux>()
 {
-  InputParameters params = validParams<BoundaryCondition>();
+  InputParameters params = validParams<IntegratedBC>();
   params.set<Real>("coefficient");
   return params;
 }
 
 Flux::Flux(const std::string & name, InputParameters parameters)
-  :BoundaryCondition(name, parameters),
+  :IntegratedBC(name, parameters),
    _coefficient(getParam<Real>("coefficient"))
 {}
 

@@ -3,7 +3,7 @@
 template<>
 InputParameters validParams<GravityNeumannBC>()
 {
-  InputParameters params = validParams<BoundaryCondition>();
+  InputParameters params = validParams<IntegratedBC>();
   params.set<Real>("permeability") = 0;
   params.set<Real>("density") = 0;
   params.set<Real>("mu_w") = 0;
@@ -11,7 +11,7 @@ InputParameters validParams<GravityNeumannBC>()
 }
 
 GravityNeumannBC::GravityNeumannBC(const std::string & name, InputParameters parameters)
-  :BoundaryCondition(name, parameters),
+  :IntegratedBC(name, parameters),
      _permeability(getParam<Real>("permeability")),
      _density(getParam<Real>("density")),
      _mu_w(getParam<Real>("mu_w")),

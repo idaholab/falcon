@@ -3,13 +3,13 @@
 template<>
 InputParameters validParams<PressureNeumannBC2>()
 {
-  InputParameters params = validParams<BoundaryCondition>();
+  InputParameters params = validParams<IntegratedBC>();
   params.set<Real>("component");
   return params;
 }
 
 PressureNeumannBC2::PressureNeumannBC2(const std::string & name, InputParameters parameters)
-  :BoundaryCondition(name, parameters),
+  :IntegratedBC(name, parameters),
     _pe_var(coupled("pe")),
     _pe(coupledValue("pe")),
     _u_vel_var(coupled("u")),

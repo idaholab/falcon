@@ -3,13 +3,13 @@
 template<>
 InputParameters validParams<HuyakornBC>()
 {
-  InputParameters params = validParams<BoundaryCondition>();
+  InputParameters params = validParams<IntegratedBC>();
   params.addCoupledVar("pressure", "TODO: add description");
   return params;
 }
 
 HuyakornBC::HuyakornBC(const std::string & name, InputParameters parameters)
-  :BoundaryCondition(name, parameters),
+  :IntegratedBC(name, parameters),
    _grad_p(coupledGradient("pressure")),
    _lamda(getMaterialProperty<Real>("lamda")),
    _km(getMaterialProperty<Real>("thermal_conductivity")),

@@ -1,7 +1,7 @@
 #ifndef GRAVITYNEUMANNBC_H
 #define GRAVITYNEUMANNBC_H
 
-#include "BoundaryCondition.h"
+#include "IntegratedBC.h"
 
 
 //Forward Declarations
@@ -14,7 +14,7 @@ InputParameters validParams<GravityNeumannBC>();
  * Implements a simple constant GravityNeumann BC where grad(u)=value on the boundary.
  * Uses the term produced from integrating the diffusion operator by parts.
  */
-class GravityNeumannBC : public BoundaryCondition
+class GravityNeumannBC : public IntegratedBC
 {
 public:
 

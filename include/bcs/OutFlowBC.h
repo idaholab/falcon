@@ -1,7 +1,7 @@
 #ifndef OUTFLOWBC_H
 #define OUTFLOWBC_H
 
-#include "BoundaryCondition.h"
+#include "IntegratedBC.h"
 
 //libMesh includes
 #include "vector_value.h"
@@ -17,7 +17,7 @@ InputParameters validParams<OutFlowBC>();
  * Implements a simple constant VectorNeumann BC where grad(u)=value on the boundary.
  * Uses the term produced from integrating the diffusion operator by parts.
  */
-class OutFlowBC : public BoundaryCondition
+class OutFlowBC : public IntegratedBC
 {
 public:
 
