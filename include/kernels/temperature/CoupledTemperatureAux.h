@@ -35,8 +35,8 @@ protected:
     
   VariableValue & _enthalpy;
   VariableValue & _pressure;
-  MaterialProperty<Real> & _Hw;
-  MaterialProperty<Real> & _Hs;
+  MaterialProperty<Real> & _enthalpy_saturated_water;
+  MaterialProperty<Real> & _enthalpy_saturated_steam;
 };
 
 #endif //COUPLEDTEMPERATUREAUX_H

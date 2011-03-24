@@ -29,10 +29,10 @@ protected:
   virtual Real computeValue();
 
     
-  MaterialProperty<Real> & _rho_w;
-  MaterialProperty<Real> & _rho_s;
-  MaterialProperty<Real> & _sat_w;
-  MaterialProperty<Real> & _sat_s;
+  MaterialProperty<Real> & _density_water;
+  MaterialProperty<Real> & _density_steam;
+  MaterialProperty<Real> & _S_water;
+  MaterialProperty<Real> & _S_steam;
 };
 
 #endif //COUPLEDRHOAUX_H

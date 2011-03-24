@@ -20,11 +20,11 @@ protected:
 
   virtual Real computeQpJacobian();
 
-  MaterialProperty<Real> & _water_specific_heat;
-  MaterialProperty<Real> & _rock_specific_heat;
+  MaterialProperty<Real> & _specific_heat_water;
+  MaterialProperty<Real> & _specific_heat_rock;
   MaterialProperty<Real> & _porosity;
-  MaterialProperty<Real> & _rho_w;
-  MaterialProperty<Real> & _rho_r;
+  MaterialProperty<Real> & _density_water;
+  MaterialProperty<Real> & _density_rock;
   
 };
 #endif //TEMPERATUREIMPLICITBACKWARDDIFERENCE2

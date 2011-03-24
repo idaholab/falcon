@@ -11,9 +11,9 @@ InputParameters validParams<EnthalpyConvectionSteam>()
 EnthalpyConvectionSteam::EnthalpyConvectionSteam(const std::string & name, InputParameters parameters)
   :Kernel(name, parameters),
 
-   _darcy_flux_s(getMaterialProperty<RealGradient>("darcy_flux_s")),
-   _GHs(getMaterialProperty<RealGradient>("grad_sat_enthalpy_s")),
-   _rho_s(getMaterialProperty<Real>("rho_s"))
+   _darcy_flux_steam(getMaterialProperty<RealGradient>("darcy_flux_steam")),
+   _Genthalpy_saturated_steam(getMaterialProperty<RealGradient>("grad_enthalpy_saturated_steam")),
+   _density_steam(getMaterialProperty<Real>("density_steam"))
 
 {}
 
@@ -21,7 +21,7 @@ Real EnthalpyConvectionSteam::computeQpResidual()
 {
 
 
-  return  _darcy_flux_s[_qp]*_rho_s[_qp]*_test[_i][_qp]*_GHs[_qp];
+  return  _darcy_flux_steam[_qp]*_density_steam[_qp]*_test[_i][_qp]*_Genthalpy_saturated_steam[_qp];
 }
 
 Real EnthalpyConvectionSteam::computeQpJacobian()

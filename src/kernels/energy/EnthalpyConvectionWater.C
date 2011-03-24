@@ -11,16 +11,16 @@ InputParameters validParams<EnthalpyConvectionWater>()
 EnthalpyConvectionWater::EnthalpyConvectionWater(const std::string & name, InputParameters parameters)
   :Kernel(name, parameters),
 
-   _darcy_flux_w(getMaterialProperty<RealGradient>("darcy_flux_w")),
-   _GHw(getMaterialProperty<RealGradient>("grad_sat_enthalpy_w")),
-   _rho_w(getMaterialProperty<Real>("rho_w"))
+   _darcy_flux_water(getMaterialProperty<RealGradient>("darcy_flux_water")),
+   _Genthalpy_saturated_water(getMaterialProperty<RealGradient>("grad_enthalpy_saturated_water")),
+   _density_water(getMaterialProperty<Real>("density_water"))
 
 {}
 
 Real EnthalpyConvectionWater::computeQpResidual()
 {
   
-   return _darcy_flux_w[_qp]*_rho_w[_qp]*_test[_i][_qp]*_GHw[_qp];
+   return _darcy_flux_water[_qp]*_density_water[_qp]*_test[_i][_qp]*_Genthalpy_saturated_water[_qp];
 
 }
 

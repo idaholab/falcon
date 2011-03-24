@@ -10,19 +10,19 @@ InputParameters validParams<DarcyImplicitEuler>()
 
 DarcyImplicitEuler::DarcyImplicitEuler(const std::string & name, InputParameters parameters)
   :ImplicitEuler(name, parameters),
-   _c_f(getMaterialProperty<Real>("c_f")),
+   _compressibility(getMaterialProperty<Real>("compressibility")),
    _porosity(getMaterialProperty<Real>("porosity")),
-   _rho_w(getMaterialProperty<Real>("rho_w"))
+   _density_water(getMaterialProperty<Real>("density_water"))
 {}
 
 Real
 DarcyImplicitEuler::computeQpResidual()
 {
-  return _c_f[_qp]*_porosity[_qp]*_rho_w[_qp]*ImplicitEuler::computeQpResidual();
+  return _compressibility[_qp]*_porosity[_qp]*_density_water[_qp]*ImplicitEuler::computeQpResidual();
 }
 
 Real
 DarcyImplicitEuler::computeQpJacobian()
 {
-  return _c_f[_qp]*_porosity[_qp]*_rho_w[_qp]*ImplicitEuler::computeQpJacobian();
+  return _compressibility[_qp]*_porosity[_qp]*_density_water[_qp]*ImplicitEuler::computeQpJacobian();
 }

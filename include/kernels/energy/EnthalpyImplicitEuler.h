@@ -23,16 +23,16 @@ protected:
 
 //  VariableValue & _temperature;
 //  VariableValue & _temperature_old;
-//  VariableValue & _rho;
-//  VariableValue & _rho_old;
+//  VariableValue & _density;
+//  VariableValue & _density_old;
   
   MaterialProperty<Real> & _temperature;
   MaterialProperty<Real> & _temperature_old;
-  MaterialProperty<Real> & _rho;
-  MaterialProperty<Real> & _rho_old;
+  MaterialProperty<Real> & _density;
+  MaterialProperty<Real> & _density_old;
 
   MaterialProperty<Real> & _porosity;
-  MaterialProperty<Real> & _rho_r;
+  MaterialProperty<Real> & _density_rock;
   
 };
 #endif //ENTHALPYIMPLICITEULER

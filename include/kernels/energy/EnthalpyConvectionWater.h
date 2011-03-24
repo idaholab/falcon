@@ -20,9 +20,9 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();  
 
-  MaterialProperty<RealGradient> &_darcy_flux_w;
-  MaterialProperty<RealGradient> &_GHw;
-  MaterialProperty<Real> &_rho_w;
+  MaterialProperty<RealGradient> &_darcy_flux_water;
+  MaterialProperty<RealGradient> &_Genthalpy_saturated_water;
+  MaterialProperty<Real> &_density_water;
 
   
 };

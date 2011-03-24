@@ -8,8 +8,8 @@ InputParameters validParams<ThermalPoroElastic>()
   
   params.set<Real>("permeability")         =  1.0e-12; //intrinsic permeability, "k", in (m^2)
   params.set<Real>("porosity")             =  0.2;    //dimensionless but variable
-  params.set<Real>("rho_r")                =  2.50e3;  //rock density, in  (kg/m^3)
-  params.set<Real>("rock_specific_heat")   =  0.92e3;  //units of (J/(kg K))
+  params.set<Real>("density_rock")                =  2.50e3;  //rock density, in  (kg/m^3)
+  params.set<Real>("specific_heat_rock")   =  0.92e3;  //units of (J/(kg K))
   params.set<Real>("thermal_conductivity") =  2.4;     //thermal thermal_conductivity, in (W/mK)
   params.set<Real>("thermal_expansion")    =  1.0e-6;  //thermal expansion coefficient (1/K)
   params.set<Real>("youngs_modulus")       = 15.0e09;  //(in Pascal) 
@@ -17,10 +17,10 @@ InputParameters validParams<ThermalPoroElastic>()
   params.set<Real>("biot_coeff")           =  1.0;
   params.set<Real>("t_ref")                = 293.15;     //in K,equivalent to 20 C
 
-  params.set<Real>("rho_w")                = 1000.0;   //water density, variable, in (kg/m^3)
-  params.set<Real>("mu_w")                 = 0.001;    //water dynamic viscosity, variable, in (Pa s)
-  params.set<Real>("c_f")                  = 4.6e-10;  //fluid compressibility (1/Pa)
-  params.set<Real>("water_specific_heat")  = 4.186e3;   //units of (J/(kg K))
+  params.set<Real>("density_water")                = 1000.0;   //water density, variable, in (kg/m^3)
+  params.set<Real>("viscosity_water")                 = 0.001;    //water dynamic viscosity, variable, in (Pa s)
+  params.set<Real>("compressibility")                  = 4.6e-10;  //fluid compressibility (1/Pa)
+  params.set<Real>("specific_heat_water")  = 4.186e3;   //units of (J/(kg K))
 
   params.set<bool>("temp_dependent_density")  = true;
   params.set<bool>("has_solid_mechanics")     = true;
@@ -76,8 +76,8 @@ ThermalPoroElastic::ThermalPoroElastic(const std::string & name,
    
      _input_permeability(getParam<Real>("permeability")),
      _input_porosity(getParam<Real>("porosity")),
-     _input_rho_r(getParam<Real>("rho_r")),
-     _input_rock_specific_heat(getParam<Real>("rock_specific_heat")),
+     _input_density_rock(getParam<Real>("density_rock")),
+     _input_specific_heat_rock(getParam<Real>("specific_heat_rock")),
      _input_thermal_conductivity(getParam<Real>("thermal_conductivity")),
      _input_thermal_expansion(getParam<Real>("thermal_expansion")),
      _input_youngs_modulus(getParam<Real>("youngs_modulus")),
@@ -85,10 +85,10 @@ ThermalPoroElastic::ThermalPoroElastic(const std::string & name,
      _input_biot_coeff(getParam<Real>("biot_coeff")),     
      _input_t_ref(getParam<Real>("t_ref")),
 
-     _input_rho_w(getParam<Real>("rho_w")),
-     _input_mu_w(getParam<Real>("mu_w")),
-     _input_c_f(getParam<Real>("c_f")),
-     _input_water_specific_heat(getParam<Real>("water_specific_heat")),     
+     _input_density_water(getParam<Real>("density_water")),
+     _input_viscosity_water(getParam<Real>("viscosity_water")),
+     _input_compressibility(getParam<Real>("compressibility")),
+     _input_specific_heat_water(getParam<Real>("specific_heat_water")),     
      
      _input_gravity(getParam<Real>("gravity")),
      _gx(getParam<Real>("gx")),
@@ -98,8 +98,8 @@ ThermalPoroElastic::ThermalPoroElastic(const std::string & name,
    //delcare material properties
      _permeability(declareProperty<Real>("permeability")),
      _porosity(declareProperty<Real>("porosity")),
-     _rho_r(declareProperty<Real>("rho_r")),
-     _rock_specific_heat(declareProperty<Real>("rock_specific_heat")),
+     _density_rock(declareProperty<Real>("density_rock")),
+     _specific_heat_rock(declareProperty<Real>("specific_heat_rock")),
      _thermal_conductivity(declareProperty<Real>("thermal_conductivity")),
    
      _thermal_strain(declareProperty<Real>("thermal_strain")),
@@ -108,14 +108,14 @@ ThermalPoroElastic::ThermalPoroElastic(const std::string & name,
      _poissons_ratio(declareProperty<Real>("poissons_ratio")),
      _biot_coeff(declareProperty<Real>("biot_coeff")),
      
-     _rho_w(declareProperty<Real>("rho_w")),
-     _mu_w(declareProperty<Real>("mu_w")),
-     _c_f(declareProperty<Real>("c_f")),
-     _water_specific_heat(declareProperty<Real>("water_specific_heat")),
+     _density_water(declareProperty<Real>("density_water")),
+     _viscosity_water(declareProperty<Real>("viscosity_water")),
+     _compressibility(declareProperty<Real>("compressibility")),
+     _specific_heat_water(declareProperty<Real>("specific_heat_water")),
      
-     _darcy_params_w(declareProperty<Real>("darcy_params_w")),
-     _darcy_flux_w(declareProperty<RealGradient>("darcy_flux_w")),
-     _pore_velocity_w(declareProperty<RealGradient>("pore_velocity_w")),
+     _tau_water(declareProperty<Real>("tau_water")),
+     _darcy_flux_water(declareProperty<RealGradient>("darcy_flux_water")),
+     _pore_velocity_water(declareProperty<RealGradient>("pore_velocity_water")),
 
      _gravity(declareProperty<Real>("gravity")),
      _gravity_vector(declareProperty<RealVectorValue>("gravity_vector")),
@@ -138,9 +138,9 @@ ThermalPoroElastic::computeProperties()
 //rock properties
     _permeability[qp]         = _input_permeability;
     _porosity[qp]             = _input_porosity;
-    _rho_r[qp]                = _input_rho_r;    
-    //   _rock_specific_heat[_qp]  = _input_rock_specific_heat; The "_" on the qp was causing problems for the temp solution
-    _rock_specific_heat[qp]  = _input_rock_specific_heat;
+    _density_rock[qp]                = _input_density_rock;    
+    //   _specific_heat_rock[_qp]  = _input_specific_heat_rock; The "_" on the qp was causing problems for the temp solution
+    _specific_heat_rock[qp]  = _input_specific_heat_rock;
     _thermal_conductivity[qp] = _input_thermal_conductivity;
     _alpha[qp]                = _input_thermal_expansion;
 
@@ -161,10 +161,10 @@ ThermalPoroElastic::computeProperties()
     _biot_coeff[qp]       = _input_biot_coeff;
 
 // fluid properties
-    _rho_w[qp]               = _input_rho_w;
-    _mu_w[qp]                = _input_mu_w;
-    _c_f[qp]                 = _input_c_f; 
-    _water_specific_heat[qp] = _input_water_specific_heat;
+    _density_water[qp]               = _input_density_water;
+    _viscosity_water[qp]                = _input_viscosity_water;
+    _compressibility[qp]                 = _input_compressibility; 
+    _specific_heat_water[qp] = _input_specific_heat_water;
     
 //  gravity    
     _gravity_vector[qp](0) = _gx; 
@@ -179,7 +179,7 @@ ThermalPoroElastic::computeProperties()
       double b;
       double c;
       
-      _rho_w[qp]=1000.*(1-((pow((T-3.9863),2)/508929.2)*((T+288.9414)/(T+68.12963))));
+      _density_water[qp]=1000.*(1-((pow((T-3.9863),2)/508929.2)*((T+288.9414)/(T+68.12963))));
       if (T < 0.)
        {
 //         std::cerr << "T= " << T ;
@@ -190,7 +190,7 @@ ThermalPoroElastic::computeProperties()
       {
         a = 1.787E-3;
         b = (-0.03288+(1.962E-4*T))*T;
-        _mu_w[qp] = a * exp(b);
+        _viscosity_water[qp] = a * exp(b);
       }
     
       else if (T <= 100.)
@@ -198,7 +198,7 @@ ThermalPoroElastic::computeProperties()
         a = 1e-3;
         b = (1+(0.015512*(T-20)));
         c = -1.572;
-        _mu_w[qp] = a * pow(b,c);
+        _viscosity_water[qp] = a * pow(b,c);
       }
     
       else if (T <= 300.)
@@ -206,7 +206,7 @@ ThermalPoroElastic::computeProperties()
         a = 0.2414;
         b = 247 / (T+133.15);
         c = (a * pow(10,b));
-        _mu_w[qp] = c * 1E-4;
+        _viscosity_water[qp] = c * 1E-4;
      }
     
       else
@@ -221,23 +221,23 @@ ThermalPoroElastic::computeProperties()
     //RKP debugging 10/15/10
 
     
-    // _darcy_params_w[qp] = _permeability[qp] * _rho_w[qp] / _mu_w[qp];
+    // _tau_water[qp] = _permeability[qp] * _density_water[qp] / _viscosity_water[qp];
       
-    // _darcy_flux_w[qp] =  -(_permeability[qp] / _mu_w[qp]) * ((_grad_p[qp])+(_rho_w[qp]*_gravity[qp]*_gravity_vector[qp]));
-    // _pore_velocity_w[qp] = _darcy_flux_w[qp] / _porosity[qp];
+    // _darcy_flux_water[qp] =  -(_permeability[qp] / _viscosity_water[qp]) * ((_grad_p[qp])+(_density_water[qp]*_gravity[qp]*_gravity_vector[qp]));
+    // _pore_velocity_water[qp] = _darcy_flux_water[qp] / _porosity[qp];
 
       
-      //   std::cout << "Darcy Flux Vector =  " << (_darcy_flux_w)[qp];    //<<"\n";
+      //   std::cout << "Darcy Flux Vector =  " << (_darcy_flux_water)[qp];    //<<"\n";
 
        
    if(_has_pressure)
       {
-       _darcy_params_w[qp] = _permeability[qp] * _rho_w[qp] / _mu_w[qp];
-       _darcy_flux_w[qp] =  -(_permeability[qp] / _mu_w[qp]) * ((_grad_p[qp])+(_rho_w[qp]*_gravity[qp]*_gravity_vector[qp]));
-       _pore_velocity_w[qp] = _darcy_flux_w[qp] / _porosity[qp];
+       _tau_water[qp] = _permeability[qp] * _density_water[qp] / _viscosity_water[qp];
+       _darcy_flux_water[qp] =  -(_permeability[qp] / _viscosity_water[qp]) * ((_grad_p[qp])+(_density_water[qp]*_gravity[qp]*_gravity_vector[qp]));
+       _pore_velocity_water[qp] = _darcy_flux_water[qp] / _porosity[qp];
 
 
-       //  std::cout << "Darcy Flux Vector =  " << (_darcy_flux_w)[qp];    //<<"\n";
+       //  std::cout << "Darcy Flux Vector =  " << (_darcy_flux_water)[qp];    //<<"\n";
       }
      
 //end RKP debug effort
@@ -276,7 +276,7 @@ ThermalPoroElastic::computeProperties()
     }
 
     // std::cerr << "Pressure  =   " <<(_pressure)[qp]<<"   Temp =  "<<(_temperature)[qp]<<"\n";
-    //  std::cerr << (_mu_w)[qp] <<" * "<< (_rho_w)[qp] <<" * "<< (_permeability)[qp] << "\n";
+    //  std::cerr << (_viscosity_water)[qp] <<" * "<< (_density_water)[qp] <<" * "<< (_permeability)[qp] << "\n";
     //std::cerr << "Darcy Flux Vector =  " << (_darcy_flux)[qp];//<<"\n";
     //std::cerr << "gravity Vector =  " << (_gravity_vector)[qp];//<<"\n";
     //  std::cerr << "Point =   " <<_q_point[qp]<<"\n";

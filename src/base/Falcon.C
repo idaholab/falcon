@@ -35,10 +35,21 @@
 #include "Temperature.h"
 #include "DarcyImplicitEuler.h"
 #include "CoupledDarcyImplicitEuler.h"
+#include "CoupledMassFluxImplicitEuler.h"
+
+
 #include "DarcyMassFluxPressure.h"
+#include "WaterMassFluxPressure.h"
+
+
 #include "DarcyMassFluxPressureSteam.h"
+#include "SteamMassFluxPressure.h"
+
+
 #include "DarcyMassFluxZ.h"
 #include "DarcyMassFluxZSteam.h"
+
+
 #include "TemperatureImplicitEuler.h"
 #include "TemperatureDiffusion.h"
 #include "TemperatureConvection.h"
@@ -120,10 +131,19 @@ namespace Falcon
     registerKernel(Temperature);
     registerKernel(DarcyImplicitEuler);
     registerKernel(CoupledDarcyImplicitEuler);
+    registerKernel(CoupledMassFluxImplicitEuler);
+
+    
     registerKernel(HuyakornMassImplicitEuler);
     registerKernel(DarcyMassFluxPressure);
+    registerKernel(WaterMassFluxPressure);
+
+    
     registerKernel(HuyakornMassConvection);
     registerKernel(DarcyMassFluxPressureSteam);
+    registerKernel(SteamMassFluxPressure);
+
+    
     registerKernel(DarcyMassFluxZ);
     registerKernel(DarcyMassFluxZSteam);
     registerKernel(TemperatureImplicitEuler);

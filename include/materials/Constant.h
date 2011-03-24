@@ -42,7 +42,7 @@ private:
   MaterialProperty<Real> & _biot_coeff;
   MaterialProperty<Real> & _specific_heat;
   MaterialProperty<Real> & _density;
-  MaterialProperty<Real> & _rho_r;
+  MaterialProperty<Real> & _density_rock;
   MaterialProperty<Real> & _youngs_modulus;
   MaterialProperty<Real> & _poissons_ratio;
 };

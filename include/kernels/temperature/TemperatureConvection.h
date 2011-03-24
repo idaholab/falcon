@@ -20,10 +20,10 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();  
 
-  MaterialProperty<Real> &_water_specific_heat;
-  MaterialProperty<RealGradient> &_darcy_flux_w;
-  MaterialProperty<Real> &_rho_w;
-//  MooseArray<RealGradient> &_pore_velocity_w;
+  MaterialProperty<Real> &_specific_heat_water;
+  MaterialProperty<RealGradient> &_darcy_flux_water;
+  MaterialProperty<Real> &_density_water;
+//  MooseArray<RealGradient> &_pore_velocity_water;
   
 };
 #endif //TEMPERATURECONVECTION

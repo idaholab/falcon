@@ -20,17 +20,17 @@ protected:
 
   virtual Real computeQpJacobian();
 
-//   VariableValue & _rho;
-//   VariableValue & _rho_old;  
-  MaterialProperty<Real> & _rho;
-  MaterialProperty<Real> & _rho_old;
+//   VariableValue & _density;
+//   VariableValue & _density_old;  
+  MaterialProperty<Real> & _density;
+  MaterialProperty<Real> & _density_old;
 
   VariableValue & _enthalpy;
   MaterialProperty<Real> & _porosity;
-  MaterialProperty<Real> & _sat_w;
-  MaterialProperty<Real> & _sat_s;
-  MaterialProperty<Real> & _Hw;
-  MaterialProperty<Real> & _Hs;
+  MaterialProperty<Real> & _S_water;
+  MaterialProperty<Real> & _S_steam;
+  MaterialProperty<Real> & _enthalpy_saturated_water;
+  MaterialProperty<Real> & _enthalpy_saturated_steam;
 
   Real E3;
   Real E6;

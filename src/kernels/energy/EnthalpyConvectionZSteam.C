@@ -10,10 +10,10 @@ InputParameters validParams<EnthalpyConvectionZSteam>()
 
 EnthalpyConvectionZSteam::EnthalpyConvectionZSteam(const std::string & name, InputParameters parameters)
   :Kernel(name, parameters),
-   _darcy_params_s(getMaterialProperty<Real>("darcy_params_s")),
+   _tau_steam(getMaterialProperty<Real>("tau_steam")),
    _gravity(getMaterialProperty<Real>("gravity")),
-   _Hs(getMaterialProperty<Real>("sat_enthalpy_s")),
-   _rho_s(getMaterialProperty<Real>("rho_s")),
+   _enthalpy_saturated_steam(getMaterialProperty<Real>("enthalpy_saturated_steam")),
+   _density_steam(getMaterialProperty<Real>("density_steam")),
    _gravity_vector(getMaterialProperty<RealVectorValue>("gravity_vector"))
 {}
 
@@ -21,7 +21,7 @@ Real
 EnthalpyConvectionZSteam::computeQpResidual()
 {
  
-  return _darcy_params_s[_qp]*_Hs[_qp]*_gravity[_qp]*_rho_s[_qp]*_gravity_vector[_qp]*_grad_test[_i][_qp];
+  return _tau_steam[_qp]*_enthalpy_saturated_steam[_qp]*_gravity[_qp]*_density_steam[_qp]*_gravity_vector[_qp]*_grad_test[_i][_qp];
 }
 
 Real

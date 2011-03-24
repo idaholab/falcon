@@ -36,13 +36,13 @@ TemperatureAux::TemperatureAux(const std::string & name, InputParameters paramet
      s6 = 0.035714;
      s7 = 1.1725e-9;
      s8 = 2.26861e+15;
-// coefficients related to Hs empirical equation     
+// coefficients related to enthalpy_saturated_steam empirical equation     
      c1 = 2822.82;
      c2 = 39.952;
      c3 = 2.54342;
      c4 = 0.938879;
 
-// coefficients related to Hw empirical equation     
+// coefficients related to enthalpy_saturated_water empirical equation     
      d1 = 809.674;
      d2 = 94.4665;
      d3 = 4.50247;
@@ -75,36 +75,36 @@ TemperatureAux::computeValue()
      double d;
      Real sat_T;
      Real psi_1;
-     Real psi_1_Hw;
+     Real psi_1_enthalpy_saturated_water;
      Real psi_2;
-     Real psi_2_Hs;
-     Real Hw;
-     Real Hs;
+     Real psi_2_enthalpy_saturated_steam;
+     Real enthalpy_saturated_water;
+     Real enthalpy_saturated_steam;
      
-     Hs = c1-(c2/P)+(c3/P2)-(c4*P2);
-     Hw = d1+(d2*P)-(d3*P2)+(d4*P3)-(d5/P)+(d6/P2)-(d7/P3);
-     Real Hs2 = pow(Hs,2);
-     Real Hs3 = pow(Hs,3);
-     Real Hs4 = pow(Hs,4);
-     Real Hw2 = pow(Hw,2);
+     enthalpy_saturated_steam = c1-(c2/P)+(c3/P2)-(c4*P2);
+     enthalpy_saturated_water = d1+(d2*P)-(d3*P2)+(d4*P3)-(d5/P)+(d6/P2)-(d7/P3);
+     Real enthalpy_saturated_steam2 = pow(enthalpy_saturated_steam,2);
+     Real enthalpy_saturated_steam3 = pow(enthalpy_saturated_steam,3);
+     Real enthalpy_saturated_steam4 = pow(enthalpy_saturated_steam,4);
+     Real enthalpy_saturated_water2 = pow(enthalpy_saturated_water,2);
 
      
      d = 12.598833-log(10*P);
      sat_T    =  (4667.0754/d)-273.15;
-     if (H < Hw)
+     if (H < enthalpy_saturated_water)
        {
          psi_1 = -w1-(w2*P)+(w3*H)+(w4/H)-(w5*H2);
-         psi_1_Hw = -w1-(w2*P)+(w3*Hw)+(w4/Hw)-(w5*Hw2);
+         psi_1_enthalpy_saturated_water = -w1-(w2*P)+(w3*enthalpy_saturated_water)+(w4/enthalpy_saturated_water)-(w5*enthalpy_saturated_water2);
 //comment the following three lines of code for FaustEx1 and
 //uncomment next three line of code
-         temperature = psi_1 + (sat_T -psi_1_Hw);
+         temperature = psi_1 + (sat_T -psi_1_enthalpy_saturated_water);
 //         temperature = -0.0208+(2.39e-4*_enthalpy[qp]);
        }
-     else if (H > Hs)
+     else if (H > enthalpy_saturated_steam)
        {
          psi_2 = -s1+(s2*P)-(s3*P2)+(s4*H2)-(s5/(P2*H2))+(s6/P3)-(s7*H3*P)-(s8/H4);
-         psi_2_Hs = -s1+(s2*P)-(s3*P2)+(s4*Hs2)-(s5/(P2*Hs2))+(s6/P3)-(s7*Hs3*P)-(s8/Hs4);
-         temperature  = psi_2 + (sat_T -psi_2_Hs);
+         psi_2_enthalpy_saturated_steam = -s1+(s2*P)-(s3*P2)+(s4*enthalpy_saturated_steam2)-(s5/(P2*enthalpy_saturated_steam2))+(s6/P3)-(s7*enthalpy_saturated_steam3*P)-(s8/enthalpy_saturated_steam4);
+         temperature  = psi_2 + (sat_T -psi_2_enthalpy_saturated_steam);
        }
      else 
        {

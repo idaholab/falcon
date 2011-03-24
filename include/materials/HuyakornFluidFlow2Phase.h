@@ -30,35 +30,35 @@ protected:
 
 
   Real _input_thermal_conductivity;
-  Real _input_cp_r;
+  Real _input_specific_heat_rock;
   MaterialProperty<Real> & _km;
-  MaterialProperty<Real> & _cp_r;
+  MaterialProperty<Real> & _specific_heat_rock;
   
-  MaterialProperty<Real> & _Hw;
-  MaterialProperty<Real> & _Hs;
+  MaterialProperty<Real> & _enthalpy_saturated_water;
+  MaterialProperty<Real> & _enthalpy_saturated_steam;
   MaterialProperty<Real> & _EOS;
-  MaterialProperty<Real> & _rho_w;
-  MaterialProperty<Real> & _rho_s;
-  MaterialProperty<Real> & _sat_w;
-  MaterialProperty<Real> & _sat_s;
+  MaterialProperty<Real> & _density_water;
+  MaterialProperty<Real> & _density_steam;
+  MaterialProperty<Real> & _S_water;
+  MaterialProperty<Real> & _S_steam;
   MaterialProperty<Real> & _temp;
   MaterialProperty<Real> & _temp_old;
   MaterialProperty<Real> & _Heat;
   MaterialProperty<Real> & _Heat_old;
   MaterialProperty<Real> & _dT_dP;
   MaterialProperty<Real> & _dT_dH;
-  MaterialProperty<Real> & _rho;
-  MaterialProperty<Real> & _rho_old;
-  MaterialProperty<Real> & _mu_w;
-  MaterialProperty<Real> & _mu_s;
-  MaterialProperty<Real> & _rel_perm_w;
-  MaterialProperty<Real> & _rel_perm_s;
-  MaterialProperty<Real> & _darcy_params_w;
-  MaterialProperty<Real> & _darcy_params_s;
-  MaterialProperty<RealGradient> & _darcy_flux_w;
-  MaterialProperty<RealGradient> & _darcy_flux_s;
-  MaterialProperty<RealGradient> & _pore_velocity_w;
-  MaterialProperty<RealGradient> & _pore_velocity_s;
+  MaterialProperty<Real> & _density;
+  MaterialProperty<Real> & _density_old;
+  MaterialProperty<Real> & _viscosity_water;
+  MaterialProperty<Real> & _viscosity_steam;
+  MaterialProperty<Real> & _rel_perm_water;
+  MaterialProperty<Real> & _rel_perm_steam;
+  MaterialProperty<Real> & _tau_water;
+  MaterialProperty<Real> & _tau_steam;
+  MaterialProperty<RealGradient> & _darcy_flux_water;
+  MaterialProperty<RealGradient> & _darcy_flux_steam;
+  MaterialProperty<RealGradient> & _pore_velocity_water;
+  MaterialProperty<RealGradient> & _pore_velocity_steam;
   MaterialProperty<Real> & _tau;
   MaterialProperty<Real> & _lamda;
   MaterialProperty<Real> & _beta;
@@ -68,7 +68,7 @@ protected:
      Real E6;
      Real E7;
 
-// coefficients related to rho_w empirical equation     
+// coefficients related to density_water empirical equation     
      Real a1;
      Real a2;
      Real a3;
@@ -76,20 +76,20 @@ protected:
      Real a5;
      Real a6;
 
-// coefficients related to rho_s empirical equation
+// coefficients related to density_steam empirical equation
      Real b1;
      Real b2;
      Real b3;
      Real b4;
      Real b5;
 
-// coefficients related to Hs empirical equation
+// coefficients related to enthalpy_saturated_steam empirical equation
      Real c1;
      Real c2;
      Real c3;
      Real c4;
      
-// coefficients related to Hw empirical equation
+// coefficients related to enthalpy_saturated_water empirical equation
      Real d1;
      Real d2;
      Real d3;

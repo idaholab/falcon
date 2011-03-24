@@ -11,18 +11,18 @@ InputParameters validParams<DarcyMassFluxPressureSteam>()
 DarcyMassFluxPressureSteam::DarcyMassFluxPressureSteam(const std::string & name,
                                              InputParameters parameters)
   :Diffusion(name, parameters),
-   _darcy_params_s(getMaterialProperty<Real>("darcy_params_s"))
+   _tau_steam(getMaterialProperty<Real>("tau_steam"))
 {}
 
 Real
 DarcyMassFluxPressureSteam::computeQpResidual()
 {
   
-  return _darcy_params_s[_qp]*Diffusion::computeQpResidual();
+  return _tau_steam[_qp]*Diffusion::computeQpResidual();
 }
 
 Real
 DarcyMassFluxPressureSteam::computeQpJacobian()
 {
-  return _darcy_params_s[_qp]*Diffusion::computeQpJacobian();
+  return _tau_steam[_qp]*Diffusion::computeQpJacobian();
 }

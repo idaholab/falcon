@@ -32,7 +32,7 @@ protected:
 
   Real _permeability;
   Real _density;
-  Real _mu_w;
+  Real _viscosity_water;
   
   RealVectorValue _gravity;
   

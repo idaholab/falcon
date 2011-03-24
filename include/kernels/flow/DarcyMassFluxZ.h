@@ -20,9 +20,9 @@ protected:
   
   virtual Real computeQpJacobian();
 
-  MaterialProperty<Real> &_darcy_params_w;
+  MaterialProperty<Real> &_tau_water;
   MaterialProperty<Real> &_gravity;
-  MaterialProperty<Real> &_rho_w;
+  MaterialProperty<Real> &_density_water;
   
   MaterialProperty<RealVectorValue> &_gravity_vector;
 };

@@ -7,25 +7,25 @@ InputParameters validParams<CoupledDarcyImplicitEuler>()
 {
      InputParameters params = validParams<ImplicitEuler>();
      params.addCoupledVar("enthalpy", "TODO: add description");
-     params.addCoupledVar("rhoAux", "TODO: add description");
+     params.addCoupledVar("densityAux", "TODO: add description");
      return params;
 }
 
 CoupledDarcyImplicitEuler::CoupledDarcyImplicitEuler(const std::string & name, InputParameters parameters)
   :ImplicitEuler(name, parameters),
 
-//     _rho(coupledValue("rhoAux")),
-//     _rho_old(coupledValueOld("rhoAux")),
+//     _density(coupledValue("densityAux")),
+//     _density_old(coupledValueOld("densityAux")),
 
-   _rho(getMaterialProperty<Real>("rho")),
-   _rho_old(getMaterialProperty<Real>("rho_old")),
+   _density(getMaterialProperty<Real>("density")),
+   _density_old(getMaterialProperty<Real>("density_old")),
 
    _enthalpy(coupledValue("enthalpy")),
    _porosity(getMaterialProperty<Real>("porosity")),
-   _sat_w(getMaterialProperty<Real>("sat_w")),
-   _sat_s(getMaterialProperty<Real>("sat_s")),
-   _Hw(getMaterialProperty<Real>("sat_enthalpy_w")),
-   _Hs(getMaterialProperty<Real>("sat_enthalpy_s"))
+   _S_water(getMaterialProperty<Real>("S_water")),
+   _S_steam(getMaterialProperty<Real>("S_steam")),
+   _enthalpy_saturated_water(getMaterialProperty<Real>("enthalpy_saturated_water")),
+   _enthalpy_saturated_steam(getMaterialProperty<Real>("enthalpy_saturated_steam"))
    
         
 {
@@ -45,7 +45,7 @@ Real
 CoupledDarcyImplicitEuler::computeQpResidual()
 { 
 
-     return _porosity[_qp]*_test[_i][_qp]*(_rho[_qp] -_rho_old[_qp])/_dt;
+     return _porosity[_qp]*_test[_i][_qp]*(_density[_qp] -_density_old[_qp])/_dt;
 }
 
 Real
@@ -59,34 +59,34 @@ CoupledDarcyImplicitEuler::computeQpJacobian()
   Real H2 = pow(H,2);
   Real H3 = pow(H,3);
   
-  Real  drhodp;
-  Real  drho_s_dp = 0;
-  Real  drho_w_dp = 0;
+  Real  ddensitydp;
+  Real  ddensity_steam_dp = 0;
+  Real  ddensity_water_dp = 0;
 
   Real phij = _phi[_j][_qp];
      
   //   compressed water zone
-  if (H < _Hw[_qp])
+  if (H < _enthalpy_saturated_water[_qp])
   {
     if (H >200.0)
-      drho_w_dp = E3*((a2*phij)+(a5*phij*H));
+      ddensity_water_dp = E3*((a2*phij)+(a5*phij*H));
   }
   
 
   // Super heated steam zone
-  else if (H > _Hs[_qp])
+  else if (H > _enthalpy_saturated_steam[_qp])
   {
-    drho_s_dp = E3*((b2*phij)-(b3*phij*H)+(b4*4*P3*phij)+(b5*phij*H3));
+    ddensity_steam_dp = E3*((b2*phij)-(b3*phij*H)+(b4*4*P3*phij)+(b5*phij*H3));
   }
 
   // Mixed phase
   else 
   {
-    drho_w_dp = E3*((a2*phij)+(a5*phij*_Hw[_qp]));
-    drho_s_dp = E3*((b2*phij)-(b3*phij*_Hs[_qp])+(b4*4*P3*phij)+(b5*phij*pow(_Hs[_qp],3)));
+    ddensity_water_dp = E3*((a2*phij)+(a5*phij*_enthalpy_saturated_water[_qp]));
+    ddensity_steam_dp = E3*((b2*phij)-(b3*phij*_enthalpy_saturated_steam[_qp])+(b4*4*P3*phij)+(b5*phij*pow(_enthalpy_saturated_steam[_qp],3)));
   }
 
-  drhodp = (_sat_w[_qp]*drho_w_dp)+(_sat_s[_qp]*drho_s_dp);
+  ddensitydp = (_S_water[_qp]*ddensity_water_dp)+(_S_steam[_qp]*ddensity_steam_dp);
 
-  return _porosity[_qp]*_test[_i][_qp]*drhodp/_dt;   
+  return _porosity[_qp]*_test[_i][_qp]*ddensitydp/_dt;   
 }

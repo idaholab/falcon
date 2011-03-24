@@ -21,9 +21,9 @@ protected:
   virtual Real computeQpJacobian();  
 
   
-  MaterialProperty<RealGradient> &_darcy_flux_s;
-  MaterialProperty<RealGradient> &_GHs;
-  MaterialProperty<Real> &_rho_s;
+  MaterialProperty<RealGradient> &_darcy_flux_steam;
+  MaterialProperty<RealGradient> &_Genthalpy_saturated_steam;
+  MaterialProperty<Real> &_density_steam;
   
 };
 #endif //ENTHALPYCONVECTIONSTEAM

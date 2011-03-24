@@ -7,7 +7,7 @@ InputParameters validParams<CoupledViscosityAux>()
   params.set<Real>("a")=0.0;
   params.set<Real>("b")=0.0;
   params.set<Real>("c")=0.0;
-  params.set<Real>("_mu_w")=0.0;
+  params.set<Real>("_viscosity_water")=0.0;
   
   return params;
 }
@@ -19,7 +19,7 @@ CoupledViscosityAux::CoupledViscosityAux(const std::string & name, InputParamete
    _a(getParam<Real>("a")),
    _b(getParam<Real>("b")),
    _c(getParam<Real>("c")),
-   _mu_w(getParam<Real>("_mu_w"))
+   _viscosity_water(getParam<Real>("_viscosity_water"))
 {}
 
 
@@ -32,7 +32,7 @@ CoupledViscosityAux::computeValue()
   {
       _a = 1.787E-3;
       _b = (-0.03288+(1.962E-4*_temperature_val[_qp]))*_temperature_val[_qp];
-      _mu_w = _a * exp(_b);
+      _viscosity_water = _a * exp(_b);
   }
     
   else if (_temperature_val[_qp] <= 100.)
@@ -40,7 +40,7 @@ CoupledViscosityAux::computeValue()
       _a = 1e-3;
       _b = (1+(0.015512*(_temperature_val[_qp]-20)));
       _c = -1.572;
-      _mu_w = _a * pow(_b,_c);
+      _viscosity_water = _a * pow(_b,_c);
   }
     
   else // (_temperature_val[_qp] <= 300.)
@@ -48,7 +48,7 @@ CoupledViscosityAux::computeValue()
       _a = 0.2414;
       _b = 247 / (_temperature_val[_qp]+133.15);
       _c = (_a * pow(10,_b));
-      _mu_w = _c * 1E-4;
+      _viscosity_water = _c * 1E-4;
   }
     
   /*
@@ -57,5 +57,5 @@ CoupledViscosityAux::computeValue()
   _b = (-0.03288+(1.962E-4*_temperature_val[_qp]))*_temperature_val[_qp];
   return _a * exp(_b);
   */
-  return (_mu_w);
+  return (_viscosity_water);
 }

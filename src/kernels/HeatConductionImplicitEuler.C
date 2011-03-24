@@ -10,8 +10,8 @@ InputParameters validParams<HeatConductionImplicitEuler>()
 HeatConductionImplicitEuler::HeatConductionImplicitEuler(const std::string & name,
                                                          InputParameters parameters)
   :ImplicitEuler(name, parameters),
-   _specific_heat(getMaterialProperty<Real>("rock_specific_heat")),
-   _density(getMaterialProperty<Real>("rho_r"))
+   _specific_heat(getMaterialProperty<Real>("specific_heat_rock")),
+   _density(getMaterialProperty<Real>("density_rock"))
 {}
 
 Real

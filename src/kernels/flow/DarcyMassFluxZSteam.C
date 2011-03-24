@@ -10,9 +10,9 @@ InputParameters validParams<DarcyMassFluxZSteam>()
 
 DarcyMassFluxZSteam::DarcyMassFluxZSteam(const std::string & name, InputParameters parameters)
   :Kernel(name, parameters),
-   _darcy_params_s(getMaterialProperty<Real>("darcy_params_s")),
+   _tau_steam(getMaterialProperty<Real>("tau_steam")),
    _gravity(getMaterialProperty<Real>("gravity")),
-   _rho_s(getMaterialProperty<Real>("rho_s")),
+   _density_steam(getMaterialProperty<Real>("density_steam")),
    _gravity_vector(getMaterialProperty<RealVectorValue>("gravity_vector"))
 {}
 
@@ -20,7 +20,7 @@ Real
 DarcyMassFluxZSteam::computeQpResidual()
 {
  
-  return _darcy_params_s[_qp]*_gravity[_qp]*_rho_s[_qp]*_gravity_vector[_qp]*_grad_test[_i][_qp];
+  return _tau_steam[_qp]*_gravity[_qp]*_density_steam[_qp]*_gravity_vector[_qp]*_grad_test[_i][_qp];
 }
 
 Real

@@ -6,7 +6,7 @@ InputParameters validParams<EnthalpyImplicitEuler>()
 {
   InputParameters params = validParams<ImplicitEuler>();
   params.addCoupledVar("tempAux", "TODO: add description");
-  params.addCoupledVar("rhoAux", "TODO: add description");
+  params.addCoupledVar("densityAux", "TODO: add description");
   return params;
 }
 
@@ -15,11 +15,11 @@ EnthalpyImplicitEuler::EnthalpyImplicitEuler(const std::string & name, InputPara
    
    _temperature(getMaterialProperty<Real>("temperature")),
    _temperature_old(getMaterialProperty<Real>("temperature_old")),
-   _rho(getMaterialProperty<Real>("rho")),
-   _rho_old(getMaterialProperty<Real>("rho_old")),
+   _density(getMaterialProperty<Real>("density")),
+   _density_old(getMaterialProperty<Real>("density_old")),
 
    _porosity(getMaterialProperty<Real>("porosity")),
-   _rho_r(getMaterialProperty<Real>("rho_r"))
+   _density_rock(getMaterialProperty<Real>("density_rock"))
    
 
 {}
@@ -28,8 +28,8 @@ Real
 EnthalpyImplicitEuler::computeQpResidual()
 {
      
-  Real Heat = (_porosity[_qp]* _rho[_qp]*_u[_qp])+((1-_porosity[_qp])*_rho_r[_qp]*879*_temperature[_qp]);
-  Real Heat_old = (_porosity[_qp]* _rho_old[_qp]*_u_old[_qp])+((1-_porosity[_qp])*_rho_r[_qp]*879*_temperature_old[_qp]);
+  Real Heat = (_porosity[_qp]* _density[_qp]*_u[_qp])+((1-_porosity[_qp])*_density_rock[_qp]*879*_temperature[_qp]);
+  Real Heat_old = (_porosity[_qp]* _density_old[_qp]*_u_old[_qp])+((1-_porosity[_qp])*_density_rock[_qp]*879*_temperature_old[_qp]);
     
    return _test[_i][_qp]*(Heat-Heat_old)/_dt;
 }
@@ -38,6 +38,6 @@ Real
 EnthalpyImplicitEuler::computeQpJacobian()
 {
 
-   return (_porosity[_qp]* _rho[_qp]*ImplicitEuler::computeQpJacobian());
+   return (_porosity[_qp]* _density[_qp]*ImplicitEuler::computeQpJacobian());
   
 }

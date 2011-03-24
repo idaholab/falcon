@@ -24,15 +24,15 @@ protected:
   
   MaterialProperty<Real> & _temp;
   MaterialProperty<Real> & _temp_old;
-  MaterialProperty<Real> & _rho;
-  MaterialProperty<Real> & _rho_old;
+  MaterialProperty<Real> & _density;
+  MaterialProperty<Real> & _density_old;
 
   MaterialProperty<Real> & _Heat;
   MaterialProperty<Real> & _Heat_old;
 
   MaterialProperty<Real> & _porosity;
-  MaterialProperty<Real> & _rho_r;
-  MaterialProperty<Real> & _cp_r;
+  MaterialProperty<Real> & _density_rock;
+  MaterialProperty<Real> & _specific_heat_rock;
 
 };
 #endif //HUYAKORNENTHALPYIMPLICITEULER

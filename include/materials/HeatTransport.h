@@ -22,13 +22,13 @@ public:
 protected:
   virtual void computeProperties();
 
-  Real _input_rock_specific_heat;
+  Real _input_specific_heat_rock;
   Real _input_thermal_conductivity;
-  Real _input_water_specific_heat;
+  Real _input_specific_heat_water;
 
-  MaterialProperty<Real> & _rock_specific_heat;
+  MaterialProperty<Real> & _specific_heat_rock;
   MaterialProperty<Real> & _thermal_conductivity;
-  MaterialProperty<Real> & _water_specific_heat;
+  MaterialProperty<Real> & _specific_heat_water;
 };
 
 #endif //HEATTRANSPORT_H

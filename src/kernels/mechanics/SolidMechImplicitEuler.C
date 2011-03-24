@@ -9,7 +9,7 @@ InputParameters validParams<SolidMechImplicitEuler>()
 
 SolidMechImplicitEuler::SolidMechImplicitEuler(const std::string & name, InputParameters parameters)
   :SecondDerivativeImplicitEuler(name, parameters),
-   _density(getMaterialProperty<Real>("rho_r"))
+   _density(getMaterialProperty<Real>("density_rock"))
 {}
 
 Real

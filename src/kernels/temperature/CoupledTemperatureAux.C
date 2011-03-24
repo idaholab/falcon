@@ -13,8 +13,8 @@ CoupledTemperatureAux::CoupledTemperatureAux(const std::string & name, InputPara
   :AuxKernel(name, parameters),
      _enthalpy(coupledValue("enthalpy")),
      _pressure(coupledValue("pressure")),
-     _Hw(getMaterialProperty<Real>("sat_enthalpy_w")),
-     _Hs(getMaterialProperty<Real>("sat_enthalpy_s"))
+     _enthalpy_saturated_water(getMaterialProperty<Real>("enthalpy_saturated_water")),
+     _enthalpy_saturated_steam(getMaterialProperty<Real>("enthalpy_saturated_steam"))
 {
      E3 = 1e-3;
      E5 = 1e-5;
@@ -35,13 +35,13 @@ CoupledTemperatureAux::computeValue()
      
 
 //   compressed water zone
-     if ( H <_Hw[_qp])
+     if ( H <_enthalpy_saturated_water[_qp])
      {
       return -28.15155-(0.137458*P)+(0.3011117*H)+(3536.37/H)-(4.31919*E5*H2);
      }
 
 //   super heated steam zone
-     else if (H > _Hs[_qp])
+     else if (H > _enthalpy_saturated_steam[_qp])
      {
       return  -374.669+(47.9921*P)-(0.633606*P2)+(7.39386*E5*H2)
               -(3.33372*E6)/(P2*H2)+(0.0357154/P3)-(1.1725*pow(10,-9)*pow(H,3)*P)
@@ -54,10 +54,10 @@ CoupledTemperatureAux::computeValue()
        double Tw;
        double Ts;
               
-       Tw =  -28.15155-(0.137458*P)+(0.3011117*_Hw[_qp])+(3536.37/_Hw[_qp])-(4.31919*E5*pow(_Hw[_qp],2));
-       Ts =   -374.669+(47.9921*P)-(0.633606*P2)+(7.39386*E5*pow(_Hs[_qp],2))
-         -((3.33372*E6)/(P2*pow(_Hs[_qp],2)))+(0.0357154/P3)-(1.1725*pow(10,-9)*pow(_Hs[_qp],3)*P)
-         -(2.26861*pow(10,15)/pow(_Hs[_qp],4));
+       Tw =  -28.15155-(0.137458*P)+(0.3011117*_enthalpy_saturated_water[_qp])+(3536.37/_enthalpy_saturated_water[_qp])-(4.31919*E5*pow(_enthalpy_saturated_water[_qp],2));
+       Ts =   -374.669+(47.9921*P)-(0.633606*P2)+(7.39386*E5*pow(_enthalpy_saturated_steam[_qp],2))
+         -((3.33372*E6)/(P2*pow(_enthalpy_saturated_steam[_qp],2)))+(0.0357154/P3)-(1.1725*pow(10,-9)*pow(_enthalpy_saturated_steam[_qp],3)*P)
+         -(2.26861*pow(10,15)/pow(_enthalpy_saturated_steam[_qp],4));
       
       return (Tw+Ts)/2;
 

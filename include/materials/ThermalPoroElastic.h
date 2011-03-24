@@ -45,8 +45,8 @@ private:
 
   Real _input_permeability;
   Real _input_porosity;
-  Real _input_rho_r;
-  Real _input_rock_specific_heat;
+  Real _input_density_rock;
+  Real _input_specific_heat_rock;
   Real _input_thermal_conductivity;
   Real _input_thermal_expansion;
   Real _input_youngs_modulus;
@@ -54,10 +54,10 @@ private:
   Real _input_biot_coeff;
   Real _input_t_ref;
   
-  Real _input_rho_w;
-  Real _input_mu_w;
-  Real _input_c_f;
-  Real _input_water_specific_heat;
+  Real _input_density_water;
+  Real _input_viscosity_water;
+  Real _input_compressibility;
+  Real _input_specific_heat_water;
 
   Real _input_gravity;
   Real _gx;
@@ -72,8 +72,8 @@ private:
 
   MaterialProperty<Real> & _permeability;
   MaterialProperty<Real> & _porosity;
-  MaterialProperty<Real> & _rho_r;
-  MaterialProperty<Real> & _rock_specific_heat;
+  MaterialProperty<Real> & _density_rock;
+  MaterialProperty<Real> & _specific_heat_rock;
   MaterialProperty<Real> & _thermal_conductivity;
   MaterialProperty<Real> & _thermal_strain;
   MaterialProperty<Real> & _alpha;
@@ -81,14 +81,14 @@ private:
   MaterialProperty<Real> & _poissons_ratio;
   MaterialProperty<Real> & _biot_coeff;
   
-  MaterialProperty<Real> & _rho_w;
-  MaterialProperty<Real> & _mu_w;
-  MaterialProperty<Real> & _c_f;
-  MaterialProperty<Real> & _water_specific_heat;
+  MaterialProperty<Real> & _density_water;
+  MaterialProperty<Real> & _viscosity_water;
+  MaterialProperty<Real> & _compressibility;
+  MaterialProperty<Real> & _specific_heat_water;
   
-  MaterialProperty<Real> & _darcy_params_w;
-  MaterialProperty<RealGradient> & _darcy_flux_w;
-  MaterialProperty<RealGradient> & _pore_velocity_w;
+  MaterialProperty<Real> & _tau_water;
+  MaterialProperty<RealGradient> & _darcy_flux_water;
+  MaterialProperty<RealGradient> & _pore_velocity_water;
   
   MaterialProperty<Real> & _gravity;
   MaterialProperty<RealVectorValue> & _gravity_vector;

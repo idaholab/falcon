@@ -20,9 +20,9 @@ protected:
 
   virtual Real computeQpJacobian();
 
-  MaterialProperty<Real> & _c_f;
+  MaterialProperty<Real> & _compressibility;
   MaterialProperty<Real> & _porosity;
-  MaterialProperty<Real> & _rho_w;
+  MaterialProperty<Real> & _density_water;
   
 };
 #endif //DARCYIMPLICITBACKWARDDIFFERENCE2

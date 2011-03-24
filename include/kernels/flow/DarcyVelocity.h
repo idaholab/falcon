@@ -22,7 +22,7 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
   int _component;
-  MaterialProperty<RealGradient> &_pore_velocity_w;
+  MaterialProperty<RealGradient> &_pore_velocity_water;
 
 private:
 };

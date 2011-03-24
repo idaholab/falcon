@@ -11,13 +11,13 @@ InputParameters validParams<VelocityAux>()
 VelocityAux::VelocityAux(const std::string & name, InputParameters parameters)
   :AuxKernel(name, parameters),
     _i(getParam<int>("component")),
-    _pore_velocity_w(getMaterialProperty<RealGradient>("pore_velocity_w"))   
+    _pore_velocity_water(getMaterialProperty<RealGradient>("pore_velocity_water"))   
 {}
 
 
 Real
 VelocityAux::computeValue()
 {
-  return _pore_velocity_w[_qp](_i);
+  return _pore_velocity_water[_qp](_i);
 
 }

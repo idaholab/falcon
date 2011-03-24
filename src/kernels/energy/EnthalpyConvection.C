@@ -14,17 +14,17 @@ EnthalpyConvection::EnthalpyConvection(const std::string & name, InputParameters
 
    
    _grad_p(coupledGradient("pressure")),
-   _Hw(getMaterialProperty<Real>("sat_enthalpy_w")),
-   _Hs(getMaterialProperty<Real>("sat_enthalpy_s")),
-   _darcy_params_s(getMaterialProperty<Real>("darcy_params_s")),
-   _darcy_params_w(getMaterialProperty<Real>("darcy_params_w"))
+   _enthalpy_saturated_water(getMaterialProperty<Real>("enthalpy_saturated_water")),
+   _enthalpy_saturated_steam(getMaterialProperty<Real>("enthalpy_saturated_steam")),
+   _tau_steam(getMaterialProperty<Real>("tau_steam")),
+   _tau_water(getMaterialProperty<Real>("tau_water"))
    
 {}
 
 Real EnthalpyConvection::computeQpResidual()
 {
   
-  return ((_Hs[_qp]*_darcy_params_s[_qp])+(_Hw[_qp]*_darcy_params_w[_qp]))* _grad_test[_i][_qp]*_grad_p[_qp];
+  return ((_enthalpy_saturated_steam[_qp]*_tau_steam[_qp])+(_enthalpy_saturated_water[_qp]*_tau_water[_qp]))* _grad_test[_i][_qp]*_grad_p[_qp];
 
 }
 

@@ -11,19 +11,19 @@ InputParameters validParams<DarcyImplicitBackwardDifference2>()
 DarcyImplicitBackwardDifference2::DarcyImplicitBackwardDifference2(const std::string & name,
                                                                    InputParameters parameters)
   :ImplicitBackwardDifference2(name, parameters),
-   _c_f(getMaterialProperty<Real>("c_f")),
+   _compressibility(getMaterialProperty<Real>("compressibility")),
    _porosity(getMaterialProperty<Real>("porosity")),
-   _rho_w(getMaterialProperty<Real>("rho_w"))
+   _density_water(getMaterialProperty<Real>("density_water"))
 {}
 
 Real
 DarcyImplicitBackwardDifference2::computeQpResidual()
 {
-  return _c_f[_qp]*_porosity[_qp]*_rho_w[_qp]*ImplicitBackwardDifference2::computeQpResidual();
+  return _compressibility[_qp]*_porosity[_qp]*_density_water[_qp]*ImplicitBackwardDifference2::computeQpResidual();
 }
 
 Real
 DarcyImplicitBackwardDifference2::computeQpJacobian()
 {
-  return _c_f[_qp]*_porosity[_qp]*_rho_w[_qp]*ImplicitBackwardDifference2::computeQpJacobian();
+  return _compressibility[_qp]*_porosity[_qp]*_density_water[_qp]*ImplicitBackwardDifference2::computeQpJacobian();
 }

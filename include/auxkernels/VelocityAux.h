@@ -29,7 +29,7 @@ protected:
   virtual Real computeValue();
 
    int _i;
-  MaterialProperty<RealGradient> &_pore_velocity_w; 
+  MaterialProperty<RealGradient> &_pore_velocity_water; 
 };
 
 #endif //VELOCITYAUX_H

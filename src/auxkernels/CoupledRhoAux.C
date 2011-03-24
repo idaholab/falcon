@@ -9,10 +9,10 @@ InputParameters validParams<CoupledRhoAux>()
 
 CoupledRhoAux::CoupledRhoAux(const std::string & name, InputParameters parameters)
   :AuxKernel(name, parameters),
-   _rho_w(getMaterialProperty<Real>("rho_w")),
-   _rho_s(getMaterialProperty<Real>("rho_s")),
-   _sat_w(getMaterialProperty<Real>("sat_w")),
-   _sat_s(getMaterialProperty<Real>("sat_s"))
+   _density_water(getMaterialProperty<Real>("density_water")),
+   _density_steam(getMaterialProperty<Real>("density_steam")),
+   _S_water(getMaterialProperty<Real>("S_water")),
+   _S_steam(getMaterialProperty<Real>("S_steam"))
 {}
 
 
@@ -20,6 +20,6 @@ Real
 CoupledRhoAux::computeValue()
 {
               
- return  (_sat_w[_qp]*_rho_w[_qp])+(_sat_s[_qp]*_rho_s[_qp]);
+ return  (_S_water[_qp]*_density_water[_qp])+(_S_steam[_qp]*_density_steam[_qp]);
 
 }

@@ -21,8 +21,8 @@ protected:
   virtual Real computeQpJacobian();
 
 
-   MaterialProperty<Real> & _rho;
-   MaterialProperty<Real> & _rho_old;
+   MaterialProperty<Real> & _density;
+   MaterialProperty<Real> & _density_old;
    MaterialProperty<Real> & _porosity;
 
 };

@@ -10,10 +10,10 @@ InputParameters validParams<TemperatureConvection>()
 
 TemperatureConvection::TemperatureConvection(const std::string & name, InputParameters parameters)
   :Kernel(name, parameters),
-   _water_specific_heat(getMaterialProperty<Real>("water_specific_heat")),
-   _darcy_flux_w(getMaterialProperty<RealGradient>("darcy_flux_w")),
-   _rho_w(getMaterialProperty<Real>("rho_w"))
-//   _pore_velocity_w(getGradientMaterialProperty("pore_velocity_w"))
+   _specific_heat_water(getMaterialProperty<Real>("specific_heat_water")),
+   _darcy_flux_water(getMaterialProperty<RealGradient>("darcy_flux_water")),
+   _density_water(getMaterialProperty<Real>("density_water"))
+//   _pore_velocity_water(getGradientMaterialProperty("pore_velocity_water"))
 {}
 
 Real TemperatureConvection::computeQpResidual()
@@ -27,20 +27,20 @@ if(_u[_qp]< 0.0)
 
 
 
-// std::cerr<<"darcy_flux_w "<<_darcy_flux_w[_qp]<<".\n";
+// std::cerr<<"darcy_flux_water "<<_darcy_flux_water[_qp]<<".\n";
 
-//   std::cerr<<"water  "<<_rho_w[_qp]<<".\n";
-//  return _darcy_flux_w_w[_qp]*_phi[_i][_qp]*_grad_u[_qp];
+//   std::cerr<<"water  "<<_density_water[_qp]<<".\n";
+//  return _darcy_flux_water_w[_qp]*_phi[_i][_qp]*_grad_u[_qp];
 
- //std::cerr<<"water  "<<_water_specific_heat[_qp]*_darcy_flux_w[_qp]*_rho_w[_qp]*_phi[_i][_qp]*_grad_u[_qp]<<".\n";
+ //std::cerr<<"water  "<<_specific_heat_water[_qp]*_darcy_flux_water[_qp]*_density_water[_qp]*_phi[_i][_qp]*_grad_u[_qp]<<".\n";
 
-  return _water_specific_heat[_qp]*_darcy_flux_w[_qp]*_rho_w[_qp]*_phi[_i][_qp]*_grad_u[_qp];
+  return _specific_heat_water[_qp]*_darcy_flux_water[_qp]*_density_water[_qp]*_phi[_i][_qp]*_grad_u[_qp];
 }
 
 Real TemperatureConvection::computeQpJacobian()
 {
 
-//   return _darcy_flux_w_w[_qp]*_phi[_i][_qp]*_dphi[_j][_qp];
-   return _water_specific_heat[_qp]*_darcy_flux_w[_qp]*_rho_w[_qp]*_phi[_i][_qp]*_grad_phi[_j][_qp];
+//   return _darcy_flux_water_w[_qp]*_phi[_i][_qp]*_dphi[_j][_qp];
+   return _specific_heat_water[_qp]*_darcy_flux_water[_qp]*_density_water[_qp]*_phi[_i][_qp]*_grad_phi[_j][_qp];
 
 }

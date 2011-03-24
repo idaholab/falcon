@@ -35,13 +35,13 @@ protected:
      Real E3;
      Real E6;
      Real E7;
-// coefficients related to Hs empirical equation
+// coefficients related to enthalpy_saturated_steam empirical equation
      Real c1;
      Real c2;
      Real c3;
      Real c4;
      
-// coefficients related to Hw empirical equation
+// coefficients related to enthalpy_saturated_water empirical equation
      Real d1;
      Real d2;
      Real d3;

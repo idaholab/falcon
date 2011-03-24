@@ -37,7 +37,7 @@ protected:
   Real _c;
 
 
-  Real _mu_w;
+  Real _viscosity_water;
 };
 
 #endif //COUPLEDVISCOSITYAUX_H

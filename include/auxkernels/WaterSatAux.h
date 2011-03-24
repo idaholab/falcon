@@ -31,14 +31,14 @@ protected:
     
   VariableValue & _pressure;
   VariableValue & _enthalpy;
-  MaterialProperty<Real> & _sat_w;
+  MaterialProperty<Real> & _S_water;
 
   
      Real E3;
      Real E6;
      Real E7;
 
-// coefficients related to rho_w empirical equation     
+// coefficients related to density_water empirical equation     
      Real a1;
      Real a2;
      Real a3;
@@ -46,20 +46,20 @@ protected:
      Real a5;
      Real a6;
 
-// coefficients related to rho_s empirical equation
+// coefficients related to density_steam empirical equation
      Real b1;
      Real b2;
      Real b3;
      Real b4;
      Real b5;
 
-// coefficients related to Hs empirical equation
+// coefficients related to enthalpy_saturated_steam empirical equation
      Real c1;
      Real c2;
      Real c3;
      Real c4;
      
-// coefficients related to Hw empirical equation
+// coefficients related to enthalpy_saturated_water empirical equation
      Real d1;
      Real d2;
      Real d3;

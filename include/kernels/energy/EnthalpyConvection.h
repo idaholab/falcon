@@ -23,10 +23,10 @@ protected:
   
   VariableGradient & _grad_p;
  
-  MaterialProperty<Real> &_Hw;
-  MaterialProperty<Real> &_Hs;
-  MaterialProperty<Real> &_darcy_params_s;
-  MaterialProperty<Real> &_darcy_params_w;
+  MaterialProperty<Real> &_enthalpy_saturated_water;
+  MaterialProperty<Real> &_enthalpy_saturated_steam;
+  MaterialProperty<Real> &_tau_steam;
+  MaterialProperty<Real> &_tau_water;
   
 };
 #endif //ENTHALPYCONVECTION

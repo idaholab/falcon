@@ -8,7 +8,7 @@ InputParameters validParams<Constant>()
   params.set<Real>("thermal_expansion")=1.0;
   params.set<Real>("specific_heat")=1.0;
   params.set<Real>("density")=1.0;
-  params.set<Real>("rho_r")=1.0;
+  params.set<Real>("density_rock")=1.0;
   params.set<Real>("youngs_modulus")=1.0;
   params.set<Real>("poissons_ratio")=1.0;
   params.set<Real>("biot_coeff")=1.0;
@@ -36,7 +36,7 @@ Constant::Constant(const std::string & name,
      _biot_coeff(declareProperty<Real>("biot_coeff")),
      _specific_heat(declareProperty<Real>("specific_heat")),
      _density(declareProperty<Real>("density")),
-     _rho_r(declareProperty<Real>("rho_r")),
+     _density_rock(declareProperty<Real>("density_rock")),
      _youngs_modulus(declareProperty<Real>("youngs_modulus")),
      _poissons_ratio(declareProperty<Real>("poissons_ratio"))
   {}
@@ -47,7 +47,7 @@ Constant::computeProperties()
   for(unsigned int qp=0; qp<_n_qpoints; qp++)
   {
     _density[qp] = _my_density;
-    _rho_r[qp] = _my_density;
+    _density_rock[qp] = _my_density;
     _thermal_conductivity[qp] = _my_thermal_conductivity;
     _specific_heat[qp] = _my_specific_heat;
     _biot_coeff[qp] = _my_biot_coeff;    
