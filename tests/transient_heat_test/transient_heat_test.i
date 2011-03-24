@@ -16,12 +16,14 @@
   active = 'heat ie'
 
   [./heat]
-    type = HeatConduction
+   # type = HeatConduction
+    type = TemperatureDiffusion
     variable = u
   [../]
 
   [./ie]
-    type =  HeatConductionImplicitEuler
+   # type =  HeatConductionImplicitEuler
+    type =  TemperatureImplicitEuler
     variable = u
   [../]
 []
@@ -45,14 +47,16 @@
 []
 
 [Materials]
-  active = 'constant'
+  active = 'PorousMedia'
   
-  [./constant]
-    type = ThermalPoroElastic
+  [./PorousMedia]
+    type = 'Geothermal'
     block = 1
-    rho_r                =   1.0
-    rock_specific_heat   =   1.0
-    thermal_conductivity =   1.0
+    density_rock         =   1.0
+    specific_heat_rock   =   1.0
+    thermal_conductivity = 1.0
+    porosity = 0
+
 
   [../]
 []

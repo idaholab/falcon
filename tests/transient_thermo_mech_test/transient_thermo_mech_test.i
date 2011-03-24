@@ -90,12 +90,12 @@
   [../]
 
   [./heat]
-    type = HeatConduction
+    type = TemperatureDiffusion
     variable = temp
   [../]
 
   [./heat_ie]
-    type = HeatConductionImplicitEuler
+    type = TemperatureImplicitEuler
     variable = temp
   [../]
 
@@ -142,21 +142,24 @@
 []
 
 [Materials]
-  active = 'constant'
+  active = 'PorousMedia'
   
-  [./constant]
-    type = ThermalPoroElastic
+  [./PorousMedia]
+    type = Geothermal
     block = 1
     x_disp = x_disp
     y_disp = y_disp
     z_disp = z_disp
     thermal_conductivity = 1.0
-    rho_r                = 1.0
-    rock_specific_heat   = 1.0
+    density_rock         = 1.0
+    specific_heat_rock   = 1.0
     youngs_modulus = 1.0
     poissons_ratio = .3
     thermal_expansion = 1e-5
     t_ref = 300
+    has_solid_mechanics = true
+    #temperature = temperature
+
   [../]
 []
 
