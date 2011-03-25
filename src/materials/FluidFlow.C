@@ -42,6 +42,8 @@ FluidFlow::FluidFlow(const std::string & name,
    
      _tau_water(declareProperty<Real>("tau_water")),
      _darcy_flux_water(declareProperty<RealGradient>("darcy_flux_water")),
+     _darcy_mass_flux_water(declareProperty<RealGradient>("darcy_mass_flux_water")),
+     _darcy_mass_flux_water_pressure(declareProperty<RealGradient>("darcy_mass_flux_water_pressure")),
      _pore_velocity_water(declareProperty<RealGradient>("pore_velocity_water"))
 { }
 
@@ -82,9 +84,16 @@ FluidFlow::computeProperties()
     //calculate flow related quantities
     //some of this may need to be moved to an AuxKernel
     _tau_water[qp] = _permeability[qp] * _density_water[qp] / _viscosity_water[qp];
+    
     _darcy_flux_water[qp] =  -_permeability[qp] / _viscosity_water[qp] * ((_grad_p[qp])+(_density_water[qp]*_gravity[qp]*_gravity_vector[qp]));
-    _pore_velocity_water[qp] = _darcy_flux_water[qp] / _porosity[qp];
+       _darcy_mass_flux_water_pressure[qp] =  (-_tau_water[qp] * _grad_p[qp]);
+       // _darcy_mass_flux_water_pressure[qp] =  (-_tau_water[qp] * _grad_p[qp]) + (-_tau_water[qp] * _density_water[qp] * _gravity[qp] * _gravity_vector[qp]);
+   
 
+    _pore_velocity_water[qp] = -_permeability[qp] / _viscosity_water[qp] * ((_grad_p[qp])+(_density_water[qp]*_gravity[qp]*_gravity_vector[qp])) / _porosity[qp];
+    
+//    std::cout << _darcy_flux_water[qp] << "\n";
+// std::cout << _pore_velocity_water[qp] << "\n";
   }
 }
 
@@ -106,7 +115,7 @@ FluidFlow::density_fun(Real T)
 //end density function
 
 
-//Function call to calc viscosity, can define local variables here....need to finish 11-6-09
+//Function call to calc viscosity
 Real
 FluidFlow::viscosity_fun(Real T)
 {

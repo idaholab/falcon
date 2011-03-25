@@ -1,8 +1,8 @@
 #include "Moose.h"
 #include "Factory.h"
 
-#include "HeatConduction.h"
-#include "HeatConductionImplicitEuler.h"
+//#include "HeatConduction.h"
+//#include "HeatConductionImplicitEuler.h"
 #include "SolidMechXFalcon.h"
 #include "SolidMechYFalcon.h"
 #include "SolidMechZFalcon.h"
@@ -53,7 +53,10 @@
 #include "TemperatureImplicitEuler.h"
 #include "TemperatureDiffusion.h"
 #include "TemperatureConvection.h"
+
+#include "TemperatureConvectionPressure.h"
 #include "EnthalpyImplicitEuler.h"
+
 #include "EnthalpyDiffusion.h"
 #include "EnthalpyConvection.h"
 #include "EnthalpyConvectionZWater.h"
@@ -99,8 +102,8 @@ namespace Falcon
   {
     Moose::registerObjects();
     
-    registerKernel(HeatConduction);
-    registerKernel(HeatConductionImplicitEuler);
+    //  registerKernel(HeatConduction);
+    //   registerKernel(HeatConductionImplicitEuler);
     registerNamedKernel(SolidMechXFalcon, "SolidMechX");
     registerNamedKernel(SolidMechYFalcon, "SolidMechY");
     registerNamedKernel(SolidMechZFalcon, "SolidMechZ");
@@ -149,6 +152,8 @@ namespace Falcon
     registerKernel(TemperatureImplicitEuler);
     registerKernel(TemperatureDiffusion);
     registerKernel(TemperatureConvection);
+    registerKernel(TemperatureConvectionPressure);
+    
     registerKernel(EnthalpyImplicitEuler);
     registerKernel(HuyakornEnthalpyImplicitEuler);
     registerKernel(EnthalpyDiffusion);

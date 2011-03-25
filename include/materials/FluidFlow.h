@@ -43,9 +43,10 @@ protected:
   MaterialProperty<Real> & _compressibility;
   
    bool _has_variable_density;
-  //bool _temp_dependant_density;
   MaterialProperty<Real> & _tau_water;
   MaterialProperty<RealGradient> & _darcy_flux_water;
+  MaterialProperty<RealGradient> & _darcy_mass_flux_water;
+  MaterialProperty<RealGradient> & _darcy_mass_flux_water_pressure;
   MaterialProperty<RealGradient> & _pore_velocity_water;
   
 

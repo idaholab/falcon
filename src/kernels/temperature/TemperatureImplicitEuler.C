@@ -20,50 +20,16 @@ TemperatureImplicitEuler::TemperatureImplicitEuler(const std::string & name, Inp
 Real
 TemperatureImplicitEuler::computeQpResidual()
 {
-// return 2.677e6*ImplicitEuler::computeQpResidual();
   
-Real _const =   
-
-    (
-      (
-        _porosity[_qp] * _density_water[_qp] * _specific_heat_water[_qp]
-      )
-      +
-      (
-        (1.0 - _porosity[_qp]) * _density_rock[_qp] * _specific_heat_rock[_qp]
-      )
-      );
-
-    
 //   std::cout << "time constant =   " <<_time_const<<"\n";
-
-  return  _const*ImplicitEuler::computeQpResidual();
-
   
+  return  ((_porosity[_qp]*_density_water[_qp]*_specific_heat_water[_qp]) + ((1.0-_porosity[_qp])*_density_rock[_qp]*_specific_heat_rock[_qp]))*ImplicitEuler::computeQpResidual();
 
-//  return (((*_porosity)[_qp]*(*_density_water)[_qp]*(*_specific_heat_water)[_qp])+((1-(*_porosity)[_qp])*(*_density_rock)[_qp]*(*_specific_heat_rock)[_qp]))*ImplicitEuler::computeQpResidual();
 }
 
 Real
 TemperatureImplicitEuler::computeQpJacobian()
 {
 
-//  return 2.677e6*ImplicitEuler::computeQpJacobian();
-  
-Real _const =   
-
-    (
-      (
-        _porosity[_qp] * _density_water[_qp] * _specific_heat_water[_qp]
-      )
-      +
-      (
-        (1.0 - _porosity[_qp]) * _density_rock[_qp] * _specific_heat_rock[_qp]
-      )
-      );
-
-    
- return  _const*ImplicitEuler::computeQpJacobian();
-
-//  return (((*_porosity)[_qp]*(*_density_water)[_qp]*(*_specific_heat_water)[_qp])+((1-(*_porosity)[_qp])*(*_density_rock)[_qp]*(*_specific_heat_rock)[_qp]))*ImplicitEuler::computeQpJacobian();
+  return ((_porosity[_qp]*_density_water[_qp]*_specific_heat_water[_qp]) + ((1.0-_porosity[_qp])*_density_rock[_qp]*_specific_heat_rock[_qp]))*ImplicitEuler::computeQpJacobian();
 }

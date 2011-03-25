@@ -18,7 +18,7 @@ TemperatureDiffusion::computeQpResidual()
 {
   
   return _thermal_conductivity[_qp]*Diffusion::computeQpResidual();
-  std::cout << _u << "\n";
+//  std::cout << _u << "\n";
 }
 
 Real

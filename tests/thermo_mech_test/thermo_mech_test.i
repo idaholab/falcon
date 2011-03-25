@@ -75,7 +75,7 @@
   [../]
 
   [./heat]
-    type = HeatConduction
+    type = TemperatureDiffusion
     variable = temp
   [../]
 []
