@@ -52,7 +52,7 @@ FluidFlow::computeProperties()
 {
   PorousMedia::computeProperties();
   
-  for(unsigned int qp=0; qp<_n_qpoints; qp++)
+  for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {     
 
     // fluid properties

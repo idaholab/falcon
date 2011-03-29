@@ -130,7 +130,7 @@ DarcyWater::DarcyWater(const std::string & name,
 void
 DarcyWater::computeProperties()
 {
-  for(unsigned int qp=0; qp<_n_qpoints; qp++)
+  for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
     _gravity_vector[qp](0) = _gx;
     _gravity_vector[qp](1) = _gy;

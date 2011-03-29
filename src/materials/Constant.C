@@ -44,7 +44,7 @@ Constant::Constant(const std::string & name,
 void
 Constant::computeProperties()
 {
-  for(unsigned int qp=0; qp<_n_qpoints; qp++)
+  for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
     _density[qp] = _my_density;
     _density_rock[qp] = _my_density;

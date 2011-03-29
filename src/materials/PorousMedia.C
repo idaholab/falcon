@@ -40,7 +40,7 @@ PorousMedia::PorousMedia(const std::string & name,
 void
 PorousMedia::computeProperties()
 {
-  for(unsigned int qp=0; qp<_n_qpoints; qp++)
+  for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
 //rock properties
     _permeability[qp]         = _input_permeability;

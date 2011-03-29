@@ -28,7 +28,7 @@ HeatTransport::computeProperties()
 {
   PorousMedia::computeProperties();
   
-  for(unsigned int qp=0; qp<_n_qpoints; qp++)
+  for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
 //rock properties
     _specific_heat_rock[qp]  = _input_specific_heat_rock;

@@ -118,7 +118,7 @@ HuyakornFluidFlow2Phase::computeProperties()
 
     
   
-  for(unsigned int qp=0; qp<_n_qpoints; qp++)
+  for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
 //   we are using empirical equations to get thermodynamic data which are in Mpa and j/g......
 //   we need to convert pressure from pa to Mpa and Enthalpy from J/kg to J/g
