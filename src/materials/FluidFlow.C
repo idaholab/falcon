@@ -9,9 +9,6 @@ InputParameters validParams<FluidFlow>()
   params.addParam<Real>("compressibility", 4.6e-10,"fluid compressibility in 1/Pa");
   params.addParam<bool>("temp_dependent_density", true, "Flag to call density and viscosity routine");
   params.addParam<Real>("constant_temperature", 25.0, "Reference temperature for density and viscosity");
-
-
-  //RKP 3/2011 this needs to get moved in to an Aux Kernel
   params.addCoupledVar("pressure", "Use pressure here to calculate Darcy Flux and Pore Velocity");
   params.addCoupledVar("temperature", "Use temperature to calculate variable density and viscosity");
   
@@ -60,14 +57,15 @@ FluidFlow::computeProperties()
     
     if ( (_has_variable_density) && (_has_temp) ) //then call the density and viscosity functions
     {
-      //RKP:  Function call to "density_fun" to calc density_water
+      //Function call to "density_fun" to calc density_water using the coupled temperature value
       _density_water[qp] = density_fun((_temperature)[qp]);
       _viscosity_water[qp] = viscosity_fun((_temperature)[qp]);
     }
 
     else if (_has_variable_density)
       {
-      //RKP:  Function call to "density_fun" to calc density_water
+      //Function call to "density_fun" to calculate density and
+      //viscosity using the input reference temperature 
         _density_water[qp] = density_fun(_constant_temperature);
         _viscosity_water[qp] = viscosity_fun(_constant_temperature);
     }          
@@ -79,32 +77,23 @@ FluidFlow::computeProperties()
     }
 
 
-    //std::cout << _density_water[qp] << "\n";
-    
     //calculate flow related quantities
     //some of this may need to be moved to an AuxKernel
     _tau_water[qp] = _permeability[qp] * _density_water[qp] / _viscosity_water[qp];
-    
     _darcy_flux_water[qp] =  -_permeability[qp] / _viscosity_water[qp] * ((_grad_p[qp])+(_density_water[qp]*_gravity[qp]*_gravity_vector[qp]));
     _darcy_mass_flux_water_pressure[qp] =  (-_tau_water[qp] * _grad_p[qp]);
-       // _darcy_mass_flux_water_pressure[qp] =  (-_tau_water[qp] * _grad_p[qp]) + (-_tau_water[qp] * _density_water[qp] * _gravity[qp] * _gravity_vector[qp]);
-       //
-       //
+  
 
-       if ( _porosity[qp] == 0.0) //then set velocity to 0
-       {
-         _pore_velocity_water[qp] = 0.0;
-         }
+    if ( _porosity[qp] == 0.0) //then set velocity to 0
+    {
+      _pore_velocity_water[qp] = 0.0;
+    }
        
-       else
-       {
-         _pore_velocity_water[qp] = -_permeability[qp] / _viscosity_water[qp] * ((_grad_p[qp])+(_density_water[qp]*_gravity[qp]*_gravity_vector[qp])) / _porosity[qp];
-       }
+    else  //calculate the pore velocity
+    {
+      _pore_velocity_water[qp] = -_permeability[qp] / _viscosity_water[qp] * ((_grad_p[qp])+(_density_water[qp]*_gravity[qp]*_gravity_vector[qp])) / _porosity[qp];
+    }
        
-//    _pore_velocity_water[qp] = -_permeability[qp] / _viscosity_water[qp] * ((_grad_p[qp])+(_density_water[qp]*9.8*_gravity_vector[qp])) / _porosity[qp];
-    
-//    std::cout << _darcy_flux_water[qp] << "\n";
-// std::cout << _pore_velocity_water[qp] << "\n";
   }
 }
 

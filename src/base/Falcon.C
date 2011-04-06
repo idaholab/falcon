@@ -36,6 +36,7 @@
 #include "DarcyImplicitEuler.h"
 #include "CoupledDarcyImplicitEuler.h"
 #include "CoupledMassFluxImplicitEuler.h"
+#include "MassFluxTimeDerivative.h"
 
 
 #include "DarcyMassFluxPressure.h"
@@ -135,6 +136,7 @@ namespace Falcon
     registerKernel(DarcyImplicitEuler);
     registerKernel(CoupledDarcyImplicitEuler);
     registerKernel(CoupledMassFluxImplicitEuler);
+    registerKernel(MassFluxTimeDerivative);
 
     
     registerKernel(HuyakornMassImplicitEuler);
