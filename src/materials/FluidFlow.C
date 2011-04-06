@@ -86,11 +86,22 @@ FluidFlow::computeProperties()
     _tau_water[qp] = _permeability[qp] * _density_water[qp] / _viscosity_water[qp];
     
     _darcy_flux_water[qp] =  -_permeability[qp] / _viscosity_water[qp] * ((_grad_p[qp])+(_density_water[qp]*_gravity[qp]*_gravity_vector[qp]));
-       _darcy_mass_flux_water_pressure[qp] =  (-_tau_water[qp] * _grad_p[qp]);
+    _darcy_mass_flux_water_pressure[qp] =  (-_tau_water[qp] * _grad_p[qp]);
        // _darcy_mass_flux_water_pressure[qp] =  (-_tau_water[qp] * _grad_p[qp]) + (-_tau_water[qp] * _density_water[qp] * _gravity[qp] * _gravity_vector[qp]);
-   
+       //
+       //
 
-    _pore_velocity_water[qp] = -_permeability[qp] / _viscosity_water[qp] * ((_grad_p[qp])+(_density_water[qp]*_gravity[qp]*_gravity_vector[qp])) / _porosity[qp];
+       if ( _porosity[qp] == 0.0) //then set velocity to 0
+       {
+         _pore_velocity_water[qp] = 0.0;
+         }
+       
+       else
+       {
+         _pore_velocity_water[qp] = -_permeability[qp] / _viscosity_water[qp] * ((_grad_p[qp])+(_density_water[qp]*_gravity[qp]*_gravity_vector[qp])) / _porosity[qp];
+       }
+       
+//    _pore_velocity_water[qp] = -_permeability[qp] / _viscosity_water[qp] * ((_grad_p[qp])+(_density_water[qp]*9.8*_gravity_vector[qp])) / _porosity[qp];
     
 //    std::cout << _darcy_flux_water[qp] << "\n";
 // std::cout << _pore_velocity_water[qp] << "\n";
