@@ -1,8 +1,7 @@
 #include "Moose.h"
 #include "Factory.h"
 
-//#include "HeatConduction.h"
-//#include "HeatConductionImplicitEuler.h"
+//mechanics
 #include "SolidMechXFalcon.h"
 #include "SolidMechYFalcon.h"
 #include "SolidMechZFalcon.h"
@@ -22,55 +21,26 @@
 #include "SolidMechSwellingSolid.h"
 #include "SolidMechSwellingGas.h"
 #include "SinHeat.h"
-//#include "PrescribedExpansion.h"
 
-//#include "MassInviscidFlux.h"
-//#include "MomentumInviscidFlux.h"
-//#include "MomentumViscousFlux.h"
-//#include "EnergyInviscidFlux.h"
-//#include "EnergyViscousFlux.h"
-//#include "GravityForce.h"
-//#include "GravityPower.h"
-//#include "Velocity.h"
-#include "Temperature.h"
-#include "DarcyImplicitEuler.h"
-#include "CoupledDarcyImplicitEuler.h"
-#include "CoupledMassFluxImplicitEuler.h"
-#include "MassFluxTimeDerivative.h"
-
-
-#include "DarcyMassFluxPressure.h"
-#include "WaterMassFluxPressure.h"
-
-
-#include "DarcyMassFluxPressureSteam.h"
-#include "SteamMassFluxPressure.h"
-
-
-#include "DarcyMassFluxZ.h"
-#include "DarcyMassFluxZSteam.h"
-
-
-#include "TemperatureImplicitEuler.h"
+//heat transport
+#include "TemperatureTimeDerivative.h"
 #include "TemperatureDiffusion.h"
-#include "TemperatureConvection.h"
-
 #include "TemperatureConvectionPressure.h"
+#include "Temperature.h"
+
+//fluid-mass flow
+#include "MassFluxTimeDerivative.h"
+#include "WaterMassFluxPressure.h"
+#include "SteamMassFluxPressure.h"
+#include "CoupledDarcyImplicitEuler.h"
+
+//energy
 #include "EnthalpyImplicitEuler.h"
+#include "EnthalpyDiffusion.h"                  \
+  //#include "EnthalpyConvectionWater.h"
+//#include "EnthalpyConvectionSteam.h"
 
-#include "EnthalpyDiffusion.h"
-#include "EnthalpyConvection.h"
-#include "EnthalpyConvectionZWater.h"
-#include "EnthalpyConvectionZSteam.h"
-#include "HuyakornMassImplicitEuler.h"
-#include "HuyakornMassConvection.h"
-#include "HuyakornEnthalpyImplicitEuler.h"
-#include "HuyakornEnthalpyDiffusion.h"
-#include "HuyakornEnthalpyConvection.h"
-#include "DarcyVelocity.h"
-#include "DarcyImplicitBackwardDifference2.h"
-#include "TemperatureImplicitBackwardDifference2.h"
-
+//auxkernels
 #include "CoupledDensityAux.h"
 #include "CoupledViscosityAux.h"
 #include "AnalyticalADE1D.h"
@@ -79,23 +49,21 @@
 #include "CoupledRhoAux.h"
 #include "VelocityAux.h"
 
+//BCs
 #include "PressureNeumannBC2.h"
 #include "GravityNeumannBC.h"
 #include "OutFlowBC.h"
-#include "HuyakornBC.h"
 #include "StepDirichletBC.h"
 
+
+//materials
 #include "Constant.h"
-#include "DarcyWater.h"
-#include "ThermalPoroElastic.h"
 #include "PorousMedia.h"
 #include "FluidFlow.h"
-#include "FluidFlow2Phase.h"
-#include "HuyakornFluidFlow2Phase.h"
 #include "HeatTransport.h"
 #include "SolidMechanics.h"
 #include "Geothermal.h"
-#include "Geothermal2Phase.h"
+
 
 namespace Falcon
 {
@@ -103,14 +71,15 @@ namespace Falcon
   {
     Moose::registerObjects();
     
-    //  registerKernel(HeatConduction);
-    //   registerKernel(HeatConductionImplicitEuler);
+//mechanics
     registerNamedKernel(SolidMechXFalcon, "SolidMechX");
     registerNamedKernel(SolidMechYFalcon, "SolidMechY");
     registerNamedKernel(SolidMechZFalcon, "SolidMechZ");
+    registerKernel(SolidMechImplicitEuler);
+    
     registerKernel(StressCompute);
     registerKernel(StrainCompute);
-    registerKernel(SolidMechImplicitEuler);
+
     registerNamedKernel(SolidMechTempCoupleXFalcon, "SolidMechTempCoupleX");
     registerNamedKernel(SolidMechTempCoupleYFalcon, "SolidMechTempCoupleY");
     registerNamedKernel(SolidMechTempCoupleZFalcon, "SolidMechTempCoupleZ");
@@ -122,52 +91,26 @@ namespace Falcon
     registerKernel(SolidMechSwellingSolid);
     registerKernel(SolidMechSwellingGas);
     registerKernel(SinHeat);
-//    registerKernel(PrescribedExpansion);
 
-//    registerKernel(MassInviscidFlux);
-//    registerKernel(MomentumInviscidFlux);
-//    registerKernel(MomentumViscousFlux);
-//    registerKernel(EnergyInviscidFlux);
-//    registerKernel(EnergyViscousFlux);
-//    registerKernel(GravityForce);
-//    registerKernel(GravityPower);
-//    registerKernel(Velocity);
-    registerKernel(Temperature);
-    registerKernel(DarcyImplicitEuler);
-    registerKernel(CoupledDarcyImplicitEuler);
-    registerKernel(CoupledMassFluxImplicitEuler);
-    registerKernel(MassFluxTimeDerivative);
-
-    
-    registerKernel(HuyakornMassImplicitEuler);
-    registerKernel(DarcyMassFluxPressure);
-    registerKernel(WaterMassFluxPressure);
-
-    
-    registerKernel(HuyakornMassConvection);
-    registerKernel(DarcyMassFluxPressureSteam);
-    registerKernel(SteamMassFluxPressure);
-
-    
-    registerKernel(DarcyMassFluxZ);
-    registerKernel(DarcyMassFluxZSteam);
-    registerKernel(TemperatureImplicitEuler);
+//heat transport
+    registerKernel(TemperatureTimeDerivative);
     registerKernel(TemperatureDiffusion);
-    registerKernel(TemperatureConvection);
     registerKernel(TemperatureConvectionPressure);
-    
-    registerKernel(EnthalpyImplicitEuler);
-    registerKernel(HuyakornEnthalpyImplicitEuler);
-    registerKernel(EnthalpyDiffusion);
-    registerKernel(HuyakornEnthalpyDiffusion);
-    registerKernel(EnthalpyConvection);
-    registerKernel(HuyakornEnthalpyConvection);
-    registerKernel(EnthalpyConvectionZWater);
-    registerKernel(EnthalpyConvectionZSteam);
-    registerKernel(DarcyVelocity);
-    registerKernel(DarcyImplicitBackwardDifference2);
-    registerKernel(TemperatureImplicitBackwardDifference2);
+    registerKernel(Temperature);
 
+//fluid-mass flow    
+    registerKernel(MassFluxTimeDerivative);
+    registerKernel(WaterMassFluxPressure);
+    registerKernel(SteamMassFluxPressure);
+    registerKernel(CoupledDarcyImplicitEuler);
+    
+//energy
+    registerKernel(EnthalpyImplicitEuler);
+    registerKernel(EnthalpyDiffusion);
+//    registerKernel(EnthalpyConvectionWater);
+    //   registerKernel(EnthalpyConvectionSteam);
+
+//auxkernels
     registerAux(CoupledDensityAux);
     registerAux(CoupledViscosityAux);
     registerAux(AnalyticalADE1D);
@@ -175,24 +118,21 @@ namespace Falcon
     registerAux(WaterSatAux);
     registerAux(CoupledRhoAux);
     registerAux(VelocityAux);
-        
+
+//BCs    
     registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
     registerBoundaryCondition(GravityNeumannBC);
     registerBoundaryCondition(OutFlowBC);
-    registerBoundaryCondition(HuyakornBC);
     registerBoundaryCondition(StepDirichletBC);
 
+//materials    
     registerMaterial(Constant);
-    registerMaterial(DarcyWater);
-    registerMaterial(ThermalPoroElastic);
     registerMaterial(PorousMedia);
     registerMaterial(FluidFlow);
-    registerMaterial(FluidFlow2Phase);
-    registerMaterial(HuyakornFluidFlow2Phase);
     registerMaterial(HeatTransport);
     registerMaterial(SolidMechanics);
     registerMaterial(Geothermal);
-    registerMaterial(Geothermal2Phase);
+
     
   }
 }
