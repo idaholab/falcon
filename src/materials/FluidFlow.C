@@ -4,13 +4,15 @@ template<>
 InputParameters validParams<FluidFlow>()
 {
   InputParameters params = validParams<PorousMedia>(); //inherit porous medium basic properties
-  params.addParam<Real>("density_water", 1000.0,"fluid density in Kg/m^3");
-  params.addParam<Real>("viscosity_water", 0.001,"fluid dynamic viscosity in Pa.s");
+//  params.addParam<Real>("density_water", 1000.0,"fluid density in Kg/m^3");
+//  params.addParam<Real>("viscosity_water", 0.001,"fluid dynamic viscosity in Pa.s");
   params.addParam<Real>("compressibility", 4.6e-10,"fluid compressibility in 1/Pa");
-  params.addParam<bool>("temp_dependent_density", true, "Flag to call density and viscosity routine");
-  params.addParam<Real>("constant_temperature", 25.0, "Reference temperature for density and viscosity");
+  // params.addParam<bool>("temp_dependent_density", true, "Flag to call density and viscosity routine");
+//  params.addParam<Real>("constant_temperature", 25.0, "Reference temperature for density and viscosity");
   params.addCoupledVar("pressure", "Use pressure here to calculate Darcy Flux and Pore Velocity");
   params.addCoupledVar("temperature", "Use temperature to calculate variable density and viscosity");
+  params.addCoupledVar("density_water", "Coupled NodalAux used to calculate density");
+  params.addCoupledVar("viscosity_water", "Coupled NodalAux used to calculate viscosity");
   
   return params;
 }
@@ -18,30 +20,36 @@ InputParameters validParams<FluidFlow>()
 FluidFlow::FluidFlow(const std::string & name,
                      InputParameters parameters)
   :PorousMedia(name, parameters),
-     _has_pressure(isCoupled("pressure")),
-     _grad_p  (_has_pressure ? coupledGradient("pressure") : _grad_zero),
-     _pressure(_has_pressure ? coupledValue("pressure")  : _zero),
+   _has_pressure(isCoupled("pressure")),
+   _grad_p  (_has_pressure ? coupledGradient("pressure") : _grad_zero),
+   _pressure(_has_pressure ? coupledValue("pressure")  : _zero),
+
      
-     _has_temp(isCoupled("temperature")),
-     _temperature(_has_temp ? coupledValue("temperature")  : _zero),
+   _has_temp(isCoupled("temperature")),
+   _temperature(_has_temp ? coupledValue("temperature")  : _zero),
+   
+   _density_water(coupledValue("density_water")),
+   _viscosity_water(coupledValue("viscosity_water")),
      
-     _input_density_water(getParam<Real>("density_water")),
-     _input_viscosity_water(getParam<Real>("viscosity_water")),
+   //  _input_density_water(getParam<Real>("density_water")),
+   // _input_viscosity_water(getParam<Real>("viscosity_water")),
      _input_compressibility(getParam<Real>("compressibility")),
-     _constant_temperature(getParam<Real>("constant_temperature")),
+   //  _constant_temperature(getParam<Real>("constant_temperature")),
    
    //delcare material properties
-     _density_water(declareProperty<Real>("density_water")),
-     _viscosity_water(declareProperty<Real>("viscosity_water")),
+   // _density_water(declareProperty<Real>("density_water")),
+   // _viscosity_water(declareProperty<Real>("viscosity_water")),
      _compressibility(declareProperty<Real>("compressibility")),
    
-     _has_variable_density(getParam<bool>("temp_dependent_density")),
+   // _has_variable_density(getParam<bool>("temp_dependent_density")),
    
      _tau_water(declareProperty<Real>("tau_water")),
      _darcy_flux_water(declareProperty<RealGradient>("darcy_flux_water")),
      _darcy_mass_flux_water(declareProperty<RealGradient>("darcy_mass_flux_water")),
-     _darcy_mass_flux_water_pressure(declareProperty<RealGradient>("darcy_mass_flux_water_pressure")),
-     _pore_velocity_water(declareProperty<RealGradient>("pore_velocity_water"))
+     _darcy_mass_flux_water_pressure(declareProperty<RealGradient>("darcy_mass_flux_water_pressure"))
+//   _pore_velocity_water(declareProperty<RealGradient>("pore_velocity_water"))
+
+   
 { }
 
 void
@@ -54,7 +62,10 @@ FluidFlow::computeProperties()
 
     // fluid properties
     _compressibility[qp]      = _input_compressibility;
+    // _viscosity_water[qp]      = _input_viscosity_water;
     
+    
+/*    
     if ( (_has_variable_density) && (_has_temp) ) //then call the density and viscosity functions
     {
       //Function call to "density_fun" to calc density_water using the coupled temperature value
@@ -76,14 +87,24 @@ FluidFlow::computeProperties()
       _viscosity_water[qp]      = _input_viscosity_water;
     }
 
+*/
 
-    //calculate flow related quantities
+
+    
+    //Calculate flow related quantities
     //some of this may need to be moved to an AuxKernel
     _tau_water[qp] = _permeability[qp] * _density_water[qp] / _viscosity_water[qp];
-    _darcy_flux_water[qp] =  -_permeability[qp] / _viscosity_water[qp] * ((_grad_p[qp])+(_density_water[qp]*_gravity[qp]*_gravity_vector[qp]));
+    
+    _darcy_flux_water[qp] =  -_permeability[qp] / _viscosity_water[qp] *
+      ((_grad_p[qp])+(_density_water[qp]*_gravity[qp]*_gravity_vector[qp]));
+    
     _darcy_mass_flux_water_pressure[qp] =  (-_tau_water[qp] * _grad_p[qp]);
-  
+    
+    //  std::cout <<_tau_water[qp] << _density_water[qp] << _viscosity_water[qp]<< "\n";
+    
 
+//pore velocity now calculated as an auxkernel
+    /*
     if ( _porosity[qp] == 0.0) //then set velocity to 0
     {
       _pore_velocity_water[qp] = 0.0;
@@ -91,15 +112,19 @@ FluidFlow::computeProperties()
        
     else  //calculate the pore velocity
     {
-      _pore_velocity_water[qp] = -_permeability[qp] / _viscosity_water[qp] * ((_grad_p[qp])+(_density_water[qp]*_gravity[qp]*_gravity_vector[qp])) / _porosity[qp];
+      _pore_velocity_water[qp] = -_permeability[qp] / _viscosity_water[qp] *
+      ((_grad_p[qp])+(_density_water[qp]*_gravity[qp]*_gravity_vector[qp])) / _porosity[qp];
     }
-       
+    */
+    
   }
 }
 
 
 
-//@@@@@@@@@@@@@@@@@@@@@@ begin function definitions @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+//@@@@@@@@@@@@@@@@@@@@@@ Begin function definitions @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+/*
 
 //Function to calc water density, single phase conditions only
 Real
@@ -114,6 +139,8 @@ FluidFlow::density_fun(Real T)
 }
 //end density function
 
+*/
+ /*
 
 //Function call to calc viscosity
 Real
@@ -158,5 +185,7 @@ FluidFlow::viscosity_fun(Real T)
   return (_viscosity_water);
 }
 //end viscosity function
-
+*/
+ 
 //@@@@@@@@@@@@@@@@@@@@@@ end function definitions @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+

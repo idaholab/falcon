@@ -22,32 +22,39 @@ public:
 protected:
   virtual void computeProperties();
 
-  Real density_fun(Real T);
-  Real viscosity_fun(Real T);
+//  Real density_fun(Real T);
+  // Real viscosity_fun(Real T);
   
   bool _has_pressure;
   VariableGradient & _grad_p;
   VariableValue  & _pressure;
 
+  // VariableValue  & _density_water;
   bool _has_temp;
   VariableValue  & _temperature;
-
-  Real _input_density_water;
-  Real _input_viscosity_water;
-  Real _input_compressibility;
-  Real _constant_temperature;
+  VariableValue & _density_water;
+  VariableValue & _viscosity_water;
+  
 
   
-  MaterialProperty<Real> & _density_water;
-  MaterialProperty<Real> & _viscosity_water;
+  // Real _input_density_water;
+//  Real _input_viscosity_water;
+  Real _input_compressibility;
+  //  Real _constant_temperature;
+
+  
+//  MaterialProperty<Real> & _density_water;
+
+  
+  // MaterialProperty<Real> & _viscosity_water;
   MaterialProperty<Real> & _compressibility;
   
-   bool _has_variable_density;
+  // bool _has_variable_density;
   MaterialProperty<Real> & _tau_water;
   MaterialProperty<RealGradient> & _darcy_flux_water;
   MaterialProperty<RealGradient> & _darcy_mass_flux_water;
   MaterialProperty<RealGradient> & _darcy_mass_flux_water_pressure;
-  MaterialProperty<RealGradient> & _pore_velocity_water;
+  // MaterialProperty<RealGradient> & _pore_velocity_water;
   
 
 };

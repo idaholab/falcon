@@ -4,22 +4,18 @@ template<>
 InputParameters validParams<CoupledViscosityAux>()
 {
   InputParameters params = validParams<AuxKernel>();
-  params.set<Real>("a")=0.0;
-  params.set<Real>("b")=0.0;
-  params.set<Real>("c")=0.0;
-  params.set<Real>("_viscosity_water")=0.0;
-  
+  params.addRequiredCoupledVar("temperature", "Use temperature to calculate variable density and viscosity");
+  params.addParam<bool>("temp_dependent_viscosity", true, "Flag to call density and viscosity routine");
+  params.addParam<Real>("viscosity_water", 9.999e-3,"fluid viscosity in Pa sec");
   return params;
 }
 
 CoupledViscosityAux::CoupledViscosityAux(const std::string & name, InputParameters parameters)
   :AuxKernel(name, parameters),
-   _temperature(coupled("temperature")),
-   _temperature_val(coupledValue("temperature")),
-   _a(getParam<Real>("a")),
-   _b(getParam<Real>("b")),
-   _c(getParam<Real>("c")),
-   _viscosity_water(getParam<Real>("_viscosity_water"))
+   _temperature(coupledValue("temperature")),
+   _input_viscosity_water(getParam<Real>("viscosity_water")),
+   _has_variable_viscosity(getParam<bool>("temp_dependent_viscosity"))
+
 {}
 
 
@@ -27,35 +23,59 @@ Real
 CoupledViscosityAux::computeValue()
 {
 
-  
-  if (_temperature_val[_qp] <= 40.)
-  {
-      _a = 1.787E-3;
-      _b = (-0.03288+(1.962E-4*_temperature_val[_qp]))*_temperature_val[_qp];
-      _viscosity_water = _a * exp(_b);
-  }
-    
-  else if (_temperature_val[_qp] <= 100.)
-  {
-      _a = 1e-3;
-      _b = (1+(0.015512*(_temperature_val[_qp]-20)));
-      _c = -1.572;
-      _viscosity_water = _a * pow(_b,_c);
-  }
-    
-  else // (_temperature_val[_qp] <= 300.)
-  {
-      _a = 0.2414;
-      _b = 247 / (_temperature_val[_qp]+133.15);
-      _c = (_a * pow(10,_b));
-      _viscosity_water = _c * 1E-4;
-  }
-    
-  /*
+  if  (_has_variable_viscosity == true) //then call the density and viscosity functions
+    {
+      //Function call to "density_fun" to calc density_water using the coupled temperature value
+      return viscosity_fun((_temperature)[_qp]);
+    }
 
-  _a = 1.787E-3;
-  _b = (-0.03288+(1.962E-4*_temperature_val[_qp]))*_temperature_val[_qp];
-  return _a * exp(_b);
-  */
+   else //just use default water density and viscosity or values from input
+    {
+      return _input_viscosity_water;
+    }
+}
+
+
+//Function call to calc viscosity
+Real
+CoupledViscosityAux::viscosity_fun(Real T)
+{
+  Real _viscosity_water, a, b, c, d;
+  
+  if (T < 0.)
+    {
+      std::cerr << "T= " << T ;
+      mooseError("Temperature out of Range");
+    }
+    
+    else if (T <= 40.)
+    {
+      a = 1.787E-3;
+      b = (-0.03288+(1.962E-4*T))*T;
+      _viscosity_water = a * exp(b);
+     }
+    
+    else if (T <= 100.)
+    {
+      a = 1e-3;
+      b = (1+(0.015512*(T-20)));
+      c = -1.572;
+      _viscosity_water = a * pow(b,c);
+    }
+    
+    else if (T <= 300.)
+    {
+      a = 0.2414;
+      b = 247 / (T+133.15);
+      c = (a * pow(10,b));
+      _viscosity_water = c * 1E-4;
+     }
+    
+    else
+    {
+      std::cerr << "T= " << T;
+      mooseError("Temperature out of Range");
+    }
   return (_viscosity_water);
 }
+//end viscosity function

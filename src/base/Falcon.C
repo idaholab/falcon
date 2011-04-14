@@ -44,10 +44,12 @@
 #include "CoupledDensityAux.h"
 #include "CoupledViscosityAux.h"
 #include "AnalyticalADE1D.h"
-#include "TemperatureAux.h"
-#include "WaterSatAux.h"
-#include "CoupledRhoAux.h"
+//#include "TemperatureAux.h"
+//#include "WaterSatAux.h"/
+//#include "CoupledRhoAux.h"
 #include "VelocityAux.h"
+#include "CoupledPorosityAux.h"
+//#include "CoupledWaterDensityAux.h"
 
 //BCs
 #include "PressureNeumannBC2.h"
@@ -114,11 +116,13 @@ namespace Falcon
     registerAux(CoupledDensityAux);
     registerAux(CoupledViscosityAux);
     registerAux(AnalyticalADE1D);
-    registerAux(TemperatureAux);
-    registerAux(WaterSatAux);
-    registerAux(CoupledRhoAux);
+    //  registerAux(TemperatureAux);
+    // registerAux(WaterSatAux);
+    // registerAux(CoupledRhoAux);
     registerAux(VelocityAux);
-
+    registerAux(CoupledPorosityAux);
+    //registerAux(CoupledWaterDensityAux);
+    
 //BCs    
     registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
     registerBoundaryCondition(GravityNeumannBC);

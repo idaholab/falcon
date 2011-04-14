@@ -28,16 +28,13 @@ public:
 protected:
   virtual Real computeValue();
 
-  Real _temperature;
+  Real viscosity_fun(Real T);
   
-  VariableValue & _temperature_val;
-
-  Real _a;
-  Real _b;
-  Real _c;
+  VariableValue & _temperature;
+  Real _input_viscosity_water;
+  bool _has_variable_viscosity;
 
 
-  Real _viscosity_water;
 };
 
 #endif //COUPLEDVISCOSITYAUX_H

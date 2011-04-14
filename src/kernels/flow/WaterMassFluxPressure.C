@@ -19,11 +19,13 @@ WaterMassFluxPressure::computeQpResidual()
 {
  
   return _tau_water[_qp]*Diffusion::computeQpResidual();
+//  return 1*Diffusion::computeQpResidual();
 }
 
 Real
 WaterMassFluxPressure::computeQpJacobian()
 {
   return _tau_water[_qp]*Diffusion::computeQpJacobian();
+  // return 1*Diffusion::computeQpJacobian();
 }
 

@@ -28,11 +28,13 @@ public:
 protected:
   virtual Real computeValue();
 
-  Real _temperature;
-  
-  VariableValue & _temperature_val;
+  Real density_fun(Real T);
 
-  Real _value;
+  VariableValue & _temperature;
+  Real _input_density_water;
+  bool _has_variable_density;
+
+  
 };
 
 #endif //COUPLEDDENSITYAUX_H

@@ -23,7 +23,7 @@ protected:
   virtual void computeProperties();
 
   Real _input_permeability;
-  Real _input_porosity;
+  // Real _input_porosity;
   Real _input_density_rock;
 
   Real _input_gravity;
@@ -31,8 +31,11 @@ protected:
   Real _gy;
   Real _gz;
 
+  VariableValue & _porosity;
+  
+  
   MaterialProperty<Real> & _permeability;
-  MaterialProperty<Real> & _porosity;
+  // MaterialProperty<Real> & _porosity;
   MaterialProperty<Real> & _density_rock;
   
   MaterialProperty<Real> & _gravity;
