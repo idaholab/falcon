@@ -19,10 +19,14 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
 
+  VariableValue  & _density_water;
+  VariableValue & _density_water_old;
+  
+  VariableValue  & _porosity;
+  VariableValue  & _porosity_old;
+
   MaterialProperty<Real> & _specific_heat_water;
   MaterialProperty<Real> & _specific_heat_rock;
-  MaterialProperty<Real> & _porosity;
-  MaterialProperty<Real> & _density_water;
   MaterialProperty<Real> & _density_rock;
   
 };

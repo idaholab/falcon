@@ -25,14 +25,15 @@
 //heat transport
 #include "TemperatureTimeDerivative.h"
 #include "TemperatureDiffusion.h"
-#include "TemperatureConvectionPressure.h"
-#include "Temperature.h"
+#include "TemperatureConvection.h"
+//#include "Temperature.h"
 
 //fluid-mass flow
 #include "MassFluxTimeDerivative.h"
 #include "WaterMassFluxPressure.h"
 #include "SteamMassFluxPressure.h"
-#include "CoupledDarcyImplicitEuler.h"
+#include "WaterMassFluxElevation.h"
+//#include "CoupledDarcyImplicitEuler.h"
 
 //energy
 #include "EnthalpyImplicitEuler.h"
@@ -48,7 +49,8 @@
 //#include "WaterSatAux.h"/
 //#include "CoupledRhoAux.h"
 #include "VelocityAux.h"
-#include "CoupledPorosityAux.h"
+#include "CoupledPorosityMaterialAux.h"
+#include "CoupledPorosityNodalAux.h"
 //#include "CoupledWaterDensityAux.h"
 
 //BCs
@@ -97,14 +99,16 @@ namespace Falcon
 //heat transport
     registerKernel(TemperatureTimeDerivative);
     registerKernel(TemperatureDiffusion);
-    registerKernel(TemperatureConvectionPressure);
-    registerKernel(Temperature);
+    registerKernel(TemperatureConvection);
+//    registerKernel(Temperature);
 
 //fluid-mass flow    
     registerKernel(MassFluxTimeDerivative);
     registerKernel(WaterMassFluxPressure);
     registerKernel(SteamMassFluxPressure);
-    registerKernel(CoupledDarcyImplicitEuler);
+    registerKernel(WaterMassFluxElevation);
+    
+//    registerKernel(CoupledDarcyImplicitEuler);
     
 //energy
     registerKernel(EnthalpyImplicitEuler);
@@ -120,7 +124,8 @@ namespace Falcon
     // registerAux(WaterSatAux);
     // registerAux(CoupledRhoAux);
     registerAux(VelocityAux);
-    registerAux(CoupledPorosityAux);
+    registerAux(CoupledPorosityMaterialAux);
+    registerAux(CoupledPorosityNodalAux);
     //registerAux(CoupledWaterDensityAux);
     
 //BCs    

@@ -39,10 +39,19 @@
     family = LAGRANGE
   [../]
 
+#use this for nodal version 
 [./porosity]
-    order = FIRST
-    family = LAGRANGE
-  [../]
+	order = FIRST
+	family = LAGRANGE
+	initial_condition = 0.25
+[../]
+ 
+#this is for material version
+# [./porosity]
+# order = CONSTANT
+# family = MONOMIAL
+# initial_condition = 0.4
+# [../] 
 []
 
  
@@ -66,7 +75,7 @@
 []
 
  [AuxKernels]
- active = 'velocity_x density_water viscosity_water porosity'
+ active = 'velocity_x density_water viscosity_water porosity_nodal'
   
   [./velocity_x]
     type = VelocityAux
@@ -93,12 +102,16 @@
     temp_dependent_viscosity = true
   [../]
 
-  [./porosity]
-    type = CoupledPorosityAux
-    variable = porosity
-    porosity = 0.25
-  [../]
-
+ [./porosity_nodal]
+	type = CoupledPorosityNodalAux
+	variable = porosity
+	porosity = 0.25
+ [../]
+ 
+ [./porosity_material]
+	type = CoupledPorosityMaterialAux
+	variable = porosity
+ [../]
 []
 
  
