@@ -24,6 +24,8 @@
 
 //heat transport
 #include "TemperatureTimeDerivative.h"
+#include "TemperatureTimeDerivativeFluid.h"
+#include "TemperatureTimeDerivativeSolid.h"
 #include "TemperatureDiffusion.h"
 #include "TemperatureConvection.h"
 //#include "Temperature.h"
@@ -98,6 +100,8 @@ namespace Falcon
 
 //heat transport
     registerKernel(TemperatureTimeDerivative);
+    registerKernel(TemperatureTimeDerivativeFluid);
+    registerKernel(TemperatureTimeDerivativeSolid);
     registerKernel(TemperatureDiffusion);
     registerKernel(TemperatureConvection);
 //    registerKernel(Temperature);
