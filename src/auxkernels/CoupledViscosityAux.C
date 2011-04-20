@@ -40,7 +40,7 @@ CoupledViscosityAux::computeValue()
 Real
 CoupledViscosityAux::viscosity_fun(Real T)
 {
-  Real _viscosity_water, a, b, c, d;
+  Real _viscosity_water, a, b, c;
   
   if (T < 0.)
     {

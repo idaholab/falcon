@@ -54,7 +54,7 @@ contains
 
 
      subroutine VISW_FLO (t,dw,vw)
-       implicit none
+       Implicit none
 !c=======================================================================
 !c  This subroutine calculates water and steam viscosities in range of:
 !c

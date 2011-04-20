@@ -90,6 +90,7 @@
     type = CoupledDensityAux
     variable = density_water
     temperature = temperature
+    pressure = pressure
     density_water = 999
     temp_dependent_density = true
   [../]
