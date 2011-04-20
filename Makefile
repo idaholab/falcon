@@ -27,6 +27,9 @@ include $(MOOSE_DIR)/build.mk
 # deps
 include $(MOOSE_DIR)/moose.mk
 
+#RKP
+water_steam_phase_prop.o:water_eos.f90
+
 ###############################################################################
 # Additional special case targets should be added here
 
