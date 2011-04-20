@@ -27,8 +27,8 @@ include $(MOOSE_DIR)/build.mk
 # deps
 include $(MOOSE_DIR)/moose.mk
 
-#RKP
-water_steam_phase_prop.o:water_eos.f90
+# F90 module dependancy rules
+$(CURR_DIR)/src/Water_Steam_EOS/water_steam_phase_prop.f90: $(CURR_DIR)/src/Water_Steam_EOS/water_eos.$(obj-suffix)
 
 ###############################################################################
 # Additional special case targets should be added here
