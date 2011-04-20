@@ -44,20 +44,7 @@ TemperatureTimeDerivativeFluid::computeQpResidual()
 Real
 TemperatureTimeDerivativeFluid::computeQpJacobian()
 
-//this IS NOT the correct Jacobian, RKP 4/19/11  
+//need to verify this is the correct Jacobian, RKP 4/19/11  
 {
-  return 0;
-  
-  
-    
-    //  _specific_heat_water[_qp]*_porosity[_qp];
-  
-    // *
-    //   ((_density_water[_qp]-_density_water_old[_qp]) /  (_u[_qp]-_u_old[_qp]));
-  
-    //  *
-    //  (1/_dt)
-    // *
-    //  _test[_i][_qp];
-  
+  return _specific_heat_water[_qp]*_porosity[_qp] *_density_water[_qp] *(1/_dt) *_test[_j][_qp];
 }
