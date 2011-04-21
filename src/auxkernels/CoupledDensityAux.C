@@ -34,7 +34,7 @@ CoupledDensityAux::computeValue()
       //Function call to "density_fun" to calc density_water using the coupled temperature value
       _density_subroutine_val = 0;
       
-      Water_Steam_EOS::watereos1_(_pressure[_qp], _temperature[_qp], _density_subroutine_val);
+      Water_Steam_EOS::wateos1_(_pressure[_qp], _temperature[_qp], _density_subroutine_val);
       return _density_subroutine_val;                           
 
         //return density_fun((_temperature)[_qp]);

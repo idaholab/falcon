@@ -18,9 +18,10 @@ namespace Water_Steam_EOS
 								
     //subroutine  wateos_noderiv(T, p, dw, dwmol, hw, energyscale, ierr)
     // extern "C" double watereos_( double&, double&, double&, double&, double&, double&, double&); 
-	extern "C" void watereos1_( double&, double&, double&); 
+    void wateos1_( double&, double&, double&);
 	  
     //subroutine  VISW_FLO (t,dw,vw)
     double visw_flo_( double&, double&, double&);  
   }
+
 }
