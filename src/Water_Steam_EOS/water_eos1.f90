@@ -1,4 +1,4 @@
-  SUBROUTINE wateos1 (t,p,dw)
+  SUBROUTINE water_eos1 (t,p,dw)
 !  SUBROUTINE wateos1 (t,p,dw,dwmol,dwp,dwt,hw,hwp,hwt,scale,ierr)
 
     implicit none
@@ -197,4 +197,4 @@
     
     ierr = 0
 
-  end subroutine wateos1
+  end subroutine water_eos1

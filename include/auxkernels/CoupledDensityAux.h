@@ -28,7 +28,7 @@ public:
 protected:
   virtual Real computeValue();
 
-  Real density_fun(Real T);
+  // Real density_fun(Real T);
 
   VariableValue & _temperature;
   VariableValue & _pressure;
