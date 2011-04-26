@@ -99,6 +99,7 @@
     type = CoupledViscosityAux
     variable = viscosity_water
     temperature = temperature
+	pressure = pressure
     viscosity_water = 0.001
     temp_dependent_viscosity = true
   [../]

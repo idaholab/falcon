@@ -1,11 +1,14 @@
 #include "CoupledViscosityAux.h"
+#include "Water_Steam_EOS.h"
 
 template<>
 InputParameters validParams<CoupledViscosityAux>()
 {
   InputParameters params = validParams<AuxKernel>();
-  params.addRequiredCoupledVar("temperature", "Use temperature to calculate variable density and viscosity");
-  params.addParam<bool>("temp_dependent_viscosity", true, "Flag to call density and viscosity routine");
+  params.addRequiredCoupledVar("temperature", "Use temperature to calculate variable viscosity");
+  params.addRequiredCoupledVar("pressure", "Use pressure to calculate variable viscosity");
+  
+  params.addParam<bool>("temp_dependent_viscosity", true, "Flag to call viscosity routine");
   params.addParam<Real>("viscosity_water", 9.999e-3,"fluid viscosity in Pa sec");
   return params;
 }
@@ -13,6 +16,8 @@ InputParameters validParams<CoupledViscosityAux>()
 CoupledViscosityAux::CoupledViscosityAux(const std::string & name, InputParameters parameters)
   :AuxKernel(name, parameters),
    _temperature(coupledValue("temperature")),
+   _pressure(coupledValue("pressure")),
+   
    _input_viscosity_water(getParam<Real>("viscosity_water")),
    _has_variable_viscosity(getParam<bool>("temp_dependent_viscosity"))
 
@@ -23,18 +28,26 @@ Real
 CoupledViscosityAux::computeValue()
 {
 
-  if  (_has_variable_viscosity == true) //then call the density and viscosity functions
+  if  (_has_variable_viscosity == true) //then call the viscosity subroutine
     {
+
+      Real _viscosity_subroutine_val = 1000;
+   
+      
+      Water_Steam_EOS::visw_noderiv1_( _temperature[_qp], _pressure[_qp], _viscosity_subroutine_val);
+      return _viscosity_subroutine_val; 
+      
       //Function call to "density_fun" to calc density_water using the coupled temperature value
-      return viscosity_fun((_temperature)[_qp]);
+      //return viscosity_fun((_temperature)[_qp]);
     }
 
-   else //just use default water density and viscosity or values from input
+   else //just use default water viscosity or values from input
     {
       return _input_viscosity_water;
     }
 }
 
+/*
 
 //Function call to calc viscosity
 Real
@@ -79,3 +92,4 @@ CoupledViscosityAux::viscosity_fun(Real T)
   return (_viscosity_water);
 }
 //end viscosity function
+*/

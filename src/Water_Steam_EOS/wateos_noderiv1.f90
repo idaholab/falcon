@@ -1,13 +1,11 @@
-  SUBROUTINE water_eos1 (t,p,dw)
-!  SUBROUTINE wateos1 (t,p,dw,dwmol,dwp,dwt,hw,hwp,hwt,scale,ierr)
+ SUBROUTINE wateos_noderiv1 (t,p,dw)
 
     implicit none
   
-    real*8, intent(in) :: t   ! Temperature in centigrade
-    real*8, intent(in) :: p   ! Pressure in Pascals
-    real*8, intent(out) :: dw 
-    real*8 :: dwmol, dwp, dwt
-    real*8 :: hw, hwp, hwt
+    real*8, intent(in) :: t   ! Temperature in centigrade.
+    real*8, intent(in) :: p   ! Pressure in Pascals.
+    real*8, intent(out) :: dw
+    real*8 :: dwmol,hw
     integer :: ierr
   
     integer :: i
@@ -17,21 +15,19 @@
   
     real*8 :: beta,beta2x,beta4,theta,utheta,theta2x,theta18,theta20
     real*8 :: xx,yy,zz
-    real*8 :: u0,u1,u2,u3,u4,u5,u6,u7,u8,u9
+    real*8 :: u0,u1,u2,u3,u4,u5,u6,u7,u8
+!   real*8 :: u9
     real*8 :: v0,v1,v2,v3,v4,v20,v40
-    real*8 :: term1,term2,term2t,term3,term3t,term3p,term4,term4t,term4p, &
-              term5,term5t,term5p,term6,term6t,term6p,term7,term7t,term7p
-    real*8 :: dv2t,dv2p,dv3t
-    real*8 :: vr,ypt,yptt,zpt,zpp,vrpt,vrpp,cnv
+    real*8 :: term1,term2,term3,term4,term4p,term5,term6,term7
+!   real*8 :: term2t,term3t,term3p,term4t,term5t,term5p,term6t,term6p,term7t,term7p
+!   real*8 :: dv2t,dv2p,dv3t
+    real*8 :: vr,ypt
+!   real*8 :: yptt,zpt,zpp,vrpt,vrpp,cnv
     real*8 :: tc1,pc1,vc1,utc1,upc1,vc1mol,vc1molh
     real*8 :: zero,one,two,three,four,five,six,seven,eight,fnine,ten
     real*8 :: scale
   
 !   save aa,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12
-    
-!   save
-!  dw = 0
-
 
     data aa/ &
 !-----data aa0,aa1,aa2,aa3/
@@ -72,7 +68,7 @@
     utc1 = one/tc1
     upc1 = one/pc1
     vc1mol = vc1*18.01534d0
-    
+
     theta = (t+273.15d0)*utc1
     theta2x = theta*theta
     theta18 = theta**18
@@ -84,14 +80,12 @@
     
     yy = one-a1*theta2x-a2*theta**(-6)
     xx = a3*yy*yy-two*(a4*theta-a5*beta)
-
-!    write(*,*) t,p, a12
-
+    
 !   Note: xx may become negative near the critical point-pcl.
     if (xx.gt.zero) then
       xx = sqrt(xx)
     else
-      write(*,*) 'Warning: negative term in density (wateos): ',t,p,xx
+      write(*,*) 'Warning: negative term in density (no deriv): ',t,p,xx
       xx = 1.e-6               !set arbitrarily
     end if
     zz = yy + xx                                     
@@ -111,28 +105,25 @@
     
     dwmol = one/(vr*vc1mol)
     dw = one/(vr*vc1)
-
-   ! write(*,*) dw
-
-
+    
 !---calculate derivatives for water density
     ypt = six*a2*theta**(-7)-two*a1*theta
-    zpt = ypt+(a3*yy*ypt-a4)/xx
-    zpp = a5/xx
-    u9 = u0*u1/zz
+!   zpt = ypt+(a3*yy*ypt-a4)/xx
+!   zpp = a5/xx
+!   u9 = u0*u1/zz
     
-    vrpt = u9*zpt+aa(13)+two*aa(14)*theta-ten*u8 &
-        -19.d0*aa(16)*u4*u4*theta18+11.d0*u2*u2*u3*theta**10 &
-        -aa(20)*u6*(18.d0*a9*theta18+20.d0*theta20)/theta &
-        -(three*aa(21)+80.d0*aa(22)*beta/(theta20*theta))*beta2x
+!   vrpt = u9*zpt+aa(13)+two*aa(14)*theta-ten*u8 &
+!       -19.d0*aa(16)*u4*u4*theta18+11.d0*u2*u2*u3*theta**10 &
+!       -aa(20)*u6*(18.d0*a9*theta18+20.d0*theta20)/theta &
+!       -(three*aa(21)+80.d0*aa(22)*beta/(theta20*theta))*beta2x
     
-    vrpp = u9*zpp-u2*(two*aa(18)+six*aa(19)*beta)-12.d0*u7*u5/ &
-        (a10+beta)+(six*aa(21)*(a12-theta)+12.d0*aa(22)*beta/ &
-        theta20)*beta
+!   vrpp = u9*zpp-u2*(two*aa(18)+six*aa(19)*beta)-12.d0*u7*u5/ &
+!       (a10+beta)+(six*aa(21)*(a12-theta)+12.d0*aa(22)*beta/ &
+!       theta20)*beta
     
-    cnv = -one/(vc1mol*vr*vr)
-    dwt = cnv*vrpt*utc1
-    dwp = cnv*vrpp*upc1
+!   cnv = -one/(vc1mol*vr*vr)
+!   dwt = cnv*vrpt*utc1
+!   dwp = cnv*vrpp*upc1
     
 !   print *,'water_eos: ',p,t,dwp,cnv,vrpp,upc1
     
@@ -141,12 +132,14 @@
     term1 = aa(0)*theta
     
     term2 = -aa(1)
-    term2t = zero
+!   term2t = zero
     do i = 3,10
       v1 = dfloat(i-2)*aa(i)*theta**(i-1)
-      term2t = term2t+v1*utheta*dfloat(i-1)
+!     term2t = term2t+v1*utheta*dfloat(i-1)
       term2 = term2+v1                            
     end do
+    
+!   print *,'wateos-no: ',term2,term2t,v1
     
     v0 = u1/a5
     v2 = 17.d0*(zz/29.d0-yy/12.d0)+five*theta*ypt/12.d0
@@ -154,14 +147,14 @@
     v1 = zz*v2+v3
     term3 = v0*v1
     
-    yptt = -two*a1-42.d0*a2/theta**8
-    dv2t = 17.d0*(zpt/29.d0-ypt/12.d0)+five/12.d0*(ypt+theta*yptt) 
-    dv3t = a4-(a3-one)*(theta*yy*yptt+yy*ypt+theta*ypt*ypt)
-    dv2p = 17.d0*zpp/29.d0
-    v4 = five*v1/(17.d0*zz)       
+!   yptt = -two*a1-42.d0*a2/theta**8
+!   dv2t = 17.d0*(zpt/29.d0-ypt/12.d0)+five/12.d0*(ypt+theta*yptt) 
+!   dv3t = a4-(a3-one)*(theta*yy*yptt+yy*ypt+theta*ypt*ypt)
+!   dv2p = 17.d0*zpp/29.d0
+!   v4 = five*v1/(17.d0*zz)       
     
-    term3t = v0*(zz*dv2t+(v2-v4)*zpt+dv3t)
-    term3p = v0*(zz*dv2p+(v2-v4)*zpp)
+!   term3t = v0*(zz*dv2t+(v2-v4)*zpt+dv3t)
+!   term3p = v0*(zz*dv2p+(v2-v4)*zpp)
     
     v1 = fnine*theta+a6
     v20 = (a6-theta)
@@ -171,38 +164,40 @@
     v4 = one/(v40*v40)
     term4p = aa(12)-aa(14)*theta2x+aa(15)*v1*v2+aa(16)*v3*v4
     term4 = term4p*beta
-    term4t =(-two*aa(14)*theta+fnine*aa(15)*(v2-v1*v2/v20) &
-            +38.d0*theta18*aa(16)*(ten*v4-v3*v4/v40))*beta
+!   term4t =(-two*aa(14)*theta+fnine*aa(15)*(v2-v1*v2/v20) &
+!           +38.d0*theta18*aa(16)*(ten*v4-v3*v4/v40))*beta
     
     v1 = beta*(aa(17)+aa(18)*beta+aa(19)*beta2x)
     v2 = 12.d0*theta**11+a8
     v4 = one/(a8+theta**11)
     v3 = v4*v4
     term5 = v1*v2*v3
-    term5p = v3*v2*(aa(17)+two*aa(18)*beta+three*aa(19)*beta2x)
-    term5t = v1*(132.d0*v3*theta**10-22.d0*v2*v3*v4*theta**10)
+!   term5p = v3*v2*(aa(17)+two*aa(18)*beta+three*aa(19)*beta2x)
+!   term5t = v1*(132.d0*v3*theta**10-22.d0*v2*v3*v4*theta**10)
     
     v1 = (a10+beta)**(-3)+a11*beta
     v3 = (17.d0*a9+19.d0*theta2x)
     v2 = aa(20)*theta18*v3                     
     term6 = v1*v2
-    term6p = v2*(a11-three*(a10+beta)**(-4))
-    term6t = v1*aa(20)*theta18*(18.d0*v3*utheta+38.d0*theta)
+!   term6p = v2*(a11-three*(a10+beta)**(-4))
+!   term6t = v1*aa(20)*theta18*(18.d0*v3*utheta+38.d0*theta)
     
     v1 = 21.d0*aa(22)/theta20*beta4
     v2 = aa(21)*a12*beta2x*beta
     term7 = v1+v2  
-    term7p = beta2x*(three*aa(21)*a12+84.d0*aa(22)*beta/theta20)
-    term7t = -420.d0*aa(22)*beta4/(theta20*theta)
+!   term7p = beta2x*(three*aa(21)*a12+84.d0*aa(22)*beta/theta20)
+!   term7t = -420.d0*aa(22)*beta4/(theta20*theta)
     
     vc1molh = vc1mol*scale
     
     v1 = pc1*vc1molh
     hw = (term1-term2+term3+term4-term5+term6+term7)*v1
     
-    hwp = (term3p+term4p-term5p+term6p+term7p)*vc1molh
-    hwt = (aa(0)-term2t+term3t+term4t-term5t+term6t+term7t)*v1*utc1
+!   hwp = (term3p+term4p-term5p+term6p+term7p)*vc1molh
+!   hwt = (aa(0)-term2t+term3t+term4t-term5t+term6t+term7t)*v1*utc1
+    
+!   print *,'wateos-no: ',hw,term1,term2,term3,term4,term6,term7,term2t,v1
     
     ierr = 0
 
-  end subroutine water_eos1
+  end subroutine wateos_noderiv1

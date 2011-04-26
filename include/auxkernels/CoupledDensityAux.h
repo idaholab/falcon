@@ -36,6 +36,8 @@ protected:
   Real _input_density_water;
   bool _has_variable_density;
   Real _density_subroutine_val;
+  // Real _density_water;
+  
   
 
   
