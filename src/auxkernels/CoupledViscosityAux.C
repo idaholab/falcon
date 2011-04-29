@@ -5,8 +5,8 @@ template<>
 InputParameters validParams<CoupledViscosityAux>()
 {
   InputParameters params = validParams<AuxKernel>();
-  params.addRequiredCoupledVar("temperature", "Use temperature to calculate variable viscosity");
-  params.addRequiredCoupledVar("pressure", "Use pressure to calculate variable viscosity");
+ params.addCoupledVar("temperature", "Use temperature to calculate variable viscosity");
+  params.addCoupledVar("pressure", "Use pressure to calculate variable viscosity");
   
   params.addParam<bool>("temp_dependent_viscosity", true, "Flag to call viscosity routine");
   params.addParam<Real>("viscosity_water", 9.999e-3,"fluid viscosity in Pa sec");
@@ -15,8 +15,8 @@ InputParameters validParams<CoupledViscosityAux>()
 
 CoupledViscosityAux::CoupledViscosityAux(const std::string & name, InputParameters parameters)
   :AuxKernel(name, parameters),
-   _temperature(coupledValue("temperature")),
-   _pressure(coupledValue("pressure")),
+    _temperature(coupledValue("temperature")),
+     _pressure(coupledValue("pressure")),
    
    _input_viscosity_water(getParam<Real>("viscosity_water")),
    _has_variable_viscosity(getParam<bool>("temp_dependent_viscosity"))

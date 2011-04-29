@@ -5,8 +5,8 @@ template<>
 InputParameters validParams<CoupledDensityAux>()
 {
   InputParameters params = validParams<AuxKernel>();
-  params.addRequiredCoupledVar("temperature", "Use temperature to calculate variable density");
-  params.addRequiredCoupledVar("pressure", "Use pressure to calculate variable density");
+  params.addCoupledVar("temperature", "Use temperature to calculate variable density");
+  params.addCoupledVar("pressure", "Use pressure to calculate variable density");
   
   params.addParam<bool>("temp_dependent_density", true, "Flag to call density and viscosity routine");
   params.addParam<Real>("density_water", 999.9,"fluid density in Kg/m^3");
@@ -17,7 +17,7 @@ CoupledDensityAux::CoupledDensityAux(const std::string & name,
                                      InputParameters parameters)
   :AuxKernel(name, parameters),
    _temperature(coupledValue("temperature")),
-   _pressure(coupledValue("pressure")),
+     _pressure(coupledValue("pressure")),
    
    _input_density_water(getParam<Real>("density_water")),
    _has_variable_density(getParam<bool>("temp_dependent_density"))
@@ -34,7 +34,7 @@ CoupledDensityAux::computeValue()
       //Function call to "density_fun" to calc density_water using the coupled temperature value
       Real _density_subroutine_val = 1000;
       
-      Water_Steam_EOS::wateos_noderiv1_( _temperature[_qp], _pressure[_qp], _density_subroutine_val);
+     Water_Steam_EOS::wateos_noderiv1_( _temperature[_qp], _pressure[_qp], _density_subroutine_val);
       return _density_subroutine_val;                           
 
         //return density_fun((_temperature)[_qp]);
