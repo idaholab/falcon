@@ -45,6 +45,7 @@
 
 //auxkernels
 #include "CoupledDensityAux.h"
+#include "CoupledDdensityDTAux.h"
 #include "CoupledViscosityAux.h"
 #include "AnalyticalADE1D.h"
 //#include "TemperatureAux.h"
@@ -122,6 +123,7 @@ namespace Falcon
 
 //auxkernels
     registerAux(CoupledDensityAux);
+    registerAux(CoupledDdensityDTAux);    
     registerAux(CoupledViscosityAux);
     registerAux(AnalyticalADE1D);
     //  registerAux(TemperatureAux);

@@ -4,8 +4,6 @@ template<>
 InputParameters validParams<CoupledPorosityAux>()
 {
   InputParameters params = validParams<AuxKernel>();
-//  params.addRequiredCoupledVar("temperature", "Use temperature to calculate variable density and viscosity");
-//  params.addParam<bool>("temp_dependent_viscosity", true, "Flag to call density and viscosity routine");
   params.addParam<Real>("porosity", 0.3,"Initial reservoir porosity");
   return params;
 }

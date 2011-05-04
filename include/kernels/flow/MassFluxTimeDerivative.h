@@ -21,9 +21,9 @@ protected:
 
   VariableValue  & _density_water;
   VariableValue & _density_water_old;
-  
-  VariableValue  & _porosity;
-  VariableValue  & _porosity_old;
+  MaterialProperty<Real> & _porosity;  
+//  VariableValue  & _porosity;
+//  VariableValue  & _porosity_old;
 
 };
 #endif //MASSFLUXTIMEDERIVATIVE

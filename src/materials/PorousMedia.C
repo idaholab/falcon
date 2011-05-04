@@ -5,7 +5,7 @@ InputParameters validParams<PorousMedia>()
 {
   InputParameters params = validParams<Material>();
   params.addParam<Real>("permeability",1.0e-12, "intrinsic permeability in m^2");
-  params.addParam<Real>("material_porosity", 0.3333, "Rock porosity set from the PorousMedia material kernel");
+  params.addParam<Real>("material_porosity", 0.3, "Rock porosity set from the PorousMedia material kernel");
   params.addParam<Real>("density_rock", 2.50e3, "rock density in Kg/m^3");
   
   params.addParam<Real>("gravity",9.80665,"gravity acceleration constant");

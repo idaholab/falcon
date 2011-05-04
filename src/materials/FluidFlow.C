@@ -31,14 +31,11 @@ FluidFlow::FluidFlow(const std::string & name,
    _has_temp(isCoupled("temperature")),
    _temperature(_has_temp ? coupledValue("temperature")  : _zero),
    
-   _density_water(coupledValue("density_water")),
-   _viscosity_water(coupledValue("viscosity_water")),
+   _density_water(coupledValue("density_water")),   //nodal Aux
+   _viscosity_water(coupledValue("viscosity_water")), //nodal Aux
      
 //   _input_compressibility(getParam<Real>("compressibility")),
-
-   
-   //delcare material properties
-   
+//delcare material properties
 //  _compressibility(declareProperty<Real>("compressibility")),
    
    _tau_water(declareProperty<Real>("tau_water")),
@@ -56,20 +53,17 @@ FluidFlow::computeProperties()
   
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {     
-
-    // fluid properties
-    
+// fluid properties
 //_compressibility[qp]      = _input_compressibility;
 // _viscosity_water[qp]     = _input_viscosity_water;
-
-    //Calculate flow related quantities
+//Calculate flow related quantities
 
     _tau_water[qp] = _permeability[qp] * _density_water[qp] / _viscosity_water[qp];
-    _darcy_mass_flux_water[qp] =  -_tau_water[qp] * ((_grad_p[qp])+(_density_water[qp]*_gravity[qp]*_gravity_vector[qp]));
+    _darcy_mass_flux_water[qp] =  -_tau_water[qp] * (_grad_p[qp]+_density_water[qp]*_gravity[qp]*_gravity_vector[qp]);
     _darcy_mass_flux_water_pressure[qp] =  (-_tau_water[qp] * _grad_p[qp]);
     _darcy_mass_flux_water_elevation[qp] = (-_tau_water[qp] * _gravity[qp] *_gravity_vector[qp]*_density_water[qp]);
     
-    //  std::cout <<_tau_water[qp] << _density_water[qp] << _viscosity_water[qp]<< "\n";
+//     std::cout << _darcy_mass_flux_water[qp]  << "\n";
     
   }
 }
