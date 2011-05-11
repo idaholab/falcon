@@ -7,7 +7,8 @@ SUBROUTINE visw_noderiv1 (T, P, VW)
 
     real*8 :: EX, PHI, AM, pwr
     real*8 :: PS
-
+    
+   
      CALL PSAT_new_rkp (T,PS)  !get p_sat from subroutine
   
     EX  = 247.8d0/(T+133.15d0)

@@ -18,7 +18,7 @@ TemperatureConvection::TemperatureConvection(const std::string & name, InputPara
 Real TemperatureConvection::computeQpResidual()
 {
 
-  return _specific_heat_water[_qp]*_darcy_mass_flux_water[_qp]*_test[_i][_qp]*_grad_u[_qp];
+  return _specific_heat_water[_qp]*_darcy_mass_flux_water[_qp]*_test[_i][_qp]*_grad_u[_qp]*_dt;
 
 }
 
@@ -26,7 +26,7 @@ Real TemperatureConvection::computeQpJacobian()
 {
 
 
-   return _specific_heat_water[_qp]*_darcy_mass_flux_water[_qp]*_test[_i][_qp]*_grad_phi[_j][_qp];
+   return _specific_heat_water[_qp]*_darcy_mass_flux_water[_qp]*_test[_i][_qp]*_grad_phi[_j][_qp]*_dt;
 
 }
 

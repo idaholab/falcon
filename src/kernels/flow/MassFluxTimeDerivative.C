@@ -6,7 +6,8 @@ InputParameters validParams<MassFluxTimeDerivative>()
 {
   InputParameters params = validParams<TimeDerivative>();
    params.addRequiredCoupledVar("density_water", "Use Coupled density here to calculate the time derivative");
-   return params;
+   params.addRequiredCoupledVar("dwdp", "derivative of water density vs temperature");
+    return params;
 }
 
 MassFluxTimeDerivative::MassFluxTimeDerivative(const std::string & name, InputParameters parameters)
@@ -14,6 +15,8 @@ MassFluxTimeDerivative::MassFluxTimeDerivative(const std::string & name, InputPa
    
    _density_water(coupledValue("density_water")),
    _density_water_old(coupledValueOld("density_water")),
+   _dwdp(coupledValue("dwdp")),
+
    _porosity (getMaterialProperty<Real>("material_porosity"))
 //   _porosity(coupledValue("porosity")),
 //   _porosity_old(coupledValueOld("porosity"))
@@ -29,6 +32,7 @@ MassFluxTimeDerivative::computeQpResidual()
 
 Real
 MassFluxTimeDerivative::computeQpJacobian()
-{    
-return 0;
+{ 
+   Real tmp1 = (_porosity[_qp]*_dwdp[_qp]*_phi[_j][_qp])*_test[_i][_qp]/_dt;  
+   return tmp1;
 }

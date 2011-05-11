@@ -50,6 +50,7 @@
     data a9,a10,a11,a12/ &
     1.418800000d-1, 7.002753165d00, 2.995284926d-4, 2.040000000d-1/
     
+    
     zero = 0.d0
     one = 1.d0
     two = 2.d0
@@ -71,14 +72,14 @@
 
     theta = (t+273.15d0)*utc1
     theta2x = theta*theta
-    theta18 = theta**18
+    theta18 = theta**18.
     theta20 = theta18*theta2x
     
     beta = p*upc1
     beta2x = beta*beta
     beta4  = beta2x*beta2x
     
-    yy = one-a1*theta2x-a2*theta**(-6)
+    yy = one-a1*theta2x-a2*theta**(-6.)
     xx = a3*yy*yy-two*(a4*theta-a5*beta)
     
 !   Note: xx may become negative near the critical point-pcl.
@@ -91,13 +92,13 @@
     zz = yy + xx                                     
     u0 = -five/17.d0
     u1 = aa(11)*a5*zz**u0
-    u2 = one/(a8+theta**11)
+    u2 = one/(a8+theta**11.)
     u3 = aa(17)+(two*aa(18)+three*aa(19)*beta)*beta
     u4 = one/(a7+theta18*theta)
-    u5 = (a10+beta)**(-4)
+    u5 = (a10+beta)**(-4.)
     u6 = a11-three*u5
     u7 = aa(20)*theta18*(a9+theta2x)
-    u8 = aa(15)*(a6-theta)**9
+    u8 = aa(15)*(a6-theta)**9.
     
     vr = u1+aa(12)+theta*(aa(13)+aa(14)*theta)+u8*(a6-theta) &
          +aa(16)*u4-u2*u3-u6*u7+(three*aa(21)*(a12-theta) &
@@ -107,7 +108,7 @@
     dw = one/(vr*vc1)
     
 !---calculate derivatives for water density
-    ypt = six*a2*theta**(-7)-two*a1*theta
+    ypt = six*a2*theta**(-7.)-two*a1*theta
 !   zpt = ypt+(a3*yy*ypt-a4)/xx
 !   zpp = a5/xx
 !   u9 = u0*u1/zz
@@ -134,7 +135,7 @@
     term2 = -aa(1)
 !   term2t = zero
     do i = 3,10
-      v1 = dfloat(i-2)*aa(i)*theta**(i-1)
+      v1 = dfloat(i-2)*aa(i)*theta**(1.0*(i-1))
 !     term2t = term2t+v1*utheta*dfloat(i-1)
       term2 = term2+v1                            
     end do
@@ -158,9 +159,9 @@
     
     v1 = fnine*theta+a6
     v20 = (a6-theta)
-    v2 = v20**9
-    v3 = a7+20.d0*theta**19
-    v40 = a7+theta**19
+    v2 = v20**9.
+    v3 = a7+20.d0*theta**19.
+    v40 = a7+theta**19.
     v4 = one/(v40*v40)
     term4p = aa(12)-aa(14)*theta2x+aa(15)*v1*v2+aa(16)*v3*v4
     term4 = term4p*beta
@@ -168,14 +169,14 @@
 !           +38.d0*theta18*aa(16)*(ten*v4-v3*v4/v40))*beta
     
     v1 = beta*(aa(17)+aa(18)*beta+aa(19)*beta2x)
-    v2 = 12.d0*theta**11+a8
-    v4 = one/(a8+theta**11)
+    v2 = 12.d0*theta**11.+a8
+    v4 = one/(a8+theta**11.)
     v3 = v4*v4
     term5 = v1*v2*v3
 !   term5p = v3*v2*(aa(17)+two*aa(18)*beta+three*aa(19)*beta2x)
 !   term5t = v1*(132.d0*v3*theta**10-22.d0*v2*v3*v4*theta**10)
     
-    v1 = (a10+beta)**(-3)+a11*beta
+    v1 = (a10+beta)**(-3.)+a11*beta
     v3 = (17.d0*a9+19.d0*theta2x)
     v2 = aa(20)*theta18*v3                     
     term6 = v1*v2
