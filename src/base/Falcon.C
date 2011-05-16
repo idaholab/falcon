@@ -123,9 +123,9 @@ namespace Falcon
     //   registerKernel(EnthalpyConvectionSteam);
 
 //auxkernels
-    registerAux(CoupledDensityAux);
     registerAux(CoupledDdensityDTAux);
     registerAux(CoupledDdensityDPAux);    
+    registerAux(CoupledDensityAux);
     registerAux(CoupledViscosityAux);
     registerAux(AnalyticalADE1D);
     //  registerAux(TemperatureAux);

@@ -1,8 +1,9 @@
-#ifndef COUPLEDDENSITYAUX_H
-#define COUPLEDDENSITYAUX_H
+#ifndef COUPLEDEOSAUX_H
+#define COUPLEDEOSAUX_H
 
 #include "AuxKernel.h"
-
+//#include "CoupledDdensityDPAux.h"
+//#include "CoupledDdensityDTAux.h"
 
 //Forward Declarations
 class CoupledDensityAux;
@@ -31,8 +32,10 @@ protected:
   // Real density_fun(Real T);
 
   VariableValue & _temperature;
-   VariableValue & _pressure;
-  
+  VariableValue & _pressure;
+  VariableValue & _dwdt;
+  VariableValue & _dwdp;
+    
   Real _input_density_water;
   bool _has_variable_density;
   Real _density_subroutine_val;

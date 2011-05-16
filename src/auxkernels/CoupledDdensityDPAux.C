@@ -25,21 +25,8 @@ Real
 CoupledDdensityDPAux::computeValue()
 {
     
-    Real _ddensity_dp = 0.0;
-    Real _density1 = 1.0;
-    Real _density2 = 1.0;
-    Real _tmp1;
-    Real _tmp0;
-    
-    //      _temperature[_qp] =200.0;
-    
-    _tmp0 = _pressure[_qp];
-    _tmp1 = _tmp0 + 1E-1;
-    
-    Water_Steam_EOS::wateos_noderiv1_( _temperature[_qp], _tmp0, _density1);
-    Water_Steam_EOS::wateos_noderiv1_( _temperature[_qp], _tmp1, _density2);
-    
-    return (_density2-_density1)/1E-1;
+     
+    return _u[_qp];
     
     // std::cout <<_density__subroutine_val<< "\n";
     

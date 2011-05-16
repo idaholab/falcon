@@ -17,14 +17,14 @@ Real
 TemperatureDiffusion::computeQpResidual()
 {
   //std::cout << _u [_qp]<<' '<< _grad_u [_qp]<< "\n";
-  return _thermal_conductivity[_qp]*Diffusion::computeQpResidual()*_dt;
+  return _thermal_conductivity[_qp]*Diffusion::computeQpResidual();
 
 }
 
 Real
 TemperatureDiffusion::computeQpJacobian()
 {
-    return _thermal_conductivity[_qp]*Diffusion::computeQpJacobian()*_dt;
+    return _thermal_conductivity[_qp]*Diffusion::computeQpJacobian();
 }
 
 
