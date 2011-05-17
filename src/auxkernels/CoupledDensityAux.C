@@ -51,7 +51,6 @@ CoupledDensityAux::computeValue()
         Water_Steam_EOS::wateos_noderiv1_( _temperature[_qp], _tmp1, _density2);
         
         _dwdp[_qp]= (_density2-_density1)/1E-1;
-        _problem.getVariable(_tid, "dwdp").storeAuxValue(_dwdp[_qp]);
 
         _tmp0 = _temperature[_qp];
         _tmp1 = _tmp0 + 1E-6;
@@ -59,7 +58,6 @@ CoupledDensityAux::computeValue()
         Water_Steam_EOS::wateos_noderiv1_( _tmp1, _pressure[_qp], _density2);
         
         _dwdt[_qp]= (_density2-_density1)/1E-6;    
-        _problem.getVariable(_tid, "dwdt").storeAuxValue(_dwdt[_qp]);
 
    //    std::cout <<"ddd:"<< _dwdt[_qp]<< "\n";
       return _density1;                           
