@@ -79,7 +79,7 @@
 #active = ' p_wmfp t_d'
 #active = 'p_wmfp t_d'
 #active = 'p_td  p_wmfp t_td'
-active = 'p_td p_wmfp t_td  t_d t_c'
+active = 'p_td t_td  t_d t_c'
  
 [./p_td]
  type = MassFluxTimeDerivative
