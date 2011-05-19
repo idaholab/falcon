@@ -1,13 +1,10 @@
 [Mesh]
-#  dim = 3
   file = 1d_col.e
-# uniform_refine = 2
 
 [ ]
 
 [Variables]
-#   active = 'pressure temperature x_disp y_disp z_disp'
-  active = 'pressure temperature'
+ active = 'pressure temperature'
    [./pressure]
     order = FIRST
     family = LAGRANGE
@@ -53,33 +50,21 @@
  initial_condition = 0.0
  [../]
 
-
 [./dwdp]
  order = FIRST
  family = LAGRANGE
  initial_condition = 0.0
  [../]
- 
- 
+  
 [./viscosity_water]
  order = FIRST
  family = LAGRANGE
  initial_condition = 1.34E-4
  [../]
- 
-#this is for material version
- [./porosity]
- order = FIRST
- family = LAGRANGE
- initial_condition = 0.3
- [../]
 [ ]
 
 [Kernels]
-#active = ' p_wmfp t_d'
-#active = 'p_wmfp t_d'
-#active = 'p_td  p_wmfp t_td'
-active = 'p_td t_td  t_d t_c'
+active = 'p_td t_td p_wmfp t_d t_c'
  
 [./p_td]
  type = MassFluxTimeDerivative
@@ -90,8 +75,6 @@ active = 'p_td t_td  t_d t_c'
 
  [./p_wmfp]
  type = WaterMassFluxPressure
-# density_water = density_water
-# viscosity_water=viscosity_water
  variable = pressure
  [../]
  
@@ -106,7 +89,6 @@ active = 'p_td t_td  t_d t_c'
  variable = temperature
  density_water = density_water
  dwdt          = dwdt
-#  porosity = porosity
  [../]
 
  [./t_d]
@@ -118,7 +100,6 @@ active = 'p_td t_td  t_d t_c'
  type = TemperatureConvection
  variable = temperature
  [../]
-
 [ ]
 
  [AuxKernels]
@@ -160,12 +141,9 @@ active = 'p_td t_td  t_d t_c'
  viscosity_water = 1.34E-06
  temp_dependent_viscosity = true
 [../]
- 
- 
 [ ]
  
- 
- 
+  
 [BCs]
    active = 'left_p right_p left_t right_t'
 
@@ -200,7 +178,6 @@ active = 'p_td t_td  t_d t_c'
 [ ]
 
 [Materials]
-
  active = 'rock'
  
  [./rock]
@@ -212,107 +189,51 @@ active = 'p_td t_td  t_d t_c'
  viscosity_water = viscosity_water
  temperature = temperature
 
- material_porosity = 0.2
+ material_porosity = 0.4
  
  gravity              =  0.0
  gx = 0
  gy = 0
  gz = 1
- permeability         =  1.0e-15
+ permeability         =  1.0e-12
  density_rock         =  2500
- thermal_conductivity =  2.5E-4
- specific_heat_water  =	4186E-4
- specific_heat_rock   =  920E-4
+ thermal_conductivity =  2.5
+ specific_heat_water  =	4186
+ specific_heat_rock   =  920
 
  has_solid_mechanics   = false
- 
- 
-[../]
-
- [./frac]
- type = Geothermal
- block = 2
- 
- pressure = pressure
- density_water = density_water
- viscosity_water = viscosity_water
- temperature = temperature
- 
- material_porosity = 0.60
- 
- gravity              =  0.0
- gx = 0
- gy = 0
- gz = 1
- permeability         =  1.0e-11
- density_rock         =  2500
- thermal_conductivity =  2.5E-3
- specific_heat_water  =	4186E-3
- specific_heat_rock   =  920E-3
- 
- has_solid_mechanics   = false
- 
- 
-[../]
+ [../]
  
 [ ]
  
 [Executioner]
-#active = 'Adaptivity '
  active = 'Quadrature'
-
-# type = Steady
- type =  Transient
-# type =  SolutionTimeAdaptive
+ type =  SolutionTimeAdaptive
  perf_log =  true
  
  petsc_options =  '-snes_mf_operator -ksp_monitor'
-# petsc_options_iname =  '-pc_type -sub_pc_type'
-# petsc_options_value = 'asm ilu'
  petsc_options_iname =  '-pc_type -pc_hypre_type -ksp_gmres_restart'
  petsc_options_value =  'hypre boomeramg 501'
  
- l_max_its  =  500
- nl_abs_tol = 1e-12
- l_tol =  1.0e-6
- nl_max_its =  60
-# nl_rel_tol =  1e-6
- 
- 
- num_steps = 10 
- 
- 
- dt = 100.
-# dtmax=200.0
-# dtmin= 1E-2
-# dtmax = 8640
-# end_time = 7776000
- 
- 
- [./Adaptivity]
- initial_adaptivity = 1
- error_estimator = KellyErrorEstimator
- refine_fraction  = 0.9
- coarsen_fraction = 0.001
-#    weight_names = 'temperature'
-#   weight_values = 0.8
- max_h_level = 2
-# steps = 2
- [../]
- 
- [./Quadrature]
-  type = Trap
-[../]
+ l_max_its  =  100
 
- 
- [ ]
+ l_tol =  1.0e-6
+ nl_max_its =  10
+
+ dt = 100.
+ dtmin= 1E-2
+ end_time = 50000
+  
+ [./Quadrature]
+  active = __all__
+  type = TRAP
+[../]
+[ ]
  
 [Output]
  file_base = out
  output_initial = true
- interval = 20
+ interval = 1
  exodus = true
-
-#  print_out_info = true
- [ ]
+[ ]
  

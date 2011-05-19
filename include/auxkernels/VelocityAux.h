@@ -32,12 +32,12 @@ protected:
   VariableGradient & _grad_p;
   VariableValue  & _pressure;
   VariableValue  & _density_water;
-  VariableValue  & _porosity;
+//  VariableValue  & _porosity;
 
   MaterialProperty<Real> & _tau_water;
   MaterialProperty<Real> & _gravity;
   MaterialProperty<RealVectorValue> & _gravity_vector;
-//  MaterialProperty<Real> & _porosity;
+  MaterialProperty<Real> & _porosity;
 //  MaterialProperty<Real> & _density_water;
   int _i;
 

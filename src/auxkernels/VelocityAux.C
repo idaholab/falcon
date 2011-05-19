@@ -6,7 +6,7 @@ InputParameters validParams<VelocityAux>()
      InputParameters params = validParams<AuxKernel>();
      params.addRequiredCoupledVar("pressure", "Use pressure here to calculate Pore Velocity");
      params.addRequiredCoupledVar("density_water", "Use density here to calculate Pore Velocity");
-     params.addRequiredCoupledVar("porosity", "Use density here to calculate Pore Velocity");
+     //    params.addRequiredCoupledVar("porosity", "Use density here to calculate Pore Velocity");
      
      params.addParam<int>("i",0,"component of the pressure vector");
      return params;
@@ -18,12 +18,12 @@ VelocityAux::VelocityAux(const std::string & name, InputParameters parameters)
    _grad_p(coupledGradient("pressure")),
    _pressure(coupledValue("pressure")),
    _density_water(coupledValue("density_water")),
-   _porosity(coupledValue("porosity")),
+   // _porosity(coupledValue("porosity")),
    
    _tau_water(getMaterialProperty<Real>("tau_water")),
    _gravity(getMaterialProperty<Real>("gravity")),
    _gravity_vector(getMaterialProperty<RealVectorValue>("gravity_vector")),
-   //_porosity(getMaterialProperty<Real>("porosity")),
+   _porosity(getMaterialProperty<Real>("material_porosity")),
    // _density_water(getMaterialProperty<Real>("density_water")),
    _i(getParam<int>("i"))
 
