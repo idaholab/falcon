@@ -39,7 +39,7 @@
 
 //energy
 #include "EnthalpyImplicitEuler.h"
-#include "EnthalpyDiffusion.h"                  \
+#include "EnthalpyDiffusion.h"        
   //#include "EnthalpyConvectionWater.h"
 //#include "EnthalpyConvectionSteam.h"
 
@@ -56,6 +56,7 @@
 #include "CoupledPorosityMaterialAux.h"
 #include "CoupledPorosityNodalAux.h"
 //#include "CoupledWaterDensityAux.h"
+#include "StressStrainDamageComputeAux.h"
 
 //BCs
 #include "PressureNeumannBC2.h"
@@ -80,9 +81,9 @@ namespace Falcon
     Moose::registerObjects();
     
 //mechanics
-    registerNamedKernel(SolidMechXFalcon, "SolidMechX");
-    registerNamedKernel(SolidMechYFalcon, "SolidMechY");
-    registerNamedKernel(SolidMechZFalcon, "SolidMechZ");
+    registerNamedKernel(SolidMechXFalcon, "SolidMechXFalcon");
+    registerNamedKernel(SolidMechYFalcon, "SolidMechYFalcon");
+    registerNamedKernel(SolidMechZFalcon, "SolidMechZFalcon");
     registerKernel(SolidMechImplicitEuler);
     
     registerKernel(StressCompute);
@@ -134,7 +135,7 @@ namespace Falcon
     registerAux(VelocityAux);
     registerAux(CoupledPorosityMaterialAux);
     registerAux(CoupledPorosityNodalAux);
-    //registerAux(CoupledWaterDensityAux);
+    registerAux(StressStrainDamageComputeAux);
     
 //BCs    
     registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");

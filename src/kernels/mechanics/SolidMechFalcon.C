@@ -25,6 +25,9 @@ SolidMechFalcon::recomputeConstants()
   _c2 = _nu/(1.-_nu);
   _c3 = .5*(1.-2.*_nu)/(1.-_nu);
 
+  if (LIBMESH_DIM == 3)
+  {
+    
   _B11=TensorValue<Number>(1., 0., 0.,
                            0., _c3, 0.,
                            0., 0., _c3);
@@ -36,8 +39,6 @@ SolidMechFalcon::recomputeConstants()
   _B13=TensorValue<Number>(0., 0., _c2,
                            0., 0., 0.,
                            _c3, 0., 0.);
-
-    
   _B21=TensorValue<Number>(0., _c3, 0.,
                            _c2, 0., 0.,
                            0., 0., 0.);
@@ -49,9 +50,6 @@ SolidMechFalcon::recomputeConstants()
   _B23=TensorValue<Number>(0., 0., 0.,
                            0., 0., _c2,
                            0., _c3, 0.);
-
-
-    
   _B31=TensorValue<Number>(0., 0., _c3,
                            0., 0., 0.,
                            _c2, 0., 0.);
@@ -63,4 +61,23 @@ SolidMechFalcon::recomputeConstants()
   _B33=TensorValue<Number>(_c3, 0., 0.,
                            0., _c3, 0.,
                            0., 0., 1.);
+  }
+  
+  else if (LIBMESH_DIM == 2)
+  {
+
+    _B11=TensorValue<Number>(1., 0.,
+                             0., _c3);
+
+    _B12=TensorValue<Number>(0., _c2,
+                           _c3 , 0.0);
+
+    _B21=TensorValue<Number>(0., _c3,
+                           _c2 ,  0.);
+
+    _B22=TensorValue<Number>(_c3, 0.,
+                             0., 1.);
+
+  }
+  
 }

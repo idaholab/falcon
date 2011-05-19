@@ -2,6 +2,11 @@
 #define SOLIDMECHANICS_H
 
 #include "PorousMedia.h"
+#include "ColumnMajorMatrix.h"
+
+//libMesh includes
+#include "tensor_value.h"
+#include "vector_value.h"
 
 
 //Forward Declarations
@@ -20,6 +25,12 @@ public:
                  InputParameters parameters);
   
 protected:
+  static void rotateSymmetricTensor( const ColumnMajorMatrix & , const RealTensorValue & ,
+                                     RealTensorValue & );
+
+  void computeDamage(const int qp); //damage mechanics
+  void computeCrack_tension(const int qp); //tensile induce cracking
+  void computeCrack_Mohr_Coulomb(const int qp); //Mohr_Coulomb criteria
   virtual void computeProperties();
 
   bool _has_temp;
@@ -40,16 +51,38 @@ protected:
   Real _input_biot_coeff;
   Real _input_t_ref;
   
+  bool _has_damage;
+  Real _input_damage_coeff;             //initial damage between [0,1]
+  Real _input_strain_initialize_damage; //critical strain to lnitialize damage
+  Real _input_strain_broken;            //critical strain for complete failure
+  Real _damage_a1;                      //parameters for youngs modulus and damage factor
+  Real _damage_a2;
+
+  bool _has_crack;
+  std::string _has_crack_method; // true <==> tensile_induced_crack  false<==>Mohr_Coulomb
+  Real _critical_crack_strain;
+  Real _cohesion;
+  Real _friction_angle;
+
+  ColumnMajorMatrix _total_strain;
+  TensorValue<Real> _total_stress;
+  ColumnMajorMatrix _total_stress1;
+  
   MaterialProperty<Real> & _thermal_strain;
   MaterialProperty<Real> & _alpha;
   MaterialProperty<Real> & _youngs_modulus;
   MaterialProperty<Real> & _poissons_ratio;
   MaterialProperty<Real> & _biot_coeff;
+  MaterialProperty<Real> & _damage_coeff;
+  MaterialProperty<Real> & _strain_history;
+  
 
   MaterialProperty<RealVectorValue> & _stress_normal_vector;
   MaterialProperty<RealVectorValue> & _stress_shear_vector;
   MaterialProperty<RealVectorValue> & _strain_normal_vector;
   MaterialProperty<RealVectorValue> & _strain_shear_vector;
+  MaterialProperty<RealVectorValue> * _crack_flags;
+  MaterialProperty<RealVectorValue> * _crack_flags_old;
   
   Real _E;
   Real _nu;
