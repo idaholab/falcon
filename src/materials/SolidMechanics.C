@@ -80,24 +80,29 @@ SolidMechanics::SolidMechanics(const std::string & name,
    _damage_coeff(declareProperty<Real>("damage_coeff")),
    _strain_history(declareProperty<Real>("strain_history")),
 
-//   _damage_coeff_old(declarePropertyOld<Real>("damage_coeff")),
-//   _strain_history_old(declarePropertyOld<Real>("strain_history")),
+   _damage_coeff_old(declarePropertyOld<Real>("damage_coeff")),
+   _strain_history_old(declarePropertyOld<Real>("strain_history")),
 
    _stress_normal_vector(declareProperty<RealVectorValue>("stress_normal_vector")),
    _stress_shear_vector (declareProperty<RealVectorValue>("stress_shear_vector")),
    _strain_normal_vector(declareProperty<RealVectorValue>("strain_normal_vector")),
    _strain_shear_vector (declareProperty<RealVectorValue>("strain_shear_vector")),
 
-   _crack_flags(NULL)
-//   _crack_flags_old(NULL)
+   _crack_flags(NULL),
+   _crack_flags_old(NULL)
 
 {
   if ( _has_crack && _critical_crack_strain > 0)
   {
     _crack_flags     = &declareProperty<RealVectorValue>("crack_flags");
-//    _crack_flags_old = &declarePropertyOld<RealVectorValue>("crack_flags");
+    _crack_flags_old = &declarePropertyOld<RealVectorValue>("crack_flags");
   }
 
+//  if(_has_damage)
+//  {
+//   _damage_coeff_old   = &declarePropertyOld<Real>("damage_coeff"); //newly added
+//   _strain_history_old = &declarePropertyOld<Real>("strain_history"); //newly added
+//  }
 }
 
 void
@@ -162,7 +167,7 @@ SolidMechanics::computeProperties()
           for (unsigned int j = 0; j<LIBMESH_DIM; ++j)
           {
             (*_crack_flags)[i](j)     = 1.0;
-//            (*_crack_flags_old)[i](j) = 1.0;
+            (*_crack_flags_old)[i](j) = 1.0;
           }
         }
       }
@@ -202,22 +207,19 @@ SolidMechanics::computeDamage(const int qp)
     
   _effective_strain = std::pow(_effective_strain*2./3. , 0.5);
       
-  Real local_damage_coeff = _damage_coeff[qp];
-  Real local_strain_history = _strain_history[qp];
-
-  if(local_strain_history < _input_strain_broken) //not fully failed
+  if(_strain_history[qp] < _input_strain_broken) //not fully failed
   {
-    if(_effective_strain <= local_strain_history)//no further damaging
+    if(_effective_strain <= _strain_history[qp])//no further damaging
     {
-      local_damage_coeff   = local_damage_coeff;
-      local_strain_history = local_strain_history;
+      _damage_coeff[qp]   = _damage_coeff[qp];
+      _strain_history[qp] = _strain_history[qp];
     }
     else //damaging continues
     {
       if(_effective_strain >= _input_strain_broken)//fully failed: s > sc
       {
-        local_damage_coeff   = 0.999;
-        local_strain_history = _effective_strain;
+        _damage_coeff[qp]   = 0.999;
+        _strain_history[qp] = _effective_strain;
       }
       else//continuously damaging s-{s0,sc}
       {
@@ -228,20 +230,20 @@ SolidMechanics::computeDamage(const int qp)
           std::cout<<"The parameter of damage evolution are too large,please change them"<<"\n";
           _temp = 0.999;
         }
-        local_damage_coeff = std::max(_temp , local_damage_coeff);
-        local_strain_history = _effective_strain;
+        _damage_coeff[qp] = std::max(_temp , _damage_coeff[qp]);
+        _strain_history[qp] = _effective_strain;
       }
     }
   }
   else //alreadry completely failed
   {
-    local_damage_coeff = 0.999;
-    local_strain_history =  std::max(local_strain_history , _effective_strain);
+    _damage_coeff[qp] = 0.999;
+    _strain_history[qp] =  std::max(_strain_history[qp] , _effective_strain);
   }
 
   //newly added to comply MOOSE procedure
-  _damage_coeff[qp]   = std::min(_damage_coeff[qp] , local_damage_coeff);
-  _strain_history[qp] = std::min(_strain_history[qp] , local_strain_history);
+  _damage_coeff[qp]   = std::min(_damage_coeff[qp] , _damage_coeff_old[qp]);
+  _strain_history[qp] = std::min(_strain_history[qp] , _strain_history_old[qp]);
   
   _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus;
 }
@@ -303,37 +305,35 @@ SolidMechanics::computeCrack_tension(const int qp)
   _total_strain.eigen( principal_strain, e_vec );
   
   const Real tiny(1.0e-8);
-
-  RealVectorValue crack_flags( (*_crack_flags)[qp] );
-  for(int i = 0  ; i < ND; ++i)  crack_flags(i) = (*_crack_flags)[qp](i);
   
   for (unsigned int i(0); i < LIBMESH_DIM; ++i)
   {
     if (principal_strain(i,0) > _critical_crack_strain)
     {
-      crack_flags(i) = tiny;
+      (*_crack_flags)[qp](i) = tiny;
       _damage_coeff[qp]     =  1.0;
     }
-//    else
-//    {
-//      crack_flags(i) = 1.0;
-//    }
+    else
+    {
+      (*_crack_flags)[qp](i) = 1.0;
+    }
     
-    (*_crack_flags)[qp](i) = std::min((*_crack_flags)[qp](i), crack_flags(i));
+    (*_crack_flags)[qp](i) = std::min((*_crack_flags)[qp](i), (*_crack_flags_old)[qp](i));
     
   }
 
- for (unsigned int i(0); i < LIBMESH_DIM; ++i)
+  RealVectorValue crack_flags( (*_crack_flags)[qp] );
+  for (unsigned int i(0); i < LIBMESH_DIM; ++i)
   {
     if (principal_strain(i,0) < 0)
     {
       crack_flags(i) = 1;
     }
-//    else
-//    {
-//      crack_flags(i) = (*_crack_flags)[qp](i);
-//    }
-  }
+    else
+    {
+      crack_flags(i) = (*_crack_flags)[qp](i);
+    }
+}
 
   ColumnMajorMatrix e_vec1(ND,ND);
   _total_stress1.eigen( principal_stress, e_vec1 );
@@ -654,9 +654,6 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
     }
   }
 
-  RealVectorValue local_crack_flags( (*_crack_flags)[qp] );
-  for(int i = 0 ; i < 3 ; ++i)   local_crack_flags(i) = (*_crack_flags)[qp](i);
-  Real local_damage_coeff = _damage_coeff[qp];
   //check it satisfy Mohr-Coulomb or not
   temp = (principal_stress(0,0) + principal_stress(2,0))/2.0 + 
          (principal_stress(0,0) - principal_stress(2,0))/2.0 * std::abs(cos2);//normal stress
@@ -664,36 +661,31 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
   temp = _cohesion - _friction_angle * temp ;
   if(temp1 >= temp && _q_point[qp](1) < 0.9 && _q_point[qp](1) > 0.1) //avoid failing from BCs
   {
-    local_crack_flags(0) = tiny;
-    local_damage_coeff   = 1.0;
+    (*_crack_flags)[qp](0) = tiny;
+    _damage_coeff[qp] = 1.0;
   }
   else
   {
-    local_crack_flags(0) = 1.0;
+    (*_crack_flags)[qp](0) = 1.0;
   }
-  (*_crack_flags)[qp](0) = std::min((*_crack_flags)[qp](0), local_crack_flags(0));
-  _damage_coeff[qp] = std::max(local_damage_coeff , _damage_coeff[qp]);
+  (*_crack_flags)[qp](0) = std::min((*_crack_flags)[qp](0), (*_crack_flags_old)[qp](0));
+  _damage_coeff[qp] = std::max(_damage_coeff_old[qp] , _damage_coeff[qp]);
   if( (*_crack_flags)[qp](0) < 0.5) //if cracked, need to release shear stress    
   {
     _total_stress1(0,2) *= tiny;
     _total_stress1(2,0) *= tiny;
-    if(_total_stress1(0,0) > 0.0 && _total_stress1(0,0) > _total_stress1(2,2))
-    {
-      _total_stress1(0,0) *= tiny;
-    }
-    if(_total_stress1(2,2) > 0.0 && _total_stress1(2,2) > _total_stress1(0,0))
-    {
-      _total_stress1(2,2) *= tiny;
-    }
+//    if(_total_stress1(0,0) > 0.0 && _total_stress1(0,0) > _total_stress1(2,2))  _total_stress1(0,0) *= tiny;
+//    if(_total_stress1(2,2) > 0.0 && _total_stress1(2,2) > _total_stress1(0,0))  _total_stress1(2,2) *= tiny;
+
     //must keep the second principal stress as second after modified stress tensor
-//    if(_total_stress1(1,1) > _total_stress1(0,0) && _total_stress1(1,1) > _total_stress1(2,2))
-//    {
-//      _total_stress1(1,1) = (_total_stress1(0,0) + _total_stress1(2,2)) / 2.0;
-//    }
-//    if (_total_stress1(1,1) < _total_stress1(0,0) && _total_stress1(1,1) < _total_stress1(2,2))
-//    {
-//      _total_stress1(1,1) = (_total_stress1(0,0) + _total_stress1(2,2)) / 2.0;
-//    }
+    if(_total_stress1(1,1) > _total_stress1(0,0) && _total_stress1(1,1) > _total_stress1(2,2))
+    {
+      _total_stress1(1,1) = (_total_stress1(0,0) + _total_stress1(2,2)) / 2.0;
+    }
+    if (_total_stress1(1,1) < _total_stress1(0,0) && _total_stress1(1,1) < _total_stress1(2,2))
+    {
+      _total_stress1(1,1) = (_total_stress1(0,0) + _total_stress1(2,2)) / 2.0;
+    }
   }
 
   //re-rotate the modified stress into global coordinate
@@ -1002,37 +994,27 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
     }
   }
 
-  RealVectorValue local_crack_flags( (*_crack_flags)[qp] );
-  for(int i = 0 ; i < 3 ; ++i)   local_crack_flags(i) = (*_crack_flags)[qp](i);
-  Real local_damage_coeff = _damage_coeff[qp];
-
   //check it satisfy Mohr-Coulomb or not
   temp1 = std::abs(sstress);
   temp  = _cohesion - _friction_angle * nstress;
   if(temp1 >= temp && _q_point[qp](1) < 0.9 && _q_point[qp](1) > 0.1) //avoid failing from BCs
   {
-    local_crack_flags(0) = tiny;
-    local_damage_coeff = 1.0;
+    (*_crack_flags)[qp](0) = tiny;
+    _damage_coeff[qp] = 1.0;
   }
   else
   {
-    local_crack_flags(0) = 1.0;
+    (*_crack_flags)[qp](0) = 1.0;
   }
-  (*_crack_flags)[qp](0) = std::min((*_crack_flags)[qp](0), local_crack_flags(0));
-  _damage_coeff[qp] = std::max(local_damage_coeff , _damage_coeff[qp]);
+  (*_crack_flags)[qp](0) = std::min((*_crack_flags)[qp](0), (*_crack_flags_old)[qp](0));
+  _damage_coeff[qp] = std::max(_damage_coeff_old[qp] , _damage_coeff[qp]);
   if( (*_crack_flags)[qp](0) < 0.5) //if cracked, need to release shear stress    
   {
     _total_stress1(0,2) *= tiny;
     _total_stress1(2,0) *= tiny;
 
-    if(_total_stress1(0,0) > 0.0 && _total_stress1(0,0) > _total_stress1(2,2))
-    {
-      _total_stress1(0,0) *= tiny;
-    }
-    if(_total_stress1(2,2) > 0.0 && _total_stress1(2,2) > _total_stress1(0,0))
-    {
-      _total_stress1(2,2) *= tiny;
-    }
+    if(_total_stress1(0,0) > 0.0 && _total_stress1(0,0) > _total_stress1(2,2))  _total_stress1(0,0) *= tiny;
+    if(_total_stress1(2,2) > 0.0 && _total_stress1(2,2) > _total_stress1(0,0))  _total_stress1(2,2) *= tiny;
     //must keep the second principal stress as second after modified stress tensor
 //    if(_total_stress1(1,1) > _total_stress1(0,0) && _total_stress1(1,1) > _total_stress1(2,2))
 //    {
@@ -1077,7 +1059,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
 
 ///////////////////////////////////////////////////////////////////////
 
-
+   
 
 
 
