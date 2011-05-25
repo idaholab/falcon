@@ -77,16 +77,17 @@ protected:
   MaterialProperty<Real> & _damage_coeff;
   MaterialProperty<Real> & _strain_history;
 
-  MaterialProperty<Real> & _damage_coeff_old;//newly added
-  MaterialProperty<Real> & _strain_history_old;//newly added
+//  MaterialProperty<Real> & _damage_coeff_old;//newly added
+//  MaterialProperty<Real> & _strain_history_old;//newly added
   
 
   MaterialProperty<RealVectorValue> & _stress_normal_vector;
   MaterialProperty<RealVectorValue> & _stress_shear_vector;
   MaterialProperty<RealVectorValue> & _strain_normal_vector;
   MaterialProperty<RealVectorValue> & _strain_shear_vector;
+
   MaterialProperty<RealVectorValue> * _crack_flags;
-  MaterialProperty<RealVectorValue> * _crack_flags_old;
+//  MaterialProperty<RealVectorValue> * _crack_flags_old;
   
   Real _E;
   Real _nu;
