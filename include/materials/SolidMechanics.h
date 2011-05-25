@@ -30,8 +30,9 @@ protected:
 
   void computeDamage(const int qp); //damage mechanics
   void computeCrack_tension(const int qp); //tensile induce cracking
-  void computeCrack_Mohr_Coulomb(const int qp); //Mohr_Coulomb criteria
-  virtual void computeProperties();
+  void computeCrack_Mohr_Coulomb_v1(const int qp); //Mohr_Coulomb criteria
+  void computeCrack_Mohr_Coulomb_v2(const int qp); //Mohr_Coulomb criteria
+   virtual void computeProperties();
 
   bool _has_temp;
   VariableGradient & _grad_temp;
@@ -75,6 +76,9 @@ protected:
   MaterialProperty<Real> & _biot_coeff;
   MaterialProperty<Real> & _damage_coeff;
   MaterialProperty<Real> & _strain_history;
+
+  MaterialProperty<Real> & _damage_coeff_old;//newly added
+  MaterialProperty<Real> & _strain_history_old;//newly added
   
 
   MaterialProperty<RealVectorValue> & _stress_normal_vector;
