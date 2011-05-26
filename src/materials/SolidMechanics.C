@@ -164,6 +164,9 @@ SolidMechanics::computeProperties()
       {
         for (unsigned int i = 0; i< _qrule->n_points(); ++i)
         {
+          _damage_coeff[i]     =  0.0;
+          _damage_coeff_old[i]     =  0.0;
+          
           for (unsigned int j = 0; j<LIBMESH_DIM; ++j)
           {
             (*_crack_flags)[i](j)     = 1.0;
@@ -308,7 +311,7 @@ SolidMechanics::computeCrack_tension(const int qp)
   
   for (unsigned int i(0); i < LIBMESH_DIM; ++i)
   {
-    if (principal_strain(i,0) > _critical_crack_strain)
+    if (principal_strain(i,0) > _critical_crack_strain )  //&& _q_point[qp](1) < 0.8 && _q_point[qp](1) > 0.2)
     {
       (*_crack_flags)[qp](i) = tiny;
       _damage_coeff[qp]     =  1.0;
@@ -319,7 +322,7 @@ SolidMechanics::computeCrack_tension(const int qp)
     }
     
     (*_crack_flags)[qp](i) = std::min((*_crack_flags)[qp](i), (*_crack_flags_old)[qp](i));
-    
+    _damage_coeff[qp] = std::max(_damage_coeff_old[qp] , _damage_coeff[qp]);
   }
 
   RealVectorValue crack_flags( (*_crack_flags)[qp] );
@@ -340,7 +343,7 @@ SolidMechanics::computeCrack_tension(const int qp)
   
   for (unsigned int i(0); i < LIBMESH_DIM; ++i)
   {
-    if (crack_flags(i) < 0.5)
+    if (crack_flags(i) < 0.5 )
     {
       principal_stress(i,0) = tiny;
     }
@@ -875,7 +878,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
     }
   }
 
-
+  
   Real nsol1 , nsol2 , ssol1 , ssol2;
   Real nstress , sstress;
   Real cos2 , sin2 , cos1 , sin1;
@@ -886,7 +889,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
 	  (_cohesion*_cohesion+principal_stress(0,0)*principal_stress(2,0));
   temp1 = (principal_stress(0,0)+principal_stress(2,0)+2.*_cohesion*_friction_angle) / 
 	  (2.*(_friction_angle*_friction_angle+1.0));
-  if(temp > 0.0)
+  if(temp > tiny)
   {
     nsol1 = temp1 + temp / (2.*(_friction_angle*_friction_angle+1.0));
     nsol2 = temp1 - temp / (2.*(_friction_angle*_friction_angle+1.0));
@@ -903,12 +906,12 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
       nstress = nsol2;
     }
   }
-  else if(temp == 0.0)
+  else if( temp >= 0.0 && temp <= tiny)
   {
     nstress = temp1 ; 
     sstress = _cohesion - _friction_angle * nstress;
   }
-  else //(temp < 0.0)  //must within Mohr-Coulomb criteria
+  else if (temp < 0.0)  //must within Mohr-Coulomb criteria
   {
     nstress = 0.0; //0.0 < c-k*0.0
     sstress = 0.0;
