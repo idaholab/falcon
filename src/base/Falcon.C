@@ -1,14 +1,14 @@
 #include "Moose.h"
 #include "Factory.h"
 
-//mechanics
+//kernels
+///////////////////////////////////////////////////////////////
+//      solid mechanics                                      //
+///////////////////////////////////////////////////////////////
 #include "SolidMechXFalcon.h"
 #include "SolidMechYFalcon.h"
 #include "SolidMechZFalcon.h"
 #include "SolidMechImplicitEuler.h"
-
-#include "StressCompute.h"
-#include "StrainCompute.h"
 
 #include "SolidMechTempCoupleXFalcon.h"
 #include "SolidMechTempCoupleYFalcon.h"
@@ -18,77 +18,59 @@
 #include "SolidMechPoroCoupleY.h"
 #include "SolidMechPoroCoupleZ.h"
 
-#include "SolidMechSwellingSolid.h"
-#include "SolidMechSwellingGas.h"
-#include "SinHeat.h"
-
-//heat transport
+///////////////////////////////////////////////////////////////
+//      Single phase formulation: pressure & temperature     //
+///////////////////////////////////////////////////////////////
 #include "TemperatureTimeDerivative.h"
 #include "TemperatureTimeDerivativeFluid.h"
 #include "TemperatureTimeDerivativeSolid.h"
 #include "TemperatureDiffusion.h"
 #include "TemperatureConvection.h"
-//#include "Temperature.h"
 
-//fluid-mass flow
 #include "MassFluxTimeDerivative_PT.h"
 #include "WaterMassFluxPressure_PT.h"
 #include "WaterMassFluxElevation_PT.h"
 
+//////////////////////////////////////////////////////////////      
+//       Two phase formulation: pressure & enthalpy         //
+//////////////////////////////////////////////////////////////
 #include "MassFluxTimeDerivative.h"
 #include "WaterMassFluxPressure.h"
 #include "SteamMassFluxPressure.h"
 #include "WaterMassFluxElevation.h"
 
-
-//#include "CoupledDarcyImplicitEuler.h"
-
-//energy
-//#include "EnthalpyImplicitEuler.h"
-//#include "EnthalpyDiffusion.h"        
-  //#include "EnthalpyConvectionWater.h"
-//#include "EnthalpyConvectionSteam.h"
 #include "EnthalpyTimeDerivative.h"
 #include "EnthalpyDiffusion.h"
 #include "EnthalpyConvectionWater.h"
 #include "EnthalpyConvectionSteam.h"
 
 //auxkernels
-#include "CoupledDensityAux_PT.h"
-#include "CoupledDdensityDTAux_PT.h"
-#include "CoupledDdensityDPAux_PT.h"
+#include "CoupledDensityAux_PT.h"          // water density as function of (P,T)
+#include "CoupledDdensityDTAux_PT.h"       // derivative of water density to T at const P
+#include "CoupledDdensityDPAux_PT.h"       // derivative of water density to P at const T
 
-#include "coupledTemperatureAux.h"
-#include "CoupledWaterSaturationAux.h"
-#include "CoupledDensityAux.h"
+#include "CoupledTemperatureAux.h"         // T as functon of (P,H) -two phase formulation
+#include "CoupledWaterSaturationAux.h"     // Sw as functon of (P,H) -two phase formulation
+#include "CoupledDensityAux.h"             // mixed density as functon of (P,H) -two phase formulation
 
-#include "CoupledWaterDensityAux.h"
-#include "CoupledWaterViscosityAux.h"
-#include "CoupledSteamDensityAux.h"
-#include "CoupledSteamViscosityAux.h"
+#include "CoupledWaterDensityAux.h"        // water density functon of (P,H) -two phase formulation
+#include "CoupledWaterViscosityAux.h"      // water viscosity functon of (P,T) - used by both PT and PH formaulations
+#include "CoupledSteamDensityAux.h"        // steam density functon of (P,H) -two phase formulation
+#include "CoupledSteamViscosityAux.h"      // steam viscosity functon of (P,T) - used by PH formaulations
 
-#include "CoupledWaterEnthalpyAux.h"
-#include "CoupledSteamEnthalpyAux.h"
-#include "CoupledDsteamenthalpydH_PAux.h"
-#include "CoupledDwaterenthalpydH_PAux.h"
+#include "CoupledWaterEnthalpyAux.h"       //water enthalpy as function of (P,H) (MJ/kg)
+#include "CoupledSteamEnthalpyAux.h"       //steam enthalpy as function of (P,H) (MJ/kg)
+#include "CoupledDsteamenthalpydH_PAux.h"  //derivative of steam enthalpy to H at const P: 1 (steam only ); 0 otherwise
+#include "CoupledDwaterenthalpydH_PAux.h"  //derivative of water enthalpy to H at const P: 1 (water only ); 0 otherwise
 
-#include "CoupledDdensityDTAux.h"
-#include "CoupledDdensityDPAux.h"
-#include "CoupledDdensityDHAux.h"
-#include "CoupledDTDH_PAux.h"
-
-
-
-
+#include "CoupledDdensityDTAux.h"          //derivative of mixed density to T at const P, not used now
+#include "CoupledDdensityDPAux.h"          //derivative of mixed density to P at const H,
+#include "CoupledDdensityDHAux.h"          //derivative of mixed density to H at const P,
+#include "CoupledDTDH_PAux.h"              //derivative of T to H at const P
 
 #include "AnalyticalADE1D.h"
-//#include "TemperatureAux.h"
-//#include "WaterSatAux.h"/
-//#include "CoupledRhoAux.h"
 #include "VelocityAux.h"
 #include "CoupledPorosityMaterialAux.h"
-#include "CoupledPorosityNodalAux.h"
-//#include "CoupledWaterDensityAux.h"
 #include "StressStrainDamageComputeAux.h"
 
 //BCs
@@ -99,7 +81,6 @@
 
 
 //materials
-#include "Constant.h"
 #include "PorousMedia.h"
 #include "FluidFlow.h"
 #include "HeatTransport.h"
@@ -118,9 +99,6 @@ namespace Falcon
     registerNamedKernel(SolidMechYFalcon, "SolidMechYFalcon");
     registerNamedKernel(SolidMechZFalcon, "SolidMechZFalcon");
     registerKernel(SolidMechImplicitEuler);
-    
-    registerKernel(StressCompute);
-    registerKernel(StrainCompute);
 
     registerNamedKernel(SolidMechTempCoupleXFalcon, "SolidMechTempCoupleX");
     registerNamedKernel(SolidMechTempCoupleYFalcon, "SolidMechTempCoupleY");
@@ -129,73 +107,51 @@ namespace Falcon
     registerKernel(SolidMechPoroCoupleX);
     registerKernel(SolidMechPoroCoupleY);
     registerKernel(SolidMechPoroCoupleZ);
-
-    registerKernel(SolidMechSwellingSolid);
-    registerKernel(SolidMechSwellingGas);
-    registerKernel(SinHeat);
-
-//heat transport
+//heat transport-PT formulation, single phase only
     registerKernel(TemperatureTimeDerivative);
     registerKernel(TemperatureTimeDerivativeFluid);
     registerKernel(TemperatureTimeDerivativeSolid);
     registerKernel(TemperatureDiffusion);
     registerKernel(TemperatureConvection);
-//    registerKernel(Temperature);
-
-//fluid-mass flow    
+//fluid-mass flow-single phase formulation
     registerKernel(MassFluxTimeDerivative_PT);
     registerKernel(WaterMassFluxPressure_PT);
     registerKernel(WaterMassFluxElevation_PT);
-      
+//fluid-mass flow-two phase formulation      
     registerKernel(MassFluxTimeDerivative);
     registerKernel(WaterMassFluxPressure);
     registerKernel(SteamMassFluxPressure);
     registerKernel(WaterMassFluxElevation);
-    
-//    registerKernel(CoupledDarcyImplicitEuler);
-    
 //energy
- //   registerKernel(EnthalpyImplicitEuler);
- //   registerKernel(EnthalpyDiffusion);
-//    registerKernel(EnthalpyConvectionWater);
- //   registerKernel(EnthalpyConvectionSteam);
-      registerKernel(EnthalpyTimeDerivative);
-      registerKernel(EnthalpyDiffusion);
-      registerKernel(EnthalpyConvectionWater);
-      registerKernel(EnthalpyConvectionSteam);
-      
-      
-      
-      
+    registerKernel(EnthalpyTimeDerivative);
+    registerKernel(EnthalpyDiffusion);
+    registerKernel(EnthalpyConvectionWater);
+    registerKernel(EnthalpyConvectionSteam);
       
 //auxkernels
-      registerAux(CoupledDdensityDTAux_PT);
-      registerAux(CoupledDdensityDPAux_PT);    
-      registerAux(CoupledDensityAux_PT);
-      registerAux(CoupledWaterSaturationAux);
-      registerAux(CoupledDdensityDHAux); 
-      registerAux(CoupledDTDH_PAux); 
-      registerAux(CoupledDdensityDPAux);
-      registerAux( CoupledDdensityDTAux);
-      registerAux(CoupledDensityAux);
-      registerAux(CoupledWaterDensityAux);
-      registerAux(CoupledWaterViscosityAux);
-      registerAux(CoupledWaterEnthalpyAux);  
-      registerAux(CoupledSteamDensityAux);
-      registerAux(CoupledSteamViscosityAux);
-      registerAux(CoupledSteamEnthalpyAux);
-      registerAux(CoupledDwaterenthalpydH_PAux);
-      registerAux(CoupledDsteamenthalpydH_PAux);
-      registerAux(CoupledTemperatureAux);
+    registerAux(CoupledDdensityDTAux_PT);
+    registerAux(CoupledDdensityDPAux_PT);    
+    registerAux(CoupledDensityAux_PT);
+    registerAux(CoupledWaterSaturationAux);
+    registerAux(CoupledDdensityDHAux); 
+    registerAux(CoupledDTDH_PAux); 
+    registerAux(CoupledDdensityDPAux);
+    registerAux( CoupledDdensityDTAux);
+    registerAux(CoupledDensityAux);
+    registerAux(CoupledWaterDensityAux);
+    registerAux(CoupledWaterViscosityAux);
+    registerAux(CoupledWaterEnthalpyAux);  
+    registerAux(CoupledSteamDensityAux);
+    registerAux(CoupledSteamViscosityAux);
+    registerAux(CoupledSteamEnthalpyAux);
+    registerAux(CoupledDwaterenthalpydH_PAux);
+    registerAux(CoupledDsteamenthalpydH_PAux);
+    registerAux(CoupledTemperatureAux);
       
-      registerAux(AnalyticalADE1D);
-    //  registerAux(TemperatureAux);
-    // registerAux(WaterSatAux);
-    // registerAux(CoupledRhoAux);
-     registerAux(VelocityAux);
-     registerAux(CoupledPorosityMaterialAux);
-     registerAux(CoupledPorosityNodalAux);
-     registerAux(StressStrainDamageComputeAux);
+    registerAux(AnalyticalADE1D);
+    registerAux(VelocityAux);
+    registerAux(CoupledPorosityMaterialAux);
+    registerAux(StressStrainDamageComputeAux);
     
 //BCs    
     registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
@@ -204,13 +160,10 @@ namespace Falcon
     registerBoundaryCondition(StepDirichletBC);
 
 //materials    
-    registerMaterial(Constant);
     registerMaterial(PorousMedia);
     registerMaterial(FluidFlow);
     registerMaterial(HeatTransport);
     registerMaterial(SolidMechanics);
     registerMaterial(Geothermal);
-
-    
   }
 }
