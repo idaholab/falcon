@@ -21,8 +21,8 @@ SUBROUTINE psat_new_rkp (T, P)
     
     SC=(TC+273.15)/647.096
     tao = 1.D0-SC
-    Paln= A(1) * tao + A(2)* tao ** 1.5 + A(3) * tao ** 3 &
-         + A(4) * tao ** 3.5 +  A(5) * tao ** 4 &
+    Paln= A(1) * tao + A(2)* tao ** 1.5 + A(3) * tao ** 3. &
+         + A(4) * tao ** 3.5 +  A(5) * tao ** 4. &
          + A(6) * tao ** 7.5
     Paln = Paln / SC
     P = dexp(Paln) * pc

@@ -22,5 +22,6 @@ protected:
   virtual Real computeQpJacobian();
 
   MaterialProperty<Real> &_tau_steam;
+    MaterialProperty<RealGradient> & _darcy_mass_flux_steam;
 };
 #endif //STEAMMASSFLUXPRESSURE

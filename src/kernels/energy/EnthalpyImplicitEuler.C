@@ -5,8 +5,8 @@ template<>
 InputParameters validParams<EnthalpyImplicitEuler>()
 {
   InputParameters params = validParams<ImplicitEuler>();
-  params.addCoupledVar("tempAux", "TODO: add description");
-  params.addCoupledVar("densityAux", "TODO: add description");
+  params.addCoupledVar("temperature", "TODO: add description");
+  params.addCoupledVar("density", "TODO: add description");
   return params;
 }
 

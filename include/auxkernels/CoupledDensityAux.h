@@ -1,5 +1,5 @@
-#ifndef COUPLEDEOSAUX_H
-#define COUPLEDEOSAUX_H
+#ifndef COUPLEDDENSITYAUX_H
+#define COUPLEDDENSITYAUX_H
 
 #include "AuxKernel.h"
 //#include "CoupledDdensityDPAux.h"
@@ -27,22 +27,11 @@ public:
   virtual ~CoupledDensityAux() {}
   
 protected:
-  virtual Real computeValue();
-
-  // Real density_fun(Real T);
-
-  VariableValue & _temperature;
-  VariableValue & _pressure;
-  VariableValue & _dwdt;
-  VariableValue & _dwdp;
     
-  Real _input_density_water;
-  bool _has_variable_density;
-  Real _density_subroutine_val;
-  // Real _density_water;
-  
-  
-
+   virtual Real computeValue();
+   
+   Real _input_density_mixture;
+ 
   
 };
 

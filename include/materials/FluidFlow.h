@@ -32,10 +32,15 @@ protected:
 // VariableValue  & _density_water;
   bool _has_temp;
   VariableValue  & _temperature;
+ 
   VariableValue & _density_water;
   VariableValue & _viscosity_water;
   
-
+  bool _has_enthalpy;  
+  VariableValue & _density_steam;
+  VariableValue & _viscosity_steam;
+    
+  VariableValue & _saturation_water;
   
 //  Real _input_density_water;
 //  Real _input_viscosity_water;
@@ -55,7 +60,13 @@ protected:
   MaterialProperty<RealGradient> & _darcy_mass_flux_water;
   MaterialProperty<RealGradient> & _darcy_mass_flux_water_pressure;
   MaterialProperty<RealGradient> & _darcy_mass_flux_water_elevation;
-  
+
+  MaterialProperty<Real> & _tau_steam;
+  MaterialProperty<RealGradient> & _darcy_flux_steam;
+  MaterialProperty<RealGradient> & _darcy_mass_flux_steam;
+  MaterialProperty<RealGradient> & _darcy_mass_flux_steam_pressure;
+  MaterialProperty<RealGradient> & _darcy_mass_flux_steam_elevation;
+    
 };
 
 #endif //FLUIDFLOW_H

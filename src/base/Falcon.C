@@ -31,23 +31,56 @@
 //#include "Temperature.h"
 
 //fluid-mass flow
+#include "MassFluxTimeDerivative_PT.h"
+#include "WaterMassFluxPressure_PT.h"
+#include "WaterMassFluxElevation_PT.h"
+
 #include "MassFluxTimeDerivative.h"
 #include "WaterMassFluxPressure.h"
 #include "SteamMassFluxPressure.h"
 #include "WaterMassFluxElevation.h"
+
+
 //#include "CoupledDarcyImplicitEuler.h"
 
 //energy
-#include "EnthalpyImplicitEuler.h"
-#include "EnthalpyDiffusion.h"        
+//#include "EnthalpyImplicitEuler.h"
+//#include "EnthalpyDiffusion.h"        
   //#include "EnthalpyConvectionWater.h"
 //#include "EnthalpyConvectionSteam.h"
+#include "EnthalpyTimeDerivative.h"
+#include "EnthalpyDiffusion.h"
+#include "EnthalpyConvectionWater.h"
+#include "EnthalpyConvectionSteam.h"
 
 //auxkernels
+#include "CoupledDensityAux_PT.h"
+#include "CoupledDdensityDTAux_PT.h"
+#include "CoupledDdensityDPAux_PT.h"
+
+#include "coupledTemperatureAux.h"
+#include "CoupledWaterSaturationAux.h"
 #include "CoupledDensityAux.h"
+
+#include "CoupledWaterDensityAux.h"
+#include "CoupledWaterViscosityAux.h"
+#include "CoupledSteamDensityAux.h"
+#include "CoupledSteamViscosityAux.h"
+
+#include "CoupledWaterEnthalpyAux.h"
+#include "CoupledSteamEnthalpyAux.h"
+#include "CoupledDsteamenthalpydH_PAux.h"
+#include "CoupledDwaterenthalpydH_PAux.h"
+
 #include "CoupledDdensityDTAux.h"
 #include "CoupledDdensityDPAux.h"
-#include "CoupledViscosityAux.h"
+#include "CoupledDdensityDHAux.h"
+#include "CoupledDTDH_PAux.h"
+
+
+
+
+
 #include "AnalyticalADE1D.h"
 //#include "TemperatureAux.h"
 //#include "WaterSatAux.h"/
@@ -110,6 +143,10 @@ namespace Falcon
 //    registerKernel(Temperature);
 
 //fluid-mass flow    
+    registerKernel(MassFluxTimeDerivative_PT);
+    registerKernel(WaterMassFluxPressure_PT);
+    registerKernel(WaterMassFluxElevation_PT);
+      
     registerKernel(MassFluxTimeDerivative);
     registerKernel(WaterMassFluxPressure);
     registerKernel(SteamMassFluxPressure);
@@ -118,24 +155,47 @@ namespace Falcon
 //    registerKernel(CoupledDarcyImplicitEuler);
     
 //energy
-    registerKernel(EnthalpyImplicitEuler);
-    registerKernel(EnthalpyDiffusion);
+ //   registerKernel(EnthalpyImplicitEuler);
+ //   registerKernel(EnthalpyDiffusion);
 //    registerKernel(EnthalpyConvectionWater);
-    //   registerKernel(EnthalpyConvectionSteam);
-
+ //   registerKernel(EnthalpyConvectionSteam);
+      registerKernel(EnthalpyTimeDerivative);
+      registerKernel(EnthalpyDiffusion);
+      registerKernel(EnthalpyConvectionWater);
+      registerKernel(EnthalpyConvectionSteam);
+      
+      
+      
+      
+      
 //auxkernels
-    registerAux(CoupledDdensityDTAux);
-    registerAux(CoupledDdensityDPAux);    
-    registerAux(CoupledDensityAux);
-    registerAux(CoupledViscosityAux);
-    registerAux(AnalyticalADE1D);
+      registerAux(CoupledDdensityDTAux_PT);
+      registerAux(CoupledDdensityDPAux_PT);    
+      registerAux(CoupledDensityAux_PT);
+      registerAux(CoupledWaterSaturationAux);
+      registerAux(CoupledDdensityDHAux); 
+      registerAux(CoupledDTDH_PAux); 
+      registerAux(CoupledDdensityDPAux);
+      registerAux( CoupledDdensityDTAux);
+      registerAux(CoupledDensityAux);
+      registerAux(CoupledWaterDensityAux);
+      registerAux(CoupledWaterViscosityAux);
+      registerAux(CoupledWaterEnthalpyAux);  
+      registerAux(CoupledSteamDensityAux);
+      registerAux(CoupledSteamViscosityAux);
+      registerAux(CoupledSteamEnthalpyAux);
+      registerAux(CoupledDwaterenthalpydH_PAux);
+      registerAux(CoupledDsteamenthalpydH_PAux);
+      registerAux(CoupledTemperatureAux);
+      
+      registerAux(AnalyticalADE1D);
     //  registerAux(TemperatureAux);
     // registerAux(WaterSatAux);
     // registerAux(CoupledRhoAux);
-    registerAux(VelocityAux);
-    registerAux(CoupledPorosityMaterialAux);
-    registerAux(CoupledPorosityNodalAux);
-    registerAux(StressStrainDamageComputeAux);
+     registerAux(VelocityAux);
+     registerAux(CoupledPorosityMaterialAux);
+     registerAux(CoupledPorosityNodalAux);
+     registerAux(StressStrainDamageComputeAux);
     
 //BCs    
     registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");

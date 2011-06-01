@@ -22,5 +22,6 @@ protected:
   virtual Real computeQpJacobian();
 
   MaterialProperty<Real> & _tau_water;
+    MaterialProperty<RealGradient> &   _darcy_mass_flux_water;
 };
 #endif //WATERMASSFLUXPRESSURE
