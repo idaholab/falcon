@@ -127,7 +127,7 @@ SolidMechanics::computeProperties()
     {
       _E  =  _youngs_modulus[qp];//newly modified
 
-      if(_q_point[qp](2) < 0.5 && _q_point[qp](2) > -0.5 ) _E *= 0.9;//new added to prescribe the weak zone
+//      if(_q_point[qp](2) < 0.5 && _q_point[qp](2) > -0.5 ) _E *= 0.9;//new added to prescribe the weak zone
 
       _nu =  _poissons_ratio[qp];
       _c1 = _E*(1.-_nu)/(1.+_nu)/(1.-2.*_nu);
@@ -167,6 +167,8 @@ SolidMechanics::computeProperties()
       {
         for (unsigned int i = 0; i< _qrule->n_points(); ++i)
         {
+          _damage_coeff[i]     = 0.0;
+          _damage_coeff_old[i] = 0.0;
           for (unsigned int j = 0; j<LIBMESH_DIM; ++j)
           {
             (*_crack_flags)[i](j)     = 1.0;
@@ -322,6 +324,7 @@ SolidMechanics::computeCrack_tension(const int qp)
     }
     
     (*_crack_flags)[qp](i) = std::min((*_crack_flags)[qp](i), (*_crack_flags_old)[qp](i));
+    _damage_coeff[qp] = std::max(_damage_coeff_old[qp] , _damage_coeff[qp]);
     
   }
 
