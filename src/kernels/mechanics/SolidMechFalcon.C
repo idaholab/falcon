@@ -71,6 +71,7 @@ SolidMechFalcon::recomputeConstants()
 
     _B12=TensorValue<Number>(0., _c2,
                            _c3 , 0.0);
+    
 
     _B21=TensorValue<Number>(0., _c3,
                            _c2 ,  0.);
