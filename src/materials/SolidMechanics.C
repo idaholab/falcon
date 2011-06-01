@@ -4,12 +4,15 @@ template<>
 InputParameters validParams<SolidMechanics>()
 {
   InputParameters params= validParams<PorousMedia>();
+
   params.addParam<Real>("thermal_expansion",1.0e-6,"thermal expansion coefficient (1/K)");
   params.addParam<Real>("youngs_modulus",1.50e10,"in Pascal") ;
   params.addParam<Real>("poissons_ratio",0.2,"dimensionless");
+
   params.addParam<Real>("biot_coeff",0.0,"dimensionless");
   params.addParam<Real>("t_ref",293.15,"initial temperature");
-// damage related parameters
+  
+//damage related parameters
   params.addParam<bool>("has_damage",false,"switch for turning on/off damaging mechanics");
   params.addParam<Real>("damage_coeff",0.0,"initial damage value");
   params.addParam<Real>("strain_initialize_damage",0.01,"critical strain to initialize damage");
@@ -20,12 +23,10 @@ InputParameters validParams<SolidMechanics>()
   params.addParam<bool>("has_crack",false,"switch for crack model");
   params.addParam<std::string>("has_crack_method","tension","switch for cracking method");
   params.addParam<Real>("critical_crack_strain",1.0,"crack strain threshold");
-//  params.addParam<RealVectorValue>("initial crack flag",(1.0,1.0,1.0),"crack flag");
+
   params.addParam<Real>("cohesion",0.0,"Rock's Cohesion strength");
   params.addParam<Real>("friction_angle",0.1,"Rock's internal friction angle");
-  
-  
-  params.addParam<Real>("t_ref",293.15,"initial temperature");
+
   params.addCoupledVar("temperature", "TODO:  add description");
   params.addCoupledVar("x_disp", "TODO: ad description");
   params.addCoupledVar("y_disp", "TODO: ad description");
@@ -67,7 +68,6 @@ SolidMechanics::SolidMechanics(const std::string & name,
    _cohesion(getParam<Real>("cohesion")),
    _friction_angle(getParam<Real>("friction_angle")),
    
-
    _total_strain (LIBMESH_DIM,LIBMESH_DIM),
    _total_stress (LIBMESH_DIM,LIBMESH_DIM),
    _total_stress1(LIBMESH_DIM,LIBMESH_DIM),
@@ -98,11 +98,6 @@ SolidMechanics::SolidMechanics(const std::string & name,
     _crack_flags_old = &declarePropertyOld<RealVectorValue>("crack_flags");
   }
 
-//  if(_has_damage)
-//  {
-//   _damage_coeff_old   = &declarePropertyOld<Real>("damage_coeff"); //newly added
-//   _strain_history_old = &declarePropertyOld<Real>("strain_history"); //newly added
-//  }
 }
 
 void
@@ -112,10 +107,12 @@ SolidMechanics::computeProperties()
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
     _alpha[qp]            = _input_thermal_expansion;
+
     if(_has_temp)
       _thermal_strain[qp] = _input_thermal_expansion*(_temperature[qp] - _input_t_ref);
     else
       _thermal_strain[qp] = 0.0;
+    
     _youngs_modulus[qp]   = _input_youngs_modulus;
     
     _poissons_ratio[qp]   = _input_poissons_ratio;

@@ -4,15 +4,7 @@
 template<>
 InputParameters validParams<FluidFlow>()
 {
-  InputParameters params = validParams<PorousMedia>(); //inherit porous medium basic properties
-
-//the properties below were moved to auxkernels, RKP April 2011
-// 
-// params.addParam<Real>("density_water", 1000.0,"fluid density in Kg/m^3");
-// params.addParam<Real>("viscosity_water", 0.001,"fluid dynamic viscosity in Pa.s");
-// params.addParam<Real>("compressibility", 4.6e-10,"fluid compressibility in 1/Pa");
-// params.addParam<bool>("temp_dependent_density", true, "Flag to call density and viscosity routine");
-
+  InputParameters params = validParams<PorousMedia>();
 //these coupled variables are used to calculate some fluid mass flux related quantities only  
   params.addCoupledVar("pressure", "Use pressure here to calculate Darcy Flux and Pore Velocity");
   params.addCoupledVar("enthalpy", "Use pressure here to calculate Darcy Flux and Pore Velocity");
@@ -22,7 +14,6 @@ InputParameters validParams<FluidFlow>()
   params.addCoupledVar("density_steam", "Coupled NodalAux used to calculate density");
   params.addCoupledVar("viscosity_steam", "Coupled NodalAux used to calculate viscosity");
   params.addCoupledVar("saturation_water", "Coupled NodalAux used to calculate relative permeability");
-    
   return params;
 }
 
@@ -45,10 +36,6 @@ FluidFlow::FluidFlow(const std::string & name,
 
    _saturation_water(_has_enthalpy? coupledValue("saturation_water"): _zero), //nodal Aux
 
-//   _input_compressibility(getParam<Real>("compressibility")),
-//delcare material properties
-//  _compressibility(declareProperty<Real>("compressibility")),
-   
    _tau_water(declareProperty<Real>("tau_water")),
    _darcy_flux_water(declareProperty<RealGradient>("darcy_flux_water")),
    _darcy_mass_flux_water(declareProperty<RealGradient>("darcy_mass_flux_water")),
@@ -70,9 +57,6 @@ FluidFlow::computeProperties()
   
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {     
-// fluid properties
-//_compressibility[qp]      = _input_compressibility;
-// _viscosity_water[qp]     = _input_viscosity_water;
 //Calculate flow related quantities
     Real _krw=1.0, _krs=0.0;
     Real _swe;  // effective water saturation 
@@ -101,15 +85,16 @@ FluidFlow::computeProperties()
       {_krs= _swe*_swe;_krs=_krs*_krs; }
       }
  */
-      if (_has_enthalpy)
-        {_krw=_saturation_water[qp];
-         _krs=(1.-_krw);
-        }
-       else
-         {
-           _krw =1.0;
-           _krs=0.0;
-         }
+    if (_has_enthalpy)
+    {
+      _krw=_saturation_water[qp];
+      _krs=(1.-_krw);
+    }
+    else
+    {
+      _krw =1.0;
+      _krs=0.0;
+    }
 
   // simplified version for now
       

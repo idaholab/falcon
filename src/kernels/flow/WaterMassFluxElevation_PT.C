@@ -22,10 +22,7 @@ Real
 WaterMassFluxElevation_PT::computeQpResidual()
 {
   //return _tau_water[_qp]*_density_water[_qp]*_gravity[_qp]*_gravity_vector[_qp]*_test[_i][_qp];
-
   return _tau_water[_qp]*_density_water[_qp]*_gravity[_qp]*(_gravity_vector[_qp]*_grad_test[_i][_qp]);
-
-  
 }
 
 Real

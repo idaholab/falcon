@@ -5,9 +5,9 @@ InputParameters validParams<HeatTransport>()
 {
   InputParameters params = validParams<PorousMedia>();
   
-  params.addParam<Real>("specific_heat_rock",0.92e3,"  //units of (J/(kg K))");
-  params.addParam<Real>("thermal_conductivity",2.4,"thermal thermal_conductivity in (W/mK)");
-  params.addParam<Real>("specific_heat_water",4.186e3,"units of (J/(kg K))");
+  params.addParam<Real>("specific_heat_rock",0.92e3,  "units of MJ/(kg.K)");
+  params.addParam<Real>("thermal_conductivity",2.5,"thermal thermal_conductivity in MW/(m.K)");
+  params.addParam<Real>("specific_heat_water",4.186e3,"units of MJ/(kg.K)");
   return params;
 }
 

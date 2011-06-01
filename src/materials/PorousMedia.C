@@ -30,19 +30,9 @@ PorousMedia::PorousMedia(const std::string & name,
    _gy(getParam<Real>("gy")),
    _gz(getParam<Real>("gz")),
 
-
-
-   //delcare material properties
+//delcare material properties
    _permeability(declareProperty<Real>("permeability")),
-
-/*
-  This "material_porosity" is only used to get porosity data on a block-by-block basis
-  sent off to the CoupledPorosityMaterialAux kernel.  If use the CoupledPorosityNodalKernal
-  then it is read but not used for anything.
-*/
    _material_porosity(declareProperty<Real>("material_porosity")),
-
-   
    _density_rock(declareProperty<Real>("density_rock")),
    _gravity(declareProperty<Real>("gravity")),
    _gravity_vector(declareProperty<RealVectorValue>("gravity_vector"))
