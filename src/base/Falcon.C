@@ -81,6 +81,7 @@
 
 
 //materials
+#include "Constant.h"
 #include "PorousMedia.h"
 #include "FluidFlow.h"
 #include "HeatTransport.h"
@@ -159,7 +160,8 @@ namespace Falcon
     registerBoundaryCondition(OutFlowBC);
     registerBoundaryCondition(StepDirichletBC);
 
-//materials    
+//materials
+    registerMaterial(Constant);
     registerMaterial(PorousMedia);
     registerMaterial(FluidFlow);
     registerMaterial(HeatTransport);
