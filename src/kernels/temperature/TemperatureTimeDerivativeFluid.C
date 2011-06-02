@@ -46,5 +46,5 @@ TemperatureTimeDerivativeFluid::computeQpJacobian()
 
 //need to verify this is the correct Jacobian, RKP 4/19/11  
 {
-  return _specific_heat_water[_qp]*_porosity[_qp] *_density_water[_qp] *(1/_dt) *_test[_j][_qp];
+  return _specific_heat_water[_qp]*_porosity[_qp] *_density_water[_qp] *(1/_dt) *_phi[_j][_qp];
 }

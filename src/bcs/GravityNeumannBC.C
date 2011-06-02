@@ -21,7 +21,7 @@ GravityNeumannBC::GravityNeumannBC(const std::string & name, InputParameters par
 Real
 GravityNeumannBC::computeQpResidual()
 {
-  return _phi[_i][_qp]*(
+  return _test[_i][_qp]*(
     -(((_permeability*_density)/_viscosity_water)*_grad_u[_qp]*_normals[_qp])
     -
     (((_permeability*_density*_density)/_viscosity_water)*_gravity*_normals[_qp])
@@ -31,7 +31,7 @@ GravityNeumannBC::computeQpResidual()
 Real
 GravityNeumannBC::computeQpJacobian()
 {
-  return _phi[_i][_qp]*(
+  return _test[_i][_qp]*(
     -(((_permeability*_density)/_viscosity_water)*_grad_phi[_j][_qp]*_normals[_qp]));
 }
 

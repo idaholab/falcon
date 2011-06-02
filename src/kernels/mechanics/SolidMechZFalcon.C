@@ -40,7 +40,7 @@ SolidMechZFalcon::computeQpResidual()
   _stress(2) = _stress_normal_vector[_qp](2); //tau_zz
 
     
-  return (_stress*_grad_phi[_i][_qp]);
+  return (_stress*_grad_test[_i][_qp]);
 
 }
 
@@ -49,7 +49,7 @@ SolidMechZFalcon::computeQpJacobian()
 {
   recomputeConstants();
 
-  Real value = _c1*(_grad_phi[_i][_qp]*(_B33*_grad_phi[_j][_qp]));
+  Real value = _c1*(_grad_test[_i][_qp]*(_B33*_grad_phi[_j][_qp]));
 
   return value;
 }
@@ -66,5 +66,5 @@ SolidMechZFalcon::computeQpOffDiagJacobian(unsigned int jvar)
   else if(jvar == _y_var)
     value += _B32*_grad_phi[_j][_qp];
 
-  return _c1*(_grad_phi[_i][_qp]*value);
+  return _c1*(_grad_test[_i][_qp]*value);
 }

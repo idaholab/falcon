@@ -37,5 +37,5 @@ PressureNeumannBC2::pressure()
 Real
 PressureNeumannBC2::computeQpResidual()
 {
-  return pressure()*_normals[_qp](_component)*_phi[_i][_qp];
+  return pressure()*_normals[_qp](_component)*_test[_i][_qp];
 }
