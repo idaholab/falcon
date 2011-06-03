@@ -44,6 +44,12 @@
 #include "EnthalpyConvectionWater.h"
 #include "EnthalpyConvectionSteam.h"
 
+////////////////////////////////////////////////////////////////
+///      Souce and Sink, volume avagerged                     //
+////////////////////////////////////////////////////////////////
+
+#include "SourceSink.h"
+
 //auxkernels
 #include "CoupledDensityAux_PT.h"          // water density as function of (P,T)
 #include "CoupledDdensityDTAux_PT.h"       // derivative of water density to T at const P
@@ -128,7 +134,9 @@ namespace Falcon
     registerKernel(EnthalpyDiffusion);
     registerKernel(EnthalpyConvectionWater);
     registerKernel(EnthalpyConvectionSteam);
-      
+
+//source sink
+    registerKernel(SourceSink);
 //auxkernels
     registerAux(CoupledDdensityDTAux_PT);
     registerAux(CoupledDdensityDPAux_PT);    
