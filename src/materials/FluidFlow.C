@@ -27,8 +27,8 @@ FluidFlow::FluidFlow(const std::string & name,
    _has_temp(isCoupled("temperature")),
    _temperature(_has_temp ? coupledValue("temperature")  : _zero),
    
-   _density_water(coupledValue("density_water")),   //nodal Aux
-   _viscosity_water(coupledValue("viscosity_water")), //nodal Aux
+   _density_water(_has_temp ? coupledValue("density_water") : _zero),   //nodal Aux
+   _viscosity_water(_has_temp ? coupledValue("viscosity_water") : _zero), //nodal Aux
 
    _has_enthalpy(isCoupled("enthalpy")), 
    _density_steam(_has_enthalpy? coupledValue("density_steam"): _zero),   //nodal Aux

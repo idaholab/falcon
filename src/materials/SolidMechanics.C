@@ -9,7 +9,7 @@ InputParameters validParams<SolidMechanics>()
   params.addParam<Real>("youngs_modulus",1.50e10,"in Pascal") ;
   params.addParam<Real>("poissons_ratio",0.2,"dimensionless");
 
-  params.addParam<Real>("biot_coeff",0.0,"dimensionless");
+  params.addParam<Real>("biot_coeff",1.0,"dimensionless");
   params.addParam<Real>("t_ref",293.15,"initial temperature");
   
 //damage related parameters
