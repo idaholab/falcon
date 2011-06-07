@@ -11,6 +11,7 @@
 #include "SolidMechImplicitEuler.h"
 
 #include "SolidMechTempCoupleXFalcon.h"
+
 #include "SolidMechTempCoupleYFalcon.h"
 #include "SolidMechTempCoupleZFalcon.h"
 
@@ -106,10 +107,14 @@ namespace Falcon
     registerNamedKernel(SolidMechYFalcon, "SolidMechYFalcon");
     registerNamedKernel(SolidMechZFalcon, "SolidMechZFalcon");
     registerKernel(SolidMechImplicitEuler);
-
+/*
     registerNamedKernel(SolidMechTempCoupleXFalcon, "SolidMechTempCoupleX");
     registerNamedKernel(SolidMechTempCoupleYFalcon, "SolidMechTempCoupleY");
     registerNamedKernel(SolidMechTempCoupleZFalcon, "SolidMechTempCoupleZ");
+*/
+    registerKernel(SolidMechTempCoupleXFalcon);
+    registerKernel(SolidMechTempCoupleYFalcon);
+    registerKernel(SolidMechTempCoupleZFalcon);
 
     registerKernel(SolidMechPoroCoupleX);
     registerKernel(SolidMechPoroCoupleY);

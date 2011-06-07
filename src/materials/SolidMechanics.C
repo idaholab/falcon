@@ -11,7 +11,7 @@ InputParameters validParams<SolidMechanics>()
 
   params.addParam<Real>("biot_coeff",1.0,"dimensionless");
   params.addParam<Real>("t_ref",293.15,"initial temperature");
-  
+   
 //damage related parameters
   params.addParam<bool>("has_damage",false,"switch for turning on/off damaging mechanics");
   params.addParam<Real>("damage_coeff",0.0,"initial damage value");
