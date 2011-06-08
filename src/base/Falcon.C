@@ -18,6 +18,7 @@
 #include "SolidMechPoroCoupleX.h"
 #include "SolidMechPoroCoupleY.h"
 #include "SolidMechPoroCoupleZ.h"
+#include "Gravity.h"
 
 ///////////////////////////////////////////////////////////////
 //      Single phase formulation: pressure & temperature     //
@@ -119,6 +120,7 @@ namespace Falcon
     registerKernel(SolidMechPoroCoupleX);
     registerKernel(SolidMechPoroCoupleY);
     registerKernel(SolidMechPoroCoupleZ);
+    registerKernel(Gravity);
 //heat transport-PT formulation, single phase only
     registerKernel(TemperatureTimeDerivative);
     registerKernel(TemperatureTimeDerivativeFluid);
