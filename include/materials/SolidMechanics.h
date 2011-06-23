@@ -25,10 +25,32 @@ public:
                  InputParameters parameters);
   
 protected:
+  static Real randn_trig(Real mu=0.0,Real sigma=1.0)
+  {
+    static bool deviateAvailable=false;
+    static Real storedDeviate;
+    Real dist, angle, PI=3.14159265;
+    if(!deviateAvailable)
+    {
+      dist=std::sqrt(-2.0 * std::log(double(rand()) / double(RAND_MAX)) );
+      angle=2.0 * PI * (double(rand()) / double(RAND_MAX));
+      storedDeviate=dist*std::cos(angle);
+      deviateAvailable=true;
+      return dist * std::sin(angle) * sigma + mu;
+    }
+    else
+    {
+      deviateAvailable=false;
+      return storedDeviate * sigma + mu;
+    }
+  }
+
   static void rotateSymmetricTensor( const ColumnMajorMatrix & , const RealTensorValue & ,
                                      RealTensorValue & );
 
   void computeDamage(const int qp); //damage mechanics
+  void computeAnisoDamage(const int qp);//anisotropic damage
+
   void computeCrack_tension(const int qp); //tensile induce cracking
   void computeCrack_Mohr_Coulomb_v1(const int qp); //Mohr_Coulomb criteria
   void computeCrack_Mohr_Coulomb_v2(const int qp); //Mohr_Coulomb criteria
@@ -59,6 +81,12 @@ protected:
   Real _damage_a1;                      //parameters for youngs modulus and damage factor
   Real _damage_a2;
 
+  std::string _has_damage_method;
+  Real _input_damage_c;
+  Real _input_damage_n;
+  Real _input_strain_init;
+  Real _input_strain_strength;
+
   bool _has_crack;
   std::string _has_crack_method; // true <==> tensile_induced_crack  false<==>Mohr_Coulomb
   Real _critical_crack_strain;
@@ -85,6 +113,49 @@ protected:
   MaterialProperty<RealVectorValue> & _stress_shear_vector;
   MaterialProperty<RealVectorValue> & _strain_normal_vector;
   MaterialProperty<RealVectorValue> & _strain_shear_vector;
+
+  MaterialProperty<bool> * _init_status;
+  MaterialProperty<Real> & _bond_nstiff;
+  MaterialProperty<Real> & _bond_sstiff;
+
+  MaterialProperty<Real> & _bond_damage_factor00;
+  MaterialProperty<Real> & _bond_damage_factor00_old;
+
+  MaterialProperty<Real> & _bond_damage_factor01;
+  MaterialProperty<Real> & _bond_damage_factor01_old;
+
+  MaterialProperty<Real> & _bond_damage_factor02;
+  MaterialProperty<Real> & _bond_damage_factor02_old;
+
+  MaterialProperty<Real> & _bond_damage_factor03;
+  MaterialProperty<Real> & _bond_damage_factor03_old;
+
+  MaterialProperty<Real> & _bond_damage_factor04;
+  MaterialProperty<Real> & _bond_damage_factor04_old;
+
+  MaterialProperty<Real> & _bond_damage_factor05;
+  MaterialProperty<Real> & _bond_damage_factor05_old;
+
+  MaterialProperty<Real> & _bond_damage_factor06;
+  MaterialProperty<Real> & _bond_damage_factor06_old;
+
+  MaterialProperty<Real> & _bond_damage_factor07;
+  MaterialProperty<Real> & _bond_damage_factor07_old;
+
+  MaterialProperty<Real> & _bond_damage_factor08;
+  MaterialProperty<Real> & _bond_damage_factor08_old;
+
+  MaterialProperty<Real> & _bond_damage_factor09;
+  MaterialProperty<Real> & _bond_damage_factor09_old;
+
+  MaterialProperty<Real> & _bond_damage_factor10;
+  MaterialProperty<Real> & _bond_damage_factor10_old;
+
+  MaterialProperty<Real> & _bond_damage_factor11;
+  MaterialProperty<Real> & _bond_damage_factor11_old;
+
+  MaterialProperty<Real> & _bond_damage_factor12;
+  MaterialProperty<Real> & _bond_damage_factor12_old;
 
   MaterialProperty<RealVectorValue> * _crack_flags;
   MaterialProperty<RealVectorValue> * _crack_flags_old;
