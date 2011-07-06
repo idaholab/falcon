@@ -7,7 +7,9 @@ InputParameters validParams<PorousMedia>()
   params.addParam<Real>("permeability",1.0e-12, "intrinsic permeability in m^2");
   params.addParam<Real>("material_porosity", 0.3, "Rock porosity set from the PorousMedia material kernel");
   params.addParam<Real>("density_rock", 2.50e3, "rock density in Kg/m^3");
-  
+ 
+  params.addParam<Real>("compressibility", 1e-5, "fluid compressibility Kg/m^3/Pa");
+    
   params.addParam<Real>("gravity",9.80665,"gravity acceleration constant");
   params.addParam<Real>("gx",0.0,"x component of the gravity pressure vector");
   params.addParam<Real>("gy",0.0,"y component of the gravity pressure vector");
@@ -24,7 +26,8 @@ PorousMedia::PorousMedia(const std::string & name,
    _input_permeability(getParam<Real>("permeability")),
    _input_material_porosity(getParam<Real>("material_porosity")),
    _input_density_rock(getParam<Real>("density_rock")),
-     
+   _input_compressibility(getParam<Real>("compressibility")),
+
    _input_gravity(getParam<Real>("gravity")),
    _gx(getParam<Real>("gx")),
    _gy(getParam<Real>("gy")),
@@ -34,6 +37,7 @@ PorousMedia::PorousMedia(const std::string & name,
    _permeability(declareProperty<Real>("permeability")),
    _material_porosity(declareProperty<Real>("material_porosity")),
    _density_rock(declareProperty<Real>("density_rock")),
+   _compressibility(declareProperty<Real>("compressibility")),
    _gravity(declareProperty<Real>("gravity")),
    _gravity_vector(declareProperty<RealVectorValue>("gravity_vector"))
 { }
@@ -48,6 +52,9 @@ PorousMedia::computeProperties()
     _material_porosity[qp]    = _input_material_porosity;
     _density_rock[qp]         = _input_density_rock;    
 
+// fluid properties
+    _compressibility[qp]      = _input_compressibility;  
+      
 //  gravity    
     _gravity_vector[qp](0) = _gx; 
     _gravity_vector[qp](1) = _gy;

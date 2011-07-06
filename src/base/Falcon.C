@@ -21,6 +21,12 @@
 #include "Gravity.h"
 
 ///////////////////////////////////////////////////////////////
+//      Single phase isothermal formulation: pressure        //
+///////////////////////////////////////////////////////////////
+#include "PressureTimeDerivative.h"
+#include "FluidFluxPressure.h"
+
+///////////////////////////////////////////////////////////////
 //      Single phase formulation: pressure & temperature     //
 ///////////////////////////////////////////////////////////////
 #include "TemperatureTimeDerivative.h"
@@ -121,6 +127,9 @@ namespace Falcon
     registerKernel(SolidMechPoroCoupleY);
     registerKernel(SolidMechPoroCoupleZ);
     registerKernel(Gravity);
+//isothermal flow for pressure field
+    registerKernel(PressureTimeDerivative);
+    registerKernel(FluidFluxPressure);  
 //heat transport-PT formulation, single phase only
     registerKernel(TemperatureTimeDerivative);
     registerKernel(TemperatureTimeDerivativeFluid);

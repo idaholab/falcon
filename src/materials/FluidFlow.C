@@ -60,7 +60,8 @@ FluidFlow::computeProperties()
 //Calculate flow related quantities
     Real _krw=1.0, _krs=0.0;
     Real _swe;  // effective water saturation 
-    
+    Real _dens_water = 1E3;
+    Real _visc_water = 5E-4;  
 // relative_permeability :: relative_permeability_noderiv1_(_saturation_water[qp],_krw,_krs);   
  /*
       _swe=(_saturation_water[qp]-0.3)/0.7;
@@ -97,13 +98,20 @@ FluidFlow::computeProperties()
     }
 
   // simplified version for now
+    
+    if (_has_temp)
+    {
+        _dens_water =  _density_water[qp];
+        _visc_water =  _viscosity_water[qp];
+    }
       
-    _tau_water[qp] = _permeability[qp] * _density_water[qp] / _viscosity_water[qp] * _krw;
-    _darcy_mass_flux_water[qp] =  -_tau_water[qp] * (_grad_p[qp]+_density_water[qp]*_gravity[qp]*_gravity_vector[qp]);
+    _tau_water[qp] = _permeability[qp] * _dens_water / _visc_water * _krw;
+    _darcy_mass_flux_water[qp] =  -_tau_water[qp] * (_grad_p[qp]+_dens_water*_gravity[qp]*_gravity_vector[qp]);
     _darcy_mass_flux_water_pressure[qp] =  (-_tau_water[qp] * _grad_p[qp]);
-    _darcy_mass_flux_water_elevation[qp] = (-_tau_water[qp] * _gravity[qp] *_gravity_vector[qp]*_density_water[qp]);
-    _darcy_flux_water[qp] = _darcy_mass_flux_water[qp] /   _density_water[qp];
-
+    _darcy_mass_flux_water_elevation[qp] = (-_tau_water[qp] * _gravity[qp] *_gravity_vector[qp]*_dens_water);
+    _darcy_flux_water[qp] = _darcy_mass_flux_water[qp] /   _dens_water;
+ 
+          
     if (_has_enthalpy)
     {_tau_steam[qp] = _permeability[qp] * _density_steam[qp] / _viscosity_steam[qp] * _krs;
      _darcy_mass_flux_steam[qp] =  -_tau_steam[qp] * (_grad_p[qp]+_density_steam[qp]*_gravity[qp]*_gravity_vector[qp]);
