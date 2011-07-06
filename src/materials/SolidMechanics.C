@@ -35,6 +35,10 @@ InputParameters validParams<SolidMechanics>()
   params.addParam<Real>("cohesion",0.0,"Rock's Cohesion strength");
   params.addParam<Real>("friction_angle",0.1,"Rock's internal friction angle");
 
+  params.addParam<bool>("has_damage_couple_permeability",false,"switch for couple damage with porosity or not");
+  params.addParam<Real>("damage_couple_permeability_coeff1",0.0,"the first coeff for coupling damage with porosity");
+  params.addParam<Real>("damage_couple_permeability_coeff2",-1.0,"the second coeff for coupling damage with porosity");
+  
   params.addCoupledVar("temperature", "TODO:  add description");
   params.addCoupledVar("x_disp", "TODO: ad description");
   params.addCoupledVar("y_disp", "TODO: ad description");
@@ -344,6 +348,14 @@ SolidMechanics::computeDamage(const int qp)
     
   _effective_strain = std::pow(_effective_strain*2./3. , 0.5);
       
+  //newly added for handling damage couple with porosity/permeability
+  Real temp_couple;
+  if(_has_damage_couple_permeability)
+  {
+    temp_couple = std::pow(1.00001-_damage_coeff[qp] , _damage_couple_permeability_coeff2);//get the old permeability
+  }
+
+  
   if(_strain_history[qp] < _input_strain_broken) //not fully failed
   {
     if(_effective_strain <= _strain_history[qp])//no further damaging
@@ -385,6 +397,13 @@ SolidMechanics::computeDamage(const int qp)
   if(_q_point[qp](0) > 0.8 && _q_point[qp](0) < 0.2 )  { _damage_coeff[qp] = 0.0 ; _strain_history[qp] = 0.0; } //newly added to avoid boundary damaging
   
   _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus;
+
+  //newly added for handling damage couple with porosity/permeability
+  if(_has_damage_couple_permeability)
+  {
+    _permeability[qp] *= std::pow(1.00001-_damage_coeff[qp] , _damage_couple_permeability_coeff2) / temp_couple;
+  }
+  
 }
 //////////////////////////////////////////////////////////////////////////
 
