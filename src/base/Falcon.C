@@ -91,6 +91,7 @@
 #include "PressureNeumannBC2.h"
 #include "GravityNeumannBC.h"
 #include "OutFlowBC.h"
+#include "OutFlowBC_PH.h"
 #include "StepDirichletBC.h"
 
 
@@ -182,6 +183,7 @@ namespace Falcon
     registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
     registerBoundaryCondition(GravityNeumannBC);
     registerBoundaryCondition(OutFlowBC);
+    registerBoundaryCondition(OutFlowBC_PH);
     registerBoundaryCondition(StepDirichletBC);
 
 //materials
