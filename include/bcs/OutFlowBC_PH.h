@@ -42,12 +42,12 @@ private:
     VariableGradient & _grad_T;
     
     VariableValue & _dTdH;
+    VariableValue & _enthalpy_water;
+    VariableValue & _enthalpy_steam;
     VariableValue &_denthalpy_waterdH_P;
     VariableValue &_denthalpy_steamdH_P;
     
-    MaterialProperty<RealGradient> & _darcy_energy_flux_water;
     MaterialProperty<RealGradient> & _darcy_mass_flux_water;
-    MaterialProperty<RealGradient> & _darcy_energy_flux_steam;
     MaterialProperty<RealGradient> & _darcy_mass_flux_steam;
     
     MaterialProperty<Real> &_thermal_conductivity;

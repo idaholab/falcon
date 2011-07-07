@@ -220,7 +220,7 @@ SolidMechanics::computeProperties()
       Real _input_poissons_ratio_temp = _input_poissons_ratio;
       Real _input_biot_coeff_temp = _input_biot_coeff;
       _input_thermal_expansion_temp *= 1.0 ;//(1.0 + 0.0 * (double(randn_trig()) - 0.5 ) );
-      _input_youngs_modulus_temp    *= 1.0 ;//(1.0 + 0.0 * (double(randn_trig()) - 0.5 ) );
+      _input_youngs_modulus_temp    *= (1.0 + 0.0 * (double(randn_trig()) - 0.5 ) );
       _input_poissons_ratio_temp    *= 1.0 ;//(1.0 + 0.0 * (double(randn_trig()) - 0.5 ) );
       _input_biot_coeff_temp        *= 1.0 ;//(1.0 + 0.0 * (double(randn_trig()) - 0.5 ) );
 
