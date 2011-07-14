@@ -49,7 +49,8 @@ private:
     
     MaterialProperty<RealGradient> & _darcy_mass_flux_water;
     MaterialProperty<RealGradient> & _darcy_mass_flux_steam;
-    
+    MaterialProperty<RealGradient> & _Ddarcy_mass_flux_waterDH;
+    MaterialProperty<RealGradient> & _Ddarcy_mass_flux_steamDH;
     MaterialProperty<Real> &_thermal_conductivity;
     
     //  std::vector<RealGradient> & _grad_p;

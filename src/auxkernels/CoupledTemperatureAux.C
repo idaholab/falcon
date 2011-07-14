@@ -22,7 +22,7 @@ InputParameters validParams<CoupledTemperatureAux>()
     params.addCoupledVar("denthalpy_waterdH_P", "Use temperature to calculate variable density");
     params.addCoupledVar("denthalpy_steamdH_P", "Use temperature to calculate variable density");
     params.addCoupledVar("dTdH_P", "Use temperature to calculate variable density");
-    
+    params.addCoupledVar("dswdH", "Use enthalpy calculate water saturation");
     return params;
 }
 
@@ -42,7 +42,8 @@ CoupledTemperatureAux::CoupledTemperatureAux(const std::string & name,
     _ddendp_H(coupledValue("ddensitydp_H")),
     _denthalpy_waterdH_P(coupledValue("denthalpy_waterdH_P")),
     _denthalpy_steamdH_P(coupledValue("denthalpy_steamdH_P")),
-    _dTdH_P(coupledValue("dTdH_P")),       
+    _dTdH_P(coupledValue("dTdH_P")),
+    _dswdH(coupledValue("dswdH")),
     _input_temperature(getParam<Real>("temperature"))
 {}
 
@@ -60,7 +61,7 @@ CoupledTemperatureAux::computeValue()
                                           _ddendh_P[_qp], _ddendp_H[_qp],
                                           _denthalpy_waterdH_P[_qp],
                                           _denthalpy_steamdH_P[_qp],
-                                          _dTdH_P[_qp], _ierr);
+                                          _dTdH_P[_qp], _dswdH[_qp], _ierr);
         
         
      return _temperature;                           

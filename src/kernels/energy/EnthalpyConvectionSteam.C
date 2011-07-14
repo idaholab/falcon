@@ -14,6 +14,7 @@ EnthalpyConvectionSteam::EnthalpyConvectionSteam(const std::string & name, Input
   :Kernel(name, parameters),
 
    _darcy_mass_flux_steam(getMaterialProperty<RealGradient>("darcy_mass_flux_steam")),
+   _Ddarcy_mass_flux_steamDH(getMaterialProperty<RealGradient>("Ddarcy_mass_flux_steamDH")),
    //_grad_enthalpy_steam(coupledGradient("enthalpy_steam")),
    _enthalpy_steam(coupledValue("enthalpy_steam")),
   _denthalpy_steamdH_P(coupledValue("denthalpy_steamdH_P")) 
@@ -31,5 +32,7 @@ Real EnthalpyConvectionSteam::computeQpJacobian()
 {
 
   //  return _darcy_mass_flux_steam[_qp]*_denthalpy_steamdH_P[_qp]*_grad_phi[_j][_qp]*_test[_i][_qp];
-    return -_darcy_mass_flux_steam[_qp]*_denthalpy_steamdH_P[_qp]*_phi[_j][_qp]*_grad_test[_i][_qp];
+    return -_grad_test[_i][_qp]*
+             ( _darcy_mass_flux_steam[_qp]*_denthalpy_steamdH_P[_qp]*_phi[_j][_qp]
+              + _Ddarcy_mass_flux_steamDH[_qp]* _enthalpy_steam[_qp]*_phi[_j][_qp]);
 }

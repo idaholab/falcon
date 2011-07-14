@@ -21,6 +21,7 @@ protected:
   virtual Real computeQpJacobian();  
 
   MaterialProperty<RealGradient> & _darcy_mass_flux_water;
+    MaterialProperty<RealGradient> & _Ddarcy_mass_flux_waterDH;
   VariableValue  & _enthalpy_water;
   VariableValue & _denthalpy_waterdH_P;
 

@@ -30,6 +30,8 @@ _denthalpy_waterdH_P(coupledValue("denthalpy_waterdH_P")),
 _denthalpy_steamdH_P(coupledValue("denthalpy_steamdH_P")),
 _darcy_mass_flux_water(getMaterialProperty<RealGradient>("darcy_mass_flux_water")),
 _darcy_mass_flux_steam(getMaterialProperty<RealGradient>("darcy_mass_flux_steam")),
+_Ddarcy_mass_flux_waterDH(getMaterialProperty<RealGradient>("Ddarcy_mass_flux_waterDH")),
+_Ddarcy_mass_flux_steamDH(getMaterialProperty<RealGradient>("Ddarcy_mass_flux_steamDH")),
 
 _thermal_conductivity(getMaterialProperty<Real>("thermal_conductivity"))
 {}
@@ -43,8 +45,8 @@ OutFlowBC_PH::computeQpResidual()
     
     Real _aa = _test[_i][_qp]*
     ( _thermal_conductivity[_qp] *(_grad_T[_qp]*_normals[_qp])
-     + _darcy_mass_flux_water[_qp] * _enthalpy_water[_qp] *_normals[_qp]
-     + _darcy_mass_flux_steam[_qp] * _enthalpy_steam[_qp] *_normals[_qp]);
+     - _darcy_mass_flux_water[_qp] * _enthalpy_water[_qp] *_normals[_qp]
+     - _darcy_mass_flux_steam[_qp] * _enthalpy_steam[_qp] *_normals[_qp]);
     
     //    if (_aa <= 1.0e-12)
     //      _aa=0.0;
@@ -61,8 +63,10 @@ OutFlowBC_PH::computeQpJacobian()
     //    RealGradient _Darcy_vel = -_cond*_grad_p[_qp];
     Real _aa=  _test[_i][_qp]*
     ( _thermal_conductivity[_qp] *(_dTdH[_qp]*_grad_phi[_j][_qp]*_normals[_qp])
-     + _darcy_mass_flux_water[_qp] * _denthalpy_waterdH_P[_qp] * _phi[_j][_qp]* _normals[_qp]
-     + _darcy_mass_flux_steam[_qp] * _denthalpy_steamdH_P[_qp] * _phi[_j][_qp]* _normals[_qp]);
+     - _darcy_mass_flux_water[_qp] * _denthalpy_waterdH_P[_qp] * _phi[_j][_qp]* _normals[_qp]
+     - _Ddarcy_mass_flux_waterDH[_qp] * _enthalpy_water[_qp] * _phi[_j][_qp] * _normals[_qp]
+     - _darcy_mass_flux_steam[_qp] * _denthalpy_steamdH_P[_qp] * _phi[_j][_qp]* _normals[_qp]
+     - _Ddarcy_mass_flux_steamDH[_qp] * _enthalpy_steam[_qp] * _phi[_j][_qp]* _normals[_qp]);
     
     return -_aa;
 }

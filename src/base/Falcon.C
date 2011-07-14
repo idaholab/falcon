@@ -65,6 +65,7 @@
 
 #include "CoupledTemperatureAux.h"         // T as functon of (P,H) -two phase formulation
 #include "CoupledWaterSaturationAux.h"     // Sw as functon of (P,H) -two phase formulation
+#include "CoupledDWaterSaturationDHAux.h"
 #include "CoupledDensityAux.h"             // mixed density as functon of (P,H) -two phase formulation
 
 #include "CoupledWaterDensityAux.h"        // water density functon of (P,H) -two phase formulation
@@ -159,6 +160,7 @@ namespace Falcon
     registerAux(CoupledDdensityDPAux_PT);    
     registerAux(CoupledDensityAux_PT);
     registerAux(CoupledWaterSaturationAux);
+    registerAux(CoupledDWaterSaturationDHAux);  
     registerAux(CoupledDdensityDHAux); 
     registerAux(CoupledDTDH_PAux); 
     registerAux(CoupledDdensityDPAux);

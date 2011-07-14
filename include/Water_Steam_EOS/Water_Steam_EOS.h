@@ -9,7 +9,7 @@ namespace Water_Steam_EOS
     
     //subroutine water_steam_prop_PH(p, h, Ts,T, Sw, Den, dTdp, dTdh, dDendp, dDendh,  ierr)
     void water_steam_prop_ph_( double&, double&, double&, double&, double&, double&, double&, double&, double&, double&, 
-                                double&, double&, double&, double&,int&);
+                                double&, double&, double&, double&, double&, int&);
 								
     //subroutine  wateos_noderiv(T, p, dw, dwmol, hw, energyscale, ierr)
     // extern "C" double watereos_( double&, double&, double&, double&, double&, double&, double&); 

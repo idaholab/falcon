@@ -38,17 +38,20 @@ protected:
   VariableValue & _viscosity_steam;
     
   VariableValue & _saturation_water;
-  
+  VariableValue & _dswdH;
+
 
   MaterialProperty<Real> & _tau_water;
   MaterialProperty<RealGradient> & _darcy_flux_water;
   MaterialProperty<RealGradient> & _darcy_mass_flux_water;
+  MaterialProperty<RealGradient> & _Ddarcy_mass_flux_waterDH;
   MaterialProperty<RealGradient> & _darcy_mass_flux_water_pressure;
   MaterialProperty<RealGradient> & _darcy_mass_flux_water_elevation;
 
   MaterialProperty<Real> & _tau_steam;
   MaterialProperty<RealGradient> & _darcy_flux_steam;
   MaterialProperty<RealGradient> & _darcy_mass_flux_steam;
+  MaterialProperty<RealGradient> & _Ddarcy_mass_flux_steamDH;
   MaterialProperty<RealGradient> & _darcy_mass_flux_steam_pressure;
   MaterialProperty<RealGradient> & _darcy_mass_flux_steam_elevation;
     

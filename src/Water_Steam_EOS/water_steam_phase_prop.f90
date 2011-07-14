@@ -101,18 +101,18 @@
   subroutine water_steam_prop_PH(p, h, T, Sw, &
     Den,Denw, Dens, &
     hw, hs, dDendh, dDendp,  dhwdh,dhsdh,&
-    dTdh, ierror)
+    dTdh, dswdh, ierror)
    use IAPWS97, only : cowat, supst, tsat
   implicit none      
   
   real*8, parameter::  fmwh2o = 18.01534d0
   real*8, parameter::  ps350c = 16.529D6, hw350c=1670.9D0
   real*8, parameter::  energyscale=1D-6 ! MJ/Kg
-  real*8, parameter::  epi_p = 1D-0, epi_h = 1D-1 * energyscale
+  real*8, parameter::  epi_p = 1D-0, epi_h = 1D0 * energyscale
  
 
-  real*8, intent(in)  :: p, h ! Pscal, KJ/Kg, C (initial guess)
-  real*8, intent(out) :: T, Sw, hw,hs,Den,Denw,Dens,  dTdh, dDendp,dDendh, dhwdh,dhsdh
+  real*8, intent(inout)  :: p, h ! Pscal, KJ/Kg, C (initial guess)
+  real*8, intent(out) :: T, Sw, hw,hs,Den,Denw,Dens,  dTdh, dDendp,dDendh, dhwdh,dhsdh, dswdh
   integer,intent(out) :: ierror  ! ierr = 10  critical point   
  
   real*8 Ts 
@@ -130,7 +130,7 @@
 
 ! determine phase condition    
   succ= TSAT( p, Ts)
- 
+! if(h<1D-1) h=1D-1
  if(p> ps350c )then 
    if(h<=hw350c)iphase=1
    if(Ts>370D0) iphase=2    
@@ -189,6 +189,7 @@
     if((h+delh)>hg) delh=(hg-h)*0.5
   !  print *, 'eos: ',p,h,hs,hw, sw 
    end select
+   ierror=ierr
    if(h<0 .or.h> 3D3) print *,'h ph: ', p,t,h,hw,hg,iphase
 
   select case (iphase)   
@@ -207,7 +208,8 @@
    dTdh=(t1-t0)/delh
    dhwdh=1D0
    dhsdh=0D0
-
+   dswdh=0D0
+   
   case(2)
    t0=T
    succ=supst(T, p,  dg0, hg0)
@@ -222,6 +224,7 @@
    dTdh=(t1-t0)/delh
    dhwdh=0D0
    dhsdh=1D0
+   dswdh=0D0
 
   case(3)
    t0=Ts
@@ -247,6 +250,7 @@
    hw=hw0
    dhwdh=0D0
    dhsdh=0D0
+   dswdh=(sw1-sw0)/delh
 
   end select
   T=T0
