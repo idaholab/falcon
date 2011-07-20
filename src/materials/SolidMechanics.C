@@ -516,8 +516,6 @@ SolidMechanics::computeDamage_v2(const int qp)
    _damage_coeff[qp]     = std::max(_input_damage_coeff, _damage_coeff[qp]);
 
    int ind_max = 0;
-   int ind_min = 0;
-   int ind_mid = 0;
 
 
  Real _sigm=0.0, _dsbar=0.0, _theta=0.0, shear_max=0.0;
@@ -665,7 +663,7 @@ SolidMechanics::computeDamage_v2(const int qp)
 	 _pstress_normal_vector[qp](2)=(_sigm + (2.0/3.0)*_dsbar*std::sin(_theta+2.*3.141592653589793/3.)); //max
 
  //Mohr-Coulomb Failure criterion
- Real _phir=0.0, _snph=0.0, _csph=0.0, _csth=0.0, _snth=0.0, _f=0.0, _fe=0.0;
+ Real _phir=0.0, _snph=0.0, _csph=0.0, _csth=0.0, _snth=0.0, _f=0.0;
 
 _temp01=std::atan(1.);
 _temp02=std::pow(3.,0.5);
@@ -867,9 +865,7 @@ SolidMechanics::computeDamage_v3(const int qp)
    int ind_mid = 0;
 
  // Strain invariants
- Real _sigm=0.0, _dsbar=0.0, _theta=0.0, shear_max=0.0;
- Real _dx=0.0, _dy=0.0, _dz=0.0, _xj3=0.0, _sine=0.0, _d2=0.0, _d3=0.0, _ds1=0.0, _ds2=0.0, _ds3=0.0;
- Real _s1=0.0, _s2=0.0, _s3=0.0, _s4=0.0, _s5=0.0, _s6=0.0, _temp01=0.0, _temp02=0.0, _temp03=0.0;
+ Real shear_max=0.0;
 
 // find max.shear
     shear_max=_strain_shear_vector[qp](0);
@@ -1064,6 +1060,44 @@ void
 SolidMechanics::computeAnisoDamage(const int qp) //just calculate damage evolution according to strain not stress tensor
 {
 
+  _total_strain(0,0)= _strain_normal_vector[qp](0);
+  _total_strain(1,1)= _strain_normal_vector[qp](1);
+  if (LIBMESH_DIM == 3) _total_strain(2,2)= _strain_normal_vector[qp](2);
+  _total_strain(0,1) = _strain_shear_vector[qp](0);
+  _total_strain(1,0) = _strain_shear_vector[qp](0);
+  if (LIBMESH_DIM == 3)
+  {
+    _total_strain(0,2) = _strain_shear_vector[qp](1);
+    _total_strain(2,0) = _strain_shear_vector[qp](1);
+    _total_strain(1,2) = _strain_shear_vector[qp](2);
+    _total_strain(2,1) = _strain_shear_vector[qp](2);
+  }
+
+  _total_stress(0,0)= _stress_normal_vector[qp](0);
+  _total_stress(1,1)= _stress_normal_vector[qp](1);
+  if (LIBMESH_DIM == 3) _total_stress(2,2)= _stress_normal_vector[qp](2);
+  _total_stress(0,1) = _stress_shear_vector[qp](0);
+  _total_stress(1,0) = _stress_shear_vector[qp](0);
+  if (LIBMESH_DIM == 3)
+  {
+    _total_stress(0,2) = _stress_shear_vector[qp](1);
+    _total_stress(2,0) = _stress_shear_vector[qp](1);
+    _total_stress(1,2) = _stress_shear_vector[qp](2);
+    _total_stress(2,1) = _stress_shear_vector[qp](2);
+  }
+
+  _total_stress1(0,0)= _stress_normal_vector[qp](0);
+  _total_stress1(1,1)= _stress_normal_vector[qp](1);
+  if (LIBMESH_DIM == 3) _total_stress1(2,2)= _stress_normal_vector[qp](2);
+  _total_stress1(0,1) = _stress_shear_vector[qp](0);
+  _total_stress1(1,0) = _stress_shear_vector[qp](0);
+  if (LIBMESH_DIM == 3)
+  {
+    _total_stress1(0,2) = _stress_shear_vector[qp](1);
+    _total_stress1(2,0) = _stress_shear_vector[qp](1);
+    _total_stress1(1,2) = _stress_shear_vector[qp](2);
+    _total_stress1(2,1) = _stress_shear_vector[qp](2);
+  }
 
 }
 //////////////////////////////////////////////////////////////////////////
