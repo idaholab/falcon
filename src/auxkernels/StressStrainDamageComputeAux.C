@@ -19,9 +19,9 @@ StressStrainDamageComputeAux::StressStrainDamageComputeAux(const std::string & n
    _damage_coeff(getMaterialProperty<Real>("damage_coeff")),
    _stress_normal_vector(getMaterialProperty<RealVectorValue>("stress_normal_vector")),
    _stress_shear_vector(getMaterialProperty<RealVectorValue>("stress_shear_vector")),
-   _pstress_normal_vector(getMaterialProperty<RealVectorValue>("pstress_normal_vector")),
    _strain_normal_vector(getMaterialProperty<RealVectorValue>("strain_normal_vector")),
    _strain_shear_vector(getMaterialProperty<RealVectorValue>("strain_shear_vector")),
+   _pstress_normal_vector(getMaterialProperty<RealVectorValue>("pstress_normal_vector")),
    _pstrain_normal_vector(getMaterialProperty<RealVectorValue>("pstrain_normal_vector"))
 {}
 
