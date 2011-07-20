@@ -17,8 +17,6 @@ InputParameters validParams<SolidMechanics>()
   params.addParam<Real>("damage_coeff",0.0,"initial damage value");
   params.addParam<Real>("strain_initialize_damage",0.01,"critical strain to initialize damage");
   params.addParam<Real>("strain_broken",0.04,"critical strain to complete failure");
-  params.addParam<Real>("strain_initial_damage",0.0,"critical initial strain");
-  params.addParam<Real>("strain_broken_damage",0.04,"critical broken strain");
   params.addParam<Real>("input_damage_a1",1.0,"1st parameter of Damage evolution");
   params.addParam<Real>("input_damage_a2",2.0,  "2nd parameter of Damage evolution");
   params.addParam<Real>("cohesion2",0.0,"Rock's Cohesion strength");
@@ -250,7 +248,7 @@ SolidMechanics::computeProperties()
         _thermal_strain[qp] = _input_thermal_expansion_temp*(_temperature[qp] - _input_t_ref);
       else
       _thermal_strain[qp] = 0.0;
-      _youngs_modulus[qp]   = _input_youngs_modulus_temp;
+      _youngs_modulus[qp]   = _input_youngs_modulus_temp*(1-_damage_coeff[qp]);   // modified by Kay
       _poissons_ratio[qp]   = _input_poissons_ratio_temp;
       _biot_coeff[qp]       = _input_biot_coeff_temp;
       if(LIBMESH_DIM==3)
@@ -275,7 +273,7 @@ SolidMechanics::computeProperties()
 
     if (_has_x_disp && _has_y_disp)
     {
-      _E  =  _youngs_modulus[qp];//before modified
+      _E  =  _youngs_modulus[qp];//
 
 //      if(_q_point[qp](2) < 0.5 && _q_point[qp](2) > -0.5 ) _E *= 0.9;//new added to prescribe the weak zone
 
@@ -526,6 +524,7 @@ SolidMechanics::computeDamage_v2(const int qp)
  Real _dx=0.0, _dy=0.0, _dz=0.0, _xj3=0.0, _sine=0.0, _d2=0.0, _d3=0.0, _ds1=0.0, _ds2=0.0, _ds3=0.0;
  Real _s1=0.0, _s2=0.0, _s3=0.0, _s4=0.0, _s5=0.0, _s6=0.0, _temp01=0.0, _temp02=0.0, _temp03=0.0;
 
+/*
 //Effective stress
    if(_damage_coeff[qp] > 0.0)
    {
@@ -539,9 +538,8 @@ SolidMechanics::computeDamage_v2(const int qp)
            _stress_shear_vector[qp](1) = (1-_damage_coeff[qp])* _stress_shear_vector[qp](1); // s_xz
            _stress_shear_vector[qp](2) = (1-_damage_coeff[qp])* _stress_shear_vector[qp](2); // s_yz
       }
-
    }
-
+*/
 
  _s1=_strain_normal_vector[qp](0); _s2=_strain_normal_vector[qp](1); _s3=_strain_normal_vector[qp](2);
  _s4=_strain_shear_vector[qp](0); _s5=_strain_shear_vector[qp](1); _s6=_strain_shear_vector[qp](2);
@@ -839,7 +837,7 @@ SolidMechanics::computeDamage_v3(const int qp)
    _strain_history[qp]   = std::max(0.0000000001,_strain_history[qp]);
    _damage_coeff[qp]     = std::max(_input_damage_coeff, _damage_coeff[qp]);
 
-
+/*
   if(LIBMESH_DIM==2)
   {
 //        _effective_strain = std::max(std::abs(_grad_x_disp[qp](0)) ,std::abs( _grad_y_disp[qp](1)));
@@ -863,7 +861,7 @@ SolidMechanics::computeDamage_v3(const int qp)
 
   _effective_strain = std::pow(_effective_strain*2./3. , 0.5);
 
-
+*/
    int ind_max = 0;
    int ind_min = 0;
    int ind_mid = 0;
@@ -983,7 +981,7 @@ SolidMechanics::computeDamage_v3(const int qp)
 
 Real _f;
 
-if (_effective_strain > _critical_strain)
+if ( _pstrain_normal_vector[qp](2)> _critical_strain)
 {
 	_f=10.;
 }
@@ -1016,17 +1014,17 @@ if (_damage_indicater_old[qp] == 1. && _damage_type_indicater[qp] == 1.)
     {
       if(_effective_strain >= _strain_broken_damage[qp])//fully failed: s > sc
       {
-        _damage_coeff[qp]   = 0.999;
+        _damage_coeff[qp]   = 0.999999;
         _strain_history[qp] = _effective_strain;
       }
       else//continuously damaging s-{s0,sc}
       {
         _temp = (_effective_strain - _strain_initial_damage[qp])/(_strain_broken_damage[qp] - _strain_initial_damage[qp]);
         _temp = _damage_a1 * std::pow(_temp , _damage_a2) + _input_damage_coeff;
-        if(_temp >= 0.999)
+        if(_temp >= 0.999999)
         {
           std::cout<<"The parameter of damage evolution are too large,please change them"<<"\n";
-          _temp = 0.999;
+          _temp = 0.999999;
         }
         _damage_coeff[qp] = std::max(_temp , _damage_coeff[qp]);
         _strain_history[qp] = _effective_strain;
@@ -1040,7 +1038,7 @@ if (_damage_indicater_old[qp] == 1. && _damage_type_indicater[qp] == 1.)
   }
   else //alreadry completely failed
   {
-    _damage_coeff[qp] = 0.999;
+    _damage_coeff[qp] = 0.999999;
     _strain_history[qp] =  std::max(_strain_history[qp] , _effective_strain);
   }
 }
@@ -1053,7 +1051,7 @@ if (_damage_indicater_old[qp] == 1. && _damage_type_indicater[qp] == 1.)
 
   _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus;
 
-  if(_damage_coeff[qp]==0.999)  { _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus/100.; }
+  if(_damage_coeff[qp]>0.999)  { _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus/100.; }
 
 }
 //=================================================================================================
