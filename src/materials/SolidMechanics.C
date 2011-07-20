@@ -11,17 +11,26 @@ InputParameters validParams<SolidMechanics>()
 
   params.addParam<Real>("biot_coeff",1.0,"dimensionless");
   params.addParam<Real>("t_ref",293.15,"initial temperature");
-   
+
 //damage related parameters
   params.addParam<bool>("has_damage",false,"switch for turning on/off damaging mechanics");
   params.addParam<Real>("damage_coeff",0.0,"initial damage value");
   params.addParam<Real>("strain_initialize_damage",0.01,"critical strain to initialize damage");
   params.addParam<Real>("strain_broken",0.04,"critical strain to complete failure");
+  params.addParam<Real>("strain_initial_damage",0.0,"critical initial strain");
+  params.addParam<Real>("strain_broken_damage",0.04,"critical broken strain");
   params.addParam<Real>("input_damage_a1",1.0,"1st parameter of Damage evolution");
   params.addParam<Real>("input_damage_a2",2.0,  "2nd parameter of Damage evolution");
+  params.addParam<Real>("cohesion2",0.0,"Rock's Cohesion strength");
+  params.addParam<Real>("friction_angle2",0.1,"Rock's internal friction angle");
+  params.addParam<Real>("critical_stress",1.0e6,"tensile stress threshold");
+  params.addParam<Real>("critical_strain",1.0e6,"tensile stress threshold");
+//  params.addParam<Real>("damage_indicater",0.0,"damage initiation");
+//  params.addParam<Real>("damage_type_indicater",0.0,"damage type");
+
 
 //has anisotropic damage
-  params.addParam<std::string>("has_damage_method","isotropic","switch of damage methods");
+  params.addParam<std::string>("has_damage_method","MC_damage","switch of damage methods");
   params.addParam<Real>("input_damage_c",0.0,"the first parameter for anisotropic damage");
   params.addParam<Real>("input_damage_n",1.0,"the second parameter for anisotropic damage");
   params.addParam<Real>("input_strain_init",0.001,"the initial strain of damaging");
@@ -38,14 +47,14 @@ InputParameters validParams<SolidMechanics>()
   params.addParam<bool>("has_damage_couple_permeability",false,"switch for couple damage with porosity or not");
   params.addParam<Real>("damage_couple_permeability_coeff1",0.0,"the first coeff for coupling damage with porosity");
   params.addParam<Real>("damage_couple_permeability_coeff2",-1.0,"the second coeff for coupling damage with porosity");
-  
+
   params.addCoupledVar("temperature", "TODO:  add description");
   params.addCoupledVar("x_disp", "TODO: ad description");
   params.addCoupledVar("y_disp", "TODO: ad description");
   params.addCoupledVar("z_disp", "TODO: ad description");
 
   return params;
-  
+
 }
 //////////////////////////////////////////////////////////////////////////
 
@@ -69,7 +78,7 @@ SolidMechanics::SolidMechanics(const std::string & name,
    _input_thermal_expansion(getParam<Real>("thermal_expansion")),
    _input_youngs_modulus(getParam<Real>("youngs_modulus")),
    _input_poissons_ratio(getParam<Real>("poissons_ratio")),
-   _input_biot_coeff(getParam<Real>("biot_coeff")),     
+   _input_biot_coeff(getParam<Real>("biot_coeff")),
    _input_t_ref(getParam<Real>("t_ref")),
 
    _has_damage(getParam<bool>("has_damage")),
@@ -78,6 +87,10 @@ SolidMechanics::SolidMechanics(const std::string & name,
    _input_strain_broken(getParam<Real>("strain_broken")),
    _damage_a1(getParam<Real>("input_damage_a1")),
    _damage_a2(getParam<Real>("input_damage_a2")),
+   _cohesion2(getParam<Real>("cohesion2")),
+   _friction_angle2(getParam<Real>("friction_angle2")),
+   _critical_stress(getParam<Real>("critical_stress")),
+   _critical_strain(getParam<Real>("critical_strain")),
 
    _has_damage_method(getParam<std::string>("has_damage_method")),
    _input_damage_c(getParam<Real>("input_damage_c")),
@@ -90,7 +103,7 @@ SolidMechanics::SolidMechanics(const std::string & name,
    _critical_crack_strain(getParam<Real>("critical_crack_strain")),
    _cohesion(getParam<Real>("cohesion")),
    _friction_angle(getParam<Real>("friction_angle")),
-   
+
    _total_strain (LIBMESH_DIM,LIBMESH_DIM),
    _total_stress (LIBMESH_DIM,LIBMESH_DIM),
    _total_stress1(LIBMESH_DIM,LIBMESH_DIM),
@@ -101,15 +114,23 @@ SolidMechanics::SolidMechanics(const std::string & name,
    _poissons_ratio(declareProperty<Real>("poissons_ratio")),
    _biot_coeff(declareProperty<Real>("biot_coeff")),
    _damage_coeff(declareProperty<Real>("damage_coeff")),
+   _damage_indicater(declareProperty<Real>("damage_indicater")),
+   _damage_type_indicater(declareProperty<Real>("damage_type_indicater")),
+   _strain_initial_damage(declareProperty<Real>("strain_initial_damage")),
+   _strain_broken_damage(declareProperty<Real>("strain_broken_damage")),
    _strain_history(declareProperty<Real>("strain_history")),
 
    _damage_coeff_old(declarePropertyOld<Real>("damage_coeff")),
+   _damage_indicater_old(declarePropertyOld<Real>("damage_indicater")),
+   _damage_type_indicater_old(declarePropertyOld<Real>("damage_type_indicater")),
    _strain_history_old(declarePropertyOld<Real>("strain_history")),
 
    _stress_normal_vector(declareProperty<RealVectorValue>("stress_normal_vector")),
    _stress_shear_vector (declareProperty<RealVectorValue>("stress_shear_vector")),
    _strain_normal_vector(declareProperty<RealVectorValue>("strain_normal_vector")),
    _strain_shear_vector (declareProperty<RealVectorValue>("strain_shear_vector")),
+   _pstress_normal_vector(declareProperty<RealVectorValue>("pstress_normal_vector")),
+   _pstrain_normal_vector(declareProperty<RealVectorValue>("pstrain_normal_vector")),
 
    _init_status(false),
    _bond_nstiff(declareProperty<Real>("bond_nstiff")),
@@ -220,7 +241,7 @@ SolidMechanics::computeProperties()
       Real _input_poissons_ratio_temp = _input_poissons_ratio;
       Real _input_biot_coeff_temp = _input_biot_coeff;
       _input_thermal_expansion_temp *= 1.0 ;//(1.0 + 0.0 * (double(randn_trig()) - 0.5 ) );
-      _input_youngs_modulus_temp    *= (1.0 + 0.0 * (double(randn_trig()) - 0.5 ) );
+      _input_youngs_modulus_temp    *= 1.0 ;//(1.0 + 0.0 * (double(randn_trig()) - 0.5 ) );
       _input_poissons_ratio_temp    *= 1.0 ;//(1.0 + 0.0 * (double(randn_trig()) - 0.5 ) );
       _input_biot_coeff_temp        *= 1.0 ;//(1.0 + 0.0 * (double(randn_trig()) - 0.5 ) );
 
@@ -248,11 +269,13 @@ SolidMechanics::computeProperties()
       }
     }
 
-    if (_has_damage && _has_damage_method == "isotropic") computeDamage(qp); //by damage mechanics theory
-    
+
+
+//kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+
     if (_has_x_disp && _has_y_disp)
     {
-      _E  =  _youngs_modulus[qp];//newly modified
+      _E  =  _youngs_modulus[qp];//before modified
 
 //      if(_q_point[qp](2) < 0.5 && _q_point[qp](2) > -0.5 ) _E *= 0.9;//new added to prescribe the weak zone
 
@@ -260,7 +283,7 @@ SolidMechanics::computeProperties()
       _c1 = _E*(1.-_nu)/(1.+_nu)/(1.-2.*_nu);
       _c2 = _nu/(1.-_nu);
       _c3 = 0.5*(1.-2.*_nu)/(1.-_nu);
-      
+
       _strain_normal_vector[qp](0) = _grad_x_disp[qp](0); //s_xx
       _strain_normal_vector[qp](1) = _grad_y_disp[qp](1); //s_yy
       if (_dim == 3)
@@ -274,8 +297,6 @@ SolidMechanics::computeProperties()
         _strain_shear_vector[qp](2) = 0.5*(_grad_y_disp[qp](2)+_grad_z_disp[qp](1)); // s_yz
       }
 
-      if(_has_damage == false || _has_damage_method != "anisotropic")//not need for anisotropic damage
-      {
         _stress_normal_vector[qp](0) = _c1*_strain_normal_vector[qp](0)+_c1*_c2*_strain_normal_vector[qp](1)+_c1*_c2*_strain_normal_vector[qp](2); //tau_xx
         _stress_normal_vector[qp](1) = _c1*_c2*_strain_normal_vector[qp](0)+_c1*_strain_normal_vector[qp](1)+_c1*_c2*_strain_normal_vector[qp](2); //tau_yy
         if (_dim == 3)
@@ -287,11 +308,87 @@ SolidMechanics::computeProperties()
           _stress_shear_vector[qp](1) = _c1*_c3*2.0*_strain_shear_vector[qp](1); //tau_xz
           _stress_shear_vector[qp](2) = _c1*_c3*2.0*_strain_shear_vector[qp](2); //tau_yz
         }
-      }
+
 
     }
 
-    if(_has_damage && _has_damage_method == "anisotropic")   computeAnisoDamage(qp);    
+//kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+
+   if (_has_damage && _has_damage_method == "isotropic") computeDamage(qp); //by damage mechanics theory
+   if (_has_damage && _has_damage_method == "MC_damage") computeDamage_v2(qp); //by damage mechanics theory
+   if (_has_damage && _has_damage_method == "Pstrain_damage") computeDamage_v3(qp); //by damage mechanics theory
+/*
+    if (_has_x_disp && _has_y_disp)
+    {
+      _E  =  _youngs_modulus[qp];//after updated
+
+      _nu =  _poissons_ratio[qp];
+      _c1 = _E*(1.-_nu)/(1.+_nu)/(1.-2.*_nu);
+      _c2 = _nu/(1.-_nu);
+      _c3 = 0.5*(1.-2.*_nu)/(1.-_nu);
+
+      _strain_normal_vector[qp](0) = _grad_x_disp[qp](0); //s_xx
+      _strain_normal_vector[qp](1) = _grad_y_disp[qp](1); //s_yy
+      if (_dim == 3)
+        _strain_normal_vector[qp](2) = _grad_z_disp[qp](2); //s_zz
+
+      _strain_shear_vector[qp](0) = 0.5*(_grad_x_disp[qp](1)+_grad_y_disp[qp](0)); // s_xy
+
+      if (_dim == 3)
+      {
+        _strain_shear_vector[qp](1) = 0.5*(_grad_x_disp[qp](2)+_grad_z_disp[qp](0)); // s_xz
+        _strain_shear_vector[qp](2) = 0.5*(_grad_y_disp[qp](2)+_grad_z_disp[qp](1)); // s_yz
+      }
+
+
+        _stress_normal_vector[qp](0) = _c1*_strain_normal_vector[qp](0)+_c1*_c2*_strain_normal_vector[qp](1)+_c1*_c2*_strain_normal_vector[qp](2); //tau_xx
+        _stress_normal_vector[qp](1) = _c1*_c2*_strain_normal_vector[qp](0)+_c1*_strain_normal_vector[qp](1)+_c1*_c2*_strain_normal_vector[qp](2); //tau_yy
+        if (_dim == 3)
+          _stress_normal_vector[qp](2) = _c1*_c2*_strain_normal_vector[qp](0)+_c1*_c2*_strain_normal_vector[qp](1)+_c1*_strain_normal_vector[qp](2); //tau_zz
+
+        _stress_shear_vector[qp](0) = _c1*_c3*2.0*_strain_shear_vector[qp](0); //tau_xy
+        if (_dim == 3)
+        {
+          _stress_shear_vector[qp](1) = _c1*_c3*2.0*_strain_shear_vector[qp](1); //tau_xz
+          _stress_shear_vector[qp](2) = _c1*_c3*2.0*_strain_shear_vector[qp](2); //tau_yz
+        }
+
+     }
+
+
+ //Effective stress
+
+
+   if(_damage_coeff[qp] > 0.0)
+   {
+      _stress_normal_vector[qp](0) = (1-_damage_coeff[qp])* _stress_normal_vector[qp](0); //s_xx
+      _stress_normal_vector[qp](1) = (1-_damage_coeff[qp])* _stress_normal_vector[qp](1); //s_yy
+      _stress_shear_vector[qp](0) = (1-_damage_coeff[qp])* _stress_shear_vector[qp](0); // s_xy
+
+      if (_dim == 3)
+      {
+             _stress_normal_vector[qp](2) = (1-_damage_coeff[qp])* _stress_normal_vector[qp](2); //s_zz
+             _stress_shear_vector[qp](1) = (1-_damage_coeff[qp])* _stress_shear_vector[qp](1); // s_xz
+             _stress_shear_vector[qp](2) = (1-_damage_coeff[qp])* _stress_shear_vector[qp](2); // s_yz
+      }
+
+   }
+   if (_damage_coeff[qp] ==0.999)
+   {
+	  _stress_normal_vector[qp](0) = _stress_normal_vector[qp](0)/100.; //s_xx
+      _stress_normal_vector[qp](1) = _stress_normal_vector[qp](1)/100.; //s_yy
+	  _stress_shear_vector[qp](0) = _stress_shear_vector[qp](0)/100.; // s_xy
+      if (_dim == 3)
+      {
+		  _stress_normal_vector[qp](2) = _stress_normal_vector[qp](2)/100.; //s_zz
+		  _stress_shear_vector[qp](1) = _stress_shear_vector[qp](1)/100.; // s_xz
+		  _stress_shear_vector[qp](2) = _stress_shear_vector[qp](2)/100.; // s_yz
+      }
+   }
+
+*/
+
+    if(_has_damage && _has_damage_method == "anisotropic")   computeAnisoDamage(qp);
 
     if (_has_crack)
     {
@@ -312,7 +409,7 @@ SolidMechanics::computeProperties()
       if( _has_crack_method =="Mohr-Coulomb") computeCrack_Mohr_Coulomb_v2(qp); //smeared crack model : Mohr-Coulomb criteria
     }
   }
-    
+
 }
 //////////////////////////////////////////////////////////////////////////
 
@@ -345,9 +442,9 @@ SolidMechanics::computeDamage(const int qp)
           (_grad_x_disp[qp](2)+_grad_z_disp[qp](0))*(_grad_x_disp[qp](2)+_grad_z_disp[qp](0))/2.0 +
           (_grad_y_disp[qp](2)+_grad_z_disp[qp](1))*(_grad_y_disp[qp](2)+_grad_z_disp[qp](1))/2.0 ;
   }
-    
+
   _effective_strain = std::pow(_effective_strain*2./3. , 0.5);
-      
+
   //newly added for handling damage couple with porosity/permeability
   Real temp_couple;
   if(_has_damage_couple_permeability)
@@ -355,7 +452,7 @@ SolidMechanics::computeDamage(const int qp)
     temp_couple = std::pow(1.00001-_damage_coeff[qp] , _damage_couple_permeability_coeff2);//get the old permeability
   }
 
-  
+
   if(_strain_history[qp] < _input_strain_broken) //not fully failed
   {
     if(_effective_strain <= _strain_history[qp])//no further damaging
@@ -395,7 +492,7 @@ SolidMechanics::computeDamage(const int qp)
   _strain_history[qp] = std::max(_strain_history[qp] , _strain_history_old[qp]);
 
   if(_q_point[qp](0) > 0.8 && _q_point[qp](0) < 0.2 )  { _damage_coeff[qp] = 0.0 ; _strain_history[qp] = 0.0; } //newly added to avoid boundary damaging
-  
+
   _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus;
 
   //newly added for handling damage couple with porosity/permeability
@@ -403,15 +500,391 @@ SolidMechanics::computeDamage(const int qp)
   {
     _permeability[qp] *= std::pow(1.00001-_damage_coeff[qp] , _damage_couple_permeability_coeff2) / temp_couple;
   }
-  
-}
-//////////////////////////////////////////////////////////////////////////
 
+}
+
+
+//=================================================================================================
+// developed by "Kay MIN"
+// damage mechanics with Mohr-Coulomb
+// damage evolution by principal strain
 
 
 void
-SolidMechanics::computeAnisoDamage(const int qp) //just calculate damage evolution according to strain not stress tensor
+SolidMechanics::computeDamage_v2(const int qp)
 {
+   Real _effective_strain=0.0 , _temp =0.0;
+   _strain_history[qp]   = std::max(0.0000000001,_strain_history[qp]);
+   _damage_coeff[qp]     = std::max(_input_damage_coeff, _damage_coeff[qp]);
+
+   int ind_max = 0;
+   int ind_min = 0;
+   int ind_mid = 0;
+
+
+ Real _sigm=0.0, _dsbar=0.0, _theta=0.0, shear_max=0.0;
+ Real _dx=0.0, _dy=0.0, _dz=0.0, _xj3=0.0, _sine=0.0, _d2=0.0, _d3=0.0, _ds1=0.0, _ds2=0.0, _ds3=0.0;
+ Real _s1=0.0, _s2=0.0, _s3=0.0, _s4=0.0, _s5=0.0, _s6=0.0, _temp01=0.0, _temp02=0.0, _temp03=0.0;
+
+//Effective stress
+   if(_damage_coeff[qp] > 0.0)
+   {
+      _stress_normal_vector[qp](0) = (1-_damage_coeff[qp])* _stress_normal_vector[qp](0); //s_xx
+      _stress_normal_vector[qp](1) = (1-_damage_coeff[qp])* _stress_normal_vector[qp](1); //s_yy
+      _stress_shear_vector[qp](0) = (1-_damage_coeff[qp])* _stress_shear_vector[qp](0); // s_xy
+
+      if (_dim == 3)
+      {
+           _stress_normal_vector[qp](2) = (1-_damage_coeff[qp])* _stress_normal_vector[qp](2); //s_zz
+           _stress_shear_vector[qp](1) = (1-_damage_coeff[qp])* _stress_shear_vector[qp](1); // s_xz
+           _stress_shear_vector[qp](2) = (1-_damage_coeff[qp])* _stress_shear_vector[qp](2); // s_yz
+      }
+
+   }
+
+
+ _s1=_strain_normal_vector[qp](0); _s2=_strain_normal_vector[qp](1); _s3=_strain_normal_vector[qp](2);
+ _s4=_strain_shear_vector[qp](0); _s5=_strain_shear_vector[qp](1); _s6=_strain_shear_vector[qp](2);
+
+// find max.shear
+    shear_max=_strain_shear_vector[qp](0);
+
+    for(int i = 1 ; i < LIBMESH_DIM ; ++i)
+    {
+      if(_strain_shear_vector[qp](i) > shear_max)
+      {
+        shear_max = _strain_shear_vector[qp](i);
+        ind_max = i;
+      }
+    }
+
+ // Strain invariants
+ if (LIBMESH_DIM==2)
+ {
+ 	 _sigm=(_s1+_s2+_s4)/3.;
+ 	 _temp01=std::pow(2.,0.5);
+     _dsbar=std::pow(((_s1-_s2)*(_s1-_s2)+(_s2-_s4)*(_s2-_s4)+(_s4-_s1)*(_s4-_s1)+6.*_s4*_s4)/_temp01, 0.5);
+     if (_dsbar==0.)
+     {
+		 _theta=0.0;
+	 }
+	 else
+	 {
+	  _dx=(2.*_s1-_s2-_s4)/3.;
+	  _dy=(2.*_s2-_s4-_s1)/3.;
+	  _dz=(2.*_s4-_s1-_s2)/3.;
+	  _xj3=std::pow(_dx*_dy*_dz-_dz*_s4,2.);
+	  _sine=-(std::pow(13.5*_xj3/_dsbar,3.));
+      if (_sine > 1.) _sine=1.;
+      if (_sine < -1.) _sine=-1.;
+      _theta=std::asin(_sine)/3.;
+     }
+ }
+  if (LIBMESH_DIM==3)
+ {
+	 _sigm=(_s1+_s2+_s3)/3.;
+	 _d2=((_s1-_s2)*(_s1-_s2)+(_s2-_s3)*(_s2-_s3)+(_s3-_s1)*(_s3-_s1))/6.+_s4*_s4+_s5*_s5+_s6*_s6;
+	 _ds1=_s1-_sigm;
+	 _ds2=_s2-_sigm;
+	 _ds3=_s3-_sigm;
+	 _temp01=std::pow(3.,0.5);
+	 _d3=_ds1*_ds2*_ds3-_ds1*_s5*_s5-_ds2*_s6*_s6-_ds3*_s4*_s4+2.*_s4*_s5*_s6;
+	 _temp02=std::pow(_d2,0.5);
+	 _dsbar=std::sqrt(3.)*std::sqrt(_d2);
+	 if (_dsbar == 0.)
+	 {
+		 _theta=0.;
+	 }
+	 else
+	 {
+		 _temp03=std::pow(_temp02,3.);
+		 _sine=-3.*std::sqrt(3.)*_d3/(2.*std::pow(std::sqrt(_d2),3.));
+         if (_sine > 1.) _sine=1.;
+         if (_sine < -1.) _sine=-1.;
+         _theta=std::asin(_sine)/3.;
+	 }
+ }
+
+
+//Principal strain using invariants for 3D
+	 _pstrain_normal_vector[qp](0)=(_sigm + (2.0/3.0)*_dsbar*std::sin(_theta-2.*3.14159265/3.));
+	 _pstrain_normal_vector[qp](1)=(_sigm + (2.0/3.0)*_dsbar*std::sin(_theta));
+	 _pstrain_normal_vector[qp](2)=(_sigm + (2.0/3.0)*_dsbar*std::sin(_theta+2.*3.14159265/3.)); //max
+
+ // Stress invariants
+ _s1=_stress_normal_vector[qp](0); _s2=_stress_normal_vector[qp](1); _s3=_stress_normal_vector[qp](2);
+ _s4=_stress_shear_vector[qp](0); _s5=_stress_shear_vector[qp](1); _s6=_stress_shear_vector[qp](2);
+
+ if (LIBMESH_DIM==2)
+ {
+ 	 _sigm=(_s1+_s2+_s4)/3.;
+ 	 _temp01=std::pow(2.,0.5);
+     _dsbar=std::pow(((_s1-_s2)*(_s1-_s2)+(_s2-_s4)*(_s2-_s4)+(_s4-_s1)*(_s4-_s1)+6.*_s4*_s4)/_temp01, 0.5);
+     if (_dsbar==0.)
+     {
+		 _theta=0.0;
+	 }
+	 else
+	 {
+	  _dx=(2.*_s1-_s2-_s4)/3.;
+	  _dy=(2.*_s2-_s4-_s1)/3.;
+	  _dz=(2.*_s4-_s1-_s2)/3.;
+	  _xj3=std::pow(_dx*_dy*_dz-_dz*_s4,2.);
+	  _sine=-(std::pow(13.5*_xj3/_dsbar,3.));
+      if (_sine > 1.) _sine=1.;
+      if (_sine < -1.) _sine=-1.;
+      _theta=std::asin(_sine)/3.;
+     }
+ }
+  if (LIBMESH_DIM==3)
+ {
+	 _sigm=(_s1+_s2+_s3)/3.;
+	 _d2=((_s1-_s2)*(_s1-_s2)+(_s2-_s3)*(_s2-_s3)+(_s3-_s1)*(_s3-_s1))/6.+_s4*_s4+_s5*_s5+_s6*_s6;
+	 _ds1=_s1-_sigm;
+	 _ds2=_s2-_sigm;
+	 _ds3=_s3-_sigm;
+	 _temp01=std::pow(3.,0.5);
+	 _d3=_ds1*_ds2*_ds3-_ds1*_s5*_s5-_ds2*_s6*_s6-_ds3*_s4*_s4+2.*_s4*_s5*_s6;
+	 _temp02=std::pow(_d2,0.5);
+	 _dsbar=std::sqrt(3.)*std::sqrt(_d2);
+	 if (_dsbar == 0.)
+	 {
+		 _theta=0.;
+	 }
+	 else
+	 {
+		 _temp03=std::pow(_temp02,3.);
+		 _sine=-3.*std::sqrt(3.)*_d3/(2.*std::pow(std::sqrt(_d2),3.));
+         if (_sine > 1.) _sine=1.;
+         if (_sine < -1.) _sine=-1.;
+         _theta=std::asin(_sine)/3.;
+	 }
+ }
+
+//Principal stress using invariants for 3D
+	 _pstress_normal_vector[qp](0)=(_sigm + (2.0/3.0)*_dsbar*std::sin(_theta-2.*3.141592653589793/3.));
+	 _pstress_normal_vector[qp](1)=(_sigm + (2.0/3.0)*_dsbar*std::sin(_theta));
+	 _pstress_normal_vector[qp](2)=(_sigm + (2.0/3.0)*_dsbar*std::sin(_theta+2.*3.141592653589793/3.)); //max
+
+ //Mohr-Coulomb Failure criterion
+ Real _phir=0.0, _snph=0.0, _csph=0.0, _csth=0.0, _snth=0.0, _f=0.0, _fe=0.0;
+
+_temp01=std::atan(1.);
+_temp02=std::pow(3.,0.5);
+_phir=_friction_angle2*4.*std::atan(1.)/180.;
+_snph=std::sin(_phir);
+_csph=std::cos(_phir);
+_csth=std::cos(_theta);
+_snth=std::sin(_theta);
+_f=_snph*_sigm+_dsbar*(_csth/std::sqrt(3.)-_snth*_snph/3.)-_cohesion2*_csph;
+
+//Damage evolution based on Mohr-Coulomb
+if (_f > 0. && _pstress_normal_vector[qp](2) > _critical_stress)
+//if (_pstrain_normal_vector[qp](2) > _critical_strain)
+{
+	_f=10.;
+}
+
+//if (shear_max > _input_strain_initialize_damage)
+//{
+//	_f=20.;
+//}
+
+//damage initiation indicater for tensile
+if (_f==10. && _damage_indicater_old[qp] != 1.)
+{
+	_damage_indicater[qp] = 1.; //1:damage initiation
+	_damage_type_indicater[qp] = 1.; // 1:tensile, 2:shear
+	_effective_strain = _pstrain_normal_vector[qp](2); //max
+	_strain_initial_damage[qp] = _effective_strain;
+	_strain_broken_damage[qp] = _effective_strain*20.;
+	_damage_indicater_old[qp] = _damage_indicater[qp];
+}
+//damage initiation indicater for shear
+else if (_f > 0. && _damage_indicater_old[qp] != 1.)
+//else if (_fe==20. && _damage_indicater_old[qp] != 1.)
+{
+	_damage_indicater[qp] = 1.;
+	_damage_type_indicater[qp] = 2.; // 1:tensile, 2:shear
+	_effective_strain = shear_max; //max
+	_strain_initial_damage[qp] = _effective_strain;
+	_strain_broken_damage[qp] = _effective_strain*20.;
+	_damage_indicater_old[qp] = _damage_indicater[qp];
+}
+
+//tensile failure
+if (_damage_indicater_old[qp] == 1. && _damage_type_indicater[qp] == 1.)
+{
+	_effective_strain = _pstrain_normal_vector[qp](2); //max
+
+  if(_strain_history[qp] < _strain_broken_damage[qp]) //not fully failed
+  {
+    if(_effective_strain <= _strain_history[qp])//no further damaging
+    {
+      _damage_coeff[qp]   = _damage_coeff[qp];
+      _strain_history[qp] = _strain_history[qp];
+    }
+    else //damaging continues
+    {
+      if(_effective_strain >= _strain_broken_damage[qp])//fully failed: s > sc
+      {
+        _damage_coeff[qp]   = 0.999999999;
+        _strain_history[qp] = _effective_strain;
+      }
+      else//continuously damaging s-{s0,sc}
+      {
+        _temp = (_effective_strain - _strain_initial_damage[qp])/(_strain_broken_damage[qp] - _strain_initial_damage[qp]);
+        _temp = _damage_a1 * std::pow(_temp , _damage_a2) + _input_damage_coeff;
+        if(_temp >= 0.999999999)
+        {
+          std::cout<<"The parameter of damage evolution are too large,please change them"<<"\n";
+          _temp = 0.999999999;
+        }
+        _damage_coeff[qp] = std::max(_temp , _damage_coeff[qp]);
+        _strain_history[qp] = _effective_strain;
+      }
+    }
+//   else if (_effective_strain <= _strain_initial_damage[qp])//no damaging yet
+//   {
+//	    _damage_coeff[qp]   = 0.0;
+//        _strain_history[qp] = _effective_strain;
+//   }
+  }
+  else //alreadry completely failed
+  {
+    _damage_coeff[qp] = 0.999999999;
+    _strain_history[qp] =  std::max(_strain_history[qp] , _effective_strain);
+  }
+}
+
+//shear failure
+if (_damage_indicater_old[qp] == 1. && _damage_type_indicater[qp] == 2.)
+{
+	_effective_strain = _pstrain_normal_vector[qp](2); //max
+
+  if(_strain_history[qp] < _strain_broken_damage[qp]) //not fully failed
+  {
+    if(_effective_strain <= _strain_history[qp])//no further damaging
+    {
+      _damage_coeff[qp]   = _damage_coeff[qp];
+      _strain_history[qp] = _strain_history[qp];
+    }
+    else //damaging continues
+    {
+      if(_effective_strain >= _strain_broken_damage[qp])//fully failed: s > sc
+      {
+        _damage_coeff[qp]   = 0.999999999;
+        _strain_history[qp] = _effective_strain;
+      }
+      else//continuously damaging s-{s0,sc}
+      {
+        _temp = (_effective_strain - _strain_initial_damage[qp])/(_strain_broken_damage[qp] - _strain_initial_damage[qp]);
+        _temp = _damage_a1 * std::pow(_temp , _damage_a2) + _input_damage_coeff;
+        if(_temp >= 0.999999999)
+        {
+          std::cout<<"The parameter of damage evolution are too large,please change them"<<"\n";
+          _temp = 0.999999999;
+        }
+        _damage_coeff[qp] = std::max(_temp , _damage_coeff[qp]);
+        _strain_history[qp] = _effective_strain;
+      }
+    }
+//   else if (_effective_strain <= _strain_initial_damage[qp])//no damaging yet
+//   {
+//	    _damage_coeff[qp]   = 0.0;
+//        _strain_history[qp] = _effective_strain;
+//   }
+  }
+  else //alreadry completely failed
+  {
+    _damage_coeff[qp] = 0.999999999;
+    _strain_history[qp] =  std::max(_strain_history[qp] , _effective_strain);
+  }
+}
+
+if(_f<= 0.0 && _damage_indicater[qp] != 1.)
+//if(_damage_indicater_old[qp] != 1.)
+{
+  _damage_coeff[qp] = 0.0;
+  _strain_history[qp] =  _strain_history_old[qp];
+}
+
+  //newly added to comply MOOSE procedure
+  _damage_coeff[qp]   = std::max(_damage_coeff[qp] , _damage_coeff_old[qp]);
+  _strain_history[qp] = std::max(_strain_history[qp] , _strain_history_old[qp]);
+
+  if(_q_point[qp](0) > 0.8 && _q_point[qp](0) < 0.2 )  { _damage_coeff[qp] = 0.0 ; _strain_history[qp] = 0.0; } //newly added to avoid boundary damaging
+
+  if(_damage_coeff[qp] > 0.0)
+  {
+	  _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus;
+  }
+  else if(_damage_coeff[qp] > 0.99)
+  {
+	  _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus/100.;
+  }
+}
+//=================================================================================================
+
+//=================================================================================================
+// developed by "Kay MIN"
+// damage mechanics with Principal strain
+// damage evolution by principal strain
+
+
+void
+SolidMechanics::computeDamage_v3(const int qp)
+{
+   Real _effective_strain=0.0 , _temp =0.0;
+   _strain_history[qp]   = std::max(0.0000000001,_strain_history[qp]);
+   _damage_coeff[qp]     = std::max(_input_damage_coeff, _damage_coeff[qp]);
+
+
+  if(LIBMESH_DIM==2)
+  {
+//        _effective_strain = std::max(std::abs(_grad_x_disp[qp](0)) ,std::abs( _grad_y_disp[qp](1)));
+    _temp = (_grad_x_disp[qp](0) + _grad_y_disp[qp](1))/2.;
+    _effective_strain = (_grad_x_disp[qp](0)-_temp)*(_grad_x_disp[qp](0)-_temp) +
+      (_grad_y_disp[qp](1)-_temp)*(_grad_y_disp[qp](1)-_temp) +
+      (_grad_x_disp[qp](1)+_grad_y_disp[qp](0))*(_grad_x_disp[qp](1)+_grad_y_disp[qp](0))/2.0;
+  }
+  if(LIBMESH_DIM==3)
+  {
+//        _effective_strain = std::max(std::abs(_grad_x_disp[qp](0)) ,std::abs( _grad_y_disp[qp](1)));
+//        _effective_strain = std::max(std::abs(_grad_z_disp[qp](2)) , _effective_strain);
+    _temp = (_grad_x_disp[qp](0)+_grad_y_disp[qp](1)+_grad_z_disp[qp](2))/3.;
+    _effective_strain = (_grad_x_disp[qp](0)-_temp)*(_grad_x_disp[qp](0)-_temp) +
+          (_grad_y_disp[qp](1)-_temp)*(_grad_y_disp[qp](1)-_temp) +
+          (_grad_z_disp[qp](2)-_temp)*(_grad_z_disp[qp](2)-_temp) +
+          (_grad_x_disp[qp](1)+_grad_y_disp[qp](0))*(_grad_x_disp[qp](1)+_grad_y_disp[qp](0))/2.0 +
+          (_grad_x_disp[qp](2)+_grad_z_disp[qp](0))*(_grad_x_disp[qp](2)+_grad_z_disp[qp](0))/2.0 +
+          (_grad_y_disp[qp](2)+_grad_z_disp[qp](1))*(_grad_y_disp[qp](2)+_grad_z_disp[qp](1))/2.0 ;
+  }
+
+  _effective_strain = std::pow(_effective_strain*2./3. , 0.5);
+
+
+   int ind_max = 0;
+   int ind_min = 0;
+   int ind_mid = 0;
+
+ // Strain invariants
+ Real _sigm=0.0, _dsbar=0.0, _theta=0.0, shear_max=0.0;
+ Real _dx=0.0, _dy=0.0, _dz=0.0, _xj3=0.0, _sine=0.0, _d2=0.0, _d3=0.0, _ds1=0.0, _ds2=0.0, _ds3=0.0;
+ Real _s1=0.0, _s2=0.0, _s3=0.0, _s4=0.0, _s5=0.0, _s6=0.0, _temp01=0.0, _temp02=0.0, _temp03=0.0;
+
+// find max.shear
+    shear_max=_strain_shear_vector[qp](0);
+
+    for(int i = 1 ; i < LIBMESH_DIM ; ++i)
+    {
+      if(_strain_shear_vector[qp](i) > shear_max)
+      {
+        shear_max = _strain_shear_vector[qp](i);
+        ind_max = i;
+      }
+    }
+
   _total_strain(0,0)= _strain_normal_vector[qp](0);
   _total_strain(1,1)= _strain_normal_vector[qp](1);
   if (LIBMESH_DIM == 3) _total_strain(2,2)= _strain_normal_vector[qp](2);
@@ -422,330 +895,180 @@ SolidMechanics::computeAnisoDamage(const int qp) //just calculate damage evoluti
     _total_strain(0,2) = _strain_shear_vector[qp](1);
     _total_strain(2,0) = _strain_shear_vector[qp](1);
     _total_strain(1,2) = _strain_shear_vector[qp](2);
-    _total_strain(2,1) = _strain_shear_vector[qp](2);    
+    _total_strain(2,1) = _strain_shear_vector[qp](2);
   }
 
-  //space is divided into pieces with same spatial angle
-  Real nstiff_tmp=0.0;
-  Real sstiff_tmp=0.0;
-  if(LIBMESH_DIM==3)
-  {
-    nstiff_tmp = _bond_nstiff[qp] * 2. * 3.14159265 / 13.;
-    sstiff_tmp = _bond_sstiff[qp] * 2. * 3.14159265 / 13.;
-//    sstiff_tmp = 0.0;
-  }
-  if(LIBMESH_DIM==2)
-  {
-    nstiff_tmp = _bond_nstiff[qp] * 3.14159265 / 12.;
-    sstiff_tmp = _bond_sstiff[qp] * 3.14159265 / 12.;
-//    sstiff_tmp = 0.0;
-  }
-  //update bond-damage-factor according strain tensor
-  ColumnMajorMatrix n_strain(LIBMESH_DIM,1);//normal strain vector
-  ColumnMajorMatrix s_strain(LIBMESH_DIM,1);// shear strain vector
-
-  Real _directional_vector[13][LIBMESH_DIM];
-  if(LIBMESH_DIM==3)
-  {
-    _directional_vector[ 0][0] =     1.0 ; _directional_vector[ 0][1] =     0.0 ; _directional_vector[ 0][2] =     0.0;
-    _directional_vector[ 1][0] =     0.0 ; _directional_vector[ 1][1] =     1.0 ; _directional_vector[ 1][2] =     0.0;
-    _directional_vector[ 2][0] =     0.0 ; _directional_vector[ 2][1] =     0.0 ; _directional_vector[ 2][2] =     1.0;
-    _directional_vector[ 3][0] =     0.0 ; _directional_vector[ 3][1] = 0.70711 ; _directional_vector[ 3][2] = 0.70711;
-    _directional_vector[ 4][0] =     0.0 ; _directional_vector[ 4][1] = 0.70711 ; _directional_vector[ 4][2] =-0.70711;
-    _directional_vector[ 5][0] = 0.70711 ; _directional_vector[ 5][1] =     0.0 ; _directional_vector[ 5][2] = 0.70711;
-    _directional_vector[ 6][0] = 0.70711 ; _directional_vector[ 6][1] =     0.0 ; _directional_vector[ 6][2] =-0.70711;
-    _directional_vector[ 7][0] = 0.70711 ; _directional_vector[ 7][1] = 0.70711 ; _directional_vector[ 7][2] =     0.0;
-    _directional_vector[ 8][0] = 0.70711 ; _directional_vector[ 8][1] =-0.70711 ; _directional_vector[ 8][2] =     0.0;
-    _directional_vector[ 9][0] = 0.57735 ; _directional_vector[ 9][1] = 0.57735 ; _directional_vector[ 9][2] = 0.57735;
-    _directional_vector[10][0] =-0.57735 ; _directional_vector[10][1] = 0.57735 ; _directional_vector[10][2] = 0.57735;
-    _directional_vector[11][0] = 0.57735 ; _directional_vector[11][1] =-0.57735 ; _directional_vector[11][2] = 0.57735;
-    _directional_vector[12][0] = 0.57735 ; _directional_vector[12][1] = 0.57735 ; _directional_vector[12][2] =-0.57735;
-    
-  }
-  if(LIBMESH_DIM==2)
-  {
-    _directional_vector[ 0][0] =     1.0 ; _directional_vector[ 0][1] =     0.0;
-    _directional_vector[ 1][0] = 0.96593 ; _directional_vector[ 1][1] = 0.25882;
-    _directional_vector[ 2][0] = 0.86603 ; _directional_vector[ 2][1] = 0.50000;
-    _directional_vector[ 3][0] = 0.70711 ; _directional_vector[ 3][1] = 0.70711;
-    _directional_vector[ 4][0] = 0.50000 ; _directional_vector[ 4][1] = 0.86603;
-    _directional_vector[ 5][0] = 0.25882 ; _directional_vector[ 5][1] = 0.96593;
-    _directional_vector[ 6][0] = 0.00000 ; _directional_vector[ 6][1] = 1.00000;
-    _directional_vector[ 7][0] =-0.25882 ; _directional_vector[ 7][1] = 0.96593;    
-    _directional_vector[ 8][0] =-0.50000 ; _directional_vector[ 8][1] = 0.86603;
-    _directional_vector[ 9][0] =-0.70711 ; _directional_vector[ 9][1] = 0.70711;
-    _directional_vector[10][0] =-0.86603 ; _directional_vector[10][1] = 0.50000;
-    _directional_vector[11][0] =-0.96593 ; _directional_vector[11][1] = 0.25882;
-    
-  }
-
-  Real temp , temp1 , temp2;
-  for(unsigned int i = 0 ; i < LIBMESH_DIM ; i++)
-  {
-    for(unsigned int j = 0 ; j < LIBMESH_DIM ; j++)
-    {
-      _total_stress(i,j) = 0.0;//initialize the stress as zero
-    }
-  }
-
-  Real damage[13];
-  Real damage_old[13];
-  damage[ 0] = _bond_damage_factor00[qp] ; damage_old[ 0] = _bond_damage_factor00_old[qp];
-  damage[ 1] = _bond_damage_factor01[qp] ; damage_old[ 1] = _bond_damage_factor01_old[qp];
-  damage[ 2] = _bond_damage_factor02[qp] ; damage_old[ 2] = _bond_damage_factor02_old[qp];
-  damage[ 3] = _bond_damage_factor03[qp] ; damage_old[ 3] = _bond_damage_factor03_old[qp];
-  damage[ 4] = _bond_damage_factor04[qp] ; damage_old[ 4] = _bond_damage_factor04_old[qp];
-  damage[ 5] = _bond_damage_factor05[qp] ; damage_old[ 5] = _bond_damage_factor05_old[qp];
-  damage[ 6] = _bond_damage_factor06[qp] ; damage_old[ 6] = _bond_damage_factor06_old[qp];
-  damage[ 7] = _bond_damage_factor07[qp] ; damage_old[ 7] = _bond_damage_factor07_old[qp];
-  damage[ 8] = _bond_damage_factor08[qp] ; damage_old[ 8] = _bond_damage_factor08_old[qp];
-  damage[ 9] = _bond_damage_factor09[qp] ; damage_old[ 9] = _bond_damage_factor09_old[qp];
-  damage[10] = _bond_damage_factor10[qp] ; damage_old[10] = _bond_damage_factor10_old[qp];
-  damage[11] = _bond_damage_factor11[qp] ; damage_old[11] = _bond_damage_factor11_old[qp];
-  if(LIBMESH_DIM == 3 )   damage[12] = _bond_damage_factor12[qp] ; damage_old[12] = _bond_damage_factor12_old[qp];
-
-/*
-  if(LIBMESH_DIM == 3)//3 dimensional case
-  {
-    for (unsigned int i = 0  ; i < 13 ; i++)//loop: directions
-    {
-      temp = 0.0;
-      for(unsigned int j = 0 ; j < LIBMESH_DIM ; j++)
-      {
-        for(unsigned int k = 0 ; k < LIBMESH_DIM ; k++)
-        {
-          temp += _total_strain(j,k) * _directional_vector[i][j] * _directional_vector[i][k];//normal strain scalar
-        }
-      }
-      for(unsigned int j = 0 ; j < LIBMESH_DIM ; j++)   n_strain(j,0) = temp * _directional_vector[i][j];//normal strain vector
-      for(unsigned int j = 0 ; j < LIBMESH_DIM ; j++)
-      {
-        temp = 0.0;
-        for(unsigned int k = 0 ; k < LIBMESH_DIM ; k++)
-        {
-          temp += _total_strain(j,k) * _directional_vector[i][k];//the jth component of strain vector
-        }
-        s_strain(j,0) = temp - n_strain(j,0);//get shear strain vector
-      }
-      
-      temp1 = 0.0;//normal strain scalar
-      temp2 = 0.0;//shear strain scalar
-      for(unsigned int j = 0 ; j < LIBMESH_DIM ; j++)
-      {
-        temp1 += n_strain(j,0) * _directional_vector[i][j];
-        temp2 += s_strain(j,0) * s_strain(j,0);
-      }
-      temp2 = std::sqrt(temp2);
-      temp1 = std::abs(temp1);
-
-      //damage evolution
-      temp = temp1 / _input_strain_strength + temp2 / (0.5 * (1.0 + _poissons_ratio[qp]) * _input_strain_strength);
-      damage[i] = std::max(damage[i] , std::exp(-_input_damage_c * std::pow(temp,_input_damage_n)));
-//      if(temp1 <= _input_strain_init) 
-//      {
-//        damage[i] = damage[i];
-//      }
-//      else if(temp1 >= _input_strain_strength)
-//      {
-//        damage[i] = 0.9999;
-//      }
-//      else
-//      {
-//        temp = _input_strain_init/(_input_strain_strength - _input_strain_init) * (_input_strain_strength - temp1) / temp1 ;
-//        damage[i] = std::max(damage[i] , temp);
-//      }
-
-      damage[i] = std::max(damage[i] , damage_old[i]);  //temp      = std::max(damage[i] , damage_old[i]);
-      //if(_q_point[qp](1) > 0.8 && _q_point[qp](1) < 0.2 )  { damage[i] = 0.0 ;} //newly added to avoid boundary damaging
-
-      for(unsigned int j = 0 ; j < LIBMESH_DIM ; j++)
-      {
-        for(unsigned int k = 0 ; k < LIBMESH_DIM ; k++)
-        {
-          _total_stress(j,k) += (1.0 - damage[i]) * ( nstiff_tmp * n_strain(j,0) * _directional_vector[i][k] + sstiff_tmp * s_strain(j,0) * _directional_vector[i][k] );
-      //    _total_stress(j,k) += (1.0 - temp) * ( nstiff_tmp * n_strain(j,0) * _directional_vector[i][k] + sstiff_tmp * s_strain(j,0) * _directional_vector[i][k] );
-        }
-      }
-      
-    }
-  
-  }
- 
-  if(LIBMESH_DIM == 2)//2 dimensional case
-  {
-    for (unsigned int i = 0  ; i < 12 ; i++)
-    {
-      //std::cout<<"The current i="<<i<<"\n";
-      temp = 0.0;
-      for(unsigned int j = 0 ; j < LIBMESH_DIM ; j++)
-      {
-        for(unsigned int k = 0 ; k < LIBMESH_DIM ; k++)
-        {
-          temp += _total_strain(j,k) * _directional_vector[i][j] * _directional_vector[i][k];//normal strain scalar
-        }
-      }
-      for(unsigned int j = 0 ; j < LIBMESH_DIM ; j++)   n_strain(j,0) = temp * _directional_vector[i][j];//normal strain vector
-      for(unsigned int j = 0 ; j < LIBMESH_DIM ; j++)
-      {
-        temp = 0.0;
-        for(unsigned int k = 0 ; k < LIBMESH_DIM ; k++)
-        {
-          temp += _total_strain(j,k) * _directional_vector[i][k];
-        }
-        s_strain(j,0) = temp - n_strain(j,0);//shear strain vector
-      }
-      
-      temp1 = 0.0;//normal strain scalar
-      temp2 = 0.0;//shear strain scalar
-      for(unsigned int j = 0 ; j < LIBMESH_DIM ; j++)
-      {
-        temp1 += n_strain(j,0) * _directional_vector[i][j];
-        temp2 += s_strain(j,0) * s_strain(j,0);
-      }
-      temp2 = std::sqrt(temp2);
-      temp1 = std::abs(temp1);
-
-      //damage evolution
-      temp = temp1 / _input_strain_strength + temp2 / (0.5 * (1.0 + _poissons_ratio[qp]) * _input_strain_strength);
-      damage[i] = std::max(damage[i] , std::exp(-_input_damage_c * std::pow(temp,_input_damage_n)));
-//      if(temp1 <= _input_strain_init) 
-//      {
-//        damage[i] = damage[i];
-//      }
-//      else if(temp1 >= _input_strain_strength)
-//      {
-//        damage[i] = 0.9999;
-//      }
-//      else
-//      {
-//        temp = _input_strain_init/(_input_strain_strength - _input_strain_init) * (_input_strain_strength - temp1) / temp1 ;
-//        damage[i] = std::max(damage[i] , temp);
-//      }
-
-      damage[i] = std::max(damage[i] , damage_old[i]);  //temp      = std::max(damage[i] , damage_old[i]);
-      //if(_q_point[qp](1) > 0.8 && _q_point[qp](1) < 0.2 )  { damage[i] = 0.0 ;} //newly added to avoid boundary damaging
-
-      for(unsigned int j = 0 ; j < LIBMESH_DIM ; j++)
-      {
-        for(unsigned int k = 0 ; k < LIBMESH_DIM ; k++)
-        {
-          _total_stress(j,k) += (1.0 - damage[i]) * ( nstiff_tmp * n_strain(j,0) * _directional_vector[i][k] + sstiff_tmp * s_strain(j,0) * _directional_vector[i][k] );
-      //    _total_stress(j,k) += (1.0 - temp) * ( nstiff_tmp * n_strain(j,0) * _directional_vector[i][k] + sstiff_tmp * s_strain(j,0) * _directional_vector[i][k] );
-        }
-      }
-    }
-    
-  }
-*/
-
-  Real max_damage = 0.0;
-  for (unsigned int i = 0  ; i < (LIBMESH_DIM > 2 ? 13 : 12) ; i++)//loop: directions
-  {
-    temp = 0.0;
-    for(unsigned int j = 0 ; j < LIBMESH_DIM ; j++)
-    {
-      for(unsigned int k = 0 ; k < LIBMESH_DIM ; k++)
-      {
-        temp += _total_strain(j,k) * _directional_vector[i][j] * _directional_vector[i][k];//normal strain scalar
-      }
-    }
-    for(unsigned int j = 0 ; j < LIBMESH_DIM ; j++)   n_strain(j,0) = temp * _directional_vector[i][j];//normal strain vector
-    for(unsigned int j = 0 ; j < LIBMESH_DIM ; j++)
-    {
-      temp = 0.0;
-      for(unsigned int k = 0 ; k < LIBMESH_DIM ; k++)
-      {
-        temp += _total_strain(j,k) * _directional_vector[i][k];//the jth component of strain vector
-      }
-      s_strain(j,0) = temp - n_strain(j,0);//get shear strain vector
-    }
-      
-    temp1 = 0.0;//normal strain scalar
-    temp2 = 0.0;//shear strain scalar
-    for(unsigned int j = 0 ; j < LIBMESH_DIM ; j++)
-    {
-      temp1 += n_strain(j,0) * _directional_vector[i][j];
-      temp2 += s_strain(j,0) * s_strain(j,0);
-    }
-    temp2 = std::sqrt(temp2);
-    temp1 = std::abs(temp1);
-
-    //damage evolution
-    temp = temp1 / _input_strain_strength + temp2 / (0.5 * (1.0 + _poissons_ratio[qp]) * _input_strain_strength);
-    damage[i] = std::max(damage[i] , std::exp(-_input_damage_c * std::pow(temp,_input_damage_n)));
-//    if(temp1 <= _input_strain_init) 
-//    {
-//      damage[i] = damage[i];
-//    }
-//    else if(temp1 >= _input_strain_strength)
-//    {
-//      damage[i] = 0.9999;
-//    }
-//    else
-//    {
-//      temp = _input_strain_init/(_input_strain_strength - _input_strain_init) * (_input_strain_strength - temp1) / temp1 ;
-//      damage[i] = std::max(damage[i] , temp);
-//    }
-
-    damage[i] = std::max(damage[i] , damage_old[i]);  //temp      = std::max(damage[i] , damage_old[i]);
-    //if(_q_point[qp](1) > 0.8 && _q_point[qp](1) < 0.2 )  { damage[i] = 0.0 ;} //newly added to avoid boundary damaging
-    max_damage = std::max(max_damage , damage[i]);
-  }
-
-  for(unsigned int i = 0  ; i < (LIBMESH_DIM > 2 ? 13 : 12) ; i++)
-  {
-    for(unsigned int j = 0 ; j < LIBMESH_DIM ; j++)
-    {
-      for(unsigned int k = 0 ; k < LIBMESH_DIM ; k++)
-      {
-//        _total_stress(j,k) += (1.0 - max_damage) * ( nstiff_tmp * n_strain(j,0) * _directional_vector[i][k] + sstiff_tmp * s_strain(j,0) * _directional_vector[i][k] );
-        _total_stress(j,k) += (1.0 -  damage[i]) * ( nstiff_tmp * n_strain(j,0) * _directional_vector[i][k] + sstiff_tmp * s_strain(j,0) * _directional_vector[i][k] );
-      }
-    }
-  }
-
-  //update _bond_damage_factor
-  _bond_damage_factor00[qp] = damage[ 0];
-  _bond_damage_factor01[qp] = damage[ 1];
-  _bond_damage_factor02[qp] = damage[ 2];
-  _bond_damage_factor03[qp] = damage[ 3];
-  _bond_damage_factor04[qp] = damage[ 4];
-  _bond_damage_factor05[qp] = damage[ 5];
-  _bond_damage_factor06[qp] = damage[ 6];
-  _bond_damage_factor07[qp] = damage[ 7];
-  _bond_damage_factor08[qp] = damage[ 8];
-  _bond_damage_factor09[qp] = damage[ 9];
-  _bond_damage_factor10[qp] = damage[10];
-  _bond_damage_factor11[qp] = damage[11];
-  if(LIBMESH_DIM == 3)   _bond_damage_factor12[qp] = damage[12];
-
-
-  //update and return stress: 1
-  _stress_normal_vector[qp](0)=_total_stress(0,0);
-  _stress_normal_vector[qp](1)=_total_stress(1,1);
-  if (LIBMESH_DIM == 3) _stress_normal_vector[qp](2)=_total_stress(2,2);
-  _stress_shear_vector[qp](0)=_total_stress(0,1) ;
+  _total_stress1(0,0)= _stress_normal_vector[qp](0);
+  _total_stress1(1,1)= _stress_normal_vector[qp](1);
+  if (LIBMESH_DIM == 3) _total_stress1(2,2)= _stress_normal_vector[qp](2);
+  _total_stress1(0,1) = _stress_shear_vector[qp](0);
+  _total_stress1(1,0) = _stress_shear_vector[qp](0);
   if (LIBMESH_DIM == 3)
   {
-    _stress_shear_vector[qp](1) = _total_stress(0,2);
-    _stress_shear_vector[qp](2) = _total_stress(1,2) ;
+    _total_stress1(0,2) = _stress_shear_vector[qp](1);
+    _total_stress1(2,0) = _stress_shear_vector[qp](1);
+    _total_stress1(1,2) = _stress_shear_vector[qp](2);
+    _total_stress1(2,1) = _stress_shear_vector[qp](2);
   }
-  //update and return stress: 2
-//  _stress_normal_vector[qp](0) *= (1.-max_damage);
-//  _stress_normal_vector[qp](1) *= (1.-max_damage);
-//  if (LIBMESH_DIM == 3) _stress_normal_vector[qp](2) *= (1.-max_damage);
-//  _stress_shear_vector[qp](0) *= (1.-max_damage);
-//  if (LIBMESH_DIM == 3)
-//  {
-//    _stress_shear_vector[qp](1) *= (1.-max_damage);
-//    _stress_shear_vector[qp](2) *= (1.-max_damage);
-//  }
+
+  const int ND = LIBMESH_DIM;
+  ColumnMajorMatrix e_vec(ND,ND);
+  ColumnMajorMatrix principal_strain(ND,1);
+  ColumnMajorMatrix principal_stress(ND,1);
+
+  _total_strain.eigen( principal_strain, e_vec );//get principal
+  _total_stress1.eigen( principal_stress, e_vec );//get principal
+
+
+  Real s_max = principal_strain(0,0);
+  Real s_min = principal_strain(0,0);
+
+// find out minimum and maximum principal strain
+  for(int i = 1 ; i < LIBMESH_DIM ; ++i)
+  {
+    if(principal_strain(i,0) > s_max)
+    {
+      s_max = principal_strain(i,0);
+      ind_max = i;
+    }
+    if(principal_strain(i,0) < s_min)
+    {
+      s_min = principal_strain(i,0);
+      ind_min = i;
+    }
+  }
+  if(LIBMESH_DIM == 3)
+  {
+    for(int i=0 ; i < LIBMESH_DIM ; ++i )
+    {
+      if(i != ind_max && i != ind_min)   ind_mid = i;
+    }
+  }
+
+	 _pstrain_normal_vector[qp](0)=s_min;
+	 _pstrain_normal_vector[qp](1)=principal_strain(ind_mid,0);
+	 _pstrain_normal_vector[qp](2)=s_max;
+
+// find out minimum and maximum principal strain
+
+    s_max = principal_stress(0,0);
+    s_min = principal_stress(0,0);
+
+
+  for(int i = 1 ; i < LIBMESH_DIM ; ++i)
+  {
+    if(principal_stress(i,0) > s_max)
+    {
+      s_max = principal_stress(i,0);
+      ind_max = i;
+    }
+    if(principal_stress(i,0) < s_min)
+    {
+      s_min = principal_stress(i,0);
+      ind_min = i;
+    }
+  }
+  if(LIBMESH_DIM == 3)
+  {
+    for(int i=0 ; i < LIBMESH_DIM ; ++i )
+    {
+      if(i != ind_max && i != ind_min)   ind_mid = i;
+    }
+  }
+
+	 _pstress_normal_vector[qp](0)=s_min;
+	 _pstress_normal_vector[qp](1)=principal_stress(ind_mid,0);
+	 _pstress_normal_vector[qp](2)=s_max;
+
+
+Real _f;
+
+if (_effective_strain > _critical_strain)
+{
+	_f=10.;
+}
+
+
+//damage initiation indicater for tensile
+if (_f==10. && _damage_indicater_old[qp] != 1.)
+{
+	_damage_indicater[qp] = 1.; //1:damage initiation
+	_damage_type_indicater[qp] = 1.; // 1:tensile, 2:shear
+	_effective_strain = _pstrain_normal_vector[qp](2); //max
+	_strain_initial_damage[qp] = _effective_strain;
+	_strain_broken_damage[qp] = _effective_strain*20.;
+	_damage_indicater_old[qp] = _damage_indicater[qp];
+}
+
+//tensile failure
+if (_damage_indicater_old[qp] == 1. && _damage_type_indicater[qp] == 1.)
+{
+//	_effective_strain = _pstrain_normal_vector[qp](2); //max
+
+  if(_strain_history[qp] < _strain_broken_damage[qp]) //not fully failed
+  {
+    if(_effective_strain <= _strain_history[qp])//no further damaging
+    {
+      _damage_coeff[qp]   = _damage_coeff[qp];
+      _strain_history[qp] = _strain_history[qp];
+    }
+    else //damaging continues
+    {
+      if(_effective_strain >= _strain_broken_damage[qp])//fully failed: s > sc
+      {
+        _damage_coeff[qp]   = 0.999;
+        _strain_history[qp] = _effective_strain;
+      }
+      else//continuously damaging s-{s0,sc}
+      {
+        _temp = (_effective_strain - _strain_initial_damage[qp])/(_strain_broken_damage[qp] - _strain_initial_damage[qp]);
+        _temp = _damage_a1 * std::pow(_temp , _damage_a2) + _input_damage_coeff;
+        if(_temp >= 0.999)
+        {
+          std::cout<<"The parameter of damage evolution are too large,please change them"<<"\n";
+          _temp = 0.999;
+        }
+        _damage_coeff[qp] = std::max(_temp , _damage_coeff[qp]);
+        _strain_history[qp] = _effective_strain;
+      }
+    }
+//   else if (_effective_strain <= _strain_initial_damage[qp])//no damaging yet
+//   {
+//	    _damage_coeff[qp]   = 0.0;
+//        _strain_history[qp] = _effective_strain;
+//   }
+  }
+  else //alreadry completely failed
+  {
+    _damage_coeff[qp] = 0.999;
+    _strain_history[qp] =  std::max(_strain_history[qp] , _effective_strain);
+  }
+}
+
+  //newly added to comply MOOSE procedure
+  _damage_coeff[qp]   = std::max(_damage_coeff[qp] , _damage_coeff_old[qp]);
+  _strain_history[qp] = std::max(_strain_history[qp] , _strain_history_old[qp]);
+
+  if(_q_point[qp](0) > 0.8 && _q_point[qp](0) < 0.2 )  { _damage_coeff[qp] = 0.0 ; _strain_history[qp] = 0.0; } //newly added to avoid boundary damaging
+
+  _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus;
+
+  if(_damage_coeff[qp]==0.999)  { _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus/100.; }
+
+}
+//=================================================================================================
+
+
+
+
+
+void
+SolidMechanics::computeAnisoDamage(const int qp) //just calculate damage evolution according to strain not stress tensor
+{
+
 
 }
 //////////////////////////////////////////////////////////////////////////
-
-
-
 
 
 void
@@ -761,9 +1084,9 @@ SolidMechanics::computeCrack_tension(const int qp)
     _total_strain(0,2) = _strain_shear_vector[qp](1);
     _total_strain(2,0) = _strain_shear_vector[qp](1);
     _total_strain(1,2) = _strain_shear_vector[qp](2);
-    _total_strain(2,1) = _strain_shear_vector[qp](2);    
+    _total_strain(2,1) = _strain_shear_vector[qp](2);
   }
-  
+
   _total_stress(0,0)= _stress_normal_vector[qp](0);
   _total_stress(1,1)= _stress_normal_vector[qp](1);
   if (LIBMESH_DIM == 3) _total_stress(2,2)= _stress_normal_vector[qp](2);
@@ -774,7 +1097,7 @@ SolidMechanics::computeCrack_tension(const int qp)
     _total_stress(0,2) = _stress_shear_vector[qp](1);
     _total_stress(2,0) = _stress_shear_vector[qp](1);
     _total_stress(1,2) = _stress_shear_vector[qp](2);
-    _total_stress(2,1) = _stress_shear_vector[qp](2);    
+    _total_stress(2,1) = _stress_shear_vector[qp](2);
   }
 
   _total_stress1(0,0)= _stress_normal_vector[qp](0);
@@ -787,7 +1110,7 @@ SolidMechanics::computeCrack_tension(const int qp)
     _total_stress1(0,2) = _stress_shear_vector[qp](1);
     _total_stress1(2,0) = _stress_shear_vector[qp](1);
     _total_stress1(1,2) = _stress_shear_vector[qp](2);
-    _total_stress1(2,1) = _stress_shear_vector[qp](2);    
+    _total_stress1(2,1) = _stress_shear_vector[qp](2);
   }
 
 //update crack_flag before getting into calculation
@@ -795,15 +1118,15 @@ SolidMechanics::computeCrack_tension(const int qp)
 //  {
 //    (*_crack_flags_old)[qp](i) = (*_crack_flags)[qp](i);
 //  }
-  
+
   const int ND = LIBMESH_DIM;
   ColumnMajorMatrix e_vec(ND,ND);
   ColumnMajorMatrix principal_strain(ND,1);
   ColumnMajorMatrix principal_stress(ND,1);
   _total_strain.eigen( principal_strain, e_vec );
-  
+
   const Real tiny(1.0e-8);
-  
+
   for (unsigned int i(0); i < LIBMESH_DIM; ++i)
   {
     if (principal_strain(i,0) > _critical_crack_strain)
@@ -815,10 +1138,10 @@ SolidMechanics::computeCrack_tension(const int qp)
     {
       (*_crack_flags)[qp](i) = 1.0;
     }
-    
+
     (*_crack_flags)[qp](i) = std::min((*_crack_flags)[qp](i), (*_crack_flags_old)[qp](i));
     _damage_coeff[qp] = std::max(_damage_coeff_old[qp] , _damage_coeff[qp]);
-    
+
   }
 
   RealVectorValue crack_flags( (*_crack_flags)[qp] );
@@ -836,7 +1159,7 @@ SolidMechanics::computeCrack_tension(const int qp)
 
   ColumnMajorMatrix e_vec1(ND,ND);
   _total_stress1.eigen( principal_stress, e_vec1 );
-  
+
   for (unsigned int i(0); i < LIBMESH_DIM; ++i)
   {
     if (crack_flags(i) < 0.5)
@@ -844,9 +1167,9 @@ SolidMechanics::computeCrack_tension(const int qp)
       principal_stress(i,0) = tiny;
     }
   }
-  
+
 ColumnMajorMatrix trans(LIBMESH_DIM,LIBMESH_DIM);
-  
+
   for (unsigned int j(0); j < LIBMESH_DIM; ++j)
   {
     for (unsigned int i(0); i < LIBMESH_DIM; ++i)
@@ -857,9 +1180,9 @@ ColumnMajorMatrix trans(LIBMESH_DIM,LIBMESH_DIM);
     }
   }
 
-// back rotate the modified principal stress tensor into origional coordinate   
+// back rotate the modified principal stress tensor into origional coordinate
   rotateSymmetricTensor( trans, _total_stress, _total_stress);
-  
+
   _stress_normal_vector[qp](0)=_total_stress(0,0);
   _stress_normal_vector[qp](1)=_total_stress(1,1);
   if (LIBMESH_DIM == 3) _stress_normal_vector[qp](2)=_total_stress(2,2);
@@ -890,7 +1213,7 @@ SolidMechanics::rotateSymmetricTensor( const ColumnMajorMatrix & R,
   //
   if (LIBMESH_DIM == 3)
   {
-    
+
     const Real T00 = R(0,0)*T(0,0) + R(0,1)*T(1,0) + R(0,2)*T(2,0);
     const Real T01 = R(0,0)*T(0,1) + R(0,1)*T(1,1) + R(0,2)*T(2,1);
     const Real T02 = R(0,0)*T(0,2) + R(0,1)*T(1,2) + R(0,2)*T(2,2);
@@ -920,18 +1243,18 @@ SolidMechanics::rotateSymmetricTensor( const ColumnMajorMatrix & R,
   {
     const Real T00 = R(0,0)*T(0,0) + R(0,1)*T(1,0);
     const Real T01 = R(0,0)*T(0,1) + R(0,1)*T(1,1) ;
-    
+
     const Real T10 = R(1,0)*T(0,0) + R(1,1)*T(1,0) ;
     const Real T11 = R(1,0)*T(0,1) + R(1,1)*T(1,1) ;
-    
+
     result = RealTensorValue(
       T00 * R(0,0) + T01 * R(0,1),
       T00 * R(1,0) + T01 * R(1,1),
-      
+
       T10 * R(0,0) + T11 * R(0,1),
       T10 * R(1,0) + T11 * R(1,1));
   }
-  
+
 }
 //////////////////////////////////////////////////////////////////////////
 
@@ -952,7 +1275,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
     _total_stress(0,2) = _stress_shear_vector[qp](1);
     _total_stress(2,0) = _stress_shear_vector[qp](1);
     _total_stress(1,2) = _stress_shear_vector[qp](2);
-    _total_stress(2,1) = _stress_shear_vector[qp](2);    
+    _total_stress(2,1) = _stress_shear_vector[qp](2);
   }
 
 
@@ -967,7 +1290,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
     _total_stress1(0,2) = _stress_shear_vector[qp](1);
     _total_stress1(2,0) = _stress_shear_vector[qp](1);
     _total_stress1(1,2) = _stress_shear_vector[qp](2);
-    _total_stress1(2,1) = _stress_shear_vector[qp](2);    
+    _total_stress1(2,1) = _stress_shear_vector[qp](2);
   }
 
 /*  //copy strain to a ColumnMajorMatrix
@@ -981,7 +1304,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
     _total_strain(0,2) = _strain_shear_vector[qp](1);
     _total_strain(2,0) = _strain_shear_vector[qp](1);
     _total_strain(1,2) = _strain_shear_vector[qp](2);
-    _total_strain(2,1) = _strain_shear_vector[qp](2);    
+    _total_strain(2,1) = _strain_shear_vector[qp](2);
   }
 */
 
@@ -991,14 +1314,14 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
  // {
  //   (*_crack_flags_old)[qp](i) = (*_crack_flags)[qp](i);
  // }
-  
+
   const int ND = LIBMESH_DIM;
   ColumnMajorMatrix e_vec(ND,ND);
   ColumnMajorMatrix norm_vect(ND,1);
   ColumnMajorMatrix force(ND,1);
   ColumnMajorMatrix principal_stress(ND,1);
   const Real tiny(1.0e-8);
-  
+
   _total_stress1.eigen( principal_stress, e_vec );//get principal stresses and corresponding directional vector
 
 
@@ -1008,7 +1331,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
   Real s_max = principal_stress(0,0);
   Real s_min = principal_stress(0,0);
 
-// find out minimum and maximum principal stress    
+// find out minimum and maximum principal stress
   for(int i = 1 ; i < LIBMESH_DIM ; ++i)
   {
     if(principal_stress(i,0) > s_max)
@@ -1048,10 +1371,10 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
     {
        temp             = e_vec(ind_max,i) ;
        e_vec(ind_max,i) = e_vec(ind_min,i) ;
-       e_vec(ind_min,i) = temp ; 
+       e_vec(ind_min,i) = temp ;
     }
-    temp                        = principal_stress(ind_max,0) ; 
-    principal_stress(ind_max,0) = principal_stress(ind_min,0) ; 
+    temp                        = principal_stress(ind_max,0) ;
+    principal_stress(ind_max,0) = principal_stress(ind_min,0) ;
     principal_stress(ind_min,0) = temp ;
     ind_temp = ind_max;
     ind_max  = ind_min;
@@ -1065,10 +1388,10 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
       {
           temp             = e_vec(ind_max,i) ;
           e_vec(ind_max,i) = e_vec(ind_mid,i) ;
-	      e_vec(ind_mid,i) = temp ; 
+	      e_vec(ind_mid,i) = temp ;
       }
-      temp                        = principal_stress(ind_max,0) ; 
-      principal_stress(ind_max,0) = principal_stress(ind_mid,0) ; 
+      temp                        = principal_stress(ind_max,0) ;
+      principal_stress(ind_max,0) = principal_stress(ind_mid,0) ;
       principal_stress(ind_mid,0) = temp ;
       ind_temp = ind_max;
       ind_max  = ind_mid;
@@ -1080,10 +1403,10 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
       {
         temp             = e_vec(ind_mid,i) ;
         e_vec(ind_mid,i) = e_vec(ind_min,i) ;
-        e_vec(ind_min,i) = temp ; 
+        e_vec(ind_min,i) = temp ;
       }
-      temp                        = principal_stress(ind_mid,0) ; 
-      principal_stress(ind_mid,0) = principal_stress(ind_min,0) ; 
+      temp                        = principal_stress(ind_mid,0) ;
+      principal_stress(ind_mid,0) = principal_stress(ind_min,0) ;
       principal_stress(ind_min,0) = temp ;
       ind_temp = ind_mid;
       ind_mid  = ind_min;
@@ -1099,19 +1422,19 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
       e_vec(j,i) =       temp;
     }
   }
- 
+
   //find the direction corresponding to Mohr-Coulomb
   Real temp1;
   if(LIBMESH_DIM==3)
   {
-    temp = std::pow(1.0+_friction_angle*_friction_angle , 0.5) * 
+    temp = std::pow(1.0+_friction_angle*_friction_angle , 0.5) *
          (principal_stress(0,0)-principal_stress(2,0)) / 2.0;
     temp1 = _friction_angle*_friction_angle*(principal_stress(0,0) + principal_stress(2,0))-
          2.*_cohesion*_friction_angle;
   }
   if(LIBMESH_DIM==2)
   {
-    temp = std::pow(1.0+_friction_angle*_friction_angle , 0.5) * 
+    temp = std::pow(1.0+_friction_angle*_friction_angle , 0.5) *
          (principal_stress(0,0)-principal_stress(1,0)) / 2.0;
     temp1 = _friction_angle*_friction_angle*(principal_stress(0,0) + principal_stress(1,0))-
          2.*_cohesion*_friction_angle;
@@ -1127,7 +1450,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
   }
   else
   {
-    if(std::abs(temp) >= std::abs(temp1)) 
+    if(std::abs(temp) >= std::abs(temp1))
     {
       cos2 = -temp1 / temp;
     }
@@ -1188,13 +1511,13 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
   //check it satisfy Mohr-Coulomb or not
   if(LIBMESH_DIM==3)
   {
-    temp = (principal_stress(0,0) + principal_stress(2,0))/2.0 + 
+    temp = (principal_stress(0,0) + principal_stress(2,0))/2.0 +
            (principal_stress(0,0) - principal_stress(2,0))/2.0 * std::abs(cos2);//normal stress
     temp1= (principal_stress(0,0) - principal_stress(2,0))/2.0 * std::abs(sin2);// shear stress
   }
   if(LIBMESH_DIM==2)
   {
-    temp = (principal_stress(0,0) + principal_stress(1,0))/2.0 + 
+    temp = (principal_stress(0,0) + principal_stress(1,0))/2.0 +
            (principal_stress(0,0) - principal_stress(1,0))/2.0 * std::abs(cos2);//normal stress
     temp1= (principal_stress(0,0) - principal_stress(1,0))/2.0 * std::abs(sin2);// shear stress
   }
@@ -1210,7 +1533,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
   }
   (*_crack_flags)[qp](0) = std::min((*_crack_flags)[qp](0), (*_crack_flags_old)[qp](0));
   _damage_coeff[qp] = std::max(_damage_coeff_old[qp] , _damage_coeff[qp]);
-  if( (*_crack_flags)[qp](0) < 0.5) //if cracked, need to release shear stress    
+  if( (*_crack_flags)[qp](0) < 0.5) //if cracked, need to release shear stress
   {
     if(LIBMESH_DIM==3)
     {
@@ -1263,9 +1586,9 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
         for(int m = 0 ; m < LIBMESH_DIM ; ++m)   _total_stress(i,j) += trans(k,i) * _total_stress1(k,m) * trans(m,j);
       }
     }
-  }    
+  }
 
-  //retrun modified stress tensor to specified form   
+  //retrun modified stress tensor to specified form
   _stress_normal_vector[qp](0)=_total_stress(0,0);
   _stress_normal_vector[qp](1)=_total_stress(1,1);
   if (LIBMESH_DIM == 3) _stress_normal_vector[qp](2)=_total_stress(2,2);
@@ -1296,7 +1619,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
     _total_stress(0,2) = _stress_shear_vector[qp](1);
     _total_stress(2,0) = _stress_shear_vector[qp](1);
     _total_stress(1,2) = _stress_shear_vector[qp](2);
-    _total_stress(2,1) = _stress_shear_vector[qp](2);    
+    _total_stress(2,1) = _stress_shear_vector[qp](2);
   }
 
 
@@ -1311,7 +1634,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
     _total_stress1(0,2) = _stress_shear_vector[qp](1);
     _total_stress1(2,0) = _stress_shear_vector[qp](1);
     _total_stress1(1,2) = _stress_shear_vector[qp](2);
-    _total_stress1(2,1) = _stress_shear_vector[qp](2);    
+    _total_stress1(2,1) = _stress_shear_vector[qp](2);
   }
 
 /*  //copy strain to a ColumnMajorMatrix
@@ -1325,7 +1648,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
     _total_strain(0,2) = _strain_shear_vector[qp](1);
     _total_strain(2,0) = _strain_shear_vector[qp](1);
     _total_strain(1,2) = _strain_shear_vector[qp](2);
-    _total_strain(2,1) = _strain_shear_vector[qp](2);    
+    _total_strain(2,1) = _strain_shear_vector[qp](2);
   }
 */
 
@@ -1335,14 +1658,14 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
 //  {
 //    (*_crack_flags_old)[qp](i) = (*_crack_flags)[qp](i);
 //  }
-  
+
   const int ND = LIBMESH_DIM;
   ColumnMajorMatrix e_vec(ND,ND);
 //  ColumnMajorMatrix norm_vect(ND,1);
 //  ColumnMajorMatrix force(ND,1);
   ColumnMajorMatrix principal_stress(ND,1);
   const Real tiny(1.0e-8);
-  
+
   _total_stress1.eigen( principal_stress, e_vec );//get principal stresses and corresponding directional vector
 
 
@@ -1352,7 +1675,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
   Real s_max = principal_stress(0,0);
   Real s_min = principal_stress(0,0);
 
-// find out minimum and maximum principal stress    
+// find out minimum and maximum principal stress
   for(int i = 1 ; i < LIBMESH_DIM ; ++i)
   {
     if(principal_stress(i,0) > s_max)
@@ -1392,10 +1715,10 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
     {
        temp             = e_vec(ind_max,i) ;
        e_vec(ind_max,i) = e_vec(ind_min,i) ;
-       e_vec(ind_min,i) = temp ; 
+       e_vec(ind_min,i) = temp ;
     }
-    temp                        = principal_stress(ind_max,0) ; 
-    principal_stress(ind_max,0) = principal_stress(ind_min,0) ; 
+    temp                        = principal_stress(ind_max,0) ;
+    principal_stress(ind_max,0) = principal_stress(ind_min,0) ;
     principal_stress(ind_min,0) = temp ;
     ind_temp = ind_max;
     ind_max  = ind_min;
@@ -1409,10 +1732,10 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
       {
         temp             = e_vec(ind_max,i) ;
         e_vec(ind_max,i) = e_vec(ind_mid,i) ;
-	    e_vec(ind_mid,i) = temp ; 
+	    e_vec(ind_mid,i) = temp ;
       }
-      temp                        = principal_stress(ind_max,0) ; 
-      principal_stress(ind_max,0) = principal_stress(ind_mid,0) ; 
+      temp                        = principal_stress(ind_max,0) ;
+      principal_stress(ind_max,0) = principal_stress(ind_mid,0) ;
       principal_stress(ind_mid,0) = temp ;
       ind_temp = ind_max;
       ind_max  = ind_mid;
@@ -1424,10 +1747,10 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
       {
         temp             = e_vec(ind_mid,i) ;
         e_vec(ind_mid,i) = e_vec(ind_min,i) ;
-        e_vec(ind_min,i) = temp ; 
+        e_vec(ind_min,i) = temp ;
       }
-      temp                        = principal_stress(ind_mid,0) ; 
-      principal_stress(ind_mid,0) = principal_stress(ind_min,0) ; 
+      temp                        = principal_stress(ind_mid,0) ;
+      principal_stress(ind_mid,0) = principal_stress(ind_min,0) ;
       principal_stress(ind_min,0) = temp ;
       ind_temp = ind_mid;
       ind_mid  = ind_min;
@@ -1455,7 +1778,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
     temp  = std::pow((principal_stress(0,0)+principal_stress(2,0)+2.*_cohesion*_friction_angle) , 2.0)-
 	  4.*(_friction_angle*_friction_angle+1.0)*
 	  (_cohesion*_cohesion+principal_stress(0,0)*principal_stress(2,0));
-    temp1 = (principal_stress(0,0)+principal_stress(2,0)+2.*_cohesion*_friction_angle) / 
+    temp1 = (principal_stress(0,0)+principal_stress(2,0)+2.*_cohesion*_friction_angle) /
 	  (2.*(_friction_angle*_friction_angle+1.0));
   }
   if(LIBMESH_DIM==2)
@@ -1463,7 +1786,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
     temp  = std::pow((principal_stress(0,0)+principal_stress(1,0)+2.*_cohesion*_friction_angle) , 2.0)-
 	  4.*(_friction_angle*_friction_angle+1.0)*
 	  (_cohesion*_cohesion+principal_stress(0,0)*principal_stress(1,0));
-    temp1 = (principal_stress(0,0)+principal_stress(1,0)+2.*_cohesion*_friction_angle) / 
+    temp1 = (principal_stress(0,0)+principal_stress(1,0)+2.*_cohesion*_friction_angle) /
 	  (2.*(_friction_angle*_friction_angle+1.0));
   }
   if(temp > 0.0)
@@ -1472,7 +1795,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
     nsol2 = temp1 - temp / (2.*(_friction_angle*_friction_angle+1.0));
     ssol1 = _cohesion - _friction_angle * nsol1;
     ssol2 = _cohesion - _friction_angle * nsol2;
-    if(std::abs(ssol1) > std::abs(ssol2)) 
+    if(std::abs(ssol1) > std::abs(ssol2))
     {
       sstress = ssol1;
       nstress = nsol1;
@@ -1485,7 +1808,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
   }
   else if(temp == 0.0)
   {
-    nstress = temp1 ; 
+    nstress = temp1 ;
     sstress = _cohesion - _friction_angle * nstress;
   }
   else //(temp < 0.0)  //must within Mohr-Coulomb criteria
@@ -1494,7 +1817,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
     sstress = 0.0;
   }
 
-  if(std::abs(nstress)>tiny || std::abs(sstress)>tiny)   // (nstress != 0.0 || sstress != 0.0) //tarch or intersect 
+  if(std::abs(nstress)>tiny || std::abs(sstress)>tiny)   // (nstress != 0.0 || sstress != 0.0) //tarch or intersect
   {
     if(LIBMESH_DIM==3)
     {
@@ -1532,7 +1855,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
         sin1 /= temp;
       }
     }
-    if(LIBMESH_DIM==2) 
+    if(LIBMESH_DIM==2)
     {
       if((principal_stress(0,0)-principal_stress(1,0)) <= tiny) //hydrostatic
       {
@@ -1606,7 +1929,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
       rot(1,1) = 1.0;
     }
   }
-    
+
   for(int i = 0 ; i < LIBMESH_DIM ; ++i)
   {
     for(int j = 0 ; j < LIBMESH_DIM ; ++j)
@@ -1645,7 +1968,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
   }
   (*_crack_flags)[qp](0) = std::min((*_crack_flags)[qp](0), (*_crack_flags_old)[qp](0));
   _damage_coeff[qp] = std::max(_damage_coeff_old[qp] , _damage_coeff[qp]);
-  if( (*_crack_flags)[qp](0) < 0.5) //if cracked, need to release shear stress    
+  if( (*_crack_flags)[qp](0) < 0.5) //if cracked, need to release shear stress
   {
     if(LIBMESH_DIM==3)
     {
@@ -1698,13 +2021,13 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
         for(int m = 0 ; m < LIBMESH_DIM ; ++m)   _total_stress(i,j) += trans(k,i) * _total_stress1(k,m) * trans(m,j);
       }
     }
-  } 
+  }
 
 
 //  (*_crack_flags)[qp](0) = std::min((*_crack_flags)[qp](0), (*_crack_flags_old)[qp](0));
 //  _damage_coeff[qp] = std::max(_damage_coeff_old[qp] , _damage_coeff[qp]);
 
-  //retrun modified stress tensor to specified form   
+  //retrun modified stress tensor to specified form
   _stress_normal_vector[qp](0)=_total_stress(0,0);
   _stress_normal_vector[qp](1)=_total_stress(1,1);
   if (LIBMESH_DIM == 3) _stress_normal_vector[qp](2)=_total_stress(2,2);
@@ -1718,7 +2041,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
 }
 ///////////////////////////////////////////////////////////////////////
 
-   
+
 
 
 

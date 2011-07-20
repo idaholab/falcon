@@ -5,9 +5,9 @@ InputParameters validParams<StressStrainDamageComputeAux>()
 {
      InputParameters params = validParams<AuxKernel>();
 
-     params.addParam<std::string>("quantity","stress", "output: stress, strain, or damage.");     
+     params.addParam<std::string>("quantity","stress", "output: stress, strain, pstress, pstrain or damage.");
      params.addParam<int>("component",0,"component of the stress/strain vector, 0-xx;1-yy;2-zz;3-xy;4-xz;5-yz");
-     
+     params.addParam<int>("componentb",0,"componentb of the pstress/pstrain vector, 0-xx;1-yy;2-zz");
      return params;
 }
 
@@ -15,11 +15,14 @@ StressStrainDamageComputeAux::StressStrainDamageComputeAux(const std::string & n
   :AuxKernel(name, parameters),
    _quantity_string( getParam<std::string>("quantity") ),
    _component(getParam<int>("component")),
-   _damage_coeff(getMaterialProperty<Real>("damage_coeff")),   
+   _componentb(getParam<int>("componentb")),
+   _damage_coeff(getMaterialProperty<Real>("damage_coeff")),
    _stress_normal_vector(getMaterialProperty<RealVectorValue>("stress_normal_vector")),
    _stress_shear_vector(getMaterialProperty<RealVectorValue>("stress_shear_vector")),
+   _pstress_normal_vector(getMaterialProperty<RealVectorValue>("pstress_normal_vector")),
    _strain_normal_vector(getMaterialProperty<RealVectorValue>("strain_normal_vector")),
-   _strain_shear_vector(getMaterialProperty<RealVectorValue>("strain_shear_vector"))
+   _strain_shear_vector(getMaterialProperty<RealVectorValue>("strain_shear_vector")),
+   _pstrain_normal_vector(getMaterialProperty<RealVectorValue>("pstrain_normal_vector"))
 {}
 
 Real
@@ -42,8 +45,9 @@ StressStrainDamageComputeAux::computeValue()
       _stress(5) =  _stress_shear_vector[_qp](2);                //tau_yz
     }
     return _stress(_component);
-      
+
   }
+
   else if ( _quantity_string == "strain" )
   {
     _strain(0) = _strain_normal_vector[_qp](0);                //s_xx
@@ -58,11 +62,27 @@ StressStrainDamageComputeAux::computeValue()
     }
     return _strain(_component);
   }
+  else if ( _quantity_string == "pstress" )
+  {
+    _pstress(0) = _pstress_normal_vector[_qp](0);                //ptau_xx
+    _pstress(1) = _pstress_normal_vector[_qp](1);                //ptau_yy
+    _pstress(2) = _pstress_normal_vector[_qp](2);                //ptau_zz
+
+    return _pstress(_component);
+  }
+  else if ( _quantity_string == "pstrain" )
+  {
+    _pstrain(0) = _pstrain_normal_vector[_qp](0);                //ps_xx
+    _pstrain(1) = _pstrain_normal_vector[_qp](1);                //ps_yy
+    _pstrain(2) = _pstrain_normal_vector[_qp](2);                //ps_zz
+
+    return _pstrain(_component);
+  }
   else if ( _quantity_string == "damage" )
   {
     _damage = _damage_coeff[_qp];                              //damage factor
     return _damage;
   }
   return 0.0;
-  
+
 }

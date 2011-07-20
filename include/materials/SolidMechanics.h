@@ -3,6 +3,7 @@
 
 #include "PorousMedia.h"
 #include "ColumnMajorMatrix.h"
+#include <cmath>
 
 //libMesh includes
 #include "tensor_value.h"
@@ -23,7 +24,7 @@ class SolidMechanics : virtual public PorousMedia
 public:
   SolidMechanics(const std::string & name,
                  InputParameters parameters);
-  
+
 protected:
   static Real randn_trig(Real mu=0.0,Real sigma=1.0)
   {
@@ -49,6 +50,8 @@ protected:
                                      RealTensorValue & );
 
   void computeDamage(const int qp); //damage mechanics
+  void computeDamage_v2(const int qp); //damage mechanics with Mohr_Coulomb
+  void computeDamage_v3(const int qp); //damage mechanics with Principal strain
   void computeAnisoDamage(const int qp);//anisotropic damage
 
   void computeCrack_tension(const int qp); //tensile induce cracking
@@ -59,7 +62,7 @@ protected:
   bool _has_temp;
   VariableGradient & _grad_temp;
   VariableValue  & _temperature;
-   
+
   bool _has_x_disp;
   VariableGradient & _grad_x_disp;
   bool _has_y_disp;
@@ -73,13 +76,17 @@ protected:
 
   Real _input_biot_coeff;
   Real _input_t_ref;
-  
+
   bool _has_damage;
   Real _input_damage_coeff;             //initial damage between [0,1]
   Real _input_strain_initialize_damage; //critical strain to lnitialize damage
   Real _input_strain_broken;            //critical strain for complete failure
   Real _damage_a1;                      //parameters for youngs modulus and damage factor
   Real _damage_a2;
+  Real _cohesion2;                      //Mohr-Coulomb coefficients
+  Real _friction_angle2;
+  Real _critical_stress;                 //critical stress for tensile failure
+  Real _critical_strain;                 //critical
 
   std::string _has_damage_method;
   Real _input_damage_c;
@@ -100,23 +107,30 @@ protected:
   ColumnMajorMatrix _total_strain;
   TensorValue<Real> _total_stress;
   ColumnMajorMatrix _total_stress1;
-  
+
   MaterialProperty<Real> & _thermal_strain;
   MaterialProperty<Real> & _alpha;
   MaterialProperty<Real> & _youngs_modulus;
   MaterialProperty<Real> & _poissons_ratio;
   MaterialProperty<Real> & _biot_coeff;
   MaterialProperty<Real> & _damage_coeff;
+  MaterialProperty<Real> & _damage_indicater;
+  MaterialProperty<Real> & _damage_type_indicater;
   MaterialProperty<Real> & _strain_history;
-
+  MaterialProperty<Real> & _strain_initial_damage;
+  MaterialProperty<Real> & _strain_broken_damage;
   MaterialProperty<Real> & _damage_coeff_old;//newly added
+  MaterialProperty<Real> & _damage_indicater_old;
+  MaterialProperty<Real> & _damage_type_indicater_old;
   MaterialProperty<Real> & _strain_history_old;//newly added
-  
+
 
   MaterialProperty<RealVectorValue> & _stress_normal_vector;
   MaterialProperty<RealVectorValue> & _stress_shear_vector;
   MaterialProperty<RealVectorValue> & _strain_normal_vector;
   MaterialProperty<RealVectorValue> & _strain_shear_vector;
+  MaterialProperty<RealVectorValue> & _pstress_normal_vector;
+  MaterialProperty<RealVectorValue> & _pstrain_normal_vector;
 
   MaterialProperty<bool> * _init_status;
   MaterialProperty<Real> & _bond_nstiff;
@@ -163,7 +177,7 @@ protected:
 
   MaterialProperty<RealVectorValue> * _crack_flags;
   MaterialProperty<RealVectorValue> * _crack_flags_old;
-  
+
   Real _E;
   Real _nu;
   Real _c1;
