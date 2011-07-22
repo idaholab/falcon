@@ -112,16 +112,16 @@ SolidMechanics::SolidMechanics(const std::string & name,
    _poissons_ratio(declareProperty<Real>("poissons_ratio")),
    _biot_coeff(declareProperty<Real>("biot_coeff")),
    _damage_coeff(declareProperty<Real>("damage_coeff")),
-   _damage_indicator(declareProperty<Real>("damage_indicator")),
-   _damage_type_indicator(declareProperty<Real>("damage_type_indicator")),
+   _damage_indicator(declareProperty<int>("damage_indicator")),
+   _damage_type_indicator(declareProperty<int>("damage_type_indicator")),
    _strain_history(declareProperty<Real>("strain_history")),
    _strain_initial_damage(declareProperty<Real>("strain_initial_damage")),
    _strain_broken_damage(declareProperty<Real>("strain_broken_damage")),
    _strain_initial_damage_old(declarePropertyOld<Real>("strain_initial_damage")),
    _strain_broken_damage_old(declarePropertyOld<Real>("strain_broken_damage")),
    _damage_coeff_old(declarePropertyOld<Real>("damage_coeff")),
-   _damage_indicator_old(declarePropertyOld<Real>("damage_indicator")),
-   _damage_type_indicator_old(declarePropertyOld<Real>("damage_type_indicator")),
+   _damage_indicator_old(declarePropertyOld<int>("damage_indicator")),
+   _damage_type_indicator_old(declarePropertyOld<int>("damage_type_indicator")),
    _strain_history_old(declarePropertyOld<Real>("strain_history")),
 
    _stress_normal_vector(declareProperty<RealVectorValue>("stress_normal_vector")),
@@ -688,21 +688,21 @@ if (_f > 0. && _pstress_normal_vector[qp](2) > _critical_stress)
 	_f=10.;
 
 	//damage initiation indicator for tensile
-	if ( _damage_indicator_old[qp] != 1.)
+	if ( _damage_indicator_old[qp] != 1)
 	{
 		std::cout<<"tensile damage initiate"<<_f<<"\n";
-		_damage_indicator[qp] = 1.; //1:damage initiation
-		_damage_type_indicator[qp] = 1.; // 1:tensile, 2:shear
+		_damage_indicator[qp] = 1; //1:damage initiation
+		_damage_type_indicator[qp] = 1; // 1:tensile, 2:shear
 		_effective_strain = _pstrain_normal_vector[qp](2); //max
 		_strain_initial_damage[qp] = _effective_strain;
 		_strain_broken_damage[qp] = _effective_strain*20.;
 	}
-    else if (_damage_indicator_old[qp] == 1.)
+    else if (_damage_indicator_old[qp] == 1)
     {
 	   	_strain_initial_damage[qp] = _strain_initial_damage_old[qp];
 		_strain_broken_damage[qp] = _strain_broken_damage_old[qp];
-		_damage_indicator[qp]=1.;
-	    _damage_type_indicator[qp]=1.;
+		_damage_indicator[qp]=1;
+	    _damage_type_indicator[qp]=1;
     }
 }
 
@@ -711,30 +711,30 @@ if (_f > 0. && _pstress_normal_vector[qp](2) > _critical_stress)
 //	_f=20.;
 //}
 //damage initiation indicator for shear
-else if (_f > 0. && _damage_indicator_old[qp] != 1.)
-//else if (_fe==20. && _damage_indicator_old[qp] != 1.)
+else if (_f > 0. && _damage_indicator_old[qp] != 1)
+//else if (_fe==20. && _damage_indicator_old[qp] != 1)
 {
-	if ( _damage_indicator_old[qp] != 1.)
+	if ( _damage_indicator_old[qp] != 1)
 	{
 		std::cout<<"shear damage initiate"<<_f<<"\n";
-		_damage_indicator[qp] = 1.; //1:damage initiation
-		_damage_type_indicator[qp] = 2.; // 1:tensile, 2:shear
+		_damage_indicator[qp] = 1; //1:damage initiation
+		_damage_type_indicator[qp] = 2; // 1:tensile, 2:shear
 		_effective_strain = shear_max; //max
 		_strain_initial_damage[qp] = _effective_strain;
 		_strain_broken_damage[qp] = _effective_strain*20.;
 	}
-    else if (_damage_indicator_old[qp] == 1.)
+    else if (_damage_indicator_old[qp] == 1)
     {
 	   	_strain_initial_damage[qp] = _strain_initial_damage_old[qp];
 		_strain_broken_damage[qp] = _strain_broken_damage_old[qp];
-		_damage_indicator[qp]=1.;
-	    _damage_type_indicator[qp]=2.;
+		_damage_indicator[qp]=1;
+	    _damage_type_indicator[qp]=2;
     }
 }
 
 
 //tensile failure
-if (_damage_indicator[qp] == 1. && _damage_type_indicator[qp] == 1.)
+if (_damage_indicator[qp] == 1 && _damage_type_indicator[qp] == 1)
 {
 	_effective_strain = _pstrain_normal_vector[qp](2); //max
 
@@ -779,7 +779,7 @@ if (_damage_indicator[qp] == 1. && _damage_type_indicator[qp] == 1.)
 }
 
 //shear failure
-if (_damage_indicator[qp] == 1. && _damage_type_indicator[qp] == 2.)
+if (_damage_indicator[qp] == 1 && _damage_type_indicator[qp] == 2)
 {
 	_effective_strain = _pstrain_normal_vector[qp](2); //max
 
@@ -823,8 +823,8 @@ if (_damage_indicator[qp] == 1. && _damage_type_indicator[qp] == 2.)
   }
 }
 
-if(_f<= 0.0 && _damage_indicator[qp] != 1.)
-//if(_damage_indicator_old[qp] != 1.)
+if(_f<= 0.0 && _damage_indicator[qp] != 1)
+//if(_damage_indicator_old[qp] != 1)
 {
   _damage_coeff[qp] = 0.0;
   _strain_history[qp] =  _strain_history_old[qp];
@@ -988,26 +988,26 @@ if ( s_max >= _critical_strain)
 	_f=10.;
 
 	//damage initiation indicator for tensile
-	if ( _damage_indicator_old[qp] != 1.)
+	if ( _damage_indicator_old[qp] != 1)
 	{
 		std::cout<<"damage initiate"<<_f<<"\n";
-		_damage_indicator[qp] = 1.; //1:damage initiation
-		_damage_type_indicator[qp] = 1.; // 1:tensile, 2:shear
+		_damage_indicator[qp] = 1; //1:damage initiation
+		_damage_type_indicator[qp] = 1; // 1:tensile, 2:shear
 		_effective_strain = s_max; //max
 		_strain_initial_damage[qp] = _effective_strain;
 		_strain_broken_damage[qp] = _effective_strain*20.;
 	}
-   if (_damage_indicator_old[qp] == 1.)
+   if (_damage_indicator_old[qp] == 1)
    {
 	   	_strain_initial_damage[qp] = _strain_initial_damage_old[qp];
 		_strain_broken_damage[qp] = _strain_broken_damage_old[qp];
-		_damage_indicator[qp]=1.;
-	    _damage_type_indicator[qp]=1.;
+		_damage_indicator[qp]=1;
+	    _damage_type_indicator[qp]=1;
    }
 }
 
 //tensile failure
-if (_damage_indicator[qp] == 1. && _damage_type_indicator[qp] == 1.)
+if (_damage_indicator[qp] == 1 && _damage_type_indicator[qp] == 1)
 {
 	_effective_strain = s_max; //max
 
@@ -1062,7 +1062,7 @@ if (_damage_indicator[qp] == 1. && _damage_type_indicator[qp] == 1.)
 
   if(_damage_coeff[qp]>0.99)  { _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus/100.; }
 
-  if(_q_point[qp](1) > 1.7 || _q_point[qp](1) < 0.3 )
+  if(_q_point[qp](1) > 0.3  || _q_point[qp](1) < -0.3)
   {
 		_damage_coeff[qp] = 0.0 ;
 		_strain_history[qp] = 0.0;

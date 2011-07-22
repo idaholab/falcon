@@ -114,16 +114,16 @@ protected:
   MaterialProperty<Real> & _poissons_ratio;
   MaterialProperty<Real> & _biot_coeff;
   MaterialProperty<Real> & _damage_coeff;
-  MaterialProperty<Real> & _damage_indicator;
-  MaterialProperty<Real> & _damage_type_indicator;
+  MaterialProperty<int> & _damage_indicator;
+  MaterialProperty<int> & _damage_type_indicator;
   MaterialProperty<Real> & _strain_history;
   MaterialProperty<Real> & _strain_initial_damage;
   MaterialProperty<Real> & _strain_broken_damage;
   MaterialProperty<Real> & _strain_initial_damage_old;
   MaterialProperty<Real> & _strain_broken_damage_old;
   MaterialProperty<Real> & _damage_coeff_old;//newly added
-  MaterialProperty<Real> & _damage_indicator_old;
-  MaterialProperty<Real> & _damage_type_indicator_old;
+  MaterialProperty<int> & _damage_indicator_old;
+  MaterialProperty<int> & _damage_type_indicator_old;
   MaterialProperty<Real> & _strain_history_old;//newly added
 
 
