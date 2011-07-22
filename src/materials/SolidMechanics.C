@@ -23,8 +23,8 @@ InputParameters validParams<SolidMechanics>()
   params.addParam<Real>("friction_angle2",0.1,"Rock's internal friction angle");
   params.addParam<Real>("critical_stress",1.0e6,"tensile stress threshold");
   params.addParam<Real>("critical_strain",1.0e6,"tensile stress threshold");
-//  params.addParam<Real>("damage_indicater",0.0,"damage initiation");
-//  params.addParam<Real>("damage_type_indicater",0.0,"damage type");
+//  params.addParam<Real>("damage_indicator",0.0,"damage initiation");
+//  params.addParam<Real>("damage_type_indicator",0.0,"damage type");
 
 
 //has anisotropic damage
@@ -112,14 +112,16 @@ SolidMechanics::SolidMechanics(const std::string & name,
    _poissons_ratio(declareProperty<Real>("poissons_ratio")),
    _biot_coeff(declareProperty<Real>("biot_coeff")),
    _damage_coeff(declareProperty<Real>("damage_coeff")),
-   _damage_indicater(declareProperty<Real>("damage_indicater")),
-   _damage_type_indicater(declareProperty<Real>("damage_type_indicater")),
+   _damage_indicator(declareProperty<Real>("damage_indicator")),
+   _damage_type_indicator(declareProperty<Real>("damage_type_indicator")),
    _strain_history(declareProperty<Real>("strain_history")),
    _strain_initial_damage(declareProperty<Real>("strain_initial_damage")),
    _strain_broken_damage(declareProperty<Real>("strain_broken_damage")),
+   _strain_initial_damage_old(declarePropertyOld<Real>("strain_initial_damage")),
+   _strain_broken_damage_old(declarePropertyOld<Real>("strain_broken_damage")),
    _damage_coeff_old(declarePropertyOld<Real>("damage_coeff")),
-   _damage_indicater_old(declarePropertyOld<Real>("damage_indicater")),
-   _damage_type_indicater_old(declarePropertyOld<Real>("damage_type_indicater")),
+   _damage_indicator_old(declarePropertyOld<Real>("damage_indicator")),
+   _damage_type_indicator_old(declarePropertyOld<Real>("damage_type_indicator")),
    _strain_history_old(declarePropertyOld<Real>("strain_history")),
 
    _stress_normal_vector(declareProperty<RealVectorValue>("stress_normal_vector")),
@@ -247,7 +249,8 @@ SolidMechanics::computeProperties()
         _thermal_strain[qp] = _input_thermal_expansion_temp*(_temperature[qp] - _input_t_ref);
       else
       _thermal_strain[qp] = 0.0;
-      _youngs_modulus[qp]   = _input_youngs_modulus_temp*(1-_damage_coeff[qp]);   // modified by Kay
+      _youngs_modulus[qp]   = _input_youngs_modulus_temp;
+//      if(_damage_coeff[qp] > 0.) {_youngs_modulus[qp]   = _input_youngs_modulus_temp*(1-_damage_coeff[qp]);}
       _poissons_ratio[qp]   = _input_poissons_ratio_temp;
       _biot_coeff[qp]       = _input_biot_coeff_temp;
       if(LIBMESH_DIM==3)
@@ -314,7 +317,7 @@ SolidMechanics::computeProperties()
    if (_has_damage && _has_damage_method == "isotropic") computeDamage(qp); //by damage mechanics theory
    if (_has_damage && _has_damage_method == "MC_damage") computeDamage_v2(qp); //by damage mechanics theory
    if (_has_damage && _has_damage_method == "Pstrain_damage") computeDamage_v3(qp); //by damage mechanics theory
-/*
+
     if (_has_x_disp && _has_y_disp)
     {
       _E  =  _youngs_modulus[qp];//after updated
@@ -352,7 +355,7 @@ SolidMechanics::computeProperties()
 
      }
 
-
+/*
  //Effective stress
 
 
@@ -370,7 +373,7 @@ SolidMechanics::computeProperties()
       }
 
    }
-   if (_damage_coeff[qp] ==0.999)
+   if (_damage_coeff[qp] ==0.99)
    {
 	  _stress_normal_vector[qp](0) = _stress_normal_vector[qp](0)/100.; //s_xx
       _stress_normal_vector[qp](1) = _stress_normal_vector[qp](1)/100.; //s_yy
@@ -488,7 +491,7 @@ SolidMechanics::computeDamage(const int qp)
   _damage_coeff[qp]   = std::max(_damage_coeff[qp] , _damage_coeff_old[qp]);
   _strain_history[qp] = std::max(_strain_history[qp] , _strain_history_old[qp]);
 
-  if(_q_point[qp](0) > 0.8 && _q_point[qp](0) < 0.2 )  { _damage_coeff[qp] = 0.0 ; _strain_history[qp] = 0.0; } //newly added to avoid boundary damaging
+ // if(_q_point[qp](0) > 0.8 && _q_point[qp](0) < 0.2 )  { _damage_coeff[qp] = 0.0 ; _strain_history[qp] = 0.0; } //newly added to avoid boundary damaging
 
   _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus;
 
@@ -497,7 +500,12 @@ SolidMechanics::computeDamage(const int qp)
   {
     _permeability[qp] *= std::pow(1.00001-_damage_coeff[qp] , _damage_couple_permeability_coeff2) / temp_couple;
   }
-
+  if(_q_point[qp](1) > 1.7 || _q_point[qp](1) < 0.3 )
+  {
+  		_damage_coeff[qp] = 0.0 ;
+  		_strain_history[qp] = 0.0;
+  		_youngs_modulus[qp] = _input_youngs_modulus;
+  } //newly added to avoid boundary damaging
 }
 
 
@@ -511,7 +519,7 @@ void
 SolidMechanics::computeDamage_v2(const int qp)
 {
    Real _effective_strain=0.0 , _temp =0.0;
-   _strain_history[qp]   = std::max(0.0000000001,_strain_history[qp]);
+   _strain_history[qp]   = std::max(_critical_strain,_strain_history[qp]);
    _damage_coeff[qp]     = std::max(_input_damage_coeff, _damage_coeff[qp]);
 
    int ind_max = 0;
@@ -678,37 +686,55 @@ if (_f > 0. && _pstress_normal_vector[qp](2) > _critical_stress)
 //if (_pstrain_normal_vector[qp](2) > _critical_strain)
 {
 	_f=10.;
+
+	//damage initiation indicator for tensile
+	if ( _damage_indicator_old[qp] != 1.)
+	{
+		std::cout<<"tensile damage initiate"<<_f<<"\n";
+		_damage_indicator[qp] = 1.; //1:damage initiation
+		_damage_type_indicator[qp] = 1.; // 1:tensile, 2:shear
+		_effective_strain = _pstrain_normal_vector[qp](2); //max
+		_strain_initial_damage[qp] = _effective_strain;
+		_strain_broken_damage[qp] = _effective_strain*20.;
+	}
+    else if (_damage_indicator_old[qp] == 1.)
+    {
+	   	_strain_initial_damage[qp] = _strain_initial_damage_old[qp];
+		_strain_broken_damage[qp] = _strain_broken_damage_old[qp];
+		_damage_indicator[qp]=1.;
+	    _damage_type_indicator[qp]=1.;
+    }
 }
 
 //if (shear_max > _input_strain_initialize_damage)
 //{
 //	_f=20.;
 //}
+//damage initiation indicator for shear
+else if (_f > 0. && _damage_indicator_old[qp] != 1.)
+//else if (_fe==20. && _damage_indicator_old[qp] != 1.)
+{
+	if ( _damage_indicator_old[qp] != 1.)
+	{
+		std::cout<<"shear damage initiate"<<_f<<"\n";
+		_damage_indicator[qp] = 1.; //1:damage initiation
+		_damage_type_indicator[qp] = 2.; // 1:tensile, 2:shear
+		_effective_strain = shear_max; //max
+		_strain_initial_damage[qp] = _effective_strain;
+		_strain_broken_damage[qp] = _effective_strain*20.;
+	}
+    else if (_damage_indicator_old[qp] == 1.)
+    {
+	   	_strain_initial_damage[qp] = _strain_initial_damage_old[qp];
+		_strain_broken_damage[qp] = _strain_broken_damage_old[qp];
+		_damage_indicator[qp]=1.;
+	    _damage_type_indicator[qp]=2.;
+    }
+}
 
-//damage initiation indicater for tensile
-if (_f==10. && _damage_indicater_old[qp] != 1.)
-{
-	_damage_indicater[qp] = 1.; //1:damage initiation
-	_damage_type_indicater[qp] = 1.; // 1:tensile, 2:shear
-	_effective_strain = _pstrain_normal_vector[qp](2); //max
-	_strain_initial_damage[qp] = _effective_strain;
-	_strain_broken_damage[qp] = _effective_strain*20.;
-	_damage_indicater_old[qp] = _damage_indicater[qp];
-}
-//damage initiation indicater for shear
-else if (_f > 0. && _damage_indicater_old[qp] != 1.)
-//else if (_fe==20. && _damage_indicater_old[qp] != 1.)
-{
-	_damage_indicater[qp] = 1.;
-	_damage_type_indicater[qp] = 2.; // 1:tensile, 2:shear
-	_effective_strain = shear_max; //max
-	_strain_initial_damage[qp] = _effective_strain;
-	_strain_broken_damage[qp] = _effective_strain*20.;
-	_damage_indicater_old[qp] = _damage_indicater[qp];
-}
 
 //tensile failure
-if (_damage_indicater_old[qp] == 1. && _damage_type_indicater[qp] == 1.)
+if (_damage_indicator[qp] == 1. && _damage_type_indicator[qp] == 1.)
 {
 	_effective_strain = _pstrain_normal_vector[qp](2); //max
 
@@ -723,17 +749,17 @@ if (_damage_indicater_old[qp] == 1. && _damage_type_indicater[qp] == 1.)
     {
       if(_effective_strain >= _strain_broken_damage[qp])//fully failed: s > sc
       {
-        _damage_coeff[qp]   = 0.999999999;
+        _damage_coeff[qp]   = 0.9999;
         _strain_history[qp] = _effective_strain;
       }
       else//continuously damaging s-{s0,sc}
       {
         _temp = (_effective_strain - _strain_initial_damage[qp])/(_strain_broken_damage[qp] - _strain_initial_damage[qp]);
         _temp = _damage_a1 * std::pow(_temp , _damage_a2) + _input_damage_coeff;
-        if(_temp >= 0.999999999)
+        if(_temp >= 0.9999)
         {
           std::cout<<"The parameter of damage evolution are too large,please change them"<<"\n";
-          _temp = 0.999999999;
+          _temp = 0.9999;
         }
         _damage_coeff[qp] = std::max(_temp , _damage_coeff[qp]);
         _strain_history[qp] = _effective_strain;
@@ -747,13 +773,13 @@ if (_damage_indicater_old[qp] == 1. && _damage_type_indicater[qp] == 1.)
   }
   else //alreadry completely failed
   {
-    _damage_coeff[qp] = 0.999999999;
+    _damage_coeff[qp] = 0.9999;
     _strain_history[qp] =  std::max(_strain_history[qp] , _effective_strain);
   }
 }
 
 //shear failure
-if (_damage_indicater_old[qp] == 1. && _damage_type_indicater[qp] == 2.)
+if (_damage_indicator[qp] == 1. && _damage_type_indicator[qp] == 2.)
 {
 	_effective_strain = _pstrain_normal_vector[qp](2); //max
 
@@ -768,17 +794,17 @@ if (_damage_indicater_old[qp] == 1. && _damage_type_indicater[qp] == 2.)
     {
       if(_effective_strain >= _strain_broken_damage[qp])//fully failed: s > sc
       {
-        _damage_coeff[qp]   = 0.999999999;
+        _damage_coeff[qp]   = 0.9999;
         _strain_history[qp] = _effective_strain;
       }
       else//continuously damaging s-{s0,sc}
       {
         _temp = (_effective_strain - _strain_initial_damage[qp])/(_strain_broken_damage[qp] - _strain_initial_damage[qp]);
         _temp = _damage_a1 * std::pow(_temp , _damage_a2) + _input_damage_coeff;
-        if(_temp >= 0.999999999)
+        if(_temp >= 0.9999)
         {
           std::cout<<"The parameter of damage evolution are too large,please change them"<<"\n";
-          _temp = 0.999999999;
+          _temp = 0.9999;
         }
         _damage_coeff[qp] = std::max(_temp , _damage_coeff[qp]);
         _strain_history[qp] = _effective_strain;
@@ -792,13 +818,13 @@ if (_damage_indicater_old[qp] == 1. && _damage_type_indicater[qp] == 2.)
   }
   else //alreadry completely failed
   {
-    _damage_coeff[qp] = 0.999999999;
+    _damage_coeff[qp] = 0.9999;
     _strain_history[qp] =  std::max(_strain_history[qp] , _effective_strain);
   }
 }
 
-if(_f<= 0.0 && _damage_indicater[qp] != 1.)
-//if(_damage_indicater_old[qp] != 1.)
+if(_f<= 0.0 && _damage_indicator[qp] != 1.)
+//if(_damage_indicator_old[qp] != 1.)
 {
   _damage_coeff[qp] = 0.0;
   _strain_history[qp] =  _strain_history_old[qp];
@@ -808,8 +834,6 @@ if(_f<= 0.0 && _damage_indicater[qp] != 1.)
   _damage_coeff[qp]   = std::max(_damage_coeff[qp] , _damage_coeff_old[qp]);
   _strain_history[qp] = std::max(_strain_history[qp] , _strain_history_old[qp]);
 
-  if(_q_point[qp](0) > 0.8 && _q_point[qp](0) < 0.2 )  { _damage_coeff[qp] = 0.0 ; _strain_history[qp] = 0.0; } //newly added to avoid boundary damaging
-
   if(_damage_coeff[qp] > 0.0)
   {
 	  _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus;
@@ -818,6 +842,12 @@ if(_f<= 0.0 && _damage_indicater[qp] != 1.)
   {
 	  _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus/100.;
   }
+  if(_q_point[qp](1) > 1.7 || _q_point[qp](1) < 0.3 )
+  {
+  		_damage_coeff[qp] = 0.0 ;
+  		_strain_history[qp] = 0.0;
+  		_youngs_modulus[qp] = _input_youngs_modulus;
+  } //newly added to avoid boundary damaging
 }
 //=================================================================================================
 
@@ -831,34 +861,10 @@ void
 SolidMechanics::computeDamage_v3(const int qp)
 {
    Real _effective_strain=0.0 , _temp =0.0;
-   _strain_history[qp]   = std::max(0.0000000001,_strain_history[qp]);
+   _strain_history[qp]   = std::max(_critical_strain,_strain_history[qp]);
    _damage_coeff[qp]     = std::max(_input_damage_coeff, _damage_coeff[qp]);
 
-/*
-  if(LIBMESH_DIM==2)
-  {
-//        _effective_strain = std::max(std::abs(_grad_x_disp[qp](0)) ,std::abs( _grad_y_disp[qp](1)));
-    _temp = (_grad_x_disp[qp](0) + _grad_y_disp[qp](1))/2.;
-    _effective_strain = (_grad_x_disp[qp](0)-_temp)*(_grad_x_disp[qp](0)-_temp) +
-      (_grad_y_disp[qp](1)-_temp)*(_grad_y_disp[qp](1)-_temp) +
-      (_grad_x_disp[qp](1)+_grad_y_disp[qp](0))*(_grad_x_disp[qp](1)+_grad_y_disp[qp](0))/2.0;
-  }
-  if(LIBMESH_DIM==3)
-  {
-//        _effective_strain = std::max(std::abs(_grad_x_disp[qp](0)) ,std::abs( _grad_y_disp[qp](1)));
-//        _effective_strain = std::max(std::abs(_grad_z_disp[qp](2)) , _effective_strain);
-    _temp = (_grad_x_disp[qp](0)+_grad_y_disp[qp](1)+_grad_z_disp[qp](2))/3.;
-    _effective_strain = (_grad_x_disp[qp](0)-_temp)*(_grad_x_disp[qp](0)-_temp) +
-          (_grad_y_disp[qp](1)-_temp)*(_grad_y_disp[qp](1)-_temp) +
-          (_grad_z_disp[qp](2)-_temp)*(_grad_z_disp[qp](2)-_temp) +
-          (_grad_x_disp[qp](1)+_grad_y_disp[qp](0))*(_grad_x_disp[qp](1)+_grad_y_disp[qp](0))/2.0 +
-          (_grad_x_disp[qp](2)+_grad_z_disp[qp](0))*(_grad_x_disp[qp](2)+_grad_z_disp[qp](0))/2.0 +
-          (_grad_y_disp[qp](2)+_grad_z_disp[qp](1))*(_grad_y_disp[qp](2)+_grad_z_disp[qp](1))/2.0 ;
-  }
 
-  _effective_strain = std::pow(_effective_strain*2./3. , 0.5);
-
-*/
    int ind_max = 0;
    int ind_min = 0;
    int ind_mid = 0;
@@ -913,8 +919,41 @@ SolidMechanics::computeDamage_v3(const int qp)
   _total_stress1.eigen( principal_stress, e_vec );//get principal
 
 
-  Real s_max = principal_strain(0,0);
-  Real s_min = principal_strain(0,0);
+Real s_max,s_min,ss_max,ss_min;
+
+// find out minimum and maximum principal stress
+
+    ss_max = principal_stress(0,0);
+    ss_min = principal_stress(0,0);
+
+
+  for(int i = 1 ; i < LIBMESH_DIM ; ++i)
+  {
+    if(principal_stress(i,0) > ss_max)
+    {
+      ss_max = principal_stress(i,0);
+      ind_max = i;
+    }
+    if(principal_stress(i,0) < ss_min)
+    {
+      ss_min = principal_stress(i,0);
+      ind_min = i;
+    }
+  }
+  if(LIBMESH_DIM == 3)
+  {
+    for(int i=0 ; i < LIBMESH_DIM ; ++i )
+    {
+      if(i != ind_max && i != ind_min)   ind_mid = i;
+    }
+  }
+
+	 _pstress_normal_vector[qp](0)=ss_min;
+	 _pstress_normal_vector[qp](1)=principal_stress(ind_mid,0);
+	 _pstress_normal_vector[qp](2)=ss_max;
+
+ s_max = principal_strain(0,0);
+ s_min = principal_strain(0,0);
 
 // find out minimum and maximum principal strain
   for(int i = 1 ; i < LIBMESH_DIM ; ++i)
@@ -942,61 +981,36 @@ SolidMechanics::computeDamage_v3(const int qp)
 	 _pstrain_normal_vector[qp](1)=principal_strain(ind_mid,0);
 	 _pstrain_normal_vector[qp](2)=s_max;
 
-// find out minimum and maximum principal strain
-
-    s_max = principal_stress(0,0);
-    s_min = principal_stress(0,0);
-
-
-  for(int i = 1 ; i < LIBMESH_DIM ; ++i)
-  {
-    if(principal_stress(i,0) > s_max)
-    {
-      s_max = principal_stress(i,0);
-      ind_max = i;
-    }
-    if(principal_stress(i,0) < s_min)
-    {
-      s_min = principal_stress(i,0);
-      ind_min = i;
-    }
-  }
-  if(LIBMESH_DIM == 3)
-  {
-    for(int i=0 ; i < LIBMESH_DIM ; ++i )
-    {
-      if(i != ind_max && i != ind_min)   ind_mid = i;
-    }
-  }
-
-	 _pstress_normal_vector[qp](0)=s_min;
-	 _pstress_normal_vector[qp](1)=principal_stress(ind_mid,0);
-	 _pstress_normal_vector[qp](2)=s_max;
-
-
 Real _f;
 
-if ( _pstrain_normal_vector[qp](2)> _critical_strain)
+if ( s_max >= _critical_strain)
 {
 	_f=10.;
-}
 
-
-//damage initiation indicater for tensile
-if (_f==10. && _damage_indicater_old[qp] != 1.)
-{
-	_damage_indicater[qp] = 1.; //1:damage initiation
-	_damage_type_indicater[qp] = 1.; // 1:tensile, 2:shear
-	_effective_strain = _pstrain_normal_vector[qp](2); //max
-	_strain_initial_damage[qp] = _effective_strain;
-	_strain_broken_damage[qp] = _effective_strain*20.;
-	_damage_indicater_old[qp] = _damage_indicater[qp];
+	//damage initiation indicator for tensile
+	if ( _damage_indicator_old[qp] != 1.)
+	{
+		std::cout<<"damage initiate"<<_f<<"\n";
+		_damage_indicator[qp] = 1.; //1:damage initiation
+		_damage_type_indicator[qp] = 1.; // 1:tensile, 2:shear
+		_effective_strain = s_max; //max
+		_strain_initial_damage[qp] = _effective_strain;
+		_strain_broken_damage[qp] = _effective_strain*20.;
+	}
+   if (_damage_indicator_old[qp] == 1.)
+   {
+	   	_strain_initial_damage[qp] = _strain_initial_damage_old[qp];
+		_strain_broken_damage[qp] = _strain_broken_damage_old[qp];
+		_damage_indicator[qp]=1.;
+	    _damage_type_indicator[qp]=1.;
+   }
 }
 
 //tensile failure
-if (_damage_indicater_old[qp] == 1. && _damage_type_indicater[qp] == 1.)
+if (_damage_indicator[qp] == 1. && _damage_type_indicator[qp] == 1.)
 {
-//	_effective_strain = _pstrain_normal_vector[qp](2); //max
+	_effective_strain = s_max; //max
+
 
   if(_strain_history[qp] < _strain_broken_damage[qp]) //not fully failed
   {
@@ -1009,20 +1023,22 @@ if (_damage_indicater_old[qp] == 1. && _damage_type_indicater[qp] == 1.)
     {
       if(_effective_strain >= _strain_broken_damage[qp])//fully failed: s > sc
       {
-        _damage_coeff[qp]   = 0.999999;
+        _damage_coeff[qp]   = 0.9999;
         _strain_history[qp] = _effective_strain;
       }
       else//continuously damaging s-{s0,sc}
       {
+
         _temp = (_effective_strain - _strain_initial_damage[qp])/(_strain_broken_damage[qp] - _strain_initial_damage[qp]);
         _temp = _damage_a1 * std::pow(_temp , _damage_a2) + _input_damage_coeff;
-        if(_temp >= 0.999999)
+        if(_temp >= 0.9999)
         {
           std::cout<<"The parameter of damage evolution are too large,please change them"<<"\n";
-          _temp = 0.999999;
+          _temp = 0.9999;
         }
         _damage_coeff[qp] = std::max(_temp , _damage_coeff[qp]);
         _strain_history[qp] = _effective_strain;
+        std::cout<<"damage propagated"<<_damage_coeff[qp]<<"\n";
       }
     }
 //   else if (_effective_strain <= _strain_initial_damage[qp])//no damaging yet
@@ -1033,7 +1049,7 @@ if (_damage_indicater_old[qp] == 1. && _damage_type_indicater[qp] == 1.)
   }
   else //alreadry completely failed
   {
-    _damage_coeff[qp] = 0.999999;
+    _damage_coeff[qp] = 0.9999;
     _strain_history[qp] =  std::max(_strain_history[qp] , _effective_strain);
   }
 }
@@ -1042,11 +1058,17 @@ if (_damage_indicater_old[qp] == 1. && _damage_type_indicater[qp] == 1.)
   _damage_coeff[qp]   = std::max(_damage_coeff[qp] , _damage_coeff_old[qp]);
   _strain_history[qp] = std::max(_strain_history[qp] , _strain_history_old[qp]);
 
-  if(_q_point[qp](0) > 0.8 && _q_point[qp](0) < 0.2 )  { _damage_coeff[qp] = 0.0 ; _strain_history[qp] = 0.0; } //newly added to avoid boundary damaging
+   _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus;
 
-  _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus;
+  if(_damage_coeff[qp]>0.99)  { _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus/100.; }
 
-  if(_damage_coeff[qp]>0.999)  { _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus/100.; }
+  if(_q_point[qp](1) > 1.7 || _q_point[qp](1) < 0.3 )
+  {
+		_damage_coeff[qp] = 0.0 ;
+		_strain_history[qp] = 0.0;
+		_youngs_modulus[qp] = _input_youngs_modulus;
+  } //newly added to avoid boundary damaging
+
 
 }
 //=================================================================================================
