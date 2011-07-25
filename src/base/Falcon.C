@@ -94,7 +94,9 @@
 #include "OutFlowBC.h"
 #include "OutFlowBC_PH.h"
 #include "StepDirichletBC.h"
-
+#include "StepPressureBCFunc.h"
+//ICs
+#include "LinearDisEnthalpyIC.h"
 
 //materials
 #include "Constant.h"
@@ -181,12 +183,18 @@ namespace Falcon
     registerAux(CoupledPorosityMaterialAux);
     registerAux(StressStrainDamageComputeAux);
     
+    
 //BCs    
     registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
     registerBoundaryCondition(GravityNeumannBC);
     registerBoundaryCondition(OutFlowBC);
     registerBoundaryCondition(OutFlowBC_PH);
     registerBoundaryCondition(StepDirichletBC);
+    registerBoundaryCondition(StepPressureBCFunc);
+
+    // ICs
+    registerInitialCondition(LinearDisEnthalpyIC);
+    
 
 //materials
     registerMaterial(Constant);
@@ -195,5 +203,7 @@ namespace Falcon
     registerMaterial(HeatTransport);
     registerMaterial(SolidMechanics);
     registerMaterial(Geothermal);
+   
+    
   }
 }

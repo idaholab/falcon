@@ -21,7 +21,8 @@ protected:
 
   VariableValue  & _density;
   VariableValue & _density_old;
-  VariableValue  & _ddensitydp_H; //derivative of water density vs. pressure  
+  VariableValue  & _ddensitydp_H; //derivative of water density vs. pressure
+  VariableValue & _enthalpy_old;
     
   MaterialProperty<Real> & _porosity;  
 //  VariableValue  & _porosity;

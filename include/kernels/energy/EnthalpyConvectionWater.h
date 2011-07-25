@@ -18,12 +18,18 @@ public:
 
 protected:
   virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();  
+  virtual Real computeQpJacobian();
+  virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+  
 
   MaterialProperty<RealGradient> & _darcy_mass_flux_water;
     MaterialProperty<RealGradient> & _Ddarcy_mass_flux_waterDH;
+  MaterialProperty<Real> & _tau_water;
   VariableValue  & _enthalpy_water;
   VariableValue & _denthalpy_waterdH_P;
+  unsigned int  _p_var;
+  VariableValue & _p;
+  
 
 };
 #endif //ENTHALPYCONVECTIONWATER

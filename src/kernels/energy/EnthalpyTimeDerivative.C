@@ -1,5 +1,6 @@
 #include "EnthalpyTimeDerivative.h"
 #include "Material.h"
+#include "Water_Steam_EOS.h"
 
 template<>
 InputParameters validParams<EnthalpyTimeDerivative>()
@@ -9,6 +10,7 @@ InputParameters validParams<EnthalpyTimeDerivative>()
     params.addRequiredCoupledVar("temperature", "Use CoupledAuxDensity here");
     params.addRequiredCoupledVar("dTdH_P", "derivative of water density vs temperature");
     params.addRequiredCoupledVar("ddensitydH_P", "derivative of water density vs temperature");
+    params.addCoupledVar("pressure","Use coupled pressuer here to calculate the time derivative");
     //  params.addRequiredCoupledVar("porosity", "Use CoupledAuxPorosity here");
     return params;
 }
@@ -24,6 +26,7 @@ _temperature_old(coupledValueOld("temperature")),
 
 _dTdH_P(coupledValue("dTdH_P")),
 _ddensitydH_P(coupledValue("ddensitydH_P")),
+ _pressure_old(coupledValueOld("pressure")),
 //   _porosity(coupledValue("porosity")),
 //   _porosity_old(coupledValueOld("porosity")),
 _porosity (getMaterialProperty<Real>("material_porosity")),
@@ -35,6 +38,28 @@ _density_rock(getMaterialProperty<Real>("density_rock"))
 Real
 EnthalpyTimeDerivative::computeQpResidual()
 {
+  Real _var[10];
+  int _name;
+  Real _den_mix;
+  Real tt;
+  Real _den_old;
+  Real _temp_old;
+  
+  if (_t_step==1) {
+    
+        Water_Steam_EOS::water_steam_prop_ph_(_pressure_old[_qp], _u_old[_qp], tt, 
+                                              _var[0], _den_mix, 
+                                              _var[1], _var[2], _var[3], _var[4],
+                                              _var[5],_var[6], _var[7], _var[8],
+                                              _var[9], _var[10], _name); 
+        
+        _den_old=_den_mix; 
+        _temp_old=tt; 
+    } 
+    else 
+    { _den_old= _density_old[_qp]; 
+        _temp_old = _temperature_old[_qp]; 
+    } 
     
     //REAL dphirho_dt = ((_porosity[_qp]*_density_water[_qp])-(_porosity_old[_qp]*_density_water_old[_qp]))/_dt;
     // std::cout <<_porosity[_qp]<< "\n";
@@ -47,8 +72,8 @@ EnthalpyTimeDerivative::computeQpResidual()
     //   std::cout <<"dwdt: "<< _dwdt[_qp]<<' '<<_density_water[_qp]<< "\n";
     Real tmp1=(_porosity[_qp]*_density[_qp]*_u[_qp]+
               (1.0-_porosity[_qp])*_density_rock[_qp]*_specific_heat_rock[_qp]*_temperature[_qp]-
-              _porosity[_qp]*_density_old[_qp]*_u_old[_qp]-
-                (1.0-_porosity[_qp])*_density_rock[_qp]*_specific_heat_rock[_qp]*_temperature_old[_qp])
+              _porosity[_qp]*_den_old*_u_old[_qp]-
+                (1.0-_porosity[_qp])*_density_rock[_qp]*_specific_heat_rock[_qp]*_temp_old)
               *_test[_i][_qp] /_dt;
     
     //   Std::cout <<_density_water[_qp] << ' '<< _density_water_old[_qp]<< "\n";

@@ -26,6 +26,7 @@ protected:
     VariableValue  & _temperature_old;
     VariableValue  & _dTdH_P; //derivative of water density vs. temperature
     VariableValue  & _ddensitydH_P;
+    VariableValue  & _pressure_old;
     //  VariableValue  & _porosity_old;
     MaterialProperty<Real> & _porosity;
     MaterialProperty<Real> & _specific_heat_rock;
