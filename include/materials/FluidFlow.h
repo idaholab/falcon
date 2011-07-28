@@ -38,6 +38,8 @@ protected:
   VariableValue & _viscosity_steam;
     
   VariableValue & _saturation_water;
+  VariableGradient & _grad_saturation_water;
+  
   VariableValue & _dswdH;
 
 

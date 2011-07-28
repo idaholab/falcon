@@ -14,6 +14,7 @@ InputParameters validParams<FluidFlow>()
   params.addCoupledVar("density_steam", "Coupled NodalAux used to calculate density");
   params.addCoupledVar("viscosity_steam", "Coupled NodalAux used to calculate viscosity");
   params.addCoupledVar("saturation_water", "Coupled NodalAux used to calculate relative permeability");
+  
   params.addCoupledVar("dswdH", "Coupled NodalAux used to calculate relative permeability");  
   return params;
 }
@@ -36,6 +37,7 @@ FluidFlow::FluidFlow(const std::string & name,
    _viscosity_steam(_has_enthalpy? coupledValue("viscosity_steam"): _zero), //nodal Aux
 
    _saturation_water(_has_enthalpy? coupledValue("saturation_water"): _zero), //nodal Aux
+   _grad_saturation_water(_has_enthalpy? coupledGradient("saturation_water"): _grad_zero), //nodal Aux
    _dswdH(_has_enthalpy? coupledValue("dswdH"): _zero), //nodal Aux
 
    _tau_water(declareProperty<Real>("tau_water")),
@@ -69,7 +71,7 @@ FluidFlow::computeProperties()
     Real _visc_water = 5E-4;  
 // relative_permeability :: relative_permeability_noderiv1_(_saturation_water[qp],_krw,_krs);   
   if (_has_enthalpy)
-      
+    /*     
   { _swe=(_saturation_water[qp]-0.3)/0.7;
       
       if(_swe <= 0.0)
@@ -78,12 +80,12 @@ FluidFlow::computeProperties()
        {if(_swe >= 1.0)
        {_krw= 1.0; _DkrwDsw=0.0;}
          else
-         {_krw= _swe*_swe; 
-             _DkrwDsw = 2*_swe/0.7;
+         {_krw=  _swe; // _swe*_swe; 
+             _DkrwDsw = 1.0/0.7;
          }
        }
 
-      _swe=(1.0-_saturation_water[qp]-0.2)/0.8;
+      _swe=(1.0-_saturation_water[qp]-0.05)/0.95;
       
       if(_swe <= 0.0)
       {_krs= 0.0;_DkrsDsw=0.0;}
@@ -91,10 +93,36 @@ FluidFlow::computeProperties()
       {if(_swe >= 1.0)
       {_krs= 1.0; _DkrsDsw=0.0;}
       else
-      {_krs= _swe*_swe;
-        _DkrsDsw = -2*_swe /0.8; }
+      {_krs= _swe;
+        _DkrsDsw = -1.0 /0.95; }
       }
-  } 
+  }
+    */
+    
+  { _swe=(_saturation_water[qp]-0.3)/0.65;
+      
+      if(_swe <= 0.0)
+      {_krw= 0.0;_DkrwDsw =0.0;}
+      else
+       {if(_swe >= 1.0)
+       {_krw= 1.0; _DkrwDsw=0.0;}
+         else
+         {_krw= _swe*_swe*_swe*_swe; 
+             _DkrwDsw = 4*_swe*_swe*_swe/0.65;
+         }
+       }
+      
+      if(_swe <= 0.0)
+      {_krs= 1.0;_DkrsDsw=0.0;}
+      else
+      {if(_swe >= 1.0)
+      {_krs= 0.0; _DkrsDsw=0.0;}
+      else
+      {_krs= (1-_swe*_swe)*(1-_swe)*(1-_swe);
+        _DkrsDsw = -2*(1-_swe)/0.65*(1-_swe*_swe)-2*_swe/0.5*(1-_swe)*(1-_swe); }
+      }
+  }
+
 /*
       
     {
@@ -115,14 +143,25 @@ FluidFlow::computeProperties()
 
   // simplified version for now
     
-    if (_has_temp)
+    if (_has_temp && _saturation_water[qp] > 0.0)
     {
         _dens_water =  _density_water[qp];
         _visc_water =  _viscosity_water[qp];
     }
       
     _tau_water[qp] = _permeability[qp] * _dens_water / _visc_water * _krw;
-    _darcy_mass_flux_water[qp] =  -_tau_water[qp] * (_grad_p[qp]+_dens_water*_gravity[qp]*_gravity_vector[qp]);
+    
+    if (_saturation_water[qp]<=0.01 ||_visc_water <=1.0e-5 || _dens_water<0.1 ) std::cout << "kr: "<< _saturation_water[qp]<< _visc_water<< _dens_water <<  "\n";
+                                     
+    Real _alpha =1E3;
+    
+    Real _pc = _alpha  /_saturation_water[qp];
+    
+    if (_pc > 5E4) _alpha = 5E4 * _saturation_water[qp];
+    RealGradient _grad_pc = - _alpha / _saturation_water[qp] /_saturation_water[qp]  *_grad_saturation_water[qp];
+
+    _darcy_mass_flux_water[qp] = -_tau_water[qp] * (_grad_p[qp] - _grad_pc + 
+                                 _dens_water*_gravity[qp]*_gravity_vector[qp]);
     _darcy_mass_flux_water_pressure[qp] =  (-_tau_water[qp] * _grad_p[qp]);
     _darcy_mass_flux_water_elevation[qp] = (-_tau_water[qp] * _gravity[qp] *_gravity_vector[qp]*_dens_water);
     _darcy_flux_water[qp] = _darcy_mass_flux_water[qp] /   _dens_water;
@@ -132,21 +171,31 @@ FluidFlow::computeProperties()
                                     * _DkrwDsw * _dswdH[qp];
     }
       
-    if (_has_enthalpy)
+    if (_has_enthalpy  &&  _saturation_water[qp] < 0.9e0)
     {_tau_steam[qp] = _permeability[qp] * _density_steam[qp] / _viscosity_steam[qp] * _krs;
      _darcy_mass_flux_steam[qp] =  -_tau_steam[qp] * (_grad_p[qp]+_density_steam[qp]*_gravity[qp]*_gravity_vector[qp]);
      _darcy_mass_flux_steam_pressure[qp] =  (-_tau_steam[qp] * _grad_p[qp]);
      _darcy_mass_flux_steam_elevation[qp] = (-_tau_steam[qp] * _gravity[qp] *_gravity_vector[qp]*_density_steam[qp]);
-     _darcy_flux_steam[qp] = _darcy_mass_flux_steam[qp] /   _density_steam[qp];
+     _darcy_flux_steam[qp] = _darcy_mass_flux_steam[qp] /  ( _density_steam[qp]+1.0e-15);
      _Ddarcy_mass_flux_steamDH[qp] = - (_grad_p[qp]+_density_steam[qp]*_gravity[qp]*_gravity_vector[qp])
                                      * _permeability[qp] * _density_steam[qp] / _viscosity_steam[qp]
                                      *  _DkrsDsw * _dswdH[qp];
-    }   
+    }
+    
+    else
+    {
+      _tau_steam[qp] = 0.0;
+      
+      _darcy_mass_flux_steam[qp] =  0.0; 
+      _darcy_mass_flux_steam_pressure[qp] = 0.0;
+     _darcy_mass_flux_steam_elevation[qp] = 0.0;
+     _darcy_flux_steam[qp] = 0.0;
+     _Ddarcy_mass_flux_steamDH[qp] =0.0;
+    }
     
    //  if( _q_point[qp](0) <= 1)// || _q_point[qp](0) >= 99)
    //  { std::cout << "kr: "<<_q_point[qp](0) <<" "<< _darcy_flux_water[qp]<<" "  <<_darcy_flux_steam[qp]<<"\n";}
-     
-    // std::cout << "kr: "<< _darcy_flux_steam[qp]<<  "\n";
+//    std::cout << "kr: "<< _grad_pc<<  "\n";
     
   }
 }

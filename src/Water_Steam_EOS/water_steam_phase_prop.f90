@@ -26,8 +26,8 @@
   do 
    succ= cowat(tx, p, dw, hw)
    hx= hw * energyscale
-   if(dabs((hx-h)/h)<= 1D-14) exit 
-   
+!   if(dabs((hx-h)/h)<= 1D-14) exit 
+    if(dabs((hx-h))<= 1D-14) exit 
    txd = tx + dt
    succ = cowat(txd, p, dw, hw)
    hxd= hw * energyscale
@@ -72,8 +72,8 @@
   do 
   succ=supst(tx, p, dg, hg)
    hx = hg * energyscale
-   if(dabs((hx-h)/h)<= 1D-14) exit 
-   
+!   if(dabs((hx-h)/h)<= 1D-14) exit 
+   if(dabs((hx-h))<= 1D-14) exit 
    txd = tx + dt
    succ=supst(txd, p, dg, hg)
    hxd=hg * energyscale
@@ -108,7 +108,7 @@
   real*8, parameter::  fmwh2o = 18.01534d0
   real*8, parameter::  ps350c = 16.529D6, hw350c=1670.9D0
   real*8, parameter::  energyscale=1D-6 ! MJ/Kg
-  real*8, parameter::  epi_p = 1D-0, epi_h = 1D0 * energyscale
+  real*8, parameter::  epi_p = 0.1D-0, epi_h = 0.1D0 * energyscale
  
 
   real*8, intent(inout)  :: p, h ! Pscal, KJ/Kg, C (initial guess)
