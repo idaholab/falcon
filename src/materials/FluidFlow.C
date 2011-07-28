@@ -153,14 +153,14 @@ FluidFlow::computeProperties()
     
     if (_saturation_water[qp]<=0.01 ||_visc_water <=1.0e-5 || _dens_water<0.1 ) std::cout << "kr: "<< _saturation_water[qp]<< _visc_water<< _dens_water <<  "\n";
                                      
-    Real _alpha =1E3;
+//    Real _alpha =1E3;
     
-    Real _pc = _alpha  /_saturation_water[qp];
+//    Real _pc = _alpha  /_saturation_water[qp];
     
-    if (_pc > 5E4) _alpha = 5E4 * _saturation_water[qp];
-    RealGradient _grad_pc = - _alpha / _saturation_water[qp] /_saturation_water[qp]  *_grad_saturation_water[qp];
+//    if (_pc > 5E4) _alpha = 5E4 * _saturation_water[qp];
+//    RealGradient _grad_pc = - _alpha / _saturation_water[qp] /_saturation_water[qp]  *_grad_saturation_water[qp];
 
-    _darcy_mass_flux_water[qp] = -_tau_water[qp] * (_grad_p[qp] - _grad_pc + 
+    _darcy_mass_flux_water[qp] = -_tau_water[qp] * (_grad_p[qp] + 
                                  _dens_water*_gravity[qp]*_gravity_vector[qp]);
     _darcy_mass_flux_water_pressure[qp] =  (-_tau_water[qp] * _grad_p[qp]);
     _darcy_mass_flux_water_elevation[qp] = (-_tau_water[qp] * _gravity[qp] *_gravity_vector[qp]*_dens_water);

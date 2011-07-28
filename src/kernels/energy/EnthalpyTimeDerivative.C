@@ -26,7 +26,7 @@ _temperature_old(coupledValueOld("temperature")),
 
 _dTdH_P(coupledValue("dTdH_P")),
 _ddensitydH_P(coupledValue("ddensitydH_P")),
- _pressure_old(coupledValueOld("pressure")),
+_pressure_old(coupledValueOld("pressure")),
 //   _porosity(coupledValue("porosity")),
 //   _porosity_old(coupledValueOld("porosity")),
 _porosity (getMaterialProperty<Real>("material_porosity")),
