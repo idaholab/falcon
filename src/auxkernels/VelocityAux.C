@@ -19,7 +19,7 @@ VelocityAux::VelocityAux(const std::string & name, InputParameters parameters)
 Real
 VelocityAux::computeValue()
 {
-//  return _darcy_flux_water[_qp](_i);
-    return _darcy_flux_steam[_qp](_i);
+  return _darcy_flux_water[_qp](_i);
+//    return _darcy_flux_steam[_qp](_i);
 
 }
