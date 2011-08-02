@@ -47,6 +47,7 @@ InputParameters validParams<SolidMechanics>()
   params.addParam<Real>("damage_couple_permeability_coeff2",-1.0,"the second coeff for coupling damage with porosity");
 
   params.addCoupledVar("temperature", "TODO:  add description");
+  params.addCoupledVar("pressure", "TODO:  add description");
   params.addCoupledVar("x_disp", "TODO: ad description");
   params.addCoupledVar("y_disp", "TODO: ad description");
   params.addCoupledVar("z_disp", "TODO: ad description");
@@ -519,32 +520,14 @@ void
 SolidMechanics::computeDamage_v2(const int qp)
 {
    Real _effective_strain=0.0 , _temp =0.0;
-   _strain_history[qp]   = std::max(_critical_strain,_strain_history[qp]);
+   _strain_history[qp]   = std::max(_critical_strain, _strain_history[qp]);
    _damage_coeff[qp]     = std::max(_input_damage_coeff, _damage_coeff[qp]);
 
    int ind_max = 0;
 
-
  Real _sigm=0.0, _dsbar=0.0, _theta=0.0, shear_max=0.0;
  Real _dx=0.0, _dy=0.0, _dz=0.0, _xj3=0.0, _sine=0.0, _d2=0.0, _d3=0.0, _ds1=0.0, _ds2=0.0, _ds3=0.0;
  Real _s1=0.0, _s2=0.0, _s3=0.0, _s4=0.0, _s5=0.0, _s6=0.0, _temp01=0.0, _temp02=0.0, _temp03=0.0;
-
-/*
-//Effective stress
-   if(_damage_coeff[qp] > 0.0)
-   {
-      _stress_normal_vector[qp](0) = (1-_damage_coeff[qp])* _stress_normal_vector[qp](0); //s_xx
-      _stress_normal_vector[qp](1) = (1-_damage_coeff[qp])* _stress_normal_vector[qp](1); //s_yy
-      _stress_shear_vector[qp](0) = (1-_damage_coeff[qp])* _stress_shear_vector[qp](0); // s_xy
-
-      if (_dim == 3)
-      {
-           _stress_normal_vector[qp](2) = (1-_damage_coeff[qp])* _stress_normal_vector[qp](2); //s_zz
-           _stress_shear_vector[qp](1) = (1-_damage_coeff[qp])* _stress_shear_vector[qp](1); // s_xz
-           _stress_shear_vector[qp](2) = (1-_damage_coeff[qp])* _stress_shear_vector[qp](2); // s_yz
-      }
-   }
-*/
 
  _s1=_strain_normal_vector[qp](0); _s2=_strain_normal_vector[qp](1); _s3=_strain_normal_vector[qp](2);
  _s4=_strain_shear_vector[qp](0); _s5=_strain_shear_vector[qp](1); _s6=_strain_shear_vector[qp](2);
@@ -690,12 +673,12 @@ if (_f > 0. && _pstress_normal_vector[qp](2) > _critical_stress)
 	//damage initiation indicator for tensile
 	if ( _damage_indicator_old[qp] != 1)
 	{
-		std::cout<<"tensile damage initiate"<<_f<<"\n";
+		std::cout<<"damage initiate"<<_f<<"\n";
 		_damage_indicator[qp] = 1; //1:damage initiation
 		_damage_type_indicator[qp] = 1; // 1:tensile, 2:shear
 		_effective_strain = _pstrain_normal_vector[qp](2); //max
 		_strain_initial_damage[qp] = _effective_strain;
-		_strain_broken_damage[qp] = _effective_strain*20.;
+		_strain_broken_damage[qp] = _effective_strain*10.;
 	}
     else if (_damage_indicator_old[qp] == 1)
     {
@@ -706,22 +689,22 @@ if (_f > 0. && _pstress_normal_vector[qp](2) > _critical_stress)
     }
 }
 
-//if (shear_max > _input_strain_initialize_damage)
-//{
-//	_f=20.;
-//}
+if (_f > 0. && shear_max > _critical_strain)
+{
+	_f=20.;
+}
 //damage initiation indicator for shear
-else if (_f > 0. && _damage_indicator_old[qp] != 1)
-//else if (_fe==20. && _damage_indicator_old[qp] != 1)
+//else if (_f > 0. && _damage_indicator_old[qp] != 1)
+else if (_f==20. && _damage_indicator_old[qp] != 1)
 {
 	if ( _damage_indicator_old[qp] != 1)
 	{
-		std::cout<<"shear damage initiate"<<_f<<"\n";
+		std::cout<<"damage initiate"<<_f<<"\n";
 		_damage_indicator[qp] = 1; //1:damage initiation
 		_damage_type_indicator[qp] = 2; // 1:tensile, 2:shear
 		_effective_strain = shear_max; //max
 		_strain_initial_damage[qp] = _effective_strain;
-		_strain_broken_damage[qp] = _effective_strain*20.;
+		_strain_broken_damage[qp] = _effective_strain*5.;
 	}
     else if (_damage_indicator_old[qp] == 1)
     {
@@ -749,17 +732,17 @@ if (_damage_indicator[qp] == 1 && _damage_type_indicator[qp] == 1)
     {
       if(_effective_strain >= _strain_broken_damage[qp])//fully failed: s > sc
       {
-        _damage_coeff[qp]   = 0.9999;
+        _damage_coeff[qp]   = 0.9999999;
         _strain_history[qp] = _effective_strain;
       }
       else//continuously damaging s-{s0,sc}
       {
         _temp = (_effective_strain - _strain_initial_damage[qp])/(_strain_broken_damage[qp] - _strain_initial_damage[qp]);
         _temp = _damage_a1 * std::pow(_temp , _damage_a2) + _input_damage_coeff;
-        if(_temp >= 0.9999)
+        if(_temp >= 0.99)
         {
           std::cout<<"The parameter of damage evolution are too large,please change them"<<"\n";
-          _temp = 0.9999;
+          _temp = 0.9999999;
         }
         _damage_coeff[qp] = std::max(_temp , _damage_coeff[qp]);
         _strain_history[qp] = _effective_strain;
@@ -773,7 +756,7 @@ if (_damage_indicator[qp] == 1 && _damage_type_indicator[qp] == 1)
   }
   else //alreadry completely failed
   {
-    _damage_coeff[qp] = 0.9999;
+    _damage_coeff[qp] = 0.9999999;
     _strain_history[qp] =  std::max(_strain_history[qp] , _effective_strain);
   }
 }
@@ -794,17 +777,17 @@ if (_damage_indicator[qp] == 1 && _damage_type_indicator[qp] == 2)
     {
       if(_effective_strain >= _strain_broken_damage[qp])//fully failed: s > sc
       {
-        _damage_coeff[qp]   = 0.9999;
+        _damage_coeff[qp]   = 0.9999999;
         _strain_history[qp] = _effective_strain;
       }
       else//continuously damaging s-{s0,sc}
       {
         _temp = (_effective_strain - _strain_initial_damage[qp])/(_strain_broken_damage[qp] - _strain_initial_damage[qp]);
         _temp = _damage_a1 * std::pow(_temp , _damage_a2) + _input_damage_coeff;
-        if(_temp >= 0.9999)
+        if(_temp >= 0.8)
         {
           std::cout<<"The parameter of damage evolution are too large,please change them"<<"\n";
-          _temp = 0.9999;
+          _temp = 0.9999999;
         }
         _damage_coeff[qp] = std::max(_temp , _damage_coeff[qp]);
         _strain_history[qp] = _effective_strain;
@@ -818,13 +801,12 @@ if (_damage_indicator[qp] == 1 && _damage_type_indicator[qp] == 2)
   }
   else //alreadry completely failed
   {
-    _damage_coeff[qp] = 0.9999;
+    _damage_coeff[qp] = 0.9999999;
     _strain_history[qp] =  std::max(_strain_history[qp] , _effective_strain);
   }
 }
 
 if(_f<= 0.0 && _damage_indicator[qp] != 1)
-//if(_damage_indicator_old[qp] != 1)
 {
   _damage_coeff[qp] = 0.0;
   _strain_history[qp] =  _strain_history_old[qp];
@@ -834,14 +816,10 @@ if(_f<= 0.0 && _damage_indicator[qp] != 1)
   _damage_coeff[qp]   = std::max(_damage_coeff[qp] , _damage_coeff_old[qp]);
   _strain_history[qp] = std::max(_strain_history[qp] , _strain_history_old[qp]);
 
-  if(_damage_coeff[qp] > 0.0)
-  {
-	  _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus;
-  }
-  else if(_damage_coeff[qp] > 0.99)
-  {
-	  _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus/100.;
-  }
+   _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus;
+
+  if(_damage_coeff[qp]>0.8)  { _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus/100.; }
+
   if(_q_point[qp](1) > 1.7 || _q_point[qp](1) < 0.3 )
   {
   		_damage_coeff[qp] = 0.0 ;
@@ -981,11 +959,11 @@ Real s_max,s_min,ss_max,ss_min;
 	 _pstrain_normal_vector[qp](1)=principal_strain(ind_mid,0);
 	 _pstrain_normal_vector[qp](2)=s_max;
 
-Real _f;
+int _f;
 
 if ( s_max >= _critical_strain)
 {
-	_f=10.;
+	_f=10;
 
 	//damage initiation indicator for tensile
 	if ( _damage_indicator_old[qp] != 1)
@@ -995,7 +973,7 @@ if ( s_max >= _critical_strain)
 		_damage_type_indicator[qp] = 1; // 1:tensile, 2:shear
 		_effective_strain = s_max; //max
 		_strain_initial_damage[qp] = _effective_strain;
-		_strain_broken_damage[qp] = _effective_strain*20.;
+		_strain_broken_damage[qp] = _effective_strain*5.;
 	}
    if (_damage_indicator_old[qp] == 1)
    {
@@ -1023,7 +1001,7 @@ if (_damage_indicator[qp] == 1 && _damage_type_indicator[qp] == 1)
     {
       if(_effective_strain >= _strain_broken_damage[qp])//fully failed: s > sc
       {
-        _damage_coeff[qp]   = 0.9999;
+        _damage_coeff[qp]   = 0.9999999;
         _strain_history[qp] = _effective_strain;
       }
       else//continuously damaging s-{s0,sc}
@@ -1031,10 +1009,10 @@ if (_damage_indicator[qp] == 1 && _damage_type_indicator[qp] == 1)
 
         _temp = (_effective_strain - _strain_initial_damage[qp])/(_strain_broken_damage[qp] - _strain_initial_damage[qp]);
         _temp = _damage_a1 * std::pow(_temp , _damage_a2) + _input_damage_coeff;
-        if(_temp >= 0.9999)
+        if(_temp >= 0.99)
         {
           std::cout<<"The parameter of damage evolution are too large,please change them"<<"\n";
-          _temp = 0.9999;
+          _temp = 0.9999999;
         }
         _damage_coeff[qp] = std::max(_temp , _damage_coeff[qp]);
         _strain_history[qp] = _effective_strain;
@@ -1049,7 +1027,7 @@ if (_damage_indicator[qp] == 1 && _damage_type_indicator[qp] == 1)
   }
   else //alreadry completely failed
   {
-    _damage_coeff[qp] = 0.9999;
+    _damage_coeff[qp] = 0.9999999;
     _strain_history[qp] =  std::max(_strain_history[qp] , _effective_strain);
   }
 }
@@ -1060,9 +1038,9 @@ if (_damage_indicator[qp] == 1 && _damage_type_indicator[qp] == 1)
 
    _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus;
 
-  if(_damage_coeff[qp]>0.99)  { _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus/100.; }
+  if(_damage_coeff[qp]>0.9)  { _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus/100.; }
 
-  if(_q_point[qp](1) > 0.3  || _q_point[qp](1) < -0.3)
+  if(_q_point[qp](1) > 1.7  || _q_point[qp](1) < 0.3)
   {
 		_damage_coeff[qp] = 0.0 ;
 		_strain_history[qp] = 0.0;
@@ -1071,11 +1049,8 @@ if (_damage_indicator[qp] == 1 && _damage_type_indicator[qp] == 1)
 
 
 }
+
 //=================================================================================================
-
-
-
-
 
 void
 SolidMechanics::computeAnisoDamage(const int qp) //just calculate damage evolution according to strain not stress tensor
