@@ -26,32 +26,33 @@ public:
                  InputParameters parameters);
 
 protected:
-  static Real randn_trig(Real mu=0.0,Real sigma=1.0)
-  {
-    static bool deviateAvailable=false;
-    static Real storedDeviate;
-    Real dist, angle, PI=3.14159265;
-    if(!deviateAvailable)
-    {
-      dist=std::sqrt(-2.0 * std::log(double(rand()) / double(RAND_MAX)) );
-      angle=2.0 * PI * (double(rand()) / double(RAND_MAX));
-      storedDeviate=dist*std::cos(angle);
-      deviateAvailable=true;
-      return dist * std::sin(angle) * sigma + mu;
-    }
-    else
-    {
-      deviateAvailable=false;
-      return storedDeviate * sigma + mu;
-    }
-  }
+//   static Real randn_trig(Real mu=0.0,Real sigma=1.0)
+//   {
+//     static bool deviateAvailable=false;
+//     static Real storedDeviate;
+//     Real dist, angle, PI=3.14159265;
+//     if(!deviateAvailable)
+//     {
+//       dist=std::sqrt(-2.0 * std::log(double(rand()) / double(RAND_MAX)) );
+//       angle=2.0 * PI * (double(rand()) / double(RAND_MAX));
+//       storedDeviate=dist*std::cos(angle);
+//       deviateAvailable=true;
+//       return dist * std::sin(angle) * sigma + mu;
+//     }
+//     else
+//     {
+//       deviateAvailable=false;
+//       return storedDeviate * sigma + mu;
+//     }
+//   }
 
-  static void rotateSymmetricTensor( const ColumnMajorMatrix & , const RealTensorValue & ,
+  void rotateSymmetricTensor( const ColumnMajorMatrix & , const RealTensorValue & ,
                                      RealTensorValue & );
 
   void computeDamage(const int qp); //damage mechanics
-  void computeDamage_v2(const int qp); //damage mechanics with Mohr_Coulomb
-  void computeDamage_v3(const int qp); //damage mechanics with Principal strain
+  void computeDamage_v2(const int qp); //damage mechanics with Mohr_Coulomb-use this version
+  
+  void computeDamage_v3(const int qp); //damage mechanics with Principal strain-not rrecommended
   void computeAnisoDamage(const int qp);//anisotropic damage
 
   void computeCrack_tension(const int qp); //tensile induce cracking
@@ -77,12 +78,14 @@ protected:
   Real _input_biot_coeff;
   Real _input_t_ref;
 
+//parameters for damage mechanics model
   bool _has_damage;
   Real _input_damage_coeff;             //initial damage between [0,1]
   Real _input_strain_initialize_damage; //critical strain to lnitialize damage
   Real _input_strain_broken;            //critical strain for complete failure
   Real _damage_a1;                      //parameters for youngs modulus and damage factor
   Real _damage_a2;
+  
   Real _cohesion2;                      //Mohr-Coulomb coefficients
   Real _friction_angle2;
   Real _critical_stress;                 //critical stress for tensile failure
@@ -94,6 +97,7 @@ protected:
   Real _input_strain_init;
   Real _input_strain_strength;
 
+//parameters for smear crack model
   bool _has_crack;
   std::string _has_crack_method; // true <==> tensile_induced_crack  false<==>Mohr_Coulomb
   Real _critical_crack_strain;
@@ -134,7 +138,7 @@ protected:
   MaterialProperty<RealVectorValue> & _pstress_normal_vector;
   MaterialProperty<RealVectorValue> & _pstrain_normal_vector;
 
-  MaterialProperty<bool> * _init_status;
+  MaterialProperty<int>  * _init_status;
   MaterialProperty<Real> & _bond_nstiff;
   MaterialProperty<Real> & _bond_sstiff;
 
