@@ -46,8 +46,8 @@ InputParameters validParams<SolidMechanics>()
   
 //stress/strain dependent permeability-----------------------------------------------------------------------------
   params.addParam<bool>("has_damage_couple_permeability",false,"switch for couple damage with porosity or not");
-  params.addParam<Real>("damage_couple_permeability_coeff1",0.0,"the first coeff for coupling damage with porosity");
-  params.addParam<Real>("damage_couple_permeability_coeff2",-1.0,"the second coeff for coupling damage with porosity");
+  params.addParam<Real>("damage_couple_permeability_coeff1",2.0,"the first coeff for coupling damage with porosity");
+  params.addParam<Real>("damage_couple_permeability_coeff2",1.0e5,"the second coeff for coupling damage with porosity");
 
 //solid mechanics material model coupled with heat, pressure, and displacements--------------------------------------
   params.addCoupledVar("temperature", "TODO:  add description");
@@ -107,7 +107,10 @@ SolidMechanics::SolidMechanics(const std::string & name,
    _critical_crack_strain(getParam<Real>("critical_crack_strain")),
    _cohesion(getParam<Real>("cohesion")),
    _friction_angle(getParam<Real>("friction_angle")),
-
+   _has_damage_couple_permeability(getParam<bool>("has_damage_couple_permeability")),
+   _damage_couple_permeability_coeff1(getParam<Real>("damage_couple_permeability_coeff1")),
+   _damage_couple_permeability_coeff2(getParam<Real>("damage_couple_permeability_coeff2")),
+   
    _total_strain (_dim,_dim),
    _total_stress (_dim,_dim),
    _total_stress1(_dim,_dim),
@@ -332,8 +335,7 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
 
    if(_has_damage_couple_permeability)
    {
-     Real temp_couple = std::pow(1.00001-_damage_coeff[qp] , _damage_couple_permeability_coeff2);
-     _permeability[qp] *= std::pow(1.00001-_damage_coeff[qp] , _damage_couple_permeability_coeff2) / temp_couple;
+     _permeability[qp] = _input_permeability*(1.0 + std::pow(_damage_coeff[qp] , _damage_couple_permeability_coeff1)*_damage_couple_permeability_coeff2);
    }
 
    //smear crack model   

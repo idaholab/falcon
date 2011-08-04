@@ -105,7 +105,7 @@ protected:
   Real _friction_angle;
 
   bool _has_damage_couple_permeability;
-  Real _damage_couple_permeability_coeff1;//not used temperally
+  Real _damage_couple_permeability_coeff1;
   Real _damage_couple_permeability_coeff2;
 
   ColumnMajorMatrix _total_strain;
