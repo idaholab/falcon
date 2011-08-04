@@ -24,7 +24,7 @@ Real
 SolidMechPoroCoupleY::computeQpOffDiagJacobian(unsigned int jvar)
 {
   if(jvar == _pressure_var)
-      return _test[_i][_qp]*_biot_coeff[_qp]*_grad_phi[_j][_qp](1);
-//    return  -_grad_test[_i][_qp](1)*_biot_coeff[_qp]*_grad_phi[_j][_qp](1);
+    return _test[_i][_qp]*_biot_coeff[_qp]*_grad_phi[_j][_qp](1);
+//  return  -_grad_test[_i][_qp](1)*_biot_coeff[_qp]*_grad_phi[_j][_qp](1);
   return 0.0;
 }

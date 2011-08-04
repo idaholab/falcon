@@ -21,7 +21,7 @@ _compressibility(getMaterialProperty<Real>("compressibility"))
 Real
 PressureTimeDerivative::computeQpResidual()
 {
-    //std::cout << _density[_qp] << " " << _density_old[_qp] << "\n";
+//    std::cout << _porosity[_qp] << " " << _compressibility[_qp] << "\n";
     return (_compressibility[_qp]*((_porosity[_qp]*_u[_qp])-(_porosity[_qp]*_u_old[_qp]))/_dt) * _test[_i][_qp];
 }
 
