@@ -10,6 +10,7 @@ InputParameters validParams<SolidMechanics>()
   params.addParam<Real>("poissons_ratio",0.2,"dimensionless");
 
   params.addParam<Real>("biot_coeff",1.0,"dimensionless");
+  params.addParam<Real>("biot_modulus",2.5e10,"dimensionless");
   params.addParam<Real>("t_ref",293.15,"initial temperature");
 
 //damage related parameters--------------------------------------------------------------------
@@ -82,6 +83,7 @@ SolidMechanics::SolidMechanics(const std::string & name,
    _input_youngs_modulus(getParam<Real>("youngs_modulus")),
    _input_poissons_ratio(getParam<Real>("poissons_ratio")),
    _input_biot_coeff(getParam<Real>("biot_coeff")),
+   _input_biot_modulus(getParam<Real>("biot_modulus")),
    _input_t_ref(getParam<Real>("t_ref")),
 
    _has_damage(getParam<bool>("has_damage")),
@@ -121,7 +123,7 @@ SolidMechanics::SolidMechanics(const std::string & name,
    _youngs_modulus(declareProperty<Real>("youngs_modulus")),
    _poissons_ratio(declareProperty<Real>("poissons_ratio")),
    _biot_coeff(declareProperty<Real>("biot_coeff")),
-
+   _biot_modulus(declareProperty<Real>("biot_modulus")),
    _damage_coeff(declareProperty<Real>("damage_coeff")),
    
    _damage_indicator(declareProperty<int>("damage_indicator")),
@@ -223,9 +225,25 @@ SolidMechanics::computeProperties()
   
 for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
+//    _permeability[qp] = _input_permeability;
+    
     _youngs_modulus[qp] = _input_youngs_modulus;
       
     _alpha[qp]            = _input_thermal_expansion;
+
+    _damage_coeff[qp]     = std::max(_input_damage_coeff, _damage_coeff[qp]);
+    
+    if(_has_damage_couple_permeability)
+    {
+     if (_damage_coeff[qp] > 1.0e-10)
+       _permeability[qp] = _input_permeability*_damage_couple_permeability_coeff2;
+     else
+       _permeability[qp] = _input_permeability;
+     
+//     _permeability[qp] = _input_permeability*(1.0 + std::pow(_damage_coeff[qp] , _damage_couple_permeability_coeff1)*_damage_couple_permeability_coeff2);
+    }
+
+
 
     if(_has_temp)
       _thermal_strain[qp] = _input_thermal_expansion*(_temperature[qp] - _input_t_ref);
@@ -234,6 +252,7 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
       
     _poissons_ratio[qp]   = _input_poissons_ratio;
     _biot_coeff[qp]       = _input_biot_coeff;
+    _biot_modulus[qp]     = _input_biot_modulus;
 
     if(_dim==3)
     {
@@ -254,7 +273,9 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
 // first try for strain and stress vectors
     if (_has_x_disp && _has_y_disp)
     {
-      _E  =  _youngs_modulus[qp];
+
+      
+      _E  =  (1.0-_damage_coeff[qp])*_youngs_modulus[qp];
       _nu =  _poissons_ratio[qp];
       _c1 = _E*(1.-_nu)/(1.+_nu)/(1.-2.*_nu);
       _c2 = _nu/(1.-_nu);
@@ -297,36 +318,23 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
 // first try for strain and stress vectors
     if (_has_x_disp && _has_y_disp)
     {
-      _E  =  _youngs_modulus[qp];
+      
+      _E  =  (1.0-_damage_coeff[qp])*_youngs_modulus[qp];
       _nu =  _poissons_ratio[qp];
       _c1 = _E*(1.-_nu)/(1.+_nu)/(1.-2.*_nu);
       _c2 = _nu/(1.-_nu);
       _c3 = 0.5*(1.-2.*_nu)/(1.-_nu);
 
-      _strain_normal_vector[qp](0) = _grad_x_disp[qp](0); //s_xx
-      _strain_normal_vector[qp](1) = _grad_y_disp[qp](1); //s_yy
+      _stress_normal_vector[qp](0) = _c1*_strain_normal_vector[qp](0)+_c1*_c2*_strain_normal_vector[qp](1)+_c1*_c2*_strain_normal_vector[qp](2); //tau_xx
+      _stress_normal_vector[qp](1) = _c1*_c2*_strain_normal_vector[qp](0)+_c1*_strain_normal_vector[qp](1)+_c1*_c2*_strain_normal_vector[qp](2); //tau_yy
       if (_dim == 3)
-        _strain_normal_vector[qp](2) = _grad_z_disp[qp](2); //s_zz
-
-      _strain_shear_vector[qp](0) = 0.5*(_grad_x_disp[qp](1)+_grad_y_disp[qp](0)); // s_xy
-
+        _stress_normal_vector[qp](2) = _c1*_c2*_strain_normal_vector[qp](0)+_c1*_c2*_strain_normal_vector[qp](1)+_c1*_strain_normal_vector[qp](2); //tau_zz
+ //tau_xy
       if (_dim == 3)
       {
-        _strain_shear_vector[qp](1) = 0.5*(_grad_x_disp[qp](2)+_grad_z_disp[qp](0)); // s_xz
-        _strain_shear_vector[qp](2) = 0.5*(_grad_y_disp[qp](2)+_grad_z_disp[qp](1)); // s_yz
+        _stress_shear_vector[qp](1) = _c1*_c3*2.0*_strain_shear_vector[qp](1); //tau_xz
+        _stress_shear_vector[qp](2) = _c1*_c3*2.0*_strain_shear_vector[qp](2); //tau_yz
       }
-
-        _stress_normal_vector[qp](0) = _c1*_strain_normal_vector[qp](0)+_c1*_c2*_strain_normal_vector[qp](1)+_c1*_c2*_strain_normal_vector[qp](2); //tau_xx
-        _stress_normal_vector[qp](1) = _c1*_c2*_strain_normal_vector[qp](0)+_c1*_strain_normal_vector[qp](1)+_c1*_c2*_strain_normal_vector[qp](2); //tau_yy
-        if (_dim == 3)
-          _stress_normal_vector[qp](2) = _c1*_c2*_strain_normal_vector[qp](0)+_c1*_c2*_strain_normal_vector[qp](1)+_c1*_strain_normal_vector[qp](2); //tau_zz
-
-        _stress_shear_vector[qp](0) = _c1*_c3*2.0*_strain_shear_vector[qp](0); //tau_xy
-        if (_dim == 3)
-        {
-          _stress_shear_vector[qp](1) = _c1*_c3*2.0*_strain_shear_vector[qp](1); //tau_xz
-          _stress_shear_vector[qp](2) = _c1*_c3*2.0*_strain_shear_vector[qp](2); //tau_yz
-        }
 
 
     }
@@ -335,7 +343,12 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
 
    if(_has_damage_couple_permeability)
    {
-     _permeability[qp] = _input_permeability*(1.0 + std::pow(_damage_coeff[qp] , _damage_couple_permeability_coeff1)*_damage_couple_permeability_coeff2);
+     if (_damage_coeff[qp] > 1.0e-10)
+       _permeability[qp] = _input_permeability*_damage_couple_permeability_coeff2;
+     else
+       _permeability[qp] = _input_permeability;
+     
+//     _permeability[qp] = _input_permeability*(1.0 + std::pow(_damage_coeff[qp] , _damage_couple_permeability_coeff1)*_damage_couple_permeability_coeff2);
    }
 
    //smear crack model   
@@ -535,7 +548,7 @@ SolidMechanics::computeDamage_v2(const int qp)
 	 _ds2=_s2-_sigm;
 	 _ds3=_s3-_sigm;
 	 _temp01=std::pow(3.,0.5);
-	 _d3=_ds1*_ds2*_ds3-_ds1*_s5*_s5-_ds2*_s6*_s6-_ds3*_s4*_s4+2.*_s4*_s5*_s6;
+	 _d3=_ds1*_ds2*_ds3-_ds1*_s6*_s6-_ds2*_s5*_s5-_ds3*_s4*_s4+2.*_s4*_s5*_s6;
 	 _temp02=std::pow(_d2,0.5);
 	 _dsbar=std::sqrt(3.)*std::sqrt(_d2);
 	 if (_dsbar == 0.)
@@ -591,7 +604,7 @@ SolidMechanics::computeDamage_v2(const int qp)
 	 _ds2=_s2-_sigm;
 	 _ds3=_s3-_sigm;
 	 _temp01=std::pow(3.,0.5);
-	 _d3=_ds1*_ds2*_ds3-_ds1*_s5*_s5-_ds2*_s6*_s6-_ds3*_s4*_s4+2.*_s4*_s5*_s6;
+	 _d3=_ds1*_ds2*_ds3-_ds1*_s6*_s6-_ds2*_s5*_s5-_ds3*_s4*_s4+2.*_s4*_s5*_s6;
 	 _temp02=std::pow(_d2,0.5);
 	 _dsbar=std::sqrt(3.)*std::sqrt(_d2);
 	 if (_dsbar == 0.)
@@ -776,17 +789,9 @@ if(_f<= 0.0 && _damage_indicator[qp] != 1)
   //newly added to comply MOOSE procedure
   _damage_coeff[qp]   = std::max(_damage_coeff[qp] , _damage_coeff_old[qp]);
   _strain_history[qp] = std::max(_strain_history[qp] , _strain_history_old[qp]);
-
-   _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus;
-
-  if(_damage_coeff[qp]>0.8)  { _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus/100.; }
-
-  if(_q_point[qp](1) > 1.7 || _q_point[qp](1) < 0.3 )
-  {
-  		_damage_coeff[qp] = 0.0 ;
-  		_strain_history[qp] = 0.0;
-  		_youngs_modulus[qp] = _input_youngs_modulus;
-  } //newly added to avoid boundary damaging
+//   _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus;
+//  if(_damage_coeff[qp]>0.8)  { _youngs_modulus[qp] = (1.0-_damage_coeff[qp])*_input_youngs_modulus/100.; }
+//  if(_q_point[qp](1) > 1.7 || _q_point[qp](1) < 0.3 )
 }
 //=================================================================================================
 

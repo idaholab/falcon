@@ -47,6 +47,7 @@ protected:
 
   MaterialProperty<Real> & _E_prop;
   MaterialProperty<Real> & _nu_prop;
+  MaterialProperty<Real> & _damage_coeff;
   MaterialProperty<RealVectorValue> & _stress_normal_vector;
   MaterialProperty<RealVectorValue> & _stress_shear_vector;
 };

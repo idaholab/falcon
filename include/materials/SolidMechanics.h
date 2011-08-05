@@ -76,6 +76,7 @@ protected:
   Real _input_poissons_ratio;
 
   Real _input_biot_coeff;
+  Real _input_biot_modulus;
   Real _input_t_ref;
 
 //parameters for damage mechanics model
@@ -117,6 +118,7 @@ protected:
   MaterialProperty<Real> & _youngs_modulus;
   MaterialProperty<Real> & _poissons_ratio;
   MaterialProperty<Real> & _biot_coeff;
+  MaterialProperty<Real> & _biot_modulus;
   MaterialProperty<Real> & _damage_coeff;
   MaterialProperty<int> & _damage_indicator;
   MaterialProperty<int> & _damage_type_indicator;

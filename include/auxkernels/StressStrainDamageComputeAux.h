@@ -44,7 +44,7 @@ protected:
   VectorValue<Number> _pstress;
   VectorValue<Number> _pstrain;
   Real                _damage;
-
+  MaterialProperty<Real> & _permeability;
   MaterialProperty<Real> & _damage_coeff;
   MaterialProperty<RealVectorValue> & _stress_normal_vector;
   MaterialProperty<RealVectorValue> & _stress_shear_vector;
