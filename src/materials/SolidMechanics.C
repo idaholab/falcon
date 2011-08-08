@@ -273,8 +273,6 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
 // first try for strain and stress vectors
     if (_has_x_disp && _has_y_disp)
     {
-
-      
       _E  =  (1.0-_damage_coeff[qp])*_youngs_modulus[qp];
       _nu =  _poissons_ratio[qp];
       _c1 = _E*(1.-_nu)/(1.+_nu)/(1.-2.*_nu);

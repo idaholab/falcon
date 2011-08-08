@@ -68,7 +68,8 @@ FluidFlow::computeProperties()
     Real _DkrwDsw=1.0, _DkrsDsw=0.0;  
     Real _swe;  // effective water saturation 
     Real _dens_water = 1E3;
-    Real _visc_water = 5E-4;  
+    Real _visc_water = 5E-4;
+
 // relative_permeability :: relative_permeability_noderiv1_(_saturation_water[qp],_krw,_krs);   
   if (_has_enthalpy)
     /*     
