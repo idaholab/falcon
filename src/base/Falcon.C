@@ -88,6 +88,10 @@
 #include "CoupledPorosityMaterialAux.h"
 #include "StressStrainDamageComputeAux.h"
 
+#include "ConstantDensityAux.h"
+#include "ConstantViscosityAux.h"
+
+
 //BCs
 #include "PressureNeumannBC2.h"
 #include "GravityNeumannBC.h"
@@ -182,7 +186,10 @@ namespace Falcon
     registerAux(VelocityAux);
     registerAux(CoupledPorosityMaterialAux);
     registerAux(StressStrainDamageComputeAux);
-    
+
+    registerAux(ConstantDensityAux);
+    registerAux(ConstantViscosityAux);
+
     
 //BCs    
     registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
