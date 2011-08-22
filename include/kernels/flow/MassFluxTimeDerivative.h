@@ -18,11 +18,15 @@ public:
 protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
-
+  virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+  
   VariableValue  & _density;
   VariableValue & _density_old;
   VariableValue  & _ddensitydp_H; //derivative of water density vs. pressure
   VariableValue & _enthalpy_old;
+  unsigned int _h_var;
+  VariableValue & _ddensitydH_P;
+  
     
   MaterialProperty<Real> & _porosity;  
 //  VariableValue  & _porosity;

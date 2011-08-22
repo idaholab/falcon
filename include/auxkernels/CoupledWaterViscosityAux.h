@@ -30,8 +30,8 @@ protected:
 
   // Real viscosity_fun(Real T);
   
+  VariableValue & _density_water;
   VariableValue & _temperature;
-  VariableValue & _pressure;
   
   Real _input_viscosity_water;
   bool _has_variable_viscosity;

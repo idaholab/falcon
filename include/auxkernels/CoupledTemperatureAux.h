@@ -42,6 +42,9 @@ protected:
     VariableValue & _denthalpy_steamdH_P;
     VariableValue & _dTdH_P;
     VariableValue & _dswdH;
+    VariableValue & _denthalpy_waterdP_H;
+    VariableValue & _denthalpy_steamdP_H;
+    VariableValue & _dTdP_H;
     Real _input_temperature;
                      
 };

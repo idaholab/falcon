@@ -82,15 +82,15 @@
 #include "CoupledDdensityDPAux.h"          //derivative of mixed density to P at const H,
 #include "CoupledDdensityDHAux.h"          //derivative of mixed density to H at const P,
 #include "CoupledDTDH_PAux.h"              //derivative of T to H at const P
+#include "CoupledDTDP_HAux.h" 
 
 #include "AnalyticalADE1D.h"
 #include "VelocityAux.h"
 #include "CoupledPorosityMaterialAux.h"
 #include "StressStrainDamageComputeAux.h"
 
-#include "ConstantDensityAux.h"
-#include "ConstantViscosityAux.h"
-
+#include "CoupledDwaterenthalpydP_HAux.h"
+#include "CoupledDsteamenthalpydP_HAux.h"
 
 //BCs
 #include "PressureNeumannBC2.h"
@@ -168,7 +168,8 @@ namespace Falcon
     registerAux(CoupledWaterSaturationAux);
     registerAux(CoupledDWaterSaturationDHAux);  
     registerAux(CoupledDdensityDHAux); 
-    registerAux(CoupledDTDH_PAux); 
+    registerAux(CoupledDTDH_PAux);
+    registerAux(CoupledDTDP_HAux);
     registerAux(CoupledDdensityDPAux);
     registerAux( CoupledDdensityDTAux);
     registerAux(CoupledDensityAux);
@@ -187,9 +188,8 @@ namespace Falcon
     registerAux(CoupledPorosityMaterialAux);
     registerAux(StressStrainDamageComputeAux);
 
-    registerAux(ConstantDensityAux);
-    registerAux(ConstantViscosityAux);
-
+    registerAux(CoupledDwaterenthalpydP_HAux);
+    registerAux(CoupledDsteamenthalpydP_HAux);
     
 //BCs    
     registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");

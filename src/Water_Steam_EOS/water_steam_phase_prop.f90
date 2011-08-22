@@ -43,7 +43,7 @@
   t=tx  
   End Subroutine wateos_PH
   
-  
+ 
 !*************************************************************
 
  Subroutine steameos_PH(p, h, T, dg, hx, energyscale, ierr)
@@ -101,7 +101,7 @@
   subroutine water_steam_prop_PH(p, h, T, Sw, &
     Den,Denw, Dens, &
     hw, hs, dDendh, dDendp,  dhwdh,dhsdh,&
-    dTdh, dswdh, ierror)
+    dTdh, dswdh, ierror, dhwdp, dhsdp,dTdp)
    use IAPWS97, only : cowat, supst, tsat
   implicit none      
   
@@ -112,7 +112,7 @@
  
 
   real*8, intent(inout)  :: p, h ! Pscal, KJ/Kg, C (initial guess)
-  real*8, intent(out) :: T, Sw, hw,hs,Den,Denw,Dens,  dTdh, dDendp,dDendh, dhwdh,dhsdh, dswdh
+  real*8, intent(out) :: T, Sw, hw,hs,Den,Denw,Dens,  dTdh, dDendp,dDendh, dhwdh,dhsdh, dswdh, dhwdp,dhsdp
   integer,intent(out) :: ierror  ! ierr = 10  critical point   
  
   real*8 Ts 
@@ -162,7 +162,7 @@
     delh=-epi_h
     Den=dw
     Denw=dw
-    Dens=0D0
+    Dens=-1D0
     hs=0D0
   case(2)
     T= Ts+10D0
@@ -174,7 +174,7 @@
     delp=-epi_p
     delh=epi_h
     Den=Dg   
-    Denw=0D0
+    Denw=-1D0
     Dens=Den
     hs=hg
   case(3)
@@ -192,6 +192,7 @@
    ierror=ierr
    if(h<0 .or.h> 3D3) print *,'h ph: ', p,t,h,hw,hg,iphase
 
+ ! print *,'eos-den=: ', den
   select case (iphase)   
   case(1)
    t0= T
@@ -201,6 +202,12 @@
    t1=T
    dDendp=(dw1-dw0)/delp
    dTdp=(t1-t0)/delp
+!+++++++++++++++++++++++++++++++
+   
+   dhwdp=(hw1-hw0)/delp
+   dhsdp=0D0
+   
+!++++++++++++++++++++++++++++++
    call  wateos_PH(p, h+delh, T, dw1, hw1, energyscale, ierr)
    t1=T
    
@@ -209,6 +216,7 @@
    dhwdh=1D0
    dhsdh=0D0
    dswdh=0D0
+
    
   case(2)
    t0=T
@@ -218,6 +226,12 @@
    t1=T
    dDendp=(dg1-dg0)/delp
    dTdp=(t1-t0)/delp
+!++++++++++++++++++++++++++++
+
+dhwdp=0D0
+dhsdp=(hg1-hg0)/delp
+
+!++++++++++++++++++++++++++++
    call  steameos_PH(p, h+delh, T, dw1, hg1, energyscale, ierr)
    t1=T
    dDendh=(dg1-dg0)/delh
@@ -225,6 +239,8 @@
    dhwdh=0D0
    dhsdh=1D0
    dswdh=0D0
+
+
 
   case(3)
    t0=Ts
@@ -240,6 +256,12 @@
    d1=sw1*dw+(1D0-sw1)*dg 
    dDendp=(d1-d0)/delp
    
+!+++++++++++++++++++++++++++
+  
+   dhwdp=(hw-hw0)/delp
+   dhsdp=(hg-hg0)/delp
+
+!+++++++++++++++++++++++++++
    dTdh=0D0
    h1= h +delh
    sw1 = 1D0/(1D0 -dw0/dg0*(hw0-h1)/(hg0-h1))
@@ -263,8 +285,8 @@
 ! Subroutine water_steam_prop_PH
 !-------------------------------------------------------------   
  subroutine water_steam_prop_PH_noderiv(p, h, T, Sw, &
-    Den,Denw, Dens, hw, hs,ierror)
-   use IAPWS97, only : cowat, supst, tsat
+    Den,Denw, Dens, hw, hs,visw,viss,ierror)
+   use IAPWS97, only : cowat, supst, tsat, visc
   implicit none      
   
   real*8, parameter::  fmwh2o = 18.01534d0
@@ -274,7 +296,7 @@
  
 
   real*8, intent(in)  :: p, h ! Pscal, KJ/Kg, C (initial guess)
-  real*8, intent(out) :: T, Sw, hw,hs,Den,Denw,Dens
+  real*8, intent(out) :: T, Sw, hw,hs,Den,Denw,Dens, viss,visw
   integer,intent(out) :: ierror  ! ierr = 10  critical point   
  
   real*8 Ts 
@@ -291,6 +313,7 @@
  
 
 ! determine phase condition    
+  ierror=0
   succ= TSAT( p, Ts)
  
  if(p> ps350c )then 
@@ -324,8 +347,11 @@
     delh=-epi_h
     Den=dw
     Denw=dw
-    Dens=0D0
+    Dens=-1D0
     hs=0D0
+    ierror =ierr
+    call viss_noderiv1(Denw,T, visw)
+    viss=1D-6
   case(2)
     T= Ts+10D0
     call steameos_PH(p, h, T, dg, hg, energyscale, ierr)
@@ -336,9 +362,12 @@
     delp=-epi_p
     delh=epi_h
     Den=Dg   
-    Denw=0D0
+    Denw=-1D0
     Dens=Den
     hs=hg
+    call viss_noderiv1(Dens,T, viss)
+    visw=5D-4
+    ierror =ierr
   case(3)
     T=Ts
     sw = 1D0/(1D0 -dw/dg*(hw-h)/(hg-h))
@@ -348,10 +377,14 @@
     hs=hg 
     delp = epi_p
     delh = epi_h
+    call viss_noderiv1(Dens,T, viss)
+    call viss_noderiv1(Denw,T, visw)
   !  print *, 'eos: ',p,h,hs,hw, sw 
    end select
    if(h<0 .or.h> 3D3) print *,'h ph: ', p,t,h,hw,hg,iphase
+   
               
+                                    
  end subroutine water_steam_prop_PH_noderiv
  
  

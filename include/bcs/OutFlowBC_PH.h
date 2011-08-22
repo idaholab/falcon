@@ -32,6 +32,8 @@ public:
 protected:
     virtual Real computeQpResidual();
     virtual Real computeQpJacobian();
+    virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+  
     
 private:
     /**
@@ -39,19 +41,27 @@ private:
      */
     
     VariableGradient & _grad_p;
+    unsigned int _p_var;
     VariableGradient & _grad_T;
     
     VariableValue & _dTdH;
+    VariableValue & _dTdP;
     VariableValue & _enthalpy_water;
     VariableValue & _enthalpy_steam;
     VariableValue &_denthalpy_waterdH_P;
     VariableValue &_denthalpy_steamdH_P;
-    
+    VariableValue &_denthalpy_waterdP_H;
+    VariableValue &_denthalpy_steamdP_H;
+
+    MaterialProperty<Real> & _Dtau_waterDP;
+    MaterialProperty<Real> & _Dtau_waterDH;
+    MaterialProperty<Real> & _Dtau_steamDP;
+    MaterialProperty<Real> & _Dtau_steamDH;
+    MaterialProperty<Real> & _tau_water;
+    MaterialProperty<Real> & _tau_steam;
     MaterialProperty<RealGradient> & _darcy_mass_flux_water;
     MaterialProperty<RealGradient> & _darcy_mass_flux_steam;
-    MaterialProperty<RealGradient> & _Ddarcy_mass_flux_waterDH;
-    MaterialProperty<RealGradient> & _Ddarcy_mass_flux_steamDH;
-    MaterialProperty<Real> &_thermal_conductivity;
+    MaterialProperty<Real> & _thermal_conductivity;
     
     //  std::vector<RealGradient> & _grad_p;
     

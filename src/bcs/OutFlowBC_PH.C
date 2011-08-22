@@ -7,32 +7,39 @@ InputParameters validParams<OutFlowBC_PH>()
     params.addCoupledVar("pressure", "Use pressure here");
     params.addCoupledVar("temperature", "Use temperature here");
     params.addCoupledVar("dTdH_P", "Use dTdH_P here");
+    params.addCoupledVar("dTdP_H", "Use dTdP_H here");
     params.addCoupledVar("enthalpy_water", "Use enthalpy_water here");
     params.addCoupledVar("enthalpy_steam", "Use enthalpy_steam here");
     params.addCoupledVar("denthalpy_waterdH_P", "Use denthalpy_waterdH_P here");
     params.addCoupledVar("denthalpy_steamdH_P", "Use denthalpy_steamdH_P here");
-    //  params.set<Real>("conductivity")= 0.0;
+    params.addCoupledVar("denthalpy_waterdP_H", "Use denthalpy_waterdP_H here");
+    params.addCoupledVar("denthalpy_steamdP_H", "Use denthalpy_steamdP_H here");
+   
+    
     return params;
 }
 
 OutFlowBC_PH::OutFlowBC_PH(const std::string & name, InputParameters parameters)
 :IntegratedBC(name, parameters),
-//   _grad_p(coupledGradient("p")),
-//   _cond(getParam<Real>("conductivity")),
-//   _diff(getParam<Real>("thermal_conductivity")),
-//   _porosity(getParam<Real>("porosity"))
 _grad_p(coupledGradient("pressure")),
+_p_var(coupled("pressure")), 
 _grad_T(coupledGradient("temperature")),
 _dTdH(coupledValue("dTdH_P")),
+ _dTdP(coupledValue("dTdP_H")),
 _enthalpy_water(coupledValue("enthalpy_water")),
 _enthalpy_steam(coupledValue("enthalpy_steam")),
 _denthalpy_waterdH_P(coupledValue("denthalpy_waterdH_P")),
 _denthalpy_steamdH_P(coupledValue("denthalpy_steamdH_P")),
+_denthalpy_waterdP_H(coupledValue("denthalpy_waterdP_H")),
+_denthalpy_steamdP_H(coupledValue("denthalpy_steamdP_H")),
+ _Dtau_waterDP(getMaterialProperty<Real>("Dtau_waterDP")),
+ _Dtau_waterDH(getMaterialProperty<Real>("Dtau_waterDH")),
+ _Dtau_steamDP(getMaterialProperty<Real>("Dtau_steamDP")),
+ _Dtau_steamDH(getMaterialProperty<Real>("Dtau_steamDH")),
+_tau_water(getMaterialProperty<Real>("tau_water")),
+_tau_steam(getMaterialProperty<Real>("tau_steam")),
 _darcy_mass_flux_water(getMaterialProperty<RealGradient>("darcy_mass_flux_water")),
 _darcy_mass_flux_steam(getMaterialProperty<RealGradient>("darcy_mass_flux_steam")),
-_Ddarcy_mass_flux_waterDH(getMaterialProperty<RealGradient>("Ddarcy_mass_flux_waterDH")),
-_Ddarcy_mass_flux_steamDH(getMaterialProperty<RealGradient>("Ddarcy_mass_flux_steamDH")),
-
 _thermal_conductivity(getMaterialProperty<Real>("thermal_conductivity"))
 {}
 
@@ -48,11 +55,6 @@ OutFlowBC_PH::computeQpResidual()
      - _darcy_mass_flux_water[_qp] * _enthalpy_water[_qp] *_normals[_qp]
      - _darcy_mass_flux_steam[_qp] * _enthalpy_steam[_qp] *_normals[_qp]);
     
-    //    if (_aa <= 1.0e-12)
-    //      _aa=0.0;
-    
-    //    std::cout << "utlet_flux " << _aa << std::endl;
-    
     return -_aa;
 }
 
@@ -60,13 +62,36 @@ OutFlowBC_PH::computeQpResidual()
 Real
 OutFlowBC_PH::computeQpJacobian()
 {
-    //    RealGradient _Darcy_vel = -_cond*_grad_p[_qp];
-    Real _aa=  _test[_i][_qp]*
-    ( _thermal_conductivity[_qp] *(_dTdH[_qp]*_grad_phi[_j][_qp]*_normals[_qp])
-     - _darcy_mass_flux_water[_qp] * _denthalpy_waterdH_P[_qp] * _phi[_j][_qp]* _normals[_qp]
-     - _Ddarcy_mass_flux_waterDH[_qp] * _enthalpy_water[_qp] * _phi[_j][_qp] * _normals[_qp]
-     - _darcy_mass_flux_steam[_qp] * _denthalpy_steamdH_P[_qp] * _phi[_j][_qp]* _normals[_qp]
-     - _Ddarcy_mass_flux_steamDH[_qp] * _enthalpy_steam[_qp] * _phi[_j][_qp]* _normals[_qp]);
+  Real _aa=_test[_i][_qp]*
+            (_thermal_conductivity[_qp]*_dTdH[_qp]*_grad_phi[_j][_qp]*_normals[_qp]
+             +_Dtau_waterDH[_qp]*_phi[_j][_qp]*_grad_p[_qp]*_enthalpy_water[_qp]*_normals[_qp]
+             -_darcy_mass_flux_water[_qp]*_denthalpy_waterdH_P[_qp]*_phi[_j][_qp]*_normals[_qp]
+             +_Dtau_steamDH[_qp]*_phi[_j][_qp]*_grad_p[_qp]*_enthalpy_steam[_qp]*_normals[_qp]
+             -_darcy_mass_flux_steam[_qp]*_denthalpy_steamdH_P[_qp]*_phi[_j][_qp]*_normals[_qp]);    
     
     return -_aa;
 }
+
+Real OutFlowBC_PH::computeQpOffDiagJacobian(unsigned int jvar)
+{
+  if (jvar==_p_var)
+  {
+    Real _bb=_test[_i][_qp]*
+             (_thermal_conductivity[_qp]*_dTdP[_qp]*_grad_phi[_j][_qp]*_normals[_qp]
+              +(_Dtau_waterDP[_qp]*_phi[_j][_qp]*_grad_p[_qp]+_tau_water[_qp]*_grad_phi[_j][_qp])*_enthalpy_water[_qp]*_normals[_qp]
+              -_darcy_mass_flux_water[_qp]*_denthalpy_waterdP_H[_qp]*_phi[_j][_qp]*_normals[_qp]
+              +(_Dtau_steamDP[_qp]*_phi[_j][_qp]*_grad_p[_qp]+_tau_steam[_qp]*_grad_phi[_j][_qp])*_enthalpy_steam[_qp]*_normals[_qp]
+              -_darcy_mass_flux_steam[_qp]*_denthalpy_steamdP_H[_qp]*_phi[_j][_qp]*_normals[_qp] );
+    
+      
+    return -_bb;
+    
+ }
+ else
+ {
+   return 0.0;
+ }
+  
+}
+
+  
