@@ -48,7 +48,7 @@ protected:
   
   MaterialProperty<Real> & _tau_steam;
   MaterialProperty<RealGradient> & _darcy_flux_steam;
-  MaterialProperty<RealGradient> & _darcy_mass_flux_steam;;
+  MaterialProperty<RealGradient> & _darcy_mass_flux_steam;
   MaterialProperty<RealGradient> & _darcy_mass_flux_steam_pressure;
   MaterialProperty<RealGradient> & _darcy_mass_flux_steam_elevation;
   MaterialProperty<Real> & _Dtau_steamDP;
