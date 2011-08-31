@@ -2,30 +2,30 @@
 !  SUBROUTINE wateos1 (t,p,dw,dwmol,dwp,dwt,hw,hwp,hwt,scale,ierr)
 
     implicit none
-  
-    real*8, intent(in) :: t   ! Temperature in centigrade
-    real*8, intent(in) :: p   ! Pressure in Pascals
-    real*8, intent(out) :: dw 
-    real*8 :: dwmol, dwp, dwt
-    real*8 :: hw, hwp, hwt
+    integer, parameter :: dp = selected_real_kind(15,307)  
+    real(kind=dp), intent(in) :: t   ! Temperature in centigrade
+    real(kind=dp), intent(in) :: p   ! Pressure in Pascals
+    real(kind=dp), intent(out) :: dw 
+    real(kind=dp) :: dwmol, dwp, dwt
+    real(kind=dp) :: hw, hwp, hwt
     integer :: ierr
   
     integer :: i
     
-    real*8, save :: aa(0:22)
-    real*8, save :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12
+    real(kind=dp), save :: aa(0:22)
+    real(kind=dp), save :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12
   
-    real*8 :: beta,beta2x,beta4,theta,utheta,theta2x,theta18,theta20
-    real*8 :: xx,yy,zz
-    real*8 :: u0,u1,u2,u3,u4,u5,u6,u7,u8,u9
-    real*8 :: v0,v1,v2,v3,v4,v20,v40
-    real*8 :: term1,term2,term2t,term3,term3t,term3p,term4,term4t,term4p, &
+    real(kind=dp) :: beta,beta2x,beta4,theta,utheta,theta2x,theta18,theta20
+    real(kind=dp) :: xx,yy,zz
+    real(kind=dp) :: u0,u1,u2,u3,u4,u5,u6,u7,u8,u9
+    real(kind=dp) :: v0,v1,v2,v3,v4,v20,v40
+    real(kind=dp) :: term1,term2,term2t,term3,term3t,term3p,term4,term4t,term4p, &
               term5,term5t,term5p,term6,term6t,term6p,term7,term7t,term7p
-    real*8 :: dv2t,dv2p,dv3t
-    real*8 :: vr,ypt,yptt,zpt,zpp,vrpt,vrpp,cnv
-    real*8 :: tc1,pc1,vc1,utc1,upc1,vc1mol,vc1molh
-    real*8 :: zero,one,two,three,four,five,six,seven,eight,fnine,ten
-    real*8 :: scale
+    real(kind=dp) :: dv2t,dv2p,dv3t
+    real(kind=dp) :: vr,ypt,yptt,zpt,zpp,vrpt,vrpp,cnv
+    real(kind=dp) :: tc1,pc1,vc1,utc1,upc1,vc1mol,vc1molh
+    real(kind=dp) :: zero,one,two,three,four,five,six,seven,eight,fnine,ten
+    real(kind=dp) :: scale
   
 !   save aa,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12
     

@@ -8,20 +8,22 @@
 
   implicit none
 
-  real*8 , intent(in):: rho,t
-  real*8 , intent(out):: visc
+  integer, parameter :: dp = selected_real_kind(15,307)
+
+  real(kind=dp) , intent(in):: rho,t
+  real(kind=dp) , intent(out):: visc
   
-  real*8, parameter :: tc_k = 273.15d0
-  real*8, parameter :: dcritical=322.0d0  
-  real*8, parameter :: tcriticalk=647.096d0
-  real*8, parameter :: mustar=1.00d-6
+  real(kind=dp), parameter :: tc_k = 273.15d0
+  real(kind=dp), parameter :: dcritical=322.0d0  
+  real(kind=dp), parameter :: tcriticalk=647.096d0
+  real(kind=dp), parameter :: mustar=1.00d-6
   integer,parameter :: ivs(21)=(/0,1,2,3,0,1,2,3,5,0,1,2,3,4,0,1,0,3,4,3,5/)
   integer,parameter :: jvs(21)=(/0,0,0,0,1,1,1,1,1,2,2,2,2,2,3,3,4,4,5,6,6/)  
-  real*8, parameter :: h0v(0:3)= &
+  real(kind=dp), parameter :: h0v(0:3)= &
        (/1.67752d0, 2.20462d0, 0.6366564d0, -0.241605d0/)
   
   
-  real*8, parameter :: h1v(21)=&
+  real(kind=dp), parameter :: h1v(21)=&
        (/5.20094d-1, 8.50895d-2, -1.08374d0, -2.89555d-1, 2.22531d-1,&
        9.99115d-1, 1.88797d0, 1.26613d0, 1.20573d-1, -2.81378d-1,&
        -9.06851d-1, -7.72479d-1, -4.89837d-1, -2.57040d-1, 1.61913d-1,&
@@ -31,9 +33,9 @@
  
  ! Local variables:
                     
-  real*8 :: del,tk,tau
-  real*8 :: tauipow(0:3),tspow(0:5),dspow(0:6)
-  real*8 :: mu0,mu1,s0,s1
+  real(kind=dp) :: del,tk,tau
+  real(kind=dp) :: tauipow(0:3),tspow(0:5),dspow(0:6)
+  real(kind=dp) :: mu0,mu1,s0,s1
   integer i
 
   tk=t+tc_k

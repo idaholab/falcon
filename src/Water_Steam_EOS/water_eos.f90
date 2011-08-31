@@ -2,7 +2,8 @@ module water_eos_module
 
   public
 
-  real*8, private, parameter::  fmwh2o = 18.01534d0
+  integer, parameter :: dp = selected_real_kind(15,307)
+  real(kind=dp), private, parameter::  fmwh2o = 18.01534d0
 
 contains
 
@@ -10,11 +11,11 @@ contains
 
     implicit none
     
-    real*8, intent(in) :: T, P, PS
-    real*8, intent(out) :: VW,vwt,vwp
+    real(kind=dp), intent(in) :: T, P, PS
+    real(kind=dp), intent(out) :: VW,vwt,vwp
     integer, intent(out) :: ierr
   
-    real*8 :: EX, PHI, AM, pwr, aln10
+    real(kind=dp) :: EX, PHI, AM, pwr, aln10
   
     EX  = 247.8d0/(T+133.15d0)
     PHI = 1.0467d0*(T-31.85d0)
@@ -36,11 +37,11 @@ contains
 
     implicit none
     
-    real*8, intent(in) :: T, P, PS
-    real*8, intent(out) :: VW
+    real(kind=dp), intent(in) :: T, P, PS
+    real(kind=dp), intent(out) :: VW
     integer, intent(out) :: ierr
   
-    real*8 :: EX, PHI, AM, pwr
+    real(kind=dp) :: EX, PHI, AM, pwr
   
     EX  = 247.8d0/(T+133.15d0)
     PHI = 1.0467d0*(T-31.85d0)
@@ -86,12 +87,12 @@ contains
 !c    visp = phase viscosity (pa-s), av and bv are correlation coefs.
      
 !c-----------------------------------------------------------------
-       real*8, intent(in) :: t,dw
-       real*8, intent(out) :: vw
+       real(kind=dp), intent(in) :: t,dw
+       real(kind=dp), intent(out) :: vw
 
        integer :: i
-       real*8 :: tstar,rhostr,cnv,utr,u3,viso,udw,u4,sum1
-       real*8, save :: av(0:3),bv(0:5,0:4)
+       real(kind=dp) :: tstar,rhostr,cnv,utr,u3,viso,udw,u4,sum1
+       real(kind=dp), save :: av(0:3),bv(0:5,0:4)
 
       data av/0.0181583d0, 0.0177624d0, 0.0105287d0, -0.0036744d0/
  
@@ -128,12 +129,12 @@ contains
 
   subroutine PSAT_new (TC, P, ierr)
 
-    real*8, intent(in) :: TC
-    real*8, intent(out) :: P  ! Saturation pressure
+    real(kind=dp), intent(in) :: TC
+    real(kind=dp), intent(out) :: P  ! Saturation pressure
     integer, intent(out) :: ierr
   
-    real*8, save :: A(6),pc
-    real*8 :: SC, Paln, tao
+    real(kind=dp), save :: A(6),pc
+    real(kind=dp) :: SC, Paln, tao
     
     
 !   SAVE A
@@ -162,12 +163,12 @@ contains
 
  subroutine PSAT1_new (TC, P, tsp, ierr)
 
-    real*8, intent(in) :: TC
-    real*8, intent(out) :: P,tsp  ! Saturation pressure
+    real(kind=dp), intent(in) :: TC
+    real(kind=dp), intent(out) :: P,tsp  ! Saturation pressure
     integer, intent(out) :: ierr
   
-    real*8, save :: A(6),pc
-    real*8 :: SC, Paln, tao
+    real(kind=dp), save :: A(6),pc
+    real(kind=dp) :: SC, Paln, tao
     
     
 !   SAVE A
@@ -206,12 +207,12 @@ contains
 
   subroutine PSAT (T, P, ierr)
 
-    real*8, intent(in) :: T
-    real*8, intent(out) :: P  ! Saturation pressure
+    real(kind=dp), intent(in) :: T
+    real(kind=dp), intent(out) :: P  ! Saturation pressure
     integer, intent(out) :: ierr
   
-    real*8, save, dimension(9) :: A(9)
-    real*8 :: TC, SC, PC
+    real(kind=dp), save, dimension(9) :: A(9)
+    real(kind=dp) :: TC, SC, PC
     integer :: J
     
 !   SAVE A
@@ -237,7 +238,7 @@ contains
  
   SUBROUTINE TSAT(PX,TX00,TS)
    IMPLICIT none
-   real*8 TX0,TX00, PX, TS, DT, PS,  PSD, TSD
+   real(kind=dp) TX0,TX00, PX, TS, DT, PS,  PSD, TSD
    integer ierr   
    integer :: itr =0
    
@@ -291,13 +292,13 @@ contains
 
     implicit none
   
-    real*8, intent(in) :: T
-    real*8, intent(out) :: Ps, tsp  ! Saturation pressure
+    real(kind=dp), intent(in) :: T
+    real(kind=dp), intent(out) :: Ps, tsp  ! Saturation pressure
     integer, intent(out) :: ierr
   
-    real*8, save, dimension(9) :: kn(9)
-    real*8 :: u1,one,two,three,four,five,f,fp,tc1,utc1,pc1
-    real*8 :: t1,t2,t1num,t1nump,t1den,t1denp,term1,term1p,term2,term2p,theta
+    real(kind=dp), save, dimension(9) :: kn(9)
+    real(kind=dp) :: u1,one,two,three,four,five,f,fp,tc1,utc1,pc1
+    real(kind=dp) :: t1,t2,t1num,t1nump,t1den,t1denp,term1,term1p,term2,term2p,theta
     
 !   save kn
   
@@ -349,28 +350,28 @@ contains
 
     implicit none
   
-    real*8, intent(in) :: t   ! Temperature in centigrade
-    real*8, intent(in) :: p   ! Pressure in Pascals
-    real*8, intent(out) :: dw,dwmol,dwp,dwt
-    real*8, intent(out) :: hw,hwp,hwt
+    real(kind=dp), intent(in) :: t   ! Temperature in centigrade
+    real(kind=dp), intent(in) :: p   ! Pressure in Pascals
+    real(kind=dp), intent(out) :: dw,dwmol,dwp,dwt
+    real(kind=dp), intent(out) :: hw,hwp,hwt
     integer, intent(out) :: ierr
   
     integer :: i
     
-    real*8, save :: aa(0:22)
-    real*8, save :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12
+    real(kind=dp), save :: aa(0:22)
+    real(kind=dp), save :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12
   
-    real*8 :: beta,beta2x,beta4,theta,utheta,theta2x,theta18,theta20
-    real*8 :: xx,yy,zz
-    real*8 :: u0,u1,u2,u3,u4,u5,u6,u7,u8,u9
-    real*8 :: v0,v1,v2,v3,v4,v20,v40
-    real*8 :: term1,term2,term2t,term3,term3t,term3p,term4,term4t,term4p, &
+    real(kind=dp) :: beta,beta2x,beta4,theta,utheta,theta2x,theta18,theta20
+    real(kind=dp) :: xx,yy,zz
+    real(kind=dp) :: u0,u1,u2,u3,u4,u5,u6,u7,u8,u9
+    real(kind=dp) :: v0,v1,v2,v3,v4,v20,v40
+    real(kind=dp) :: term1,term2,term2t,term3,term3t,term3p,term4,term4t,term4p, &
               term5,term5t,term5p,term6,term6t,term6p,term7,term7t,term7p
-    real*8 :: dv2t,dv2p,dv3t
-    real*8 :: vr,ypt,yptt,zpt,zpp,vrpt,vrpp,cnv
-    real*8 :: tc1,pc1,vc1,utc1,upc1,vc1mol,vc1molh
-    real*8 :: zero,one,two,three,four,five,six,seven,eight,fnine,ten
-    real*8 :: scale
+    real(kind=dp) :: dv2t,dv2p,dv3t
+    real(kind=dp) :: vr,ypt,yptt,zpt,zpp,vrpt,vrpp,cnv
+    real(kind=dp) :: tc1,pc1,vc1,utc1,upc1,vc1mol,vc1molh
+    real(kind=dp) :: zero,one,two,three,four,five,six,seven,eight,fnine,ten
+    real(kind=dp) :: scale
   
 !   save aa,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12
     
@@ -551,29 +552,29 @@ contains
 
     implicit none
   
-    real*8, intent(in) :: t   ! Temperature in centigrade.
-    real*8, intent(in) :: p   ! Pressure in Pascals.
-    real*8, intent(out) :: dw,dwmol,hw
+    real(kind=dp), intent(in) :: t   ! Temperature in centigrade.
+    real(kind=dp), intent(in) :: p   ! Pressure in Pascals.
+    real(kind=dp), intent(out) :: dw,dwmol,hw
     integer, intent(out) :: ierr
   
     integer :: i
     
-    real*8, save :: aa(0:22)
-    real*8, save :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12
+    real(kind=dp), save :: aa(0:22)
+    real(kind=dp), save :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12
   
-    real*8 :: beta,beta2x,beta4,theta,utheta,theta2x,theta18,theta20
-    real*8 :: xx,yy,zz
-    real*8 :: u0,u1,u2,u3,u4,u5,u6,u7,u8
-!   real*8 :: u9
-    real*8 :: v0,v1,v2,v3,v4,v20,v40
-    real*8 :: term1,term2,term3,term4,term4p,term5,term6,term7
-!   real*8 :: term2t,term3t,term3p,term4t,term5t,term5p,term6t,term6p,term7t,term7p
-!   real*8 :: dv2t,dv2p,dv3t
-    real*8 :: vr,ypt
-!   real*8 :: yptt,zpt,zpp,vrpt,vrpp,cnv
-    real*8 :: tc1,pc1,vc1,utc1,upc1,vc1mol,vc1molh
-    real*8 :: zero,one,two,three,four,five,six,seven,eight,fnine,ten
-    real*8 :: scale
+    real(kind=dp) :: beta,beta2x,beta4,theta,utheta,theta2x,theta18,theta20
+    real(kind=dp) :: xx,yy,zz
+    real(kind=dp) :: u0,u1,u2,u3,u4,u5,u6,u7,u8
+!   real(kind=dp) :: u9
+    real(kind=dp) :: v0,v1,v2,v3,v4,v20,v40
+    real(kind=dp) :: term1,term2,term3,term4,term4p,term5,term6,term7
+!   real(kind=dp) :: term2t,term3t,term3p,term4t,term5t,term5p,term6t,term6p,term7t,term7p
+!   real(kind=dp) :: dv2t,dv2p,dv3t
+    real(kind=dp) :: vr,ypt
+!   real(kind=dp) :: yptt,zpt,zpp,vrpt,vrpp,cnv
+    real(kind=dp) :: tc1,pc1,vc1,utc1,upc1,vc1mol,vc1molh
+    real(kind=dp) :: zero,one,two,three,four,five,six,seven,eight,fnine,ten
+    real(kind=dp) :: scale
   
 !   save aa,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12
 
@@ -754,30 +755,30 @@ contains
  ! t/C  p/Pa dgmol/(mol/m^3)  h/MJ/mol
     implicit none
   
-    real*8, intent(in) :: t   ! Temperature in centigrade.
-    real*8, intent(in) :: p,pa   ! Pressure in Pascals.
-    real*8, intent(out) :: dg,dgmol,dgp,dgt
-    real*8, intent(out) :: hg,hgp,hgt
+    real(kind=dp), intent(in) :: t   ! Temperature in centigrade.
+    real(kind=dp), intent(in) :: p,pa   ! Pressure in Pascals.
+    real(kind=dp), intent(out) :: dg,dgmol,dgp,dgt
+    real(kind=dp), intent(out) :: hg,hgp,hgt
     integer, intent(out) :: ierr
   
     integer, save :: n(8),ll(8),x(8,2),z(8,3),xi1,xl0,xl1,xl2
-    real*8, save :: b(8,2),bb(0:9,0:6)
-    real*8 :: sumbx(8),sumbxt(8)
+    real(kind=dp), save :: b(8,2),bb(0:9,0:6)
+    real(kind=dp) :: sumbx(8),sumbxt(8)
   
     integer :: i,j
-    real*8, save :: delp,delt
-    real*8 :: beta,betap,betal,betalp,betalp1,betal1,ubeta,theta, &
+    real(kind=dp), save :: delp,delt
+    real(kind=dp) :: beta,betap,betal,betalp,betalp1,betal1,ubeta,theta, &
               thetap,utheta
-    real*8 :: xx,xxp
-    real*8 :: f1,f2,fim1,fim2,sum,sumt,sum1,sum1t,sum1p, &
+    real(kind=dp) :: xx,xxp
+    real(kind=dp) :: f1,f2,fim1,fim2,sum,sumt,sum1,sum1t,sum1p, &
               sum2,sum2t
-    real*8 :: u1,u1t,u1p,u2,u2p,u2t,u3,u3p,u3t,v1,v1t
-    real*8 :: term,term1,term1t,term1p,term2,term2t,term2p, &
+    real(kind=dp) :: u1,u1t,u1p,u2,u2p,u2t,u3,u3p,u3t,v1,v1t
+    real(kind=dp) :: term,term1,term1t,term1p,term2,term2t,term2p, &
               term3,term3t,term3p,term4,term4t,term4p,term5,term5t,term5p
-    real*8 :: hr,hrp,hrt,hrpt,hrpp
-    real*8 :: vr,vrpt,vrpp
-    real*8 :: tc1,pc1,vc1,utc1,upc1,vc1mol,vc1molh,scale
-    real*8 :: zero,one,two,three,four,five,six,seven,eight,fnine,ten
+    real(kind=dp) :: hr,hrp,hrt,hrpt,hrpp
+    real(kind=dp) :: vr,vrpt,vrpp
+    real(kind=dp) :: tc1,pc1,vc1,utc1,upc1,vc1mol,vc1molh,scale
+    real(kind=dp) :: zero,one,two,three,four,five,six,seven,eight,fnine,ten
  
     data delt,delp/1.d-6,1.d-6/
     
@@ -1051,15 +1052,15 @@ contains
 
     implicit none
   
-    real*8, intent(in) :: TC     ! Temperature in centigrade.
-    real*8, intent(in) :: PP     ! Pressure in Pascals.
-    real*8, intent(out) :: D, U  ! Density [kg/m^3], Energy [J/kg] ? check ?? -pcl
+    real(kind=dp), intent(in) :: TC     ! Temperature in centigrade.
+    real(kind=dp), intent(in) :: PP     ! Pressure in Pascals.
+    real(kind=dp), intent(out) :: D, U  ! Density [kg/m^3], Energy [J/kg] ? check ?? -pcl
     integer, intent(out) :: ierr
   
     integer :: i
-    real*8, save :: A(23), SA(12) 
-    real*8 :: TKR, PNMR, Y, Z, YD, ZP, PAR1, PAR2, PAR3, PAR4, PAR5, VMKR, V
-    real*8 :: SNUM, PRT1, PRT2, PRT3, PRT4, PRT5, ENTR, H
+    real(kind=dp), save :: A(23), SA(12) 
+    real(kind=dp) :: TKR, PNMR, Y, Z, YD, ZP, PAR1, PAR2, PAR3, PAR4, PAR5, VMKR, V
+    real(kind=dp) :: SNUM, PRT1, PRT2, PRT3, PRT4, PRT5, ENTR, H
 !   SAVE A,SA
     DATA A/ &
       6.824687741d3,-5.422063673d2,-2.096666205d4,3.941286787d4, &
@@ -1128,9 +1129,9 @@ contains
     ! table equations as given by the international formulation
     ! committee (1967).
 
-    real*8 :: tc, p, d, par1, par2, par3, par4, par5, pnmr, tkr, &
+    real(kind=dp) :: tc, p, d, par1, par2, par3, par4, par5, pnmr, tkr, &
               v, vmkr, y, z, zp, zero = 0.d0
-    real*8 :: a(23),sa(12)
+    real(kind=dp) :: a(23),sa(12)
 
     data a/ &
       6.824687741d3,  -5.422063673d2, -2.096666205d4,  3.941286787d4,&
@@ -1181,7 +1182,7 @@ subroutine nacl_den (t,p,xnacl,dnacl)
 
 implicit none
 
-real*8 :: rw0,dnacl,t,p,xnacl
+real(kind=dp) :: rw0,dnacl,t,p,xnacl
 
 !units: t [C], p [MPa], xnacl [mass fraction NaCl], dnacl [g/cm^3]
 
@@ -1204,10 +1205,10 @@ implicit none
 
 !units: t [C], p [MPa], xnacl [mass fraction NaCl], visnacl [Pa s]
 
-real*8, save :: a1,a2,a3,b1,b2,b3,c1,c2,c3,c4,wnacl
-real*8 :: ak,bk,ck
-real*8 :: beta,betap,betas,betaw
-real*8 :: t,tt,p,mnacl,xnacl,visnacl,fac,mu0,ms
+real(kind=dp), save :: a1,a2,a3,b1,b2,b3,c1,c2,c3,c4,wnacl
+real(kind=dp) :: ak,bk,ck
+real(kind=dp) :: beta,betap,betas,betaw
+real(kind=dp) :: t,tt,p,mnacl,xnacl,visnacl,fac,mu0,ms
 
 data a1,a2,a3 / 3.324d-2, 3.624d-3, -1.879d-4 /
 data b1,b2,b3 / -3.96d-2, 1.02d-2, -7.02d-4 /

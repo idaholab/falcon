@@ -3,13 +3,13 @@
    use IAPWS97, only : cowat
 
   implicit none
-  
-  real*8 p,h, energyscale
-  real*8 T,dw, hx
+  integer, parameter :: dp = selected_real_kind(15,307)
+  real(kind=dp) p,h, energyscale
+  real(kind=dp) T,dw, hx
   integer ierr
   
-  real*8 tx0, tx, dt, txd
-  real*8 hw, hxd, dwmol
+  real(kind=dp) tx0, tx, dt, txd
+  real(kind=dp) hw, hxd, dwmol
   logical succ
   integer itr
   
@@ -49,13 +49,13 @@
  Subroutine steameos_PH(p, h, T, dg, hx, energyscale, ierr)
   use IAPWS97, only : supst
   implicit none
-  
-  real*8 p,h, energyscale
-  real*8 T, dg, hx
+  integer, parameter :: dp = selected_real_kind(15,307)
+  real(kind=dp) p,h, energyscale
+  real(kind=dp) T, dg, hx
   integer ierr
   
-  real*8 tx0, tx, dt,txd
-  real*8 hg, hxd
+  real(kind=dp) tx0, tx, dt,txd
+  real(kind=dp) hg, hxd
   integer itr
   logical succ
   
@@ -104,27 +104,27 @@
     dTdh, dswdh, ierror, dhwdp, dhsdp,dTdp)
    use IAPWS97, only : cowat, supst, tsat
   implicit none      
-  
-  real*8, parameter::  fmwh2o = 18.01534d0
-  real*8, parameter::  ps350c = 16.529D6, hw350c=1670.9D0
-  real*8, parameter::  energyscale=1D-6 ! MJ/Kg
-  real*8, parameter::  epi_p = 0.1D-0, epi_h = 0.1D0 * energyscale
+  integer, parameter :: dp = selected_real_kind(15,307)
+  real(kind=dp), parameter::  fmwh2o = 18.01534d0
+  real(kind=dp), parameter::  ps350c = 16.529D6, hw350c=1670.9D0
+  real(kind=dp), parameter::  energyscale=1D-6 ! MJ/Kg
+  real(kind=dp), parameter::  epi_p = 0.1D-0, epi_h = 0.1D0 * energyscale
  
 
-  real*8, intent(inout)  :: p, h ! Pscal, KJ/Kg, C (initial guess)
-  real*8, intent(out) :: T, Sw, hw,hs,Den,Denw,Dens,  dTdh, dDendp,dDendh, dhwdh,dhsdh, dswdh, dhwdp,dhsdp
+  real(kind=dp), intent(inout)  :: p, h ! Pscal, KJ/Kg, C (initial guess)
+  real(kind=dp), intent(out) :: T, Sw, hw,hs,Den,Denw,Dens,  dTdh, dDendp,dDendh, dhwdh,dhsdh, dswdh, dhwdp,dhsdp
   integer,intent(out) :: ierror  ! ierr = 10  critical point   
  
-  real*8 Ts 
-  real*8 dw, dwmol
-  real*8 dg, dgmol, dgp,dgt,hg,hgp,hgt
+  real(kind=dp) Ts 
+  real(kind=dp) dw, dwmol
+  real(kind=dp) dg, dgmol, dgp,dgt,hg,hgp,hgt
   integer ierr
   integer :: iphase = 0
-  real*8 delp, delh
-  real*8 dw0, dw1, hw0,hw1, sw0, sw1
-  real*8 dg0, dg1, hg0,hg1, h1
-  real*8 t0,t1, d0,d1
-  real*8 dTdp
+  real(kind=dp) delp, delh
+  real(kind=dp) dw0, dw1, hw0,hw1, sw0, sw1
+  real(kind=dp) dg0, dg1, hg0,hg1, h1
+  real(kind=dp) t0,t1, d0,d1
+  real(kind=dp) dTdp
   logical succ 
  
 
@@ -288,27 +288,27 @@ dhsdp=(hg1-hg0)/delp
     Den,Denw, Dens, hw, hs,visw,viss,ierror)
    use IAPWS97, only : cowat, supst, tsat, visc
   implicit none      
-  
-  real*8, parameter::  fmwh2o = 18.01534d0
-  real*8, parameter::  epi_p = 1D0, epi_h=1D-3
-  real*8, parameter::  ps350c = 16.529D6, hw350c=1670.9D0
-  real*8, parameter::  energyscale=1D-6 ! MJ/Kg
+  integer, parameter :: dp = selected_real_kind(15,307)  
+  real(kind=dp), parameter::  fmwh2o = 18.01534d0
+  real(kind=dp), parameter::  epi_p = 1D0, epi_h=1D-3
+  real(kind=dp), parameter::  ps350c = 16.529D6, hw350c=1670.9D0
+  real(kind=dp), parameter::  energyscale=1D-6 ! MJ/Kg
  
 
-  real*8, intent(in)  :: p, h ! Pscal, KJ/Kg, C (initial guess)
-  real*8, intent(out) :: T, Sw, hw,hs,Den,Denw,Dens, viss,visw
+  real(kind=dp), intent(in)  :: p, h ! Pscal, KJ/Kg, C (initial guess)
+  real(kind=dp), intent(out) :: T, Sw, hw,hs,Den,Denw,Dens, viss,visw
   integer,intent(out) :: ierror  ! ierr = 10  critical point   
  
-  real*8 Ts 
-  real*8 dw  
-  real*8 dg, hg
+  real(kind=dp) Ts 
+  real(kind=dp) dw  
+  real(kind=dp) dg, hg
   integer ierr
   integer :: iphase = 0
-  real*8 delp, delh
-  real*8 dw0, dw1, hw0,hw1, sw0, sw1
-  real*8 dg0, dg1, hg0,hg1, h1
-  real*8 t0,t1, d0,d1
-  real*8 dTdp
+  real(kind=dp) delp, delh
+  real(kind=dp) dw0, dw1, hw0,hw1, sw0, sw1
+  real(kind=dp) dg0, dg1, hg0,hg1, h1
+  real(kind=dp) t0,t1, d0,d1
+  real(kind=dp) dTdp
   logical succ 
  
 

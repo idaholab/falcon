@@ -1,12 +1,12 @@
 SUBROUTINE visw_noderiv1 (T, P, VW)
 
     implicit none
-    
-    real*8, intent(in) :: T, P !give it temperature and pressure
-    real*8, intent(out) :: VW !return viscosity
+    integer, parameter :: dp = selected_real_kind(15,307)    
+    real(kind=dp), intent(in) :: T, P !give it temperature and pressure
+    real(kind=dp), intent(out) :: VW !return viscosity
 
-    real*8 :: EX, PHI, AM, pwr
-    real*8 :: PS
+    real(kind=dp) :: EX, PHI, AM, pwr
+    real(kind=dp) :: PS
     
    
      CALL PSAT_new_rkp (T,PS)  !get p_sat from subroutine
