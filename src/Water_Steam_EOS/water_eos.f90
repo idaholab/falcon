@@ -762,8 +762,12 @@ contains
     real(kind=dp), intent(out) :: hg,hgp,hgt
     integer, intent(out) :: ierr
   
-    integer(kind = k15), save :: n(8),ll(8),x(8,2),z(8,3),xi1,xl0,xl1,xl2
-    real(kind=dp), save :: b(8,2),bb(0:9,0:6)
+ !   integer(kind = k15), save :: n(8),ll(8),x(8,2),z(8,3),xi1,xl0,xl1,xl2
+    integer, save :: n(8),ll(8),x(8,2),z(8,3)
+    real(kind = dp), save :: xi1,xl0,xl1,xl2
+  
+
+   real(kind=dp), save :: b(8,2),bb(0:9,0:6)
     real(kind=dp) :: sumbx(8),sumbxt(8)
   
     integer :: i,j
@@ -821,10 +825,10 @@ contains
 !---bb(0-9,6)
                             9*0.d0        , 5.235718623d02/
     
-  !  data xi1/4.260321148d0/
-   ! data xl0,xl1,xl2/15.74373327d0,-34.17061978d0,19.31380707d0/
-    data xi1/4.260321148/
-    data xl0,xl1,xl2/15.74373327,-34.17061978,19.31380707/
+   data xi1/4.260321148d0/
+   data xl0,xl1,xl2/15.74373327d0,-34.17061978d0,19.31380707d0/
+ !   data xi1/4.260321148/
+ !   data xl0,xl1,xl2/15.74373327,-34.17061978,19.31380707/
     
 !   save n,ll,x,xi1,xl0,xl1,xl2,z,b,bb,delt,delp
     
