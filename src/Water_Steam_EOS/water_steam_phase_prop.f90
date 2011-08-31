@@ -9,7 +9,8 @@
   integer ierr
   
   real(kind=dp) tx0, tx, dt, txd
-  real(kind=dp) hw, hxd, dwmol
+ ! real(kind=dp) hw, hxd, dwmol
+  real(kind=dp) hw, hxd
   logical succ
   integer itr
   
@@ -116,8 +117,10 @@
   integer,intent(out) :: ierror  ! ierr = 10  critical point   
  
   real(kind=dp) Ts 
-  real(kind=dp) dw, dwmol
-  real(kind=dp) dg, dgmol, dgp,dgt,hg,hgp,hgt
+!  real(kind=dp) dw, dwmol
+  real(kind=dp) dw
+ ! real(kind=dp) dg, dgmol, dgp,dgt,hg,hgp,hgt
+  real(kind=dp) dg, hg
   integer ierr
   integer :: iphase = 0
   real(kind=dp) delp, delh
@@ -305,10 +308,14 @@ dhsdp=(hg1-hg0)/delp
   integer ierr
   integer :: iphase = 0
   real(kind=dp) delp, delh
-  real(kind=dp) dw0, dw1, hw0,hw1, sw0, sw1
-  real(kind=dp) dg0, dg1, hg0,hg1, h1
-  real(kind=dp) t0,t1, d0,d1
-  real(kind=dp) dTdp
+!  real(kind=dp) dw0, dw1, hw0,hw1, sw0, sw1
+!  real(kind=dp)  hw0
+!  real(kind=dp) dg0, dg1, hg0,hg1, h1
+!  real(kind=dp)   hg1
+!  real(kind=dp) t0,t1, d0,d1
+!  real(kind=dp) t1
+!  real(kind=dp) t0,t1
+!  real(kind=dp) dTdp
   logical succ 
  
 
