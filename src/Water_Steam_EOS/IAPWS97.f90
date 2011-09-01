@@ -11,21 +11,22 @@ module IAPWS97
   ! IAPWS, 2008.  Release on the IAPWS Formulation 2008 for the Viscosity of Ordinary Water Substance.
 
   implicit none
+  integer, parameter :: dp = selected_real_kind(15,307)
 
   ! General constants:
-  double precision, parameter, public:: rconst=0.461526d3         ! Gas constant
-  double precision, parameter, public:: tc_k=273.15d0             ! Conversion from Celsius to Kelvin
-  double precision, parameter, public:: tcriticalk=647.096d0      ! Critical temperature (Kelvin)
-  double precision, parameter, public:: tcritical=tcriticalk-tc_k
-  double precision, parameter, public:: dcritical=322.0d0         ! Critical density (kg/m3)
-  double precision, parameter, public:: pcritical=22.064d6        ! Critical pressure (Pa)
+  real(kind=dp), parameter, public:: rconst=0.461526d3         ! Gas constant
+  real(kind=dp), parameter, public:: tc_k=273.15d0             ! Conversion from Celsius to Kelvin
+  real(kind=dp), parameter, public:: tcriticalk=647.096d0      ! Critical temperature (Kelvin)
+  real(kind=dp), parameter, public:: tcritical=tcriticalk-tc_k
+  real(kind=dp), parameter, public:: dcritical=322.0d0         ! Critical density (kg/m3)
+  real(kind=dp), parameter, public:: pcritical=22.064d6        ! Critical pressure (Pa)
 
   ! -- Region 1 constants: --------------------------------------------------
 
   ! scaling values for pressure and temperature:
-  double precision, parameter, private:: pstar1=16.53d6,tstar1=1386.d0
+  real(kind=dp), parameter, private:: pstar1=16.53d6,tstar1=1386.d0
 
-  double precision, parameter, private:: nr1(34)=&                         ! coefficients n
+  real(kind=dp), parameter, private:: nr1(34)=&                         ! coefficients n
        (/0.14632971213167d0, -0.84548187169114d0, -0.37563603672040d1,&
        0.33855169168385d1, -0.95791963387872d0, 0.15772038513228d0,&
        -0.16616417199501d-1,0.81214629983568d-3, 0.28319080123804d-3,&
@@ -52,14 +53,14 @@ module IAPWS97
   ! -- Region 2 constants: --------------------------------------------------
 
   ! scaling values for pressure and temperature:
-  double precision,parameter, private :: pstar2=1.0d6,tstar2=540.d0
+  real(kind=dp),parameter, private :: pstar2=1.0d6,tstar2=540.d0
 
-  double precision, parameter, private:: n0r2(9)=&                         ! coefficients n0
+  real(kind=dp), parameter, private:: n0r2(9)=&                         ! coefficients n0
        (/-0.96927686500217d1,  0.10086655968018d2,-0.56087911283020d-2,&
        0.71452738081455d-1, -0.40710498223928d0, 0.14240819171444d1,&
        -0.43839511319450d1,  -0.28408632460772d0, 0.21268463753307d-1/)
 
-  double precision, parameter, private:: nr2(43)=&                                                 ! coefficients n
+  real(kind=dp), parameter, private:: nr2(43)=&                                                 ! coefficients n
        (/-0.17731742473213d-2, -0.17834862292358d-1,-0.45996013696365d-1, -0.57581259083432d-1, &
        -0.50325278727930d-1, -0.33032641670203d-4,-0.18948987516315d-3, -0.39392777243355d-2,&
        -0.43797295650573d-1, -0.26674547914087d-4, 0.20481737692309d-7,  0.43870667284435d-6,&
@@ -88,9 +89,9 @@ module IAPWS97
   ! -- Region 3 constants: --------------------------------------------------
 
   ! scaling values for density and temperature:
-  double precision, parameter, private:: dstar3=dcritical,tstar3=tcriticalk
+  real(kind=dp), parameter, private:: dstar3=dcritical,tstar3=tcriticalk
 
-  double precision, parameter, private:: nr3(40)=&                                            ! coefficients n
+  real(kind=dp), parameter, private:: nr3(40)=&                                            ! coefficients n
        (/0.10658070028513d1, -0.15732845290239d2,0.20944396974307d2,-0.76867707878716d1,&
        0.26185947787954d1, -0.28080781148620d1,0.12053369696517d1,-0.84566812812502d-2,&
        -0.12654315477714d1, -0.11524407806681d1, 0.88521043984318d0,-0.64207765181607d0,&
@@ -114,9 +115,9 @@ module IAPWS97
 
   ! -- Region 4 constants: --------------------------------------------------
 
-  double precision, parameter, private:: pstar4=1.0d6  ! scaling value for pressure
+  real(kind=dp), parameter, private:: pstar4=1.0d6  ! scaling value for pressure
 
-  double precision, parameter, private:: nr4(10)=&                      ! coefficients n
+  real(kind=dp), parameter, private:: nr4(10)=&                      ! coefficients n
        (/0.11670521452767d4, -0.72421316703206d6, -0.17073846940092d2,&
        0.12020824702470d5, -0.32325550322333d7, 0.14915108613530d2,&
        -0.48232657361591d4, 0.40511340542057d6, -0.23855557567849d0,&
@@ -124,18 +125,18 @@ module IAPWS97
 
   !  -- Boundary between regions 2 & 3: --------------------------------------
 
-  double precision, parameter, private:: nr23(5)=&
+  real(kind=dp), parameter, private:: nr23(5)=&
        (/0.34805185628969d3, -0.11671859879975d1, 0.10192970039326d-2,&
        0.57254459862746d3, 0.13918839778870d2/)
 
 ! -- Constants for dynamic viscosity calculation: -------------------------
 
-  double precision, parameter, private:: mustar=1.00d-6
+  real(kind=dp), parameter, private:: mustar=1.00d-6
 
-  double precision, parameter, private:: h0v(0:3)= &
+  real(kind=dp), parameter, private:: h0v(0:3)= &
        (/1.67752d0, 2.20462d0, 0.6366564d0, -0.241605d0/)
 
-  double precision, parameter, private:: h1v(21)=&
+  real(kind=dp), parameter, private:: h1v(21)=&
        (/5.20094d-1, 8.50895d-2, -1.08374d0, -2.89555d-1, 2.22531d-1,&
        9.99115d-1, 1.88797d0, 1.26613d0, 1.20573d-1, -2.81378d-1,&
        -9.06851d-1, -7.72479d-1, -4.89837d-1, -2.57040d-1, 1.61913d-1,&
@@ -158,16 +159,17 @@ logical function cowat(t,p,d,h)
   ! Returns false if called outside its operating range (t<=350 deg C, p<=100 MPa).
 
   implicit none
-  double precision, intent(in):: t,p
-  double precision, intent(out):: d,h
+  integer, parameter :: dp = selected_real_kind(15,307)
+  real(kind=dp), intent(in):: t,p
+  real(kind=dp), intent(out):: d,h
 
   ! Local variables:
-  double precision:: tk,pi,tau,gampi,gamt,rt,u
-  double precision:: pspow(-1:32),tspow(-42:17)
+  real(kind=dp):: tk,pi,tau,gampi,gamt,rt,u
+  real(kind=dp):: pspow(-1:32),tspow(-42:17)
   integer:: i
   ! This tolerance allows cowat to be called just outside its
   ! nominal operating range when doing transitions to supercritical:      
-  double precision, parameter:: ttol=1.0d-3
+  real(kind=dp), parameter:: ttol=1.0d-3
 
   ! Check input:
   if ((t<=350.0d0+ttol).and.(p<=100.d6)) then
@@ -263,12 +265,13 @@ logical function supst(t,p,d,h)
   ! Returns false if called outside its operating range (t<=1000 deg C, p<=100 MPa).
 
   implicit none
-  double precision, intent(in):: t,p
-  double precision, intent(out):: d,h
+  integer, parameter :: dp = selected_real_kind(15,307)
+  real(kind=dp), intent(in):: t,p
+  real(kind=dp), intent(out):: d,h
 
   ! Local variables:
-  double precision:: tk,pi,tau,gampi0,gampir,gamt0,gamtr,gampi,rt,u
-  double precision:: taupow(-6:2),pipow(0:24),tspow(-1:58)
+  real(kind=dp):: tk,pi,tau,gampi0,gampir,gamt0,gamtr,gampi,rt,u
+  real(kind=dp):: taupow(-6:2),pipow(0:24),tspow(-1:58)
   integer:: i
 
   ! Check input:
@@ -396,13 +399,14 @@ logical function super(d,t,p,h)
   ! Returns false if resulting pressure is outside its operating range (p<=100 MPa).
 
   implicit none
-  double precision, intent(in):: d,t
-  double precision, intent(out):: p,h
+  integer, parameter :: dp = selected_real_kind(15,307)
+  real(kind=dp), intent(in):: d,t
+  real(kind=dp), intent(out):: p,h
 
   ! Local variables:
-  double precision:: tk,delta,tau,u
-  double precision:: taupow(-1:26),delpow(-1:11)
-  double precision:: phidelta,phitau,rt
+  real(kind=dp):: tk,delta,tau,u
+  real(kind=dp):: taupow(-1:26),delpow(-1:11)
+  real(kind=dp):: phidelta,phitau,rt
   integer:: i
 
   tk=t+tc_k
@@ -477,12 +481,13 @@ logical function sat(t,p)
   ! Returns false if called outside its operating range (0 <= t <= critical temperature).
 
   implicit none
-  double precision, intent(in)::t
-  double precision, intent(out):: p
+  integer, parameter :: dp = selected_real_kind(15,307)
+  real(kind=dp), intent(in)::t
+  real(kind=dp), intent(out):: p
 
   ! Local variables:
-  double precision:: tk
-  double precision:: theta,theta2,a,b,c,x
+  real(kind=dp):: tk
+  real(kind=dp):: theta,theta2,a,b,c,x
 
   if ((t>=0.d0).and.(t<=tcritical)) then
      tk=t+tc_k      
@@ -504,7 +509,7 @@ end function sat
 
 !------------------------------------------------------------------------
 
-double precision function visc(rho,t)
+real(kind=dp) function visc(rho,t)
 
   ! Calculates dynamic viscosity of water or steam, given the density
   ! rho and temperature t, using the IAPWS industrial formulation 2008.
@@ -512,14 +517,15 @@ double precision function visc(rho,t)
   ! included.
 
   implicit none
+  integer, parameter :: dp = selected_real_kind(15,307)
 
-  double precision, intent(in):: rho,t
+  real(kind=dp), intent(in):: rho,t
 
   ! Local variables:
 
-  double precision:: del,tk,tau
-  double precision:: tauipow(0:3),tspow(0:5),dspow(0:6)
-  double precision:: mu0,mu1,s0,s1
+  real(kind=dp):: del,tk,tau
+  real(kind=dp):: tauipow(0:3),tspow(0:5),dspow(0:6)
+  real(kind=dp):: mu0,mu1,s0,s1
   integer i
 
   tk=t+tc_k
@@ -577,11 +583,12 @@ logical function tsat(p,t)
   ! Returns false if called outside its operating range (611.213 Pa <= p <= critical pressure).
 
   implicit none
-  double precision, intent(in):: p
-  double precision, intent(out):: t
+  integer, parameter :: dp = selected_real_kind(15,307)
+  real(kind=dp), intent(in):: p
+  real(kind=dp), intent(out):: t
 
   ! Local variables:
-  double precision:: beta,beta2,d,e,f,g,x
+  real(kind=dp):: beta,beta2,d,e,f,g,x
 
   if ((p>=611.213d0).and.(p<=pcritical)) then
 
@@ -604,16 +611,17 @@ end function tsat
 
 !-----------------------------------------------------------------------
 
-double precision function b23p(t)
+real(kind=dp) function b23p(t)
 
   ! Returns the pressure on the boundary between regions 2 and 3,
   ! given a temperature t (deg C).
 
   implicit none
-  double precision, intent(in):: t
+  integer, parameter :: dp = selected_real_kind(15,307)
+  real(kind=dp), intent(in):: t
 
   ! Local variable:      
-  double precision:: tk
+  real(kind=dp):: tk
 
   tk=t+tc_k
   b23p=1.d6*(nr23(1)+tk*(nr23(2)+tk*nr23(3))) 
@@ -623,13 +631,14 @@ end function b23p
 
 !-----------------------------------------------------------------------
 
-double precision function b23t(p)
+real(kind=dp) function b23t(p)
 
   ! Returns the temperature on the boundary between regions 2 and 3,
   ! given a pressure p (Pa).
 
   implicit none
-  double precision, intent(in):: p      
+  integer, parameter :: dp = selected_real_kind(15,307)
+  real(kind=dp), intent(in):: p      
 
   b23t=nr23(4)+dsqrt((p/1.d6-nr23(5))/nr23(3))-tc_k 
 

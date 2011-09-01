@@ -3,7 +3,7 @@ module water_eos_module
   public
 
   integer, parameter :: dp = selected_real_kind(15,307)
-  integer,parameter :: k15 = selected_int_kind(15)
+  Integer,parameter :: k15 = selected_int_kind(15)
   real(kind=dp), private, parameter::  fmwh2o = 18.01534d0
 
 contains
