@@ -19,7 +19,7 @@ SolidMechFalcon::SolidMechFalcon(const std::string & name, InputParameters param
 void
 SolidMechFalcon::recomputeConstants()
 {
-  _E = _E_prop[_qp]*(1.0 - _damage_coeff[_qp]);
+  _E = _E_prop[_qp]; //*(1.0 - _damage_coeff[_qp]);
   _nu = _nu_prop[_qp];
 
   _c1 = _E*(1.-_nu)/(1.+_nu)/(1.-2.*_nu);

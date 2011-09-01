@@ -29,7 +29,7 @@ press
   [../]
 
   [./p_dmfp]
-    type = DarcyMassFluxPressure
+    type =  WaterMassFluxPressure_PT
     variable = pressure
   [../]
 
