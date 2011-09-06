@@ -81,13 +81,14 @@ initial_condition = 878.98804480291119
 [./enthalpy_water]
  order = FIRST
  family = LAGRANGE
- initial_condition = 0
+ initial_condition = 2.80
 [../]
 
 [./enthalpy_steam]
  order = FIRST
  family = LAGRANGE
- initial_condition = 878.98804480291119
+ #initial_condition = 878.98804480291119
+ initial_condition = 2.8
 [../]
 
 [./saturation_water]
@@ -537,7 +538,7 @@ type = CoupledTemperatureAux
  
  l_max_its  =  200
  nl_abs_tol = 1e-10
- l_tol =  1.0e-6
+# l_tol =  1.0e-7
  nl_max_its =  60
  nl_rel_tol =  1e-6
  
