@@ -38,7 +38,6 @@ int main (int argc, char** argv)
 
   Executioner *e = p.getExecutioner();
   e->execute();
-  delete e;
 
   Moose::perf_log.pop("main()","Falcon");
 }
