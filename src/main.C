@@ -36,8 +36,7 @@ int main (int argc, char** argv)
   p.parse(input_filename);
   p.execute();
 
-  Executioner *e = p.getExecutioner();
-  e->execute();
+  Moose::executioner->execute();
 
   Moose::perf_log.pop("main()","Falcon");
 }
