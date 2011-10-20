@@ -14,8 +14,12 @@
   logical succ
   integer itr
   
-  tx0 = T ! get initial guess
-  
+
+  tx0 = 200 ! T ! get initial guess
+ if(tx0>330.D0) then
+    tx0=300.D0  
+ endif
+
   if (tx0 <1D0) then ! obtain initial guess
     tx0 = 100D0 ! or use constant cp 
   endif 
@@ -60,7 +64,13 @@
   integer itr
   logical succ
   
-  tx0 = T ! get initial guess
+
+  tx0 = 200 ! T ! get initial guess
+ if(tx0 > 330.D0) THEN 
+    tx0=300.D0  
+ endif
+
+write(*,*) tx0
   
   if (tx0 <1D0) then ! obtain initial guess
     tx0 = 100D0 ! or use constant cp 
