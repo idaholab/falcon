@@ -507,7 +507,7 @@ SolidMechanics::computeDamage_v2(const int qp)
 // find max.shear
     shear_max=_strain_shear_vector[qp](0);
 
-    for(int i = 1 ; i < _dim ; ++i)
+    for(unsigned int i = 1 ; i < _dim ; ++i)
     {
       if(_strain_shear_vector[qp](i) > shear_max)
       {
@@ -817,7 +817,7 @@ SolidMechanics::computeDamage_v3(const int qp)
 // find max.shear
     shear_max=_strain_shear_vector[qp](0);
 
-    for(int i = 1 ; i < _dim ; ++i)
+    for(unsigned int i = 1 ; i < _dim ; ++i)
     {
       if(_strain_shear_vector[qp](i) > shear_max)
       {
@@ -869,7 +869,7 @@ Real s_max,s_min,ss_max,ss_min;
     ss_min = principal_stress(0,0);
 
 
-  for(int i = 1 ; i < _dim ; ++i)
+  for(unsigned int i = 1 ; i < _dim ; ++i)
   {
     if(principal_stress(i,0) > ss_max)
     {
@@ -884,7 +884,7 @@ Real s_max,s_min,ss_max,ss_min;
   }
   if(_dim == 3)
   {
-    for(int i=0 ; i < _dim ; ++i )
+    for(unsigned int i=0 ; i < _dim ; ++i )
     {
       if(i != ind_max && i != ind_min)   ind_mid = i;
     }
@@ -898,7 +898,7 @@ Real s_max,s_min,ss_max,ss_min;
  s_min = principal_strain(0,0);
 
 // find out minimum and maximum principal strain
-  for(int i = 1 ; i < _dim ; ++i)
+  for(unsigned int i = 1 ; i < _dim ; ++i)
   {
     if(principal_strain(i,0) > s_max)
     {
@@ -913,7 +913,7 @@ Real s_max,s_min,ss_max,ss_min;
   }
   if(_dim == 3)
   {
-    for(int i=0 ; i < _dim ; ++i )
+    for(unsigned int i=0 ; i < _dim ; ++i )
     {
       if(i != ind_max && i != ind_min)   ind_mid = i;
     }
@@ -1324,7 +1324,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
   Real s_min = principal_stress(0,0);
 
 // find out minimum and maximum principal stress
-  for(int i = 1 ; i < _dim ; ++i)
+  for(unsigned int i = 1 ; i < _dim ; ++i)
   {
     if(principal_stress(i,0) > s_max)
     {
@@ -1339,7 +1339,7 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
   }
   if(_dim == 3)
   {
-    for(int i=0 ; i < _dim ; ++i )
+    for(unsigned int i=0 ; i < _dim ; ++i )
     {
       if(i != ind_max && i != ind_min)   ind_mid = i;
     }
@@ -1348,9 +1348,9 @@ SolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
   //rearrange principal stresses and directional vectors
   int ind_temp;
   Real temp;
-  for(int i = 0 ; i < _dim ; ++i)  //for directional vector are stored as column not row, transpose to row form
+  for(unsigned int i = 0 ; i < _dim ; ++i)  //for directional vector are stored as column not row, transpose to row form
   {
-    for(int j = 0 ; j < _dim ; ++j)
+    for(unsigned int j = 0 ; j < _dim ; ++j)
     {
       temp       = e_vec(i,j);
       e_vec(i,j) = e_vec(j,i);
