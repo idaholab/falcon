@@ -1,4 +1,5 @@
 #include "PorousMedia.h"
+#include "Transient.h"
 
 template<>
 InputParameters validParams<PorousMedia>()
@@ -14,8 +15,11 @@ InputParameters validParams<PorousMedia>()
   params.addParam<Real>("gx",0.0,"x component of the gravity pressure vector");
   params.addParam<Real>("gy",0.0,"y component of the gravity pressure vector");
   params.addParam<Real>("gz",1.0,"z component of the gravity pressure vector");
-
-
+	//rkp edits
+  params.addParam<bool>("has_frac_perm",false,"switch for turning on/off disp dependent perm");
+  params.addCoupledVar("z_disp", "modify permeability by z displacement");
+  params.addParam<Real>("aperture",1.0e-7, "effective frac aperture");
+	  
   
   return params;
 }
@@ -39,16 +43,51 @@ PorousMedia::PorousMedia(const std::string & name,
    _density_rock(declareProperty<Real>("density_rock")),
    _compressibility(declareProperty<Real>("compressibility")),
    _gravity(declareProperty<Real>("gravity")),
-   _gravity_vector(declareProperty<RealVectorValue>("gravity_vector"))
+   _gravity_vector(declareProperty<RealVectorValue>("gravity_vector")),
+
+//rkp
+   _has_frac_perm(getParam<bool>("has_frac_perm")),
+   _z_disp(coupledValue("z_disp")),
+   _z_disp_old(coupledValueOld("z_disp")),
+   _permeability_old(declarePropertyOld<Real>("permeability")),
+   _aperture(declareProperty<Real>("aperture"))
+
+
 { }
 
 void
 PorousMedia::computeProperties()
 {
+	Real aperture_old, aperture_change, aperture_new;
+	
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
 //rock properties
-    _permeability[qp]         = _input_permeability;
+	  
+	  //rkp
+	  if(_has_frac_perm)
+	  {
+		  if (_t_step == 1)
+		    {//std::cout << _t_step;
+			  _permeability[qp] = _input_permeability;
+			  _aperture[qp] = std::sqrt(_input_permeability*12) ;
+			}
+		  else
+		  { 
+			  aperture_old = std::sqrt(_permeability_old[qp]*12) ;
+			  aperture_change = std::abs(_z_disp[qp]-_z_disp_old[qp]);
+			  _aperture[qp] = aperture_old+aperture_change;
+			 // std::cerr << aperture_old <<"  "<< aperture_change<<"  " << aperture_new << ".\n";
+			  _permeability[qp] = pow(_aperture[qp],2)/12;	
+		  }
+	  }
+	  
+	  //rkp
+	  if(_has_frac_perm==false)
+	  {
+      _permeability[qp]         = _input_permeability;
+	  }
+	  
     _material_porosity[qp]    = _input_material_porosity;
     _density_rock[qp]         = _input_density_rock;    
 

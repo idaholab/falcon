@@ -110,6 +110,8 @@
 #include "SolidMechanics.h"
 #include "Geothermal.h"
 
+#include "PermeabilityAux.h"
+#include "ApertureAux.h"
 
 namespace Falcon
 {
@@ -211,6 +213,8 @@ namespace Falcon
     registerMaterial(SolidMechanics);
     registerMaterial(Geothermal);
    
+registerAux(PermeabilityAux);
+registerAux(ApertureAux);
     
   }
 }

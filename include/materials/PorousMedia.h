@@ -39,7 +39,11 @@ protected:
   MaterialProperty<Real> & _compressibility;
   MaterialProperty<Real> & _gravity;
   MaterialProperty<RealVectorValue> & _gravity_vector;
-
+  bool _has_frac_perm; 
+  VariableValue & _z_disp;
+  VariableValue & _z_disp_old;
+  MaterialProperty<Real> & _permeability_old;
+	  MaterialProperty<Real> & _aperture;
 };
 
 
