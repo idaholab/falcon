@@ -22,13 +22,13 @@ int main (int argc, char** argv)
   Moose::perf_log.push("main()","Falcon");
 
   MooseInit init (argc, argv);
-  Parser p;
 
   srand(libMesh::processor_id());
 
   Falcon::registerObjects();
   // Associate Parser Syntax
-  Moose::associateSyntax(p);
+  Moose::associateSyntax();
+  Parser p(Moose::syntax);
 
   // Parse commandline and return inputfile filename if appropriate
   std::string input_filename = p.parseCommandLine();
