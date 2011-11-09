@@ -27,7 +27,7 @@ include $(MOOSE_DIR)/build.mk
 # deps
 include $(MOOSE_DIR)/moose.mk
 
-# F90 module dependancy rules
+# F90 module dependency rules
 $(CURR_DIR)/src/Water_Steam_EOS/water_steam_phase_prop.f90: $(CURR_DIR)/src/Water_Steam_EOS/water_eos.$(obj-suffix)
 $(CURR_DIR)/src/Water_Steam_EOS/water_steam_phase_prop.f90: $(CURR_DIR)/src/Water_Steam_EOS/IAPWS97.$(obj-suffix)
 
