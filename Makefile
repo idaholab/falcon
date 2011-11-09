@@ -16,20 +16,16 @@
 # Note: Make sure that there is no whitespace after the word 'yes' if enabling
 # an application
 ###############################################################################
-CURR_DIR	?= $(shell pwd)
-ROOT_DIR  ?= $(shell dirname `pwd`)
-MOOSE_DIR	?= $(ROOT_DIR)/moose
+CURR_DIR   ?= $(shell pwd)
+ROOT_DIR   ?= $(shell dirname `pwd`)
+MOOSE_DIR  ?= $(ROOT_DIR)/moose
+FALCON_DIR ?= $(ROOT_DIR)/falcon
 
-MAKE_LIBRARY := no
 APPLICATION_NAME := falcon
+
 include $(MOOSE_DIR)/build.mk
-
-# deps
 include $(MOOSE_DIR)/moose.mk
-
-# F90 module dependency rules
-$(CURR_DIR)/src/Water_Steam_EOS/water_steam_phase_prop.f90: $(CURR_DIR)/src/Water_Steam_EOS/water_eos.$(obj-suffix)
-$(CURR_DIR)/src/Water_Steam_EOS/water_steam_phase_prop.f90: $(CURR_DIR)/src/Water_Steam_EOS/IAPWS97.$(obj-suffix)
+include $(FALCON_DIR)/falcon.mk
 
 ###############################################################################
 # Additional special case targets should be added here
