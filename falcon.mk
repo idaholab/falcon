@@ -25,7 +25,7 @@ falcon_app_objects := $(patsubst %.C, %.$(obj-suffix), $(FALCON_DIR)/src/main.C)
 
 all:: $(falcon_LIB)
 
-# build rule for lib RAT 
+# build rule for lib FALCON
 ifeq ($(enable-shared),yes)
 # Build dynamic library
 $(falcon_LIB): $(falcon_objects)
@@ -44,11 +44,11 @@ $(falcon_LIB): $(falcon_objects)
 endif
 endif
 
-# include RAT dep files
+# include FALCON dep files
 -include $(FALCON_DIR)/src/*/*.d
 
 
-# how to build RAT application
+# how to build FALCON application
 ifeq ($(APPLICATION_NAME),falcon)
 all:: falcon
 
