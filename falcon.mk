@@ -6,7 +6,6 @@ falcon_INCLUDE  := $(foreach i, $(falcon_INC_DIRS), -I$(i))
 libmesh_INCLUDE := $(falcon_INCLUDE) $(libmesh_INCLUDE)
 
 falcon_LIB := $(FALCON_DIR)/libfalcon-$(METHOD)$(libext)
-LIBS += $(falcon_LIB)
 
 falcon_APP := $(FALCON_DIR)/falcon-$(METHOD)
 
@@ -56,7 +55,7 @@ falcon: $(falcon_APP)
 
 $(falcon_APP): $(moose_LIB) $(falcon_LIB) $(falcon_app_objects)
 	@echo "Linking "$@"..."
-	@$(libmesh_CXX) $(libmesh_CXXFLAGS) $(falcon_app_objects) -o $@ $(LIBS) $(libmesh_LIBS) $(libmesh_LDFLAGS) $(ADDITIONAL_LIBS)
+	@$(libmesh_CXX) $(libmesh_CXXFLAGS) $(falcon_app_objects) -o $@  $(falcon_LIB) $(moose_LIB) $(libmesh_LIBS) $(libmesh_LDFLAGS) $(ADDITIONAL_LIBS)
 
 -include $(FALCON_DIR)/src/*.d
 endif

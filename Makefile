@@ -24,8 +24,8 @@ FALCON_DIR ?= $(ROOT_DIR)/falcon
 APPLICATION_NAME := falcon
 
 include $(MOOSE_DIR)/build.mk
-include $(FALCON_DIR)/falcon.mk
 include $(MOOSE_DIR)/moose.mk
+include $(FALCON_DIR)/falcon.mk
 
 ###############################################################################
 # Additional special case targets should be added here
