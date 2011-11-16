@@ -57,6 +57,7 @@
 ////////////////////////////////////////////////////////////////
 
 #include "SourceSink.h"
+#include "EnergyExtraction.h"
 
 //auxkernels
 #include "CoupledDensityAux_PT.h"          // water density as function of (P,T)
@@ -163,6 +164,8 @@ namespace Falcon
 
 //source sink
     registerKernel(SourceSink);
+    registerKernel(EnergyExtraction);  
+      
 //auxkernels
     registerAux(CoupledDdensityDTAux_PT);
     registerAux(CoupledDdensityDPAux_PT);    
