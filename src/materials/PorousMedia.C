@@ -47,8 +47,8 @@ PorousMedia::PorousMedia(const std::string & name,
 
 //rkp
    _has_frac_perm(getParam<bool>("has_frac_perm")),
-   _z_disp(coupledValue("z_disp")),
-   _z_disp_old(coupledValueOld("z_disp")),
+   _z_disp( _has_frac_perm? coupledValue("z_disp"): _zero),
+   _z_disp_old( _has_frac_perm? coupledValueOld("z_disp"): _zero),
    _permeability_old(declarePropertyOld<Real>("permeability")),
    _aperture(declareProperty<Real>("aperture"))
 

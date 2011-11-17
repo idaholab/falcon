@@ -149,7 +149,7 @@ write(*,*) tx0
 ! if(h<1D-1) h=1D-1
  if(p> ps350c )then 
    if(h<=hw350c)iphase=1
-   if(Ts>370D0) iphase=2    
+!   if(Ts>370D0) iphase=2    
   else
     succ= cowat(Ts,p, dw, hw)
     hw=hw * energyscale
@@ -158,6 +158,7 @@ write(*,*) tx0
   
     if(h >= hg)then
       iphase = 2
+      print *,'steam::', p, h,hg
     else if(h <= hw)then
       iphase=1
     else
@@ -335,10 +336,10 @@ dhsdp=(hg1-hg0)/delp
 ! determine phase condition    
   ierror=0
   succ= TSAT( p, Ts)
- 
+ iphase=1
  if(p> ps350c )then 
    if(h<=hw350c)iphase=1
-   if(Ts>370) iphase=2    
+!   if(Ts>370) iphase=2    
   else
     succ= cowat(Ts,p, dw, hw)
     hw=hw * energyscale
@@ -347,6 +348,7 @@ dhsdp=(hg1-hg0)/delp
   
     if(h >= hg)then
       iphase = 2
+       print *,'steam2::', p, h,hg
     else if(h <= hw)then
       iphase=1
     else
