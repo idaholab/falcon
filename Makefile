@@ -18,8 +18,10 @@
 ###############################################################################
 CURR_DIR   ?= $(shell pwd)
 ROOT_DIR   ?= $(shell dirname `pwd`)
-MOOSE_DIR  ?= $(ROOT_DIR)/moose
-FALCON_DIR ?= $(ROOT_DIR)/falcon
+
+LIBMESH_DIR ?= $(ROOT_DIR)/libmesh
+MOOSE_DIR   ?= $(ROOT_DIR)/moose
+FALCON_DIR  ?= $(ROOT_DIR)/falcon
 
 APPLICATION_NAME := falcon
 
