@@ -575,6 +575,7 @@ type = CoupledTemperatureAux
 [Output]
  file_base = out
  output_initial = true
+  elemental_as_nodal = true
  interval = 1
  exodus = true
 
