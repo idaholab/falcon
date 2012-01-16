@@ -57,8 +57,15 @@ Real SourceSink::computeQpResidual()
         _q_point[_qp](1) >= ymin && _q_point[_qp](1) <= ymax &&
         _q_point[_qp](2) >= zmin && _q_point[_qp](2) <= zmax )
     {
-//      std::cout << "_E=" <<xmax<<" "<<ymax<<" "<<zmax<<" "<<_value<<"\n";
-      return -_test[_i][_qp]*_value/_range_param[0]/_range_param[1]/_range_param[2];
+      
+
+        Real strength = -_test[_i][_qp]*_value/_range_param[0]/_range_param[1]/_range_param[2];
+
+     // if (strength !=0)
+     //   std::cout << "_E= " <<_q_point[_qp](0)<<" "<<_q_point[_qp](1)<<" "<<_q_point[_qp](2)<<" "<<_value<< " " <<strength<<"\n";
+
+	return strength;
+    //	return -_test[_i][_qp]*_value/_range_param[0]/_range_param[1]/_range_param[2];
     }
     
     else
