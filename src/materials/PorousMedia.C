@@ -81,17 +81,22 @@ PorousMedia::computeProperties()
 			}
 		  else
 		  { 
-			  aperture_old = std::sqrt(_permeability_old[qp]*12) ;
-			  aperture_change = std::abs(_z_disp[qp]-_z_disp_old[qp]);
+			 // aperture_old = std::sqrt(_permeability_old[qp]*12) ;
+			//  aperture_change = std::abs(_z_disp[qp]-_z_disp_old[qp]);
 			//  _aperture[qp] = std::sqrt(_input_permeability*12) ; 
-              aperture_change = _strain[_qp](0)+_strain[_qp](1);
+            //  _strain[_qp] = strain_normal_vector
+              aperture_change = _strain[qp](0)+_strain[qp](1);
               if (_dim == 3) 
-                {aperture_change += _strain[_qp](2);}
+                {aperture_change += _strain[qp](2);}
               //  _aperture[qp] += (1.0-_aperture[qp]) * aperture_change;
-			 // std::cerr << aperture_old <<"  "<< aperture_change<<"  " << aperture_new << ".\n";
+              
+              //if (aperture_change !=0)
+              //    std::cout << "Aperture Change= " <<_q_point[qp](0)<<" "<<_q_point[qp](1)<<" "<<_q_point[qp](2)<<" "<<aperture_change<< "\n";
+              
+			  //std::cout << aperture_change<< ".\n";
                 porosity =  _input_material_porosity;
                 _material_porosity[qp]= porosity +  aperture_change*(1.0- porosity);                
-                _permeability[qp] = _permeability[qp] * pow((_material_porosity[qp]/_input_material_porosity),3);	
+                _permeability[qp] = _input_permeability * pow((_material_porosity[qp]/_input_material_porosity),3);	
 		  }
 	  }
 	  
