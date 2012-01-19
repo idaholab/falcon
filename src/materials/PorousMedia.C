@@ -20,7 +20,7 @@ InputParameters validParams<PorousMedia>()
   params.addParam<bool>("has_frac_perm",false,"switch for turning on/off disp dependent perm");
   params.addCoupledVar("z_disp", "modify permeability by z displacement");
   params.addParam<Real>("aperture",1.0e-7, "effective frac aperture");
-  params.addParam<RealVectorValue>("strain",1.0e-7, "effective frac aperture");	  
+//  params.addParam<RealVectorValue>("strain",1.0e-7, "effective frac aperture");	  
   
   return params;
 }
@@ -51,8 +51,8 @@ PorousMedia::PorousMedia(const std::string & name,
    _z_disp( _has_frac_perm? coupledValue("z_disp"): _zero),
    _z_disp_old( _has_frac_perm? coupledValueOld("z_disp"): _zero),
    _permeability_old(declarePropertyOld<Real>("permeability")),
-   _aperture(declareProperty<Real>("aperture")),
-   _strain(getMaterialProperty<RealVectorValue>("strain_normal_vector"))
+   _aperture(declareProperty<Real>("aperture")) //,
+ //  _strain(declareProperty<RealVectorValue>("strain"))
 
 { }
 
@@ -75,17 +75,17 @@ PorousMedia::computeProperties()
 			}
 		  else
 		  { 
-			 // aperture_old = std::sqrt(_permeability_old[qp]*12) ;
-			//  aperture_change = std::abs(_z_disp[qp]-_z_disp_old[qp]);
-			  _aperture[qp] = std::sqrt(_input_permeability*12) ; 
-              aperture_change = _strain[_qp](0)+_strain[_qp](1);
-              if (_dim == 3) 
-              {aperture_change += _strain[_qp](2);}
-               _aperture[qp] += (1.0-_aperture[qp]) * aperture_change;
+			  aperture_old = std::sqrt(_permeability_old[qp]*12) ;
+			  aperture_change = std::abs(_z_disp[qp]-_z_disp_old[qp]);
+			//  _aperture[qp] = std::sqrt(_input_permeability*12) ; 
+            //  aperture_change = _strain[_qp](0)+_strain[_qp](1);
+              //if (_dim == 3) 
+              //{aperture_change += _strain[_qp](2);}
+              // _aperture[qp] += (1.0-_aperture[qp]) * aperture_change;
 			 // std::cerr << aperture_old <<"  "<< aperture_change<<"  " << aperture_new << ".\n";
-                porosity =  _input_material_porosity;
-                _material_porosity[qp]= porosity +  aperture_change*(1.0- porosity);                
-               _permeability[qp] = _permeability[qp] * pow((_material_porosity[qp]/_input_material_porosity),3);	
+              //  porosity =  _input_material_porosity;
+              //  _material_porosity[qp]= porosity +  aperture_change*(1.0- porosity);                
+              // _permeability[qp] = _permeability[qp] * pow((_material_porosity[qp]/_input_material_porosity),3);	
 		  }
 	  }
 	  
