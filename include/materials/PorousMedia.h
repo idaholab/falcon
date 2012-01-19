@@ -44,7 +44,7 @@ protected:
   VariableValue & _z_disp_old;
   MaterialProperty<Real> & _permeability_old;
   MaterialProperty<Real> & _aperture;
- // MaterialProperty<RealVectorValue> & _strain;   
+  MaterialProperty<RealVectorValue> & _strain;   
 };
 
 
