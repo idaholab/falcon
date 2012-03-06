@@ -44,7 +44,7 @@ InputParameters validParams<SolidMechanics>()
   //smear crack model based on Mohr-Coulomb failure
   params.addParam<Real>("cohesion",0.0,"Rock's Cohesion strength");
   params.addParam<Real>("friction_angle",0.1,"Rock's internal friction angle");
-  
+
 //stress/strain dependent permeability-----------------------------------------------------------------------------
   params.addParam<bool>("has_damage_couple_permeability",false,"switch for couple damage with porosity or not");
   params.addParam<Real>("damage_couple_permeability_coeff1",2.0,"the first coeff for coupling damage with porosity");
@@ -92,7 +92,7 @@ SolidMechanics::SolidMechanics(const std::string & name,
    _input_strain_broken(getParam<Real>("strain_broken")),
    _damage_a1(getParam<Real>("input_damage_a1")),
    _damage_a2(getParam<Real>("input_damage_a2")),
-   
+
    _cohesion2(getParam<Real>("cohesion2")),
    _friction_angle2(getParam<Real>("friction_angle2")),
    _critical_stress(getParam<Real>("critical_stress")),
@@ -112,7 +112,7 @@ SolidMechanics::SolidMechanics(const std::string & name,
    _has_damage_couple_permeability(getParam<bool>("has_damage_couple_permeability")),
    _damage_couple_permeability_coeff1(getParam<Real>("damage_couple_permeability_coeff1")),
    _damage_couple_permeability_coeff2(getParam<Real>("damage_couple_permeability_coeff2")),
-   
+
    _total_strain (_dim,_dim),
    _total_stress (_dim,_dim),
    _total_stress1(_dim,_dim),
@@ -125,7 +125,7 @@ SolidMechanics::SolidMechanics(const std::string & name,
    _biot_coeff(declareProperty<Real>("biot_coeff")),
    _biot_modulus(declareProperty<Real>("biot_modulus")),
    _damage_coeff(declareProperty<Real>("damage_coeff")),
-   
+
    _damage_indicator(declareProperty<int>("damage_indicator")),
    _damage_type_indicator(declareProperty<int>("damage_type_indicator")),
 
@@ -189,7 +189,7 @@ SolidMechanics::SolidMechanics(const std::string & name,
 
    _bond_damage_factor12 (declareProperty<Real>("bond_damage_factor12")),
    _bond_damage_factor12_old (declarePropertyOld<Real>("bond_damage_factor12")),
-   
+
 
    _crack_flags(NULL),
    _crack_flags_old(NULL)
@@ -201,7 +201,7 @@ SolidMechanics::SolidMechanics(const std::string & name,
     _crack_flags     = &declareProperty<RealVectorValue>("crack_flags");
     _crack_flags_old = &declarePropertyOld<RealVectorValue>("crack_flags");
   }
-  
+
 //  srand((unsigned)time(0));  //initialize random seed
 }
 //////////////////////////////////////////////////////////////////////////
@@ -220,26 +220,26 @@ SolidMechanics::computeProperties()
 //       _youngs_modulus[qp] = _input_youngs_modulus + _e_rand;
 //       std::cout << "_E=" << _youngs_modulus[qp] <<"\n";
 //     }
-    
+
 //   }
-  
+
 for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
 //    _permeability[qp] = _input_permeability;
-    
+
     _youngs_modulus[qp] = _input_youngs_modulus;
-      
+
     _alpha[qp]            = _input_thermal_expansion;
 
     _damage_coeff[qp]     = std::max(_input_damage_coeff, _damage_coeff[qp]);
-    
+
     if(_has_damage_couple_permeability)
     {
      if (_damage_coeff[qp] > 1.0e-10)
        _permeability[qp] = _input_permeability*_damage_couple_permeability_coeff2;
      else
        _permeability[qp] = _input_permeability;
-     
+
 //     _permeability[qp] = _input_permeability*(1.0 + std::pow(_damage_coeff[qp] , _damage_couple_permeability_coeff1)*_damage_couple_permeability_coeff2);
     }
 
@@ -249,7 +249,7 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
       _thermal_strain[qp] = _input_thermal_expansion*(_temperature[qp] - _input_t_ref);
     else
       _thermal_strain[qp] = 0.0;
-      
+
     _poissons_ratio[qp]   = _input_poissons_ratio;
     _biot_coeff[qp]       = _input_biot_coeff;
     _biot_modulus[qp]     = _input_biot_modulus;
@@ -259,7 +259,7 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
       _bond_nstiff[qp] = 3.*_youngs_modulus[qp]/(4.*3.14159265*(1.-2.*_poissons_ratio[qp]));
       _bond_sstiff[qp] = _bond_nstiff[qp]*(1.-4*_poissons_ratio[qp])/(1.+_poissons_ratio[qp]);
     }
-    
+
     if(_dim==2)
     {
         // for plane-stress
@@ -316,7 +316,7 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
 // first try for strain and stress vectors
     if (_has_x_disp && _has_y_disp)
     {
-      
+
       _E  =  (1.0-_damage_coeff[qp])*_youngs_modulus[qp];
       _nu =  _poissons_ratio[qp];
       _c1 = _E*(1.-_nu)/(1.+_nu)/(1.-2.*_nu);
@@ -336,7 +336,7 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
 
 
     }
-   
+
 //newly added for handling damage couple with porosity/permeability
 
    if(_has_damage_couple_permeability)
@@ -345,11 +345,11 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
        _permeability[qp] = _input_permeability*_damage_couple_permeability_coeff2;
      else
        _permeability[qp] = _input_permeability;
-     
+
 //     _permeability[qp] = _input_permeability*(1.0 + std::pow(_damage_coeff[qp] , _damage_couple_permeability_coeff1)*_damage_couple_permeability_coeff2);
    }
 
-   //smear crack model   
+   //smear crack model
    if (_has_crack)
    {
       if (_t_step == 1) // && _critical_crack_strain > 0)
@@ -415,7 +415,7 @@ SolidMechanics::computeDamage(const int qp)
   _strain_history[qp]   = std::max(_input_strain_initialize_damage,_strain_history[qp]);
   _damage_coeff[qp]     = std::max(_input_damage_coeff, _damage_coeff[qp]);
 
-// effect  
+// effect
   if(_dim==2)
   {
 //        _effective_strain = std::max(std::abs(_grad_x_disp[qp](0)) ,std::abs( _grad_y_disp[qp](1)));
@@ -444,8 +444,8 @@ SolidMechanics::computeDamage(const int qp)
   {
     if(_effective_strain <= _strain_history[qp])//no further damaging
     {
-      _damage_coeff[qp]   = _damage_coeff[qp];
-      _strain_history[qp] = _strain_history[qp];
+//      _damage_coeff[qp]   = _damage_coeff[qp];
+//      _strain_history[qp] = _strain_history[qp];
     }
     else //damaging continues
     {
@@ -697,8 +697,8 @@ if (_damage_indicator[qp] == 1 && _damage_type_indicator[qp] == 1)
   {
     if(_effective_strain <= _strain_history[qp])//no further damaging
     {
-      _damage_coeff[qp]   = _damage_coeff[qp];
-      _strain_history[qp] = _strain_history[qp];
+//      _damage_coeff[qp]   = _damage_coeff[qp];
+//      _strain_history[qp] = _strain_history[qp];
     }
     else //damaging continues
     {
@@ -742,8 +742,8 @@ if (_damage_indicator[qp] == 1 && _damage_type_indicator[qp] == 2)
   {
     if(_effective_strain <= _strain_history[qp])//no further damaging
     {
-      _damage_coeff[qp]   = _damage_coeff[qp];
-      _strain_history[qp] = _strain_history[qp];
+//      _damage_coeff[qp]   = _damage_coeff[qp];
+//      _strain_history[qp] = _strain_history[qp];
     }
     else //damaging continues
     {
@@ -958,8 +958,8 @@ if (_damage_indicator[qp] == 1 && _damage_type_indicator[qp] == 1)
   {
     if(_effective_strain <= _strain_history[qp])//no further damaging
     {
-      _damage_coeff[qp]   = _damage_coeff[qp];
-      _strain_history[qp] = _strain_history[qp];
+//      _damage_coeff[qp]   = _damage_coeff[qp];
+//      _strain_history[qp] = _strain_history[qp];
     }
     else //damaging continues
     {
