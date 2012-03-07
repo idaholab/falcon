@@ -19,12 +19,8 @@
 CURR_DIR   ?= $(shell pwd)
 ROOT_DIR   ?= $(shell dirname `pwd`)
 
-ifeq ($(MOOSE_DEV),true)
-	MOOSE_DIR ?= $(ROOT_DIR)/devel/moose
-else
-	MOOSE_DIR ?= $(ROOT_DIR)/moose
-endif
 LIBMESH_DIR ?= $(ROOT_DIR)/libmesh
+MOOSE_DIR   ?= $(ROOT_DIR)/moose
 FALCON_DIR  ?= $(ROOT_DIR)/falcon
 
 APPLICATION_NAME := falcon
