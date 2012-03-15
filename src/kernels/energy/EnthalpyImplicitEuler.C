@@ -33,7 +33,8 @@ EnthalpyImplicitEuler::EnthalpyImplicitEuler(const std::string & name, InputPara
    _density_old(getMaterialProperty<Real>("density_old")),
 
    _porosity(getMaterialProperty<Real>("porosity")),
-   _density_rock(getMaterialProperty<Real>("density_rock"))
+   _density_rock(getMaterialProperty<Real>("density_rock")),
+   _u_old(valueOld())
    
 
 {}

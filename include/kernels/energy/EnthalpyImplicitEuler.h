@@ -47,6 +47,7 @@ protected:
 
   MaterialProperty<Real> & _porosity;
   MaterialProperty<Real> & _density_rock;
-  
+
+  VariableValue & _u_old;
 };
 #endif //ENTHALPYIMPLICITEULER

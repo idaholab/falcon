@@ -36,10 +36,10 @@ MassFluxTimeDerivative::MassFluxTimeDerivative(const std::string & name, InputPa
    _enthalpy_old(coupledValueOld("enthalpy")),
    _h_var(coupled("enthalpy")),
    _ddensitydH_P(coupledValue("ddensitydH_P")),
-   _porosity (getMaterialProperty<Real>("material_porosity"))
+   _porosity (getMaterialProperty<Real>("material_porosity")),
 //   _porosity(coupledValue("porosity")),
 //   _porosity_old(coupledValueOld("porosity"))
-
+   _u_old(valueOld())
 {}
 
 Real

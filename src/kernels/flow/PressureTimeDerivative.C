@@ -42,9 +42,10 @@ PressureTimeDerivative::PressureTimeDerivative(const std::string & name, InputPa
  _porosity (getMaterialProperty<Real>("material_porosity")),
  _compressibility(getMaterialProperty<Real>("compressibility")),
  _biot_coeff(getMaterialProperty<Real>("biot_coeff")),
- _biot_modulus(getMaterialProperty<Real>("biot_modulus"))
+ _biot_modulus(getMaterialProperty<Real>("biot_modulus")),
 //   _porosity(coupledValue("porosity")),
 //   _porosity_old(coupledValueOld("porosity"))
+ _u_old(valueOld())
 {}
 
 Real

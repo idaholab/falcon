@@ -51,5 +51,6 @@ protected:
     MaterialProperty<Real> & _specific_heat_rock;
     MaterialProperty<Real> & _density_rock;
     
+  VariableValue & _u_old;
 };
 #endif //ENTHALPYTIMEDERIVATIVE

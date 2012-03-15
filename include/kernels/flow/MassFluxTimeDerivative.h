@@ -46,5 +46,6 @@ protected:
 //  VariableValue  & _porosity;
 //  VariableValue  & _porosity_old;
 
+  VariableValue & _u_old;
 };
 #endif //MASSFLUXTIMEDERIVATIVE

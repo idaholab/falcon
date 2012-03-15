@@ -35,10 +35,10 @@ TemperatureTimeDerivativeFluid::TemperatureTimeDerivativeFluid(const std::string
    _porosity(coupledValue("porosity")),
    _porosity_old(coupledValueOld("porosity")),
 
-   _specific_heat_water(getMaterialProperty<Real>("specific_heat_water"))
+   _specific_heat_water(getMaterialProperty<Real>("specific_heat_water")),
    //  _specific_heat_rock(getMaterialProperty<Real>("specific_heat_rock")),
 //   _density_rock(getMaterialProperty<Real>("density_rock"))
-   
+   _u_old(valueOld())
 {}
 
 Real
