@@ -35,12 +35,6 @@
 #include "Gravity.h"
 
 ///////////////////////////////////////////////////////////////
-//      Single phase isothermal formulation: pressure        //
-///////////////////////////////////////////////////////////////
-#include "PressureTimeDerivative.h"
-#include "FluidFluxPressure.h"
-
-///////////////////////////////////////////////////////////////
 //      Single phase formulation: pressure & temperature     //
 ///////////////////////////////////////////////////////////////
 #include "TemperatureTimeDerivative.h"
@@ -52,26 +46,6 @@
 #include "MassFluxTimeDerivative_PT.h"
 #include "WaterMassFluxPressure_PT.h"
 #include "WaterMassFluxElevation_PT.h"
-
-//////////////////////////////////////////////////////////////      
-//       Two phase formulation: pressure & enthalpy         //
-//////////////////////////////////////////////////////////////
-#include "MassFluxTimeDerivative.h"
-#include "WaterMassFluxPressure.h"
-#include "SteamMassFluxPressure.h"
-#include "WaterMassFluxElevation.h"
-
-#include "EnthalpyTimeDerivative.h"
-#include "EnthalpyDiffusion.h"
-#include "EnthalpyConvectionWater.h"
-#include "EnthalpyConvectionSteam.h"
-
-////////////////////////////////////////////////////////////////
-///      Souce and Sink, volume avagerged                     //
-////////////////////////////////////////////////////////////////
-
-#include "SourceSink.h"
-#include "EnergyExtraction.h"
 
 //auxkernels
 #include "CoupledDensityAux_PT.h"          // water density as function of (P,T)
@@ -106,6 +80,8 @@
 
 #include "CoupledDwaterenthalpydP_HAux.h"
 #include "CoupledDsteamenthalpydP_HAux.h"
+
+#include "PressureTimeDerivative.h"
 
 //BCs
 #include "PressureNeumannBC2.h"
@@ -154,7 +130,6 @@ namespace Falcon
     registerKernel(Gravity);
 //isothermal flow for pressure field
     registerKernel(PressureTimeDerivative);
-    registerKernel(FluidFluxPressure);  
 //heat transport-PT formulation, single phase only
     registerKernel(TemperatureTimeDerivative);
     registerKernel(TemperatureTimeDerivativeFluid);
@@ -165,21 +140,6 @@ namespace Falcon
     registerKernel(MassFluxTimeDerivative_PT);
     registerKernel(WaterMassFluxPressure_PT);
     registerKernel(WaterMassFluxElevation_PT);
-//fluid-mass flow-two phase formulation      
-    registerKernel(MassFluxTimeDerivative);
-    registerKernel(WaterMassFluxPressure);
-    registerKernel(SteamMassFluxPressure);
-    registerKernel(WaterMassFluxElevation);
-//energy
-    registerKernel(EnthalpyTimeDerivative);
-    registerKernel(EnthalpyDiffusion);
-    registerKernel(EnthalpyConvectionWater);
-    registerKernel(EnthalpyConvectionSteam);
-
-//source sink
-    registerKernel(SourceSink);
-    registerKernel(EnergyExtraction);  
-      
 //auxkernels
     registerAux(CoupledDdensityDTAux_PT);
     registerAux(CoupledDdensityDPAux_PT);    
