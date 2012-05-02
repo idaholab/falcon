@@ -53,9 +53,9 @@ all:: falcon
 
 falcon: $(falcon_APP)
 
-$(falcon_APP): $(moose_LIB) $(falcon_LIB) $(falcon_app_objects)
+$(falcon_APP): $(moose_LIB) $(elk_MODULES) $(falcon_LIB) $(falcon_app_objects)
 	@echo "Linking "$@"..."
-	@$(libmesh_CXX) $(libmesh_CXXFLAGS) $(falcon_app_objects) -o $@  $(falcon_LIB) $(moose_LIB) $(libmesh_LIBS) $(libmesh_LDFLAGS) $(ADDITIONAL_LIBS)
+	@$(libmesh_CXX) $(libmesh_CXXFLAGS) $(falcon_app_objects) -o $@  $(falcon_LIB) $(elk_MODULES) $(moose_LIB) $(libmesh_LIBS) $(libmesh_LDFLAGS) $(ADDITIONAL_LIBS)
 
 -include $(FALCON_DIR)/src/*.d
 endif

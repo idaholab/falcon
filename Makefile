@@ -25,6 +25,7 @@ else
 	MOOSE_DIR ?= $(ROOT_DIR)/moose
 endif
 LIBMESH_DIR ?= $(ROOT_DIR)/libmesh
+ELK_DIR     ?= $(ROOT_DIR)/elk
 FALCON_DIR  ?= $(ROOT_DIR)/falcon
 
 APPLICATION_NAME := falcon
@@ -32,11 +33,12 @@ APPLICATION_NAME := falcon
 DEP_APPS    ?= $(shell $(MOOSE_DIR)/scripts/find_dep_apps.py $(APPLICATION_NAME))
 
 ################################## ELK MODULES ################################
-ALL_ELK_MODULES := yes
+FLUID_MASS_ENERGY_BALANCE := yes
 ###############################################################################
 
 include $(MOOSE_DIR)/build.mk
 include $(MOOSE_DIR)/moose.mk
+include $(ELK_DIR)/elk.mk
 include $(FALCON_DIR)/falcon.mk
 
 ###############################################################################

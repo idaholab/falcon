@@ -21,9 +21,13 @@
 // Parser
 #include "Parser.h"
 #include "MooseSyntax.h"
+#include "ElkSyntax.h"
 
 // C++ include files
 #include <iostream>
+
+//Elk Includes
+#include "FluidMassEnergyBalanceModule.h"
 
 // libMesh includes
 #include "perf_log.h"
@@ -40,6 +44,8 @@ int main (int argc, char** argv)
   srand(libMesh::processor_id());
 
   Falcon::registerObjects();
+
+  Elk::FluidMassEnergyBalance::registerObjects();
   // Associate Parser Syntax
   Moose::associateSyntax();
   Parser p(Moose::syntax);
