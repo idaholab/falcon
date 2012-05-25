@@ -649,10 +649,10 @@ t_ref                =   200
 # petsc_options_value =  ' basic  hypre boomeramg 201' 
 
  l_max_its  =  60
- l_tol =  1.0e-6
+# l_tol =  1.0e-6
  nl_max_its =  12
- nl_rel_tol =  1e-6
- nl_abs_tol = 1e-8
+# nl_rel_tol =  1e-6
+# nl_abs_tol = 1e-8
  num_steps = 3
  dt = 1.0
  dtmax= 864000.0
