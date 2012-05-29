@@ -260,10 +260,10 @@
 # petsc_options_iname =  ' -snes_ls -pc_type -pc_hypre_type -ksp_gmres_restart'
 # petsc_options_value =  ' basic  hypre boomeramg 201' 
  l_max_its  =  100
- #l_tol =  1.0e-6
+# l_tol =  1.0e-6
  nl_max_its =  12
- #nl_rel_tol =  1e-6
- nl_abs_tol = 1e-10
+# nl_rel_tol =  1e-6
+# nl_abs_tol = 1e-10
  num_steps = 5 
  dt = 10.0
  dtmax= 864000.0

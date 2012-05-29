@@ -676,7 +676,7 @@ t_ref                =   200
 [Output]
  file_base = out
  output_initial = true
- interval = 1
+# interval = 1
  exodus = true
  print_out_info = true
  [ ]
