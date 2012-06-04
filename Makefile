@@ -34,6 +34,7 @@ DEP_APPS    ?= $(shell $(MOOSE_DIR)/scripts/find_dep_apps.py $(APPLICATION_NAME)
 
 ################################## ELK MODULES ################################
 FLUID_MASS_ENERGY_BALANCE := yes
+SOLID_MECHANICS := yes
 ###############################################################################
 
 include $(MOOSE_DIR)/build.mk
