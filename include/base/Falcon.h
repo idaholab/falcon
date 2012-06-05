@@ -17,9 +17,6 @@
 
 namespace Falcon
 {
-  /**
-   * Registers all Kernels and BCs
-   */
   void registerObjects();
 }
 

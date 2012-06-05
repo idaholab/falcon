@@ -12,22 +12,18 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
+#include "Moose.h"
+#include "Falcon.h"
 #include "FalconApp.h"
-#include "MooseInit.h"
-// libMesh includes
-#include "perf_log.h"
 
-PerfLog Moose::perf_log("Falcon");
+#include "FluidMassEnergyBalanceModule.h"
 
- // Begin the main program.
-int main (int argc, char** argv)
+FalconApp::FalconApp(int argc, char * argv[]) :
+    MooseApp(argc, argv)
 {
-  Moose::perf_log.push("main()","Falcon");
+  srand(libMesh::processor_id());
 
-  MooseInit init (argc, argv);
-  FalconApp app(argc, argv);
-  app.run();
-
-  return 0;
+  init();
+  Elk::FluidMassEnergyBalance::registerObjects();
+  Falcon::registerObjects();
 }
-

@@ -12,22 +12,15 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#include "FalconApp.h"
-#include "MooseInit.h"
-// libMesh includes
-#include "perf_log.h"
+#ifndef FALCONAPP_H
+#define FALCONAPP_H
 
-PerfLog Moose::perf_log("Falcon");
+#include "MooseApp.h"
 
- // Begin the main program.
-int main (int argc, char** argv)
+class FalconApp : public MooseApp
 {
-  Moose::perf_log.push("main()","Falcon");
+public:
+  FalconApp(int argc, char * argv[]);
+};
 
-  MooseInit init (argc, argv);
-  FalconApp app(argc, argv);
-  app.run();
-
-  return 0;
-}
-
+#endif //FALCONAPP_H

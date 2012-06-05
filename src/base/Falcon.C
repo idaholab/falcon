@@ -13,6 +13,7 @@
 /****************************************************************/
 
 #include "Moose.h"
+#include "Falcon.h"
 #include "Factory.h"
 
 //kernels
@@ -106,92 +107,93 @@
 
 namespace Falcon
 {
-  void registerObjects()
-  {
-    Moose::registerObjects();
-    
+
+void
+registerObjects()
+{
 //mechanics
-    registerNamedKernel(SolidMechXFalcon, "SolidMechXFalcon");
-    registerNamedKernel(SolidMechYFalcon, "SolidMechYFalcon");
-    registerNamedKernel(SolidMechZFalcon, "SolidMechZFalcon");
-    registerKernel(SolidMechImplicitEuler);
+  registerNamedKernel(SolidMechXFalcon, "SolidMechXFalcon");
+  registerNamedKernel(SolidMechYFalcon, "SolidMechYFalcon");
+  registerNamedKernel(SolidMechZFalcon, "SolidMechZFalcon");
+  registerKernel(SolidMechImplicitEuler);
 /*
-    registerNamedKernel(SolidMechTempCoupleXFalcon, "SolidMechTempCoupleX");
-    registerNamedKernel(SolidMechTempCoupleYFalcon, "SolidMechTempCoupleY");
-    registerNamedKernel(SolidMechTempCoupleZFalcon, "SolidMechTempCoupleZ");
+  registerNamedKernel(SolidMechTempCoupleXFalcon, "SolidMechTempCoupleX");
+  registerNamedKernel(SolidMechTempCoupleYFalcon, "SolidMechTempCoupleY");
+  registerNamedKernel(SolidMechTempCoupleZFalcon, "SolidMechTempCoupleZ");
 */
-    registerKernel(SolidMechTempCoupleXFalcon);
-    registerKernel(SolidMechTempCoupleYFalcon);
-    registerKernel(SolidMechTempCoupleZFalcon);
+  registerKernel(SolidMechTempCoupleXFalcon);
+  registerKernel(SolidMechTempCoupleYFalcon);
+  registerKernel(SolidMechTempCoupleZFalcon);
 
-    registerKernel(SolidMechPoroCoupleX);
-    registerKernel(SolidMechPoroCoupleY);
-    registerKernel(SolidMechPoroCoupleZ);
-    registerKernel(Gravity);
+  registerKernel(SolidMechPoroCoupleX);
+  registerKernel(SolidMechPoroCoupleY);
+  registerKernel(SolidMechPoroCoupleZ);
+  registerKernel(Gravity);
 //isothermal flow for pressure field
-    registerKernel(PressureTimeDerivative);
+  registerKernel(PressureTimeDerivative);
 //heat transport-PT formulation, single phase only
-    registerKernel(TemperatureTimeDerivative);
-    registerKernel(TemperatureTimeDerivativeFluid);
-    registerKernel(TemperatureTimeDerivativeSolid);
-    registerKernel(TemperatureDiffusion);
-    registerKernel(TemperatureConvection);
+  registerKernel(TemperatureTimeDerivative);
+  registerKernel(TemperatureTimeDerivativeFluid);
+  registerKernel(TemperatureTimeDerivativeSolid);
+  registerKernel(TemperatureDiffusion);
+  registerKernel(TemperatureConvection);
 //fluid-mass flow-single phase formulation
-    registerKernel(MassFluxTimeDerivative_PT);
-    registerKernel(WaterMassFluxPressure_PT);
-    registerKernel(WaterMassFluxElevation_PT);
+  registerKernel(MassFluxTimeDerivative_PT);
+  registerKernel(WaterMassFluxPressure_PT);
+  registerKernel(WaterMassFluxElevation_PT);
+
 //auxkernels
-    registerAux(CoupledDdensityDTAux_PT);
-    registerAux(CoupledDdensityDPAux_PT);    
-    registerAux(CoupledDensityAux_PT);
-    registerAux(CoupledWaterSaturationAux);
-    registerAux(CoupledDWaterSaturationDHAux);  
-    registerAux(CoupledDdensityDHAux); 
-    registerAux(CoupledDTDH_PAux);
-    registerAux(CoupledDTDP_HAux);
-    registerAux(CoupledDdensityDPAux);
-    registerAux( CoupledDdensityDTAux);
-    registerAux(CoupledDensityAux);
-    registerAux(CoupledWaterDensityAux);
-    registerAux(CoupledWaterViscosityAux);
-    registerAux(CoupledWaterEnthalpyAux);  
-    registerAux(CoupledSteamDensityAux);
-    registerAux(CoupledSteamViscosityAux);
-    registerAux(CoupledSteamEnthalpyAux);
-    registerAux(CoupledDwaterenthalpydH_PAux);
-    registerAux(CoupledDsteamenthalpydH_PAux);
-    registerAux(CoupledTemperatureAux);
-      
-    registerAux(AnalyticalADE1D);
-    registerAux(VelocityAux);
-    registerAux(CoupledPorosityMaterialAux);
-    registerAux(StressStrainDamageComputeAux);
+  registerAux(CoupledDdensityDTAux_PT);
+  registerAux(CoupledDdensityDPAux_PT);
+  registerAux(CoupledDensityAux_PT);
+  registerAux(CoupledWaterSaturationAux);
+  registerAux(CoupledDWaterSaturationDHAux);
+  registerAux(CoupledDdensityDHAux);
+  registerAux(CoupledDTDH_PAux);
+  registerAux(CoupledDTDP_HAux);
+  registerAux(CoupledDdensityDPAux);
+  registerAux( CoupledDdensityDTAux);
+  registerAux(CoupledDensityAux);
+  registerAux(CoupledWaterDensityAux);
+  registerAux(CoupledWaterViscosityAux);
+  registerAux(CoupledWaterEnthalpyAux);
+  registerAux(CoupledSteamDensityAux);
+  registerAux(CoupledSteamViscosityAux);
+  registerAux(CoupledSteamEnthalpyAux);
+  registerAux(CoupledDwaterenthalpydH_PAux);
+  registerAux(CoupledDsteamenthalpydH_PAux);
+  registerAux(CoupledTemperatureAux);
 
-    registerAux(CoupledDwaterenthalpydP_HAux);
-    registerAux(CoupledDsteamenthalpydP_HAux);
-    
+  registerAux(AnalyticalADE1D);
+  registerAux(VelocityAux);
+  registerAux(CoupledPorosityMaterialAux);
+  registerAux(StressStrainDamageComputeAux);
+
+  registerAux(CoupledDwaterenthalpydP_HAux);
+  registerAux(CoupledDsteamenthalpydP_HAux);
+
 //BCs    
-    registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
-    registerBoundaryCondition(GravityNeumannBC);
-    registerBoundaryCondition(OutFlowBC);
-    registerBoundaryCondition(OutFlowBC_PH);
-    registerBoundaryCondition(StepDirichletBC);
-    registerBoundaryCondition(StepPressureBCFunc);
+  registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
+  registerBoundaryCondition(GravityNeumannBC);
+  registerBoundaryCondition(OutFlowBC);
+  registerBoundaryCondition(OutFlowBC_PH);
+  registerBoundaryCondition(StepDirichletBC);
+  registerBoundaryCondition(StepPressureBCFunc);
 
-    // ICs
-    registerInitialCondition(LinearDisEnthalpyIC);
-    
+  // ICs
+  registerInitialCondition(LinearDisEnthalpyIC);
+
 
 //materials
-    registerMaterial(Constant);
-    registerMaterial(PorousMedia);
-    registerMaterial(FluidFlow);
-    registerMaterial(HeatTransport);
-    registerMaterial(SolidMechanics);
-    registerMaterial(Geothermal);
+  registerMaterial(Constant);
+  registerMaterial(PorousMedia);
+  registerMaterial(FluidFlow);
+  registerMaterial(HeatTransport);
+  registerMaterial(SolidMechanics);
+  registerMaterial(Geothermal);
    
-registerAux(PermeabilityAux);
-registerAux(ApertureAux);
-    
-  }
+  registerAux(PermeabilityAux);
+  registerAux(ApertureAux);
+}
+
 }
