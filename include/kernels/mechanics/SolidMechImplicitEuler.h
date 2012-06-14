@@ -15,9 +15,9 @@
 #ifndef SOLIDMECHIMPLICITEULER_H
 #define SOLIDMECHIMPLICITEULER_H
 
-#include "SecondDerivativeImplicitEuler.h"
+//#include "SecondDerivativeImplicitEuler.h"
 #include "Material.h"
-
+#include "TimeKernel.h"
 
 //Forward Declarations
 class SolidMechImplicitEuler;
@@ -25,7 +25,8 @@ class SolidMechImplicitEuler;
 template<>
 InputParameters validParams<SolidMechImplicitEuler>();
 
-class SolidMechImplicitEuler : public SecondDerivativeImplicitEuler
+//class SolidMechImplicitEuler : public SecondDerivativeImplicitEuler
+class SolidMechImplicitEuler : public TimeKernel
 {
 public:
 
@@ -33,8 +34,11 @@ public:
 
 protected:
   virtual Real computeQpResidual();
-  
   virtual Real computeQpJacobian();
+
+  Real & _dt;
+  VariableValue & _u_old;
+  VariableValue & _u_older;
   
 private:
   MaterialProperty<Real> & _density;

@@ -17,24 +17,34 @@
 template<>
 InputParameters validParams<SolidMechImplicitEuler>()
 {
-  InputParameters params = validParams<SecondDerivativeImplicitEuler>();
+  //InputParameters params = validParams<SecondDerivativeImplicitEuler>();
+  InputParameters params = validParams<TimeKernel>();
+ 
   return params;
 }
 
 SolidMechImplicitEuler::SolidMechImplicitEuler(const std::string & name, InputParameters parameters)
-  :SecondDerivativeImplicitEuler(name, parameters),
-   _density(getMaterialProperty<Real>("density_rock"))
+//:SecondDerivativeImplicitEuler(name, parameters),
+    :TimeKernel(name, parameters),
+     _dt(_subproblem.dt()),
+     _u_old(valueOld()),
+     _u_older(valueOlder()),
+     _density(getMaterialProperty<Real>("density_rock"))
 {}
 
 Real
 SolidMechImplicitEuler::computeQpResidual()
 {
-  return _density[_qp]*SecondDerivativeImplicitEuler::computeQpResidual();
+  //return _density[_qp]*SecondDerivativeImplicitEuler::computeQpResidual();
+  return _density[_qp]*_test[_i][_qp]*((_u[_qp]-2*_u_old[_qp]+_u_older[_qp])/(_dt*_dt));
+  
 }
 
 Real
 SolidMechImplicitEuler::computeQpJacobian()
 {
-  return _density[_qp]*SecondDerivativeImplicitEuler::computeQpJacobian();
+//  return _density[_qp]*SecondDerivativeImplicitEuler::computeQpJacobian();
+  return _density[_qp]*_test[_i][_qp]*(_phi[_j][_qp]/(_dt*_dt));
+  
 }
   
