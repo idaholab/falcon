@@ -105,6 +105,15 @@
 #include "PermeabilityAux.h"
 #include "ApertureAux.h"
 
+#include "StochasticMaterial.h"
+#include "StochasticPorousMedia.h"
+
+#include "StochasticFieldAux.h"
+#include "StochasticGeothermal.h"
+#include "StochasticFluidFlow.h"
+#include "StochasticHeatTransport.h"
+#include "StochasticSolidMechanics.h"
+
 namespace Falcon
 {
 
@@ -194,6 +203,16 @@ registerObjects()
    
   registerAux(PermeabilityAux);
   registerAux(ApertureAux);
+
+  registerMaterial(StochasticMaterial);
+  registerMaterial(StochasticPorousMedia);
+  registerAux(StochasticFieldAux);
+  registerMaterial(StochasticGeothermal);
+  
+  registerMaterial(StochasticFluidFlow);
+  registerMaterial(StochasticHeatTransport);
+  registerMaterial(StochasticSolidMechanics);
+  
 }
 
 }
