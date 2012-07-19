@@ -556,7 +556,6 @@ pressure        = pressure
 density_water   = density_water
 viscosity_water = viscosity_water
 temperature     = temperature
-water_steam_properties = water_steam_properties
 
 gravity           =  9.8
 gx                =  0.0
@@ -599,7 +598,6 @@ pressure        = pressure
 density_water   = density_water
 viscosity_water = viscosity_water
 temperature     = temperature
-water_steam_properties = water_steam_properties
 
 gravity           =  9.8
 gx                =  0.0
@@ -631,13 +629,6 @@ t_ref                =   200
 [../]
 [ ]
 
-[UserObjects]
-active = 'water_steam_properties'
-
-[./water_steam_properties]
-type = Banana_Slug
-[../]
-[ ]
 
 [Executioner]
 #active = 'Adaptivity '

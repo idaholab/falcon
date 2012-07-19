@@ -41,16 +41,15 @@ public:
   
 protected:
   virtual Real computeValue();
-  
-MaterialProperty<Real> & _viscosity_water;
+
   // Real viscosity_fun(Real T);
   
-  //VariableValue & _temperature;
-  //VariableValue & _pressure;
+  VariableValue & _temperature;
+  VariableValue & _pressure;
   
-  //Real _viscosity_water;
-  //bool _has_variable_viscosity;
-  //Real _viscosity_subroutine_val;
+  Real _input_viscosity_water;
+  bool _has_variable_viscosity;
+  Real _viscosity_subroutine_val;
 
 };
 

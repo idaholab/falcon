@@ -16,7 +16,6 @@
 #include "Falcon.h"
 #include "Factory.h"
 
-#include "Banana_Slug.h"
 //kernels
 ///////////////////////////////////////////////////////////////
 //      solid mechanics                                      //
@@ -115,14 +114,12 @@
 #include "StochasticHeatTransport.h"
 #include "StochasticSolidMechanics.h"
 
-#include "CoupledViscosityAux.h"
 namespace Falcon
 {
 
 void
 registerObjects()
 {
-    registerUserData(Banana_Slug);
 //mechanics
   registerNamedKernel(SolidMechXFalcon, "SolidMechXFalcon");
   registerNamedKernel(SolidMechYFalcon, "SolidMechYFalcon");
@@ -215,8 +212,7 @@ registerObjects()
   registerMaterial(StochasticFluidFlow);
   registerMaterial(StochasticHeatTransport);
   registerMaterial(StochasticSolidMechanics);
-    
-     registerAux(CoupledViscosityAux);  
+  
 }
 
 }

@@ -41,6 +41,24 @@ public:
     
 protected:
     virtual Real computeValue();
+    
+    VariableValue & _pressure;
+    VariableValue & _enthalpy;
+    VariableValue & _sw;
+    VariableValue & _den_mix;
+    VariableValue & _den_water;
+    VariableValue & _den_steam;
+    VariableValue & _enthalpy_water;
+    VariableValue & _enthalpy_steam;
+    VariableValue & _ddendh_P;
+    VariableValue & _ddendp_H;
+    VariableValue & _denthalpy_waterdH_P;
+    VariableValue & _denthalpy_steamdH_P;
+    VariableValue & _dTdH_P;
+    VariableValue & _dswdH;
+    VariableValue & _denthalpy_waterdP_H;
+    VariableValue & _denthalpy_steamdP_H;
+    VariableValue & _dTdP_H;
     Real _input_temperature;
                      
 };
