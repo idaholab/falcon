@@ -192,6 +192,7 @@
   density_water   = density_water
   viscosity_water = viscosity_water
   temperature     = temperature
+  water_steam_properties = water_steam_properties
 
  gravity           =  0.0
  gx                =  0.0
@@ -222,6 +223,7 @@
   density_water   = density_water
   viscosity_water = viscosity_water
   temperature     = temperature
+water_steam_properties = water_steam_properties
 
  gravity           =  0.0
  gx                =  0.0
@@ -243,9 +245,16 @@
  has_crack = false
  has_damage = false
  [../]
-
 [ ]
  
+[UserObjects]
+active = 'water_steam_properties'
+
+[./water_steam_properties]
+type = Banana_Slug
+[../]
+[ ]
+
 [Executioner]
 #active = 'Adaptivity '
  active = 'Quadrature'

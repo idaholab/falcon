@@ -187,6 +187,7 @@ value = 1e6
 
 
   pressure        = pressure
+  water_steam_properties = water_steam_properties
 #  density_water   = density_water
  # viscosity_water = viscosity_water
  # temperature     = temperature
@@ -212,15 +213,23 @@ value = 1e6
  has_damage = false
  [../]
 [ ]
+
+[UserObjects]
+active = 'water_steam_properties'
+
+[./water_steam_properties]
+type = Banana_Slug
+[../]
+[ ]
  
 [Executioner]
 #active = 'Adaptivity '
  active = 'Quadrature'
 # active = ' '
 # type = Steady
-# type =  Transient
- type =  SolutionTimeAdaptive
-# perf_log =  true
+ type =  Transient
+# type =  SolutionTimeAdaptive
+ perf_log =  true
 
 # petsc_options =  '-snes_mf_operator -ksp_monitor'
 # petsc_options_iname =  '-pc_type -pc_hypre_type -ksp_gmres_restart'
@@ -232,8 +241,8 @@ value = 1e6
 # l_max_its  =  100
 # l_tol =  1.0e-20
 # nl_max_its =  12
-# nl_rel_tol =  1e-6
-# nl_abs_tol = 1e-20
+ nl_rel_tol =  1e-12
+ nl_abs_tol = 1e-16
 
  num_steps = 10 
  dt = 10.0

@@ -15,7 +15,7 @@
 
 # heat extraction test only
 [Mesh]
-  dim = 3
+  #dim = 3
   file = simple_3d_May_2012.e
 [ ]
 
@@ -209,32 +209,32 @@ type = EnthalpyDiffusion
 variable = enthalpy
 pressure = pressure
 temperature = temperature
-dTdH_P = dTdH_P
-dTdP_H = dTdP_H
+#dTdH_P = dTdH_P
+#dTdP_H = dTdP_H
 [../]
 
 [./t_cw]
 type = EnthalpyConvectionWater
 variable = enthalpy
-enthalpy_water = enthalpy_water
-denthalpy_waterdH_P = denthalpy_waterdH_P
-denthalpy_waterdP_H = denthalpy_waterdP_H
+#enthalpy_water = enthalpy_water
+#denthalpy_waterdH_P = denthalpy_waterdH_P
+#denthalpy_waterdP_H = denthalpy_waterdP_H
 # ddensity_waterdP_H = ddensity_waterdP_H
 pressure = pressure
-viscosity_water = viscosity_water
-saturation_water = saturation_water
+#viscosity_water = viscosity_water
+#saturation_water = saturation_water
 [../]
 
 [./t_cs]
 type = EnthalpyConvectionSteam
 variable = enthalpy
-enthalpy_steam = enthalpy_steam
-denthalpy_steamdH_P = denthalpy_steamdH_P
-denthalpy_steamdP_H = denthalpy_steamdP_H
+#enthalpy_steam = enthalpy_steam
+#denthalpy_steamdH_P = denthalpy_steamdH_P
+#denthalpy_steamdP_H = denthalpy_steamdP_H
 # ddensity_steamdP_H = ddensity_steamdP_H
 pressure = pressure
-visocitysteam = viscosity_steam
-saturation_water = saturation_water
+#visocitysteam = viscosity_steam
+#saturation_water = saturation_water
 [../]
 
 
@@ -366,7 +366,7 @@ type = CoupledSteamViscosityAux
 variable = viscosity_water
 density_steam = density_water
 temperature = temperature
-viscosity_water = 1.81312661535894764E-004
+#viscosity_water = 1.81312661535894764E-004
 temp_dependent_viscosity = true
 # type = CoupledWaterViscosityAux
 # variable = viscosity_water
@@ -417,16 +417,16 @@ temp_dependent_viscosity = true
  [./left_t]
     type = DirichletBC
     variable = enthalpy
-	pressure = pressure
-	temperature = temperature
-	dTdH_P = dTdH_P
-	dTdP_H = dTdP_H
-	enthalpy_water = enthalpy_water
-	enthalpy_steam = enthalpy_steam
-	denthalpy_waterdH_P = denthalpy_waterdH_P
-	denthalpy_steamdH_P = denthalpy_steamdH_P
-	denthalpy_waterdP_H = denthalpy_waterdP_H
-	denthalpy_steamdP_H = denthalpy_steamdP_H
+	#pressure = pressure
+	#temperature = temperature
+	#dTdH_P = dTdH_P
+	#dTdP_H = dTdP_H
+	#enthalpy_water = enthalpy_water
+	#enthalpy_steam = enthalpy_steam
+	#denthalpy_waterdH_P = denthalpy_waterdH_P
+	#denthalpy_steamdH_P = denthalpy_steamdH_P
+	#denthalpy_waterdP_H = denthalpy_waterdP_H
+	#denthalpy_steamdP_H = denthalpy_steamdP_H
     value = 0.8
     boundary = '1'
  [../]
@@ -441,16 +441,16 @@ temp_dependent_viscosity = true
 [./right_t]
     type = DirichletBC
     variable = enthalpy
-	pressure = pressure
-	temperature = temperature
-	dTdH_P = dTdH_P
-	dTdP_H = dTdP_H
-	enthalpy_water = enthalpy_water
-	enthalpy_steam = enthalpy_steam
-	denthalpy_waterdH_P = denthalpy_waterdH_P
-	denthalpy_steamdH_P = denthalpy_steamdH_P
-	denthalpy_waterdP_H = denthalpy_waterdP_H
-	denthalpy_steamdP_H = denthalpy_steamdP_H
+	#pressure = pressure
+	#temperature = temperature
+	#dTdH_P = dTdH_P
+	#dTdP_H = dTdP_H
+	#enthalpy_water = enthalpy_water
+	#enthalpy_steam = enthalpy_steam
+	#denthalpy_waterdH_P = denthalpy_waterdH_P
+	#denthalpy_steamdH_P = denthalpy_steamdH_P
+	#denthalpy_waterdP_H = denthalpy_waterdP_H
+	#denthalpy_steamdP_H = denthalpy_steamdP_H
     value = 0.85
     boundary = '2'
  [../]
@@ -469,6 +469,7 @@ enthalpy = enthalpy
 temperature = temperature
 density_water = density_water
 viscosity_water = viscosity_water
+water_steam_properties = water_steam_properties
 
 gravity           =  0.0
 gx                =  0.0
@@ -485,10 +486,16 @@ thermal_conductivity =  2.5e-6
 specific_heat_water  = 4186e-6
 specific_heat_rock   =  920e-6
 [../]
-
-
 [ ]
- 
+
+[UserObjects]
+active = 'water_steam_properties'
+
+[./water_steam_properties]
+type = Banana_Slug
+[../]
+[ ]
+
 [Executioner]
  active = ' '
  type =  Transient
@@ -516,6 +523,6 @@ specific_heat_rock   =  920e-6
  interval = 1
  output_variables = 'pressure temperature enthalpy v_x v_y v_z'
  exodus = true
- print_out_info = true
+ #print_out_info = true
  [ ]
  
