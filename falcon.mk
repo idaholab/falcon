@@ -60,23 +60,7 @@ $(falcon_APP): $(moose_LIB) $(elk_MODULES) $(falcon_LIB) $(falcon_app_objects)
 -include $(FALCON_DIR)/src/*.d
 endif
 
-
-clean::
-	@rm -fr $(falcon_APP)
-	@rm -fr $(falcon_LIB)
-	@find . \( -name "*~" -or -name "*.o" -or -name "*.d" -or -name "*.pyc" \) -exec rm '{}' \;
-	@rm -fr *.mod
-
-clobber::
-	@rm -fr $(falcon_APP)
-	@rm -fr $(falcon_LIB)
-	@find . \( -name "*~" -or -name "*.o" -or -name "*.d" -or -name "*.pyc" \
-                -or -name "*.gcda" -or -name "*.gcno" -or -name "*.gcov" \) -exec rm '{}' \;
-	@rm -fr *.mod
-
-cleanall::
-	make -C $(FALCON_DIR) clean
-
+delete_list := $(falcon_APP) $(falcon_LIB)
 
 ###############################################################################
 # Additional special case targets should be added here
