@@ -62,6 +62,9 @@ endif
 
 delete_list := $(falcon_APP) $(falcon_LIB)
 
+cleanall:: 
+	make -C $(FALCON_DIR) clean 
+
 ###############################################################################
 # Additional special case targets should be added here
 
