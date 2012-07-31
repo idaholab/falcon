@@ -22,12 +22,24 @@ falcon_objects += $(patsubst %.f90, %.$(obj-suffix), $(falcon_f90srcfiles))
 
 falcon_app_objects := $(patsubst %.C, %.$(obj-suffix), $(FALCON_DIR)/src/main.C)
 
+# plugin files
+falcon_plugfiles   := $(shell find $(FALCON_DIR)/plugins/ -name *.C 2>/dev/null)
+falcon_cplugfiles  := $(shell find $(FALCON_DIR)/plugins/ -name *.c 2>/dev/null)
+falcon_fplugfiles  := $(shell find $(FALCON_DIR)/plugins/ -name *.f 2>/dev/null)
+falcon_f90plugfiles:= $(shell find $(FALCON_DIR)/plugins/ -name *.f90 2>/dev/null)
+
+# plugins
+falcon_plugins     := $(patsubst %.C, %-$(METHOD).plugin, $(falcon_plugfiles))
+falcon_plugins     += $(patsubst %.c, %-$(METHOD).plugin, $(falcon_cplugfiles))
+falcon_plugins     += $(patsubst %.f, %-$(METHOD).plugin, $(falcon_fplugfiles))
+falcon_plugins     += $(patsubst %.f90, %-$(METHOD).plugin, $(falcon_f90plugfiles))
+
 all:: $(falcon_LIB)
 
 # build rule for lib FALCON
 ifeq ($(enable-shared),yes)
 # Build dynamic library
-$(falcon_LIB): $(falcon_objects)
+$(falcon_LIB): $(falcon_objects) $(falcon_plugins)
 	@echo "Linking "$@"..."
 	@$(libmesh_CC) $(libmesh_CXXSHAREDFLAG) -o $@ $(falcon_objects) $(libmesh_LDFLAGS)
 else
