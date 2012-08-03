@@ -29,7 +29,7 @@ GravityNeumannBC::GravityNeumannBC(const std::string & name, InputParameters par
      _permeability(getParam<Real>("permeability")),
      _density(getParam<Real>("density")),
      _viscosity_water(getParam<Real>("viscosity_water")),
-     _gravity(0,0,-9.8065)
+     _gravity(0.0,0.0,-9.8065)
 {}
 
 Real
