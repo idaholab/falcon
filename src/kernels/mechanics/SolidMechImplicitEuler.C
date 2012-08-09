@@ -26,7 +26,6 @@ InputParameters validParams<SolidMechImplicitEuler>()
 SolidMechImplicitEuler::SolidMechImplicitEuler(const std::string & name, InputParameters parameters)
 //:SecondDerivativeImplicitEuler(name, parameters),
     :TimeKernel(name, parameters),
-     _dt(_subproblem.dt()),
      _u_old(valueOld()),
      _u_older(valueOlder()),
      _density(getMaterialProperty<Real>("density_rock"))
