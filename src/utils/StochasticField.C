@@ -1,6 +1,6 @@
 // local includes
 #include "StochasticField.h"
-#include "Moose.h" //for mooseError/Assert
+#include "MooseError.h" //for mooseError/Assert
 
 StochasticField::StochasticField(std::string fname)
 {
