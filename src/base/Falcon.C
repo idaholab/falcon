@@ -60,6 +60,7 @@
 
 #include "CoupledWaterDensityAux.h"        // water density functon of (P,H) -two phase formulation
 #include "CoupledWaterViscosityAux.h"      // water viscosity functon of (P,T) - used by both PT and PH formaulations
+#include "CoupledViscosityAux.h"
 #include "CoupledSteamDensityAux.h"        // steam density functon of (P,H) -two phase formulation
 #include "CoupledSteamViscosityAux.h"      // steam viscosity functon of (P,T) - used by PH formaulations
 
@@ -113,6 +114,7 @@
 #include "StochasticFluidFlow.h"
 #include "StochasticHeatTransport.h"
 #include "StochasticSolidMechanics.h"
+#include "WaterSteamEOS.h"
 
 namespace Falcon
 {
@@ -120,6 +122,7 @@ namespace Falcon
 void
 registerObjects()
 {
+    registerUserObject(WaterSteamEOS);
 //mechanics
   registerNamedKernel(SolidMechXFalcon, "SolidMechXFalcon");
   registerNamedKernel(SolidMechYFalcon, "SolidMechYFalcon");
@@ -161,7 +164,7 @@ registerObjects()
   registerAux(CoupledDTDH_PAux);
   registerAux(CoupledDTDP_HAux);
   registerAux(CoupledDdensityDPAux);
-  registerAux( CoupledDdensityDTAux);
+  registerAux(CoupledDdensityDTAux);
   registerAux(CoupledDensityAux);
   registerAux(CoupledWaterDensityAux);
   registerAux(CoupledWaterViscosityAux);
@@ -212,7 +215,8 @@ registerObjects()
   registerMaterial(StochasticFluidFlow);
   registerMaterial(StochasticHeatTransport);
   registerMaterial(StochasticSolidMechanics);
-  
+    
+     registerAux(CoupledViscosityAux);
 }
 
 }

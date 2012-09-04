@@ -13,7 +13,7 @@
 /****************************************************************/
 
 #include "CoupledWaterViscosityAux.h"
-#include "Water_Steam_EOS.h"
+#include "WaterSteamEOS.h"
 
 template<>
 InputParameters validParams<CoupledWaterViscosityAux>()
@@ -23,11 +23,14 @@ InputParameters validParams<CoupledWaterViscosityAux>()
     params.addCoupledVar("temperature", "Use temperature to calculate variable viscosity");
     params.addParam<bool>("temp_dependent_viscosity", true, "Flag to call viscosity routine");
     params.addParam<Real>("viscosity_water", 0.001,"fluid viscosity in Pa.s");
+    params.addRequiredParam<UserObjectName>("water_steam_properties", "New C++ Code for fluid properties");
+
     return params;
 }
 
 CoupledWaterViscosityAux::CoupledWaterViscosityAux(const std::string & name, InputParameters parameters)
  :AuxKernel(name, parameters),
+_water_steam_properties(getUserObject<WaterSteamEOS>("water_steam_properties")),
   _density_water(coupledValue("density_water")),
   _temperature(coupledValue("temperature")),
   _input_viscosity_water(getParam<Real>("viscosity_water")),
@@ -42,8 +45,10 @@ CoupledWaterViscosityAux::computeValue()
   {
     Real _viscosity_subroutine_val = 0.001;
  //   Water_Steam_EOS::visw_noderiv1_( _temperature[_qp], _pressure[_qp], _viscosity_subroutine_val);
+      
+      _water_steam_properties.viscosity( _density_water[_qp], _temperature[_qp], _viscosity_subroutine_val);
  
-    Water_Steam_EOS::viss_noderiv1_( _density_water[_qp], _temperature[_qp], _viscosity_subroutine_val);     
+    //Water_Steam_EOS::viss_noderiv1_( _density_water[_qp], _temperature[_qp], _viscosity_subroutine_val);     
       
     return _viscosity_subroutine_val; 
   }

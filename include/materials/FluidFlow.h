@@ -16,6 +16,7 @@
 #define FLUIDFLOW_H
 
 #include "PorousMedia.h"
+#include "WaterSteamEOS.h"
 
 
 //Forward Declarations
@@ -34,39 +35,83 @@ public:
             InputParameters parameters);
   
 protected:
-  virtual void computeProperties();
-  virtual void compute2PhProperties0(Real _per, Real  _Sw,Real _Denw, Real _Dens, Real _visw, Real _viss, Real &_watertau, Real  &_steamtau);
-  
-  
-  
-  bool _has_pressure;
-  VariableGradient & _grad_p;
-  VariableValue  & _pressure;
+    virtual void computeProperties();
+    virtual void compute2PhProperties0(Real _per, Real  _Sw,Real _Denw, Real _Dens, Real _visw, Real _viss, Real &_watertau, Real  &_steamtau);
 
-  bool _has_temp;
-  VariableValue  & _temperature;
- 
-  VariableValue & _density_water;
-  VariableValue & _viscosity_water;
-  
-  bool _has_enthalpy;  
-  VariableValue & _enthalpy;
+    const WaterSteamEOS & _water_steam_properties;
+    bool _has_pressure;
+    VariableGradient & _grad_p;
+    VariableValue  & _pressure;
+    VariableValue & _pressure_old;
 
-  MaterialProperty<Real> & _tau_water;
-  MaterialProperty<RealGradient> & _darcy_flux_water;
-  MaterialProperty<RealGradient> & _darcy_mass_flux_water;
-  MaterialProperty<RealGradient> & _darcy_mass_flux_water_pressure;
-  MaterialProperty<RealGradient> & _darcy_mass_flux_water_elevation;
-  MaterialProperty<Real> & _Dtau_waterDP;
-  MaterialProperty<Real> & _Dtau_waterDH;
+    bool _has_temp;
+  //VariableValue & temp_out;
+    bool _has_enthalpy;
+    VariableValue & _enthalpy;
+    VariableValue & _enthalpy_old;
+    
+    bool _if_transient;
+
+    MaterialProperty<Real> & _tau_water;
+    MaterialProperty<RealGradient> & _darcy_flux_water;
+    MaterialProperty<RealGradient> & _darcy_mass_flux_water;
+    MaterialProperty<RealGradient> & _darcy_mass_flux_water_pressure;
+    MaterialProperty<RealGradient> & _darcy_mass_flux_water_elevation;
+    MaterialProperty<Real> & _Dtau_waterDP;
+    MaterialProperty<Real> & _Dtau_waterDH;
   
-  MaterialProperty<Real> & _tau_steam;
-  MaterialProperty<RealGradient> & _darcy_flux_steam;
-  MaterialProperty<RealGradient> & _darcy_mass_flux_steam;
-  MaterialProperty<RealGradient> & _darcy_mass_flux_steam_pressure;
-  MaterialProperty<RealGradient> & _darcy_mass_flux_steam_elevation;
-  MaterialProperty<Real> & _Dtau_steamDP;
-  MaterialProperty<Real> & _Dtau_steamDH;
+    MaterialProperty<Real> & _tau_steam;
+    MaterialProperty<RealGradient> & _darcy_flux_steam;
+    MaterialProperty<RealGradient> & _darcy_mass_flux_steam;
+    MaterialProperty<RealGradient> & _darcy_mass_flux_steam_pressure;
+    MaterialProperty<RealGradient> & _darcy_mass_flux_steam_elevation;
+    MaterialProperty<Real> & _Dtau_steamDP;
+    MaterialProperty<Real> & _Dtau_steamDH;
+    
+    //Equation_of_State_Properties - Non-Derivative Material Outputs (added by Kat)
+    MaterialProperty<Real> & _temp_out;
+    MaterialProperty<Real> & _sat_fraction_out;
+    MaterialProperty<Real> & _dens_out;
+    MaterialProperty<Real> & _dens_water_out;
+    MaterialProperty<Real> & _dens_steam_out;
+    MaterialProperty<Real> & _enth_water_out;
+    MaterialProperty<Real> & _enth_steam_out;
+    MaterialProperty<Real> & _visc_water_out;
+    MaterialProperty<Real> & _visc_steam_out;
+    
+    //Equations_of_State_Properties - Derivative Material Ouptuts (added by Kat)
+    MaterialProperty<Real> & _d_dens_d_enth;
+    MaterialProperty<Real> & _d_dens_d_press;
+    MaterialProperty<Real> & _d_enth_water_d_enth;
+    MaterialProperty<Real> & _d_enth_steam_d_enth;
+    MaterialProperty<Real> & _d_temp_d_enth;
+    MaterialProperty<Real> & _d_sat_fraction_d_enth;
+    MaterialProperty<Real> & _d_enth_water_d_press;
+    MaterialProperty<Real> & _d_enth_steam_d_press;
+    MaterialProperty<Real> & _d_temp_d_press;
+
+    //Time Derivative Equation_of_State_Properties (added by Kat)
+    //Equation_of_State_Properties - Non-PH-Derivative Outputs (added by Kat)
+    MaterialProperty<Real> & _time_old_temp_out;
+    //MaterialProperty<Real> & _time_old_sat_fraction_out;
+    MaterialProperty<Real> & _time_old_dens_out;
+    MaterialProperty<Real> & _time_old_dens_water_out;
+    MaterialProperty<Real> & _time_old_dens_steam_out;
+    //MaterialProperty<Real> & _time_old_enth_water_out;
+    //MaterialProperty<Real> & _time_old_enth_steam_out;
+    MaterialProperty<Real> & _time_old_visc_water_out;
+    MaterialProperty<Real> & _time_old_visc_steam_out;
+    
+    //Equation_of_State_Properites - Derivative Outputs (variables added by Kat)
+    //MaterialProperty<Real> & _time_old_d_dens_d_enth;
+    //MaterialProperty<Real> & _time_old_d_dens_d_press;
+    //MaterialProperty<Real> & _time_old_d_enth_water_d_enth;
+    //MaterialProperty<Real> & _time_old_d_enth_steam_d_enth;
+    //MaterialProperty<Real> & _time_old_d_temp_d_enth;
+    //MaterialProperty<Real> & _time_old_d_sat_fraction_d_enth;
+    //MaterialProperty<Real> & _time_old_d_enth_water_d_press;
+    //MaterialProperty<Real> & _time_old_d_enth_steam_d_press;
+    //MaterialProperty<Real> & _time_old_d_temp_d_press;
     
 };
 

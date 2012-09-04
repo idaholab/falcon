@@ -20,6 +20,7 @@
 
 //Forward Declarations
 class CoupledSteamViscosityAux;
+class WaterSteamEOS;
 
 template<>
 InputParameters validParams<CoupledSteamViscosityAux>();
@@ -43,6 +44,8 @@ protected:
     virtual Real computeValue();
     
     // Real viscosity_fun(Real T);
+    const WaterSteamEOS & _water_steam_properties;
+    
     VariableValue & _density_steam;
     VariableValue & _temperature;
     Real _input_viscosity_steam;

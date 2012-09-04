@@ -17,9 +17,9 @@
 
 #include "AuxKernel.h"
 
-
 //Forward Declarations
 class CoupledWaterViscosityAux;
+class WaterSteamEOS;
 
 template<>
 InputParameters validParams<CoupledWaterViscosityAux>();
@@ -43,6 +43,7 @@ protected:
   virtual Real computeValue();
 
   // Real viscosity_fun(Real T);
+    const WaterSteamEOS & _water_steam_properties;
   
   VariableValue & _density_water;
   VariableValue & _temperature;

@@ -179,6 +179,15 @@ value = 1e6
 
 [ ]
 
+[UserObjects]
+active = 'water_steam_properties'
+
+[./water_steam_properties]
+type = WaterSteamEOS
+[../]
+[ ]
+
+
 [Materials]
  active = 'rock'
  [./rock]
@@ -187,6 +196,7 @@ value = 1e6
 
 
   pressure        = pressure
+  water_steam_properties = water_steam_properties
 #  density_water   = density_water
  # viscosity_water = viscosity_water
  # temperature     = temperature
