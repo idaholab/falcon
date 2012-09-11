@@ -31,13 +31,13 @@ StressStrainDamageComputeAux::StressStrainDamageComputeAux(const std::string & n
    _component(getParam<int>("component")),
    _componentb(getParam<int>("componentb")),
    _permeability(getMaterialProperty<Real>("permeability")),
-   _damage_coeff(getMaterialProperty<Real>("damage_coeff")),
+//   _damage_coeff(getMaterialProperty<Real>("damage_coeff")),
    _stress_normal_vector(getMaterialProperty<RealVectorValue>("stress_normal_vector")),
    _stress_shear_vector(getMaterialProperty<RealVectorValue>("stress_shear_vector")),
    _strain_normal_vector(getMaterialProperty<RealVectorValue>("strain_normal_vector")),
-   _strain_shear_vector(getMaterialProperty<RealVectorValue>("strain_shear_vector")),
-   _pstress_normal_vector(getMaterialProperty<RealVectorValue>("pstress_normal_vector")),
-   _pstrain_normal_vector(getMaterialProperty<RealVectorValue>("pstrain_normal_vector"))
+   _strain_shear_vector(getMaterialProperty<RealVectorValue>("strain_shear_vector"))
+//    _pstress_normal_vector(getMaterialProperty<RealVectorValue>("pstress_normal_vector")),
+//    _pstrain_normal_vector(getMaterialProperty<RealVectorValue>("pstrain_normal_vector"))
 {}
 
 Real
@@ -75,27 +75,27 @@ StressStrainDamageComputeAux::computeValue()
     }
     return _strain(_component);
   }
-  else if ( _quantity_string == "pstress" )
-  {
-    _pstress(0) = _pstress_normal_vector[_qp](0);                //ptau_xx
-    _pstress(1) = _pstress_normal_vector[_qp](1);                //ptau_yy
-    _pstress(2) = _pstress_normal_vector[_qp](2);                //ptau_zz
+//   else if ( _quantity_string == "pstress" )
+//   {
+//     _pstress(0) = _pstress_normal_vector[_qp](0);                //ptau_xx
+//     _pstress(1) = _pstress_normal_vector[_qp](1);                //ptau_yy
+//     _pstress(2) = _pstress_normal_vector[_qp](2);                //ptau_zz
 
-    return _pstress(_component);
-  }
-  else if ( _quantity_string == "pstrain" )
-  {
-    _pstrain(0) = _pstrain_normal_vector[_qp](0);                //ps_xx
-    _pstrain(1) = _pstrain_normal_vector[_qp](1);                //ps_yy
-    _pstrain(2) = _pstrain_normal_vector[_qp](2);                //ps_zz
+//     return _pstress(_component);
+//   }
+//   else if ( _quantity_string == "pstrain" )
+//   {
+//     _pstrain(0) = _pstrain_normal_vector[_qp](0);                //ps_xx
+//     _pstrain(1) = _pstrain_normal_vector[_qp](1);                //ps_yy
+//     _pstrain(2) = _pstrain_normal_vector[_qp](2);                //ps_zz
 
-    return _pstrain(_component);
-  }
-  else if ( _quantity_string == "damage" )
-  {
-    _damage = _damage_coeff[_qp];                              //damage factor
-    return _damage;
-  }
+//     return _pstrain(_component);
+//   }
+//   else if ( _quantity_string == "damage" )
+//   {
+//     _damage = _damage_coeff[_qp];                              //damage factor
+//     return _damage;
+//   }
   else if ( _quantity_string == "permeability" )
   {
     Real _tmp1 = _permeability[_qp];                              //damage factor

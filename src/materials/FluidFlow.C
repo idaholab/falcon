@@ -106,48 +106,68 @@ FluidFlow::FluidFlow(const std::string & name, InputParameters parameters) :
 
 void FluidFlow::computeProperties()
 {
+  for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
+  {  
+    Real _dens_water = 1E3;
+    Real _visc_water = 5E-4;
+// ideal water mode: constant rho, vis and single phase mode   
+    if (_has_temp && !_has_enthalpy) 
+    {
+        _dens_water =  _density_water[qp];
+        _visc_water =  _viscosity_water[qp];
+    }
+ 
+    if (!_has_enthalpy) 
+    {_tau_water[qp] = _permeability[qp] * _dens_water / _visc_water;
+    _darcy_mass_flux_water[qp] = -_tau_water[qp] * (_grad_p[qp] + _dens_water*_gravity[qp]*_gravity_vector[qp]);
+    _darcy_mass_flux_water_pressure[qp] =  (-_tau_water[qp] * _grad_p[qp]);
+    _darcy_mass_flux_water_elevation[qp] = (-_tau_water[qp] * _gravity[qp] *_gravity_vector[qp]*_dens_water);
+    _darcy_flux_water[qp] = _darcy_mass_flux_water[qp] / _dens_water;    
+    }
+     
+// 2 phase:     
+    if (_has_enthalpy)
+    {
+      Real  _tau_water0,  _tau_water1,  _tau_water2;  
+      Real  _tau_steam0,  _tau_steam1,  _tau_steam2;
+      Real _T, _Sw, _Den, _Denw, _Dens, _hw, _hs, _visw, _viss;
+      int  _ierror;
+      Real del_p=1.0, del_h=1e-7;
+      Real dpressure=_pressure[qp]+del_p;
+      Real denthalpy=_enthalpy[qp]+del_h;
     
-    for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
-        {  
+      Water_Steam_EOS::water_steam_prop_ph_noderiv_(dpressure, _enthalpy[qp],  
+                                                 _T, _Sw, _Den, _Denw, _Dens, _hw, _hs, _visw, _viss, _ierror);
+      FluidFlow:: compute2PhProperties0( _permeability[qp], _Sw,_Denw, _Dens, _visw, _viss, _tau_water[qp],_tau_steam[qp]);
+      _tau_water1 = _tau_water[qp];
+      _tau_steam1 = _tau_steam[qp];
+      Water_Steam_EOS::water_steam_prop_ph_noderiv_(_pressure[qp], denthalpy,  
+                                                 _T, _Sw, _Den, _Denw, _Dens, _hw, _hs, _visw, _viss, _ierror);
+      FluidFlow:: compute2PhProperties0( _permeability[qp], _Sw,_Denw, _Dens, _visw, _viss,  _tau_water[qp], _tau_steam[qp]);
+      _tau_water2 = _tau_water[qp];
+      _tau_steam2 =  _tau_steam[qp];
+      Water_Steam_EOS::water_steam_prop_ph_noderiv_( _pressure[qp], _enthalpy[qp],
+                                                 _T, _Sw, _Den, _Denw, _Dens, _hw, _hs, _visw, _viss, _ierror);
+      FluidFlow:: compute2PhProperties0( _permeability[qp],_Sw,_Denw, _Dens, _visw, _viss, _tau_water[qp], _tau_steam[qp]);
+      _tau_water0 = _tau_water[qp];
+      _tau_steam0 = _tau_steam[qp];
+      _darcy_mass_flux_water[qp] =-_tau_water0*(_grad_p[qp] + _Denw*_gravity[qp]*_gravity_vector[qp]);
+      _darcy_mass_flux_steam[qp] =-_tau_steam0*(_grad_p[qp] + _Dens*_gravity[qp]*_gravity_vector[qp]);
+      _darcy_mass_flux_water_pressure[qp] =  -_tau_water0 * _grad_p[qp];
+      _darcy_mass_flux_water_elevation[qp] = -_tau_water0 * _gravity[qp] *_gravity_vector[qp]*_Denw;
+      _darcy_mass_flux_steam_pressure[qp] =  -_tau_steam0 * _grad_p[qp];
+      _darcy_mass_flux_steam_elevation[qp] = -_tau_steam0 * _gravity[qp] *_gravity_vector[qp]*_Dens; 
+      _darcy_flux_steam[qp] = _darcy_mass_flux_steam[qp] /_Dens;
+      _darcy_flux_water[qp] = _darcy_mass_flux_water[qp] /_Denw;
 
-            //Calling EOS function and assigning fluid properties (sat_fraction, density, visosity, ..., and their derivatives) to output material values
-            Real _del_press;
-            Real _del_enth;
-            Real temp_out;
-            Real sat_fraction_out;
-            Real dens_out, dens_water_out, dens_steam_out;
-            Real enth_water_out, enth_steam_out;
-            Real visc_water_out, visc_steam_out;
-            Real del_press, del_enth;
-            Real d_enth_water_d_press, d_enth_steam_d_press;
-            Real d_dens_d_press, d_temp_d_press;
-            Real d_enth_water_d_enth, d_enth_steam_d_enth;
-            Real d_dens_d_enth, d_temp_d_enth, d_sat_fraction_d_enth;
-            
-            _water_steam_properties.Equations_of_State_Derivative_Properties((_enthalpy[qp]), _pressure[qp], temp_out, sat_fraction_out, dens_out, dens_water_out, dens_steam_out, enth_water_out, enth_steam_out, visc_water_out, visc_steam_out, del_press, del_enth, d_enth_water_d_press, d_enth_steam_d_press, d_dens_d_press, d_temp_d_press, d_enth_water_d_enth, d_enth_steam_d_enth, d_dens_d_enth, d_temp_d_enth, d_sat_fraction_d_enth);
-                        
-            _temp_out[qp] = temp_out;
-            _sat_fraction_out[qp] = sat_fraction_out;
-            _dens_out[qp] = dens_out;
-            _dens_water_out[qp] = dens_water_out;
-            _dens_steam_out[qp] = dens_steam_out;
-            _enth_water_out[qp] = enth_water_out;
-            _enth_steam_out[qp] = enth_steam_out;
-            _visc_water_out[qp] = visc_water_out;
-            _visc_steam_out[qp] = visc_steam_out;
-            _del_press = del_press;
-            _del_enth = del_enth;
-            _d_enth_water_d_press[qp] = d_enth_water_d_press;
-            _d_enth_steam_d_press[qp] = d_enth_steam_d_press;
-            _d_dens_d_press[qp] = d_dens_d_press;
-            _d_temp_d_press[qp] = d_temp_d_press;
-            _d_enth_water_d_enth[qp] = d_enth_water_d_enth;
-            _d_enth_steam_d_enth[qp] = d_enth_steam_d_enth;
-            _d_dens_d_enth[qp] = d_dens_d_enth;
-            _d_temp_d_enth[qp] = d_temp_d_enth;
-            _d_sat_fraction_d_enth[qp] = d_sat_fraction_d_enth;
-            
-            //std::cout << "1. " << _temp_out[qp] << std::endl;
+      _Dtau_waterDP[qp]=(_tau_water1-_tau_water0)/del_p;
+      _Dtau_steamDP[qp]=(_tau_steam1-_tau_steam0)/del_p;
+      _Dtau_waterDH[qp]=(_tau_water2-_tau_water0)/del_h;
+      _Dtau_steamDH[qp]=(_tau_steam2-_tau_steam0)/del_h;
+      
+    }    
+  }
+}
 
             
             //std::cout << "1. " << _enthalpy[qp] << ", " << _temp_out[qp] << ", " << _dens_water_out[qp] << ", " << _visc_water_out[qp] << std::endl;

@@ -25,7 +25,7 @@ SolidMechFalcon::SolidMechFalcon(const std::string & name, InputParameters param
   :Kernel(name, parameters),
    _E_prop(getMaterialProperty<Real>("youngs_modulus")),
    _nu_prop(getMaterialProperty<Real>("poissons_ratio")),
-   _damage_coeff(getMaterialProperty<Real>("damage_coeff")),
+//   _damage_coeff(getMaterialProperty<Real>("damage_coeff")),
    _stress_normal_vector(getMaterialProperty<RealVectorValue>("stress_normal_vector")),
    _stress_shear_vector(getMaterialProperty<RealVectorValue>("stress_shear_vector"))
 {}
@@ -33,9 +33,12 @@ SolidMechFalcon::SolidMechFalcon(const std::string & name, InputParameters param
 void
 SolidMechFalcon::recomputeConstants()
 {
-  _E = _E_prop[_qp]*(1.0 - _damage_coeff[_qp]);
+//  _E = _E_prop[_qp]*(1.0 - _damage_coeff[_qp]);
+  _E = _E_prop[_qp];
+//  std::cout << "_E=" << _E <<"\n";  
   _nu = _nu_prop[_qp];
-
+//  std::cout << "_E=" << _nu <<"\n";  
+  
   _c1 = _E*(1.-_nu)/(1.+_nu)/(1.-2.*_nu);
   _c2 = _nu/(1.-_nu);
   _c3 = .5*(1.-2.*_nu)/(1.-_nu);
