@@ -36,15 +36,20 @@ public:
   
 protected:
     virtual void computeProperties();
-    virtual void compute2PhProperties0(Real _per, Real  _Sw,Real _Denw, Real _Dens, Real _visw, Real _viss, Real &_watertau, Real  &_steamtau);
+    virtual void compute2PhProperties0(Real _per, Real _Sw, Real _Denw, Real _Dens, Real _visw, Real _viss, Real &_watertau, Real  &_steamtau);
 
     const WaterSteamEOS & _water_steam_properties;
+    
     bool _has_pressure;
     VariableGradient & _grad_p;
     VariableValue  & _pressure;
     VariableValue & _pressure_old;
 
     bool _has_temp;
+    bool _temp_dependent;
+    VariableValue & _temperature;
+    VariableValue & _temperature_old;
+    
   //VariableValue & temp_out;
     bool _has_enthalpy;
     VariableValue & _enthalpy;
@@ -89,30 +94,20 @@ protected:
     MaterialProperty<Real> & _d_enth_water_d_press;
     MaterialProperty<Real> & _d_enth_steam_d_press;
     MaterialProperty<Real> & _d_temp_d_press;
+    
+    //Equations_of_State_Properties - Temperature/Pressure based (added by Kat)
+    MaterialProperty<Real> & _d_dens_d_temp_PT;
+    MaterialProperty<Real> & _d_dens_d_press_PT;
 
     //Time Derivative Equation_of_State_Properties (added by Kat)
     //Equation_of_State_Properties - Non-PH-Derivative Outputs (added by Kat)
     MaterialProperty<Real> & _time_old_temp_out;
-    //MaterialProperty<Real> & _time_old_sat_fraction_out;
     MaterialProperty<Real> & _time_old_dens_out;
     MaterialProperty<Real> & _time_old_dens_water_out;
     MaterialProperty<Real> & _time_old_dens_steam_out;
-    //MaterialProperty<Real> & _time_old_enth_water_out;
-    //MaterialProperty<Real> & _time_old_enth_steam_out;
     MaterialProperty<Real> & _time_old_visc_water_out;
     MaterialProperty<Real> & _time_old_visc_steam_out;
-    
-    //Equation_of_State_Properites - Derivative Outputs (variables added by Kat)
-    //MaterialProperty<Real> & _time_old_d_dens_d_enth;
-    //MaterialProperty<Real> & _time_old_d_dens_d_press;
-    //MaterialProperty<Real> & _time_old_d_enth_water_d_enth;
-    //MaterialProperty<Real> & _time_old_d_enth_steam_d_enth;
-    //MaterialProperty<Real> & _time_old_d_temp_d_enth;
-    //MaterialProperty<Real> & _time_old_d_sat_fraction_d_enth;
-    //MaterialProperty<Real> & _time_old_d_enth_water_d_press;
-    //MaterialProperty<Real> & _time_old_d_enth_steam_d_press;
-    //MaterialProperty<Real> & _time_old_d_temp_d_press;
-    
+        
 };
 
 #endif //FLUIDFLOW_H

@@ -28,51 +28,69 @@
   [../]
 [ ]
 
+
+[Preconditioning]
+# active = 'FDP'
+ active = 'SMP_newton'
+
+[./FDP]
+type = FDP
+petsc_options =  '-snes_mf_operator -ksp_monitor'
+petsc_options_iname = ' -pc_type -mat_fd_coloring_err -mat_fd_type'
+petsc_options_value = ' lu 1.0e-9 ds'
+#  off_diag_row    = 'pressure'
+#  off_diag_column = 'enthalpy'
+full = true
+[../]
+
+[./SMP_newton]
+type = SMP
+petsc_options =  '-snes -ksp_monitor'
+#petsc_options =  '-snes '
+petsc_options_iname =  ' -pc_type -pc_hypre_type -ksp_gmres_restart -snes_ls'
+petsc_options_value =  '  hypre boomeramg 201 basic'
+#     petsc_options_iname =  ' -pc_type -sub_pc_type -ksp_gmres_restart'
+#     petsc_options_value =  ' asm  ilu  201'
+#     petsc_options_iname = ' -pc_type'
+#     petsc_options_value = ' lu'
+#    off_diag_row    = 'enthalpy'
+#    off_diag_column = 'pressure'
+full = true
+[../]
+
+[ ]
+
+
 [AuxVariables]
- active = 'density_water viscosity_water dwdt dwdp v_x v_y'
- [./density_water]
- order = FIRST
- family = LAGRANGE
- initial_condition = 871.06
- [../]
-  
- [./viscosity_water]
- order = FIRST
- family = LAGRANGE
- initial_condition = 1.34E-4
- [../]
+ active = 'density_water viscosity_water v_x v_y'
 
- [./dwdt]
- order = FIRST
+[./density_water]
+order = CONSTANT
+family = MONOMIAL
+[../]
 
- family = LAGRANGE
- initial_condition = 0.0
- [../]
- 
- [./dwdp]
- order = FIRST
- family = LAGRANGE
- initial_condition = 0.0
- [../]
+[./viscosity_water]
+order = CONSTANT
+family = MONOMIAL
+[../]
 
- [./v_x]
-  order = CONSTANT
-  family = MONOMIAL
- [../]
+[./v_x]
+order = CONSTANT
+family = MONOMIAL
+[../]
 
- [./v_y]
-  order = CONSTANT
-  family = MONOMIAL
- [../]
+[./v_y]
+order = CONSTANT
+family = MONOMIAL
+[../]
 [ ]
 
 [Kernels]
  active = 'p_td p_wmfp t_td t_d t_c water_source heat_source'
+ 
  [./p_td]
  type = MassFluxTimeDerivative_PT
  variable = pressure
- density_water = density_water
- dwdp          = dwdp
  [../]
 
  [./p_wmfp]
@@ -83,8 +101,6 @@
  [./t_td]
  type = TemperatureTimeDerivative
  variable = temperature
- density_water = density_water
- dwdt          = dwdt
  [../]
 
  [./t_d]
@@ -115,39 +131,18 @@
 [ ]
 
 [AuxKernels]
- active = 'density_water viscosity_water dwdt dwdp vx vy'
+ active = 'density_water viscosity_water vx vy'
+
  [./density_water]
- type = CoupledDensityAux_PT
+ type = MaterialRealAux
  variable = density_water
- temperature = temperature
- pressure = pressure
- dwdt = dwdt
- dwdp = dwdp
- density_water = 871.06
- temp_dependent_density = true
+ property = density_water
  [../]
 
  [./viscosity_water]
- type = CoupledWaterViscosityAux
+ type = MaterialRealAux
  variable = viscosity_water
- temperature = temperature
- density_water = density_water
- viscosity_water = 1.34E-06
- temp_dependent_viscosity = true
- [../]
-
- [./dwdt]
- type = CoupledDdensityDTAux_PT
- variable = dwdt
- temperature = temperature
- pressure = pressure
- [../]
- 
- [./dwdp]
- type = CoupledDdensityDPAux_PT
- variable = dwdp
- temperature = temperature
- pressure = pressure
+ property = viscosity_water
  [../]
 
  [./vx]
@@ -189,9 +184,9 @@
 
 
   pressure        = pressure
-  density_water   = density_water
-  viscosity_water = viscosity_water
   temperature     = temperature
+  water_steam_properties = water_steam_properties
+  temp_dependent = true
 
  gravity           =  0.0
  gx                =  0.0
@@ -219,9 +214,9 @@
  block = 2 
 
   pressure        = pressure
-  density_water   = density_water
-  viscosity_water = viscosity_water
   temperature     = temperature
+  water_steam_properties = water_steam_properties
+  temp_dependent = true
 
  gravity           =  0.0
  gx                =  0.0
@@ -245,6 +240,16 @@
  [../]
 
 [ ]
+
+
+[UserObjects]
+active = 'water_steam_properties'
+
+[./water_steam_properties]
+type = WaterSteamEOS
+[../]
+[ ]
+
  
 [Executioner]
 #active = 'Adaptivity '

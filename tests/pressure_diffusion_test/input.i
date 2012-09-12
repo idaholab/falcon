@@ -28,42 +28,46 @@
   [../]
 [ ]
 
+[Preconditioning]
+active = ' '
+# active = 'FDP'
+
+[./FDP]
+type = FDP
+petsc_options =  '-snes_mf_operator -ksp_monitor'
+petsc_options_iname = ' -pc_type -mat_fd_coloring_err -mat_fd_type'
+petsc_options_value = ' lu 1.0e-9 ds'
+#  off_diag_row    = 'pressure'
+#  off_diag_column = 'enthalpy'
+full = true
+[../]
+[ ]
+
+
 [AuxVariables]
-# active = 'density_water viscosity_water dwdt dwdp v_x'
  active = 'v_x'
- [./density_water]
- order = FIRST
- family = LAGRANGE
-initial_condition = 1000
- [../]
-  
- [./viscosity_water]
- order = FIRST
- family = LAGRANGE
- initial_condition = 0.0001
- [../]
 
- [./dwdt]
- order = FIRST
- family = LAGRANGE
- initial_condition = 0.0
- [../]
- 
- [./dwdp]
- order = FIRST
- family = LAGRANGE
- initial_condition = 0.0
- [../]
+[./density_water]
+type = MaterialRealAux
+variable = density_water
+property = density_water
+[../]
 
- [./v_x]
-  order = CONSTANT
-  family = MONOMIAL
- [../]
+[./viscosity_water]
+type = MaterialRealAux
+variable = viscosity_water
+property = viscosity_water
+[../]
 
- [./v_y]
-  order = CONSTANT
-  family = MONOMIAL
- [../]
+[./v_x]
+ order = CONSTANT
+ family = MONOMIAL
+[../]
+
+[./v_y]
+ order = CONSTANT
+ family = MONOMIAL
+[../]
 [ ]
 
 [Kernels]
@@ -73,8 +77,6 @@ active = ' p_wmfp'
 [./p_td]
  type = MassFluxTimeDerivative_PT
  variable = pressure
- density_water = density_water
- dwdp          = dwdp
  [../]
 
  [./p_wmfp]
@@ -85,8 +87,6 @@ active = ' p_wmfp'
  [./t_td]
  type = TemperatureTimeDerivative
  variable = temperature
- density_water = density_water
- dwdt          = dwdt
  [../]
 
  [./t_d]
@@ -102,41 +102,7 @@ active = ' p_wmfp'
 [ ]
 
 [AuxKernels]
-# active = 'density_water viscosity_water dwdt dwdp vx'
- active = ' vx'
- [./density_water]
- type = CoupledDensityAux_PT
- variable = density_water
- temperature = temperature
- pressure = pressure
- dwdt = dwdt
- dwdp = dwdp
- density_water = 1000
- temp_dependent_density = false
- [../]
-
- [./viscosity_water]
- type = CoupledWaterViscosityAux
- variable = viscosity_water
- temperature = temperature
- density_water = density_water
- viscosity_water = 0.0001
- temp_dependent_viscosity = false
- [../]
-
- [./dwdt]
- type = CoupledDdensityDTAux_PT
- variable = dwdt
- temperature = temperature
- pressure = pressure
- [../]
- 
- [./dwdp]
- type = CoupledDdensityDPAux_PT
- variable = dwdp
- temperature = temperature
- pressure = pressure
- [../]
+ active = 'vx'
 
  [./vx]
  type = VelocityAux
@@ -179,15 +145,6 @@ value = 1e6
 
 [ ]
 
-[UserObjects]
-active = 'water_steam_properties'
-
-[./water_steam_properties]
-type = WaterSteamEOS
-[../]
-[ ]
-
-
 [Materials]
  active = 'rock'
  [./rock]
@@ -195,11 +152,9 @@ type = WaterSteamEOS
  block = 1 
 
 
-  pressure        = pressure
-  water_steam_properties = water_steam_properties
-#  density_water   = density_water
- # viscosity_water = viscosity_water
- # temperature     = temperature
+pressure = pressure
+water_steam_properties = water_steam_properties
+temp_dependent = true
 
  gravity           =  0.0
  gx                =  0.0
@@ -222,7 +177,16 @@ type = WaterSteamEOS
  has_damage = false
  [../]
 [ ]
- 
+
+[UserObjects]
+active = 'water_steam_properties'
+
+[./water_steam_properties]
+type = WaterSteamEOS
+[../]
+[ ]
+
+
 [Executioner]
 #active = 'Adaptivity '
  active = 'Quadrature'
@@ -245,7 +209,7 @@ type = WaterSteamEOS
 # nl_rel_tol =  1e-6
 # nl_abs_tol = 1e-20
 
- num_steps = 10 
+ num_steps = 2
  dt = 10.0
 #dtmax= 864000.0
 # dtmin= 1e-2

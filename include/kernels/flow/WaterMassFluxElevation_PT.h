@@ -35,8 +35,8 @@ protected:
   virtual Real computeQpJacobian();
 
 
-  VariableValue  & _density_water;
-
+  //VariableValue  & _density_water;
+    MaterialProperty<Real> & _density_water;
   
   MaterialProperty<Real> & _tau_water;
   MaterialProperty<Real> & _gravity;

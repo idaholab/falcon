@@ -20,14 +20,14 @@ InputParameters validParams<OutFlowBC_PH>()
     InputParameters params = validParams<IntegratedBC>();
     params.addCoupledVar("pressure", "Use pressure here");
     params.addCoupledVar("temperature", "Use temperature here");
-    params.addCoupledVar("dTdH_P", "Use dTdH_P here");
-    params.addCoupledVar("dTdP_H", "Use dTdP_H here");
-    params.addCoupledVar("enthalpy_water", "Use enthalpy_water here");
-    params.addCoupledVar("enthalpy_steam", "Use enthalpy_steam here");
-    params.addCoupledVar("denthalpy_waterdH_P", "Use denthalpy_waterdH_P here");
-    params.addCoupledVar("denthalpy_steamdH_P", "Use denthalpy_steamdH_P here");
-    params.addCoupledVar("denthalpy_waterdP_H", "Use denthalpy_waterdP_H here");
-    params.addCoupledVar("denthalpy_steamdP_H", "Use denthalpy_steamdP_H here");
+    //params.addCoupledVar("dTdH_P", "Use dTdH_P here");                            //removed by kat
+    //params.addCoupledVar("dTdP_H", "Use dTdP_H here");                            //      |
+    //params.addCoupledVar("enthalpy_water", "Use enthalpy_water here");            //      |
+    //params.addCoupledVar("enthalpy_steam", "Use enthalpy_steam here");            //      |
+    //params.addCoupledVar("denthalpy_waterdH_P", "Use denthalpy_waterdH_P here");  //      |
+    //params.addCoupledVar("denthalpy_steamdH_P", "Use denthalpy_steamdH_P here");  //      |
+    //params.addCoupledVar("denthalpy_waterdP_H", "Use denthalpy_waterdP_H here");  //      |
+    //params.addCoupledVar("denthalpy_steamdP_H", "Use denthalpy_steamdP_H here");  //      V
    
     
     return params;
@@ -38,18 +38,29 @@ OutFlowBC_PH::OutFlowBC_PH(const std::string & name, InputParameters parameters)
 _grad_p(coupledGradient("pressure")),
 _p_var(coupled("pressure")), 
 _grad_T(coupledGradient("temperature")),
-_dTdH(coupledValue("dTdH_P")),
- _dTdP(coupledValue("dTdP_H")),
-_enthalpy_water(coupledValue("enthalpy_water")),
-_enthalpy_steam(coupledValue("enthalpy_steam")),
-_denthalpy_waterdH_P(coupledValue("denthalpy_waterdH_P")),
-_denthalpy_steamdH_P(coupledValue("denthalpy_steamdH_P")),
-_denthalpy_waterdP_H(coupledValue("denthalpy_waterdP_H")),
-_denthalpy_steamdP_H(coupledValue("denthalpy_steamdP_H")),
- _Dtau_waterDP(getMaterialProperty<Real>("Dtau_waterDP")),
- _Dtau_waterDH(getMaterialProperty<Real>("Dtau_waterDH")),
- _Dtau_steamDP(getMaterialProperty<Real>("Dtau_steamDP")),
- _Dtau_steamDH(getMaterialProperty<Real>("Dtau_steamDH")),
+
+//_dTdH(coupledValue("dTdH_P")),                                                    //removed by kat
+//_dTdP(coupledValue("dTdP_H")),                                                    //      |
+//_enthalpy_water(coupledValue("enthalpy_water")),                                  //      |
+//_enthalpy_steam(coupledValue("enthalpy_steam")),                                  //      |
+//_denthalpy_waterdH_P(coupledValue("denthalpy_waterdH_P")),                        //      |
+//_denthalpy_steamdH_P(coupledValue("denthalpy_steamdH_P")),                        //      |
+//_denthalpy_waterdP_H(coupledValue("denthalpy_waterdP_H")),                        //      |
+//_denthalpy_steamdP_H(coupledValue("denthalpy_steamdP_H")),                        //      V
+
+_dTdH(getMaterialProperty<Real>("dTdH_P")),                                         //added by kat
+_dTdP(getMaterialProperty<Real>("dTdP_H")),                                         //      |
+_enthalpy_water(getMaterialProperty<Real>("enthalpy_water")),                       //      |
+_enthalpy_steam(getMaterialProperty<Real>("enthalpy_steam")),                       //      |
+_denthalpy_waterdH_P(getMaterialProperty<Real>("denthalpy_waterdH_P")),             //      |
+_denthalpy_steamdH_P(getMaterialProperty<Real>("denthalpy_steamdH_P")),             //      |
+_denthalpy_waterdP_H(getMaterialProperty<Real>("denthalpy_waterdP_H")),             //      |
+_denthalpy_steamdP_H(getMaterialProperty<Real>("denthalpy_steamdP_H")),             //      V
+
+_Dtau_waterDP(getMaterialProperty<Real>("Dtau_waterDP")),
+_Dtau_waterDH(getMaterialProperty<Real>("Dtau_waterDH")),
+_Dtau_steamDP(getMaterialProperty<Real>("Dtau_steamDP")),
+_Dtau_steamDH(getMaterialProperty<Real>("Dtau_steamDH")),
 _tau_water(getMaterialProperty<Real>("tau_water")),
 _tau_steam(getMaterialProperty<Real>("tau_steam")),
 _darcy_mass_flux_water(getMaterialProperty<RealGradient>("darcy_mass_flux_water")),

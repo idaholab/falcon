@@ -62,7 +62,7 @@ initial_condition = 0.0
 # active= 'PBP'
 # active = 'FDP'
 # active = 'SMP'	 
-active = 'SMP_newton'
+ active = 'SMP_newton'
 
 
 [./PBP]
@@ -116,66 +116,52 @@ full = true
 
 
 [AuxVariables]
-# active = 'density_water viscosity_water dwdt dwdp v_x v_y'
+# active = 'density_water viscosity_water v_x v_y'
 
 
-active = 'density_water viscosity_water dwdt dwdp
+active = 'density_water viscosity_water
           v_x v_y tau_xx tau_yy tau_zz tau_xy tau_xz tau_yz
           s_xx s_yy s_zz s_xy s_xz s_yz'
 
- [./density_water]
- order = FIRST
- family = LAGRANGE
- initial_condition = 871.06
- [../]
-  
- [./viscosity_water]
- order = FIRST
- family = LAGRANGE
- initial_condition = 1.34E-4
- [../]
-
- [./dwdt]
- order = FIRST
-
- family = LAGRANGE
- initial_condition = 0.0
- [../]
- 
- [./dwdp]
- order = FIRST
- family = LAGRANGE
- initial_condition = 0.0
- [../]
-
- [./v_x]
-  order = CONSTANT
-  family = MONOMIAL
- [../]
-
- [./v_y]
-  order = CONSTANT
-  family = MONOMIAL
- [../]
-
-[./tau_xx]
+[./density_water]
 order = CONSTANT
 family = MONOMIAL
+[../]
+
+[./viscosity_water]
+order = CONSTANT
+family = MONOMIAL
+[../]
+[ ]
+
+[./v_x]
+ order = CONSTANT
+ family = MONOMIAL
+[../]
+
+[./v_y]
+ order = CONSTANT
+ family = MONOMIAL
+[../]
+
+[./tau_xx]
+ order = CONSTANT
+ family = MONOMIAL
 [../]
 
 [./tau_yy]
-order = CONSTANT
-family = MONOMIAL
+ order = CONSTANT
+ family = MONOMIAL
 [../]
 
 [./tau_zz]
-order = CONSTANT
-family = MONOMIAL
+ order = CONSTANT
+ family = MONOMIAL
 [../]
 
 [./tau_xy]
-order = CONSTANT
-family = MONOMIAL
+ order = CONSTANT
+ family = MONOMIAL
 [../]
 
 [./tau_xz]
@@ -228,8 +214,6 @@ family = MONOMIAL
  [./p_td]
  type = MassFluxTimeDerivative_PT
  variable = pressure
- density_water = density_water
- dwdp          = dwdp
  [../]
 
  [./p_wmfp]
@@ -240,8 +224,6 @@ family = MONOMIAL
  [./t_td]
  type = TemperatureTimeDerivative
  variable = temperature
- density_water = density_water
- dwdt          = dwdt
  [../]
 
  [./t_d]
@@ -351,55 +333,34 @@ temperature = temperature
 [ ]
 
 [AuxKernels]
- active = 'density_water viscosity_water dwdt dwdp vx vy
+ active = 'density_water viscosity_water vx vy
        comp_tau_xx comp_tau_yy comp_tau_zz comp_tau_xy comp_tau_xz comp_tau_yz 
        comp_s_xx comp_s_yy comp_s_zz comp_s_xy comp_s_xz comp_s_yz'
 
- [./density_water]
- type = CoupledDensityAux_PT
- variable = density_water
- temperature = temperature
- pressure = pressure
- dwdt = dwdt
- dwdp = dwdp
- density_water = 871.06
- temp_dependent_density = true
- [../]
+[./density_water]
+type = MaterialRealAux
+variable = density_water
+property = density_water
+[../]
 
- [./viscosity_water]
- type = CoupledWaterViscosityAux
- variable = viscosity_water
- temperature = temperature
- density_water = density_water
- viscosity_water = 1.34E-06
- temp_dependent_viscosity = true
- [../]
+[./viscosity_water]
+type = MaterialRealAux
+variable = viscosity_water
+property = viscosity_water
+[../]
+[ ]
 
- [./dwdt]
- type = CoupledDdensityDTAux_PT
- variable = dwdt
- temperature = temperature
- pressure = pressure
- [../]
- 
- [./dwdp]
- type = CoupledDdensityDPAux_PT
- variable = dwdp
- temperature = temperature
- pressure = pressure
- [../]
+[./vx]
+type = VelocityAux
+variable = v_x
+component = 0
+[../]
 
- [./vx]
- type = VelocityAux
- variable = v_x
- component = 0
- [../]
-
- [./vy]
- type = VelocityAux
- variable = v_y
- component = 1
- [../]
+[./vy]
+type = VelocityAux
+variable = v_y
+component = 1
+[../]
 
 [./comp_tau_xx]
 type = StressStrainDamageComputeAux
@@ -553,9 +514,9 @@ y_disp = disp_y
 z_disp = disp_z
 
 pressure        = pressure
-density_water   = density_water
-viscosity_water = viscosity_water
 temperature     = temperature
+water_steam_properties = water_steam_properties
+temp_dependent = true
 
 gravity           =  9.8
 gx                =  0.0
@@ -595,9 +556,9 @@ y_disp = disp_y
 z_disp = disp_z
 
 pressure        = pressure
-density_water   = density_water
-viscosity_water = viscosity_water
 temperature     = temperature
+water_steam_properties = water_steam_properties
+temp_dependent = true
 
 gravity           =  9.8
 gx                =  0.0
@@ -629,6 +590,13 @@ t_ref                =   200
 [../]
 [ ]
 
+[UserObjects]
+active = 'water_steam_properties'
+
+[./water_steam_properties]
+type = WaterSteamEOS
+[../]
+[ ]
 
 [Executioner]
 #active = 'Adaptivity '

@@ -42,10 +42,7 @@ CoupledTemperatureAux::computeValue()
     Real _temperature = _input_temperature;
     Real _dummy_var[12];
     
-    _water_steam_properties.Equations_of_State_Properties((_enthalpy[_qp]), _pressure[_qp], _dummy_var[0] , _temperature, _dummy_var[1], _dummy_var[2], _dummy_var[3], _dummy_var[4], _dummy_var[5], _dummy_var[6], _dummy_var[7], _dummy_var[8], _dummy_var[9], _dummy_var[10], _dummy_var[11]);
-    
-    //std::cout << "3. " << _temperature << std::endl;
-
+    _water_steam_properties.waterAndSteamEquationOfStatePropertiesPH (_enthalpy[_qp], _pressure[_qp], _dummy_var[0] , _temperature, _dummy_var[1], _dummy_var[2], _dummy_var[3], _dummy_var[4], _dummy_var[5], _dummy_var[6], _dummy_var[7], _dummy_var[8], _dummy_var[9], _dummy_var[10], _dummy_var[11]);
     
     return _temperature;
 

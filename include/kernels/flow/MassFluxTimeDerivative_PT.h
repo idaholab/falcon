@@ -33,10 +33,13 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
 
-  VariableValue & _density_water;
-  VariableValue & _density_water_old;
-  VariableValue & _dwdp; //derivative of water density vs. pressure  
-    
+  //VariableValue & _density_water;             //removed by kat
+  //VariableValue & _density_water_old;         //removed by kat
+  //VariableValue & _dwdp; //derivative of water density vs. pressure  
+                                                //removed by kat
+    MaterialProperty<Real> & _density_water;
+    MaterialProperty<Real> & _density_water_old;
+    MaterialProperty<Real> & _dwdp;
   MaterialProperty<Real> & _porosity;  
 //  VariableValue  & _porosity;
 //  VariableValue  & _porosity_old;
