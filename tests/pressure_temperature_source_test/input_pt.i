@@ -10,7 +10,7 @@
 ################################################################################################################
 [Mesh]
   dim = 2
-  file = 2d.e
+  file = 2d_adaptive_4.e
 [ ]
 
 [Variables]
@@ -62,7 +62,8 @@ full = true
 
 
 [AuxVariables]
- active = 'density_water viscosity_water v_x v_y'
+# active = 'density_water viscosity_water v_x v_y'
+ active = 'density_water viscosity_water'
 
 [./density_water]
 order = CONSTANT
@@ -131,7 +132,8 @@ family = MONOMIAL
 [ ]
 
 [AuxKernels]
- active = 'density_water viscosity_water vx vy'
+# active = 'density_water viscosity_water vx vy'
+ active = 'density_water viscosity_water'
 
  [./density_water]
  type = MaterialRealAux
@@ -252,8 +254,8 @@ type = WaterSteamEOS
 
  
 [Executioner]
-#active = 'Adaptivity '
- active = 'Quadrature'
+  active = 'Adaptivity '
+# active = 'Quadrature'
 # active = ' '
 # type = Steady
 # type =  Transient
@@ -267,8 +269,8 @@ type = WaterSteamEOS
  l_max_its  =  100
 # l_tol =  1.0e-6
  nl_max_its =  12
-# nl_rel_tol =  1e-6
-# nl_abs_tol = 1e-10
+ nl_rel_tol =  1e-9
+ nl_abs_tol = 1e-13
  num_steps = 5 
  dt = 10.0
  dtmax= 864000.0

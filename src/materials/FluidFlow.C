@@ -142,7 +142,6 @@ void FluidFlow::computeProperties()
                 _d_dens_d_enth[qp] = d_dens_d_enth;
                 _d_temp_d_enth[qp] = d_temp_d_enth;
                 _d_sat_fraction_d_enth[qp] = d_sat_fraction_d_enth;
-            
                 
                 if (_is_transient)
                 {
@@ -159,7 +158,7 @@ void FluidFlow::computeProperties()
                     _time_old_dens_steam_out[qp] = time_old_dens_steam_out;
                     _time_old_visc_water_out[qp] = time_old_visc_water_out;
                     _time_old_visc_steam_out[qp] = time_old_visc_steam_out;
-                
+                                    
                 }
                 
                 //Determining tau_water and darcy_flux fluid properties 
@@ -190,7 +189,7 @@ void FluidFlow::computeProperties()
                 
                 
                 //Obtaining properties to compute darcy_mass_flux, darcy_flux, and tau_water/_steam
-                FluidFlow:: compute2PhProperties0( _permeability[qp], sat_fraction_out, dens_water_out, dens_steam_out, visc_water_out, visc_steam_out, _tau_water[qp],_tau_steam[qp]);
+                FluidFlow:: compute2PhProperties0( _permeability[qp], sat_fraction_out, dens_water_out, dens_steam_out, visc_water_out, visc_steam_out, _tau_water[qp], _tau_steam[qp]);
                 
                 _tau_water0 = _tau_water[qp];
                 _tau_steam0 = _tau_steam[qp];
@@ -230,8 +229,7 @@ void FluidFlow::computeProperties()
                     _water_steam_properties.waterEquationOfStatePT (_pressure[qp], _temperature[qp], _var, _dens_water_PT);
                 
                     _dens_water_out[qp] = _dens_water_PT;
-                
-                
+                                
                     //Obtaining value for density_old when given parameters are temperature and pressure (no enthalpy)
                     _water_steam_properties.waterEquationOfStatePT (_pressure_old[qp], _temperature_old[qp], _var, _time_old_dens_water_PT);
                 
@@ -273,9 +271,22 @@ void FluidFlow::computeProperties()
                 if (_temp_dependent == false)
                 {
                     _dens_water_out[qp] = 1000.0;
-                    _visc_water_out[qp] = 0.1e-3;
+                    _time_old_dens_water_out[qp] = 1000.0;
+                    _visc_water_out[qp] = 0.12e-3;
                     _d_dens_d_press_PT[qp] = 0.0;
                     _d_dens_d_temp_PT[qp] = 0.0;
+                    
+                    Real _dens_water0;
+                    Real _visc_water0;
+                    
+                    _dens_water0 =  _dens_water_out[qp];
+                    _visc_water0 =  _visc_water_out[qp];
+                    
+                    _tau_water[qp] = _permeability[qp] * _dens_water0 / _visc_water0;
+                    _darcy_mass_flux_water[qp] = -_tau_water[qp] * (_grad_p[qp] + _dens_water0 * _gravity[qp] * _gravity_vector[qp]);
+                    _darcy_mass_flux_water_pressure[qp] =  (-_tau_water[qp] * _grad_p[qp]);
+                    _darcy_mass_flux_water_elevation[qp] = (-_tau_water[qp] * _gravity[qp] * _gravity_vector[qp] * _dens_water0);
+                    _darcy_flux_water[qp] = _darcy_mass_flux_water[qp] / _dens_water0;
                 }
             }
             

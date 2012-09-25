@@ -32,8 +32,7 @@ public:
 protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
-
-
+    
   //VariableValue  & _density_water;                                            //removed by kat
   //VariableValue  & _density_water_old;                                        //removed by kat
   //VariableValue  & _dwdt; //derivative of water density vs. temperature       //removed by kat

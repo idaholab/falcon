@@ -63,7 +63,7 @@ protected:
   void rotateSymmetricTensor( const ColumnMajorMatrix & , const RealTensorValue & ,
                                      RealTensorValue & );
 
-  void computeDamage(const int qp); //damage mechanics
+/*  void computeDamage(const int qp); //damage mechanics
   void computeDamage_v2(const int qp); //damage mechanics with Mohr_Coulomb-use this version
   
   void computeDamage_v3(const int qp); //damage mechanics with Principal strain-not rrecommended
@@ -72,18 +72,24 @@ protected:
   void computeCrack_tension(const int qp); //tensile induce cracking
   void computeCrack_Mohr_Coulomb_v1(const int qp); //Mohr_Coulomb criteria
   void computeCrack_Mohr_Coulomb_v2(const int qp); //Mohr_Coulomb criteria
-   virtual void computeProperties();
+*/   
+ 
+ virtual void computeProperties();
 
   bool _has_temp;
   VariableGradient & _grad_temp;
   VariableValue  & _temperature;
+    VariableValue  & _temperature_old;
 
   bool _has_x_disp;
   VariableGradient & _grad_x_disp;
+    VariableGradient & _grad_x_disp_old;
   bool _has_y_disp;
   VariableGradient & _grad_y_disp;
+    VariableGradient & _grad_y_disp_old;
   bool _has_z_disp;
   VariableGradient & _grad_z_disp;
+    VariableGradient & _grad_z_disp_old;
 
   Real _input_thermal_expansion;
   Real _input_youngs_modulus;
@@ -94,7 +100,7 @@ protected:
   Real _input_t_ref;
 
 //parameters for damage mechanics model
-  bool _has_damage;
+/*  bool _has_damage;
   Real _input_damage_coeff;             //initial damage between [0,1]
   Real _input_strain_initialize_damage; //critical strain to lnitialize damage
   Real _input_strain_broken;            //critical strain for complete failure
@@ -118,14 +124,17 @@ protected:
   Real _critical_crack_strain;
   Real _cohesion;
   Real _friction_angle;
+ */
 
   bool _has_damage_couple_permeability;
-  Real _damage_couple_permeability_coeff1;
+    
+/*  Real _damage_couple_permeability_coeff1;
   Real _damage_couple_permeability_coeff2;
 
   ColumnMajorMatrix _total_strain;
   TensorValue<Real> _total_stress;
   ColumnMajorMatrix _total_stress1;
+ */
 
   MaterialProperty<Real> & _thermal_strain;
   MaterialProperty<Real> & _alpha;
@@ -133,6 +142,8 @@ protected:
   MaterialProperty<Real> & _poissons_ratio;
   MaterialProperty<Real> & _biot_coeff;
   MaterialProperty<Real> & _biot_modulus;
+    
+/*    
   MaterialProperty<Real> & _damage_coeff;
   MaterialProperty<int> & _damage_indicator;
   MaterialProperty<int> & _damage_type_indicator;
@@ -145,12 +156,14 @@ protected:
   MaterialProperty<int> & _damage_indicator_old;
   MaterialProperty<int> & _damage_type_indicator_old;
   MaterialProperty<Real> & _strain_history_old;//newly added
-
+*/
 
   MaterialProperty<RealVectorValue> & _stress_normal_vector;
   MaterialProperty<RealVectorValue> & _stress_shear_vector;
   MaterialProperty<RealVectorValue> & _strain_normal_vector;
   MaterialProperty<RealVectorValue> & _strain_shear_vector;
+    
+/*    
   MaterialProperty<RealVectorValue> & _pstress_normal_vector;
   MaterialProperty<RealVectorValue> & _pstrain_normal_vector;
 
@@ -199,6 +212,7 @@ protected:
 
   MaterialProperty<RealVectorValue> * _crack_flags;
   MaterialProperty<RealVectorValue> * _crack_flags_old;
+*/ 
 
   Real _E;
   Real _nu;

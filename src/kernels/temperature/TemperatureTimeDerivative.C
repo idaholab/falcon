@@ -41,12 +41,16 @@ TemperatureTimeDerivative::TemperatureTimeDerivative(const std::string & name,
 
 Real
 TemperatureTimeDerivative::computeQpResidual()
-{
-  Real tmp1=(((_porosity[_qp]*_density_water[_qp]*_specific_heat_water[_qp])+
-              ((1.0-_porosity[_qp])*_density_rock[_qp]*_specific_heat_rock[_qp]))*(_u[_qp]+273.0)-
-              ((_porosity[_qp]*_density_water_old[_qp]*_specific_heat_water[_qp])+
-               ((1.0-_porosity[_qp])*_density_rock[_qp]*_specific_heat_rock[_qp]))
-             *(_u_old[_qp]+273.0))*_test[_i][_qp]/_dt;
+{  
+    
+  Real tmp1=(((_porosity[_qp]*_density_water[_qp]*_specific_heat_water[_qp]) 
+              + ((1.0-_porosity[_qp])*_density_rock[_qp]*_specific_heat_rock[_qp]))*(_u[_qp]+273.0)
+             - ((_porosity[_qp]*_density_water_old[_qp]*_specific_heat_water[_qp]) 
+                + ((1.0-_porosity[_qp])*_density_rock[_qp]*_specific_heat_rock[_qp]))*(_u_old[_qp]+273.0))
+    *_test[_i][_qp]/_dt;
+  
+    
+    
   return tmp1;
 }
 

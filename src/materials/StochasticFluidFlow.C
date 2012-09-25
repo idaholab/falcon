@@ -280,9 +280,22 @@ void StochasticFluidFlow::computeProperties()
          if (_temp_dependent == false)
          {
              _dens_water_out[qp] = 1000.0;
+             _time_old_dens_water_out[qp] = 1000.0;
              _visc_water_out[qp] = 0.12e-3;
              _d_dens_d_press_PT[qp] = 0.0;
              _d_dens_d_temp_PT[qp] = 0.0;
+             
+             Real _dens_water0;
+             Real _visc_water0;
+             
+             _dens_water0 =  _dens_water_out[qp];
+             _visc_water0 =  _visc_water_out[qp];
+             
+             _tau_water[qp] = _permeability[qp] * _dens_water0 / _visc_water0;
+             _darcy_mass_flux_water[qp] = -_tau_water[qp] * (_grad_p[qp] + _dens_water0 * _gravity[qp] * _gravity_vector[qp]);
+             _darcy_mass_flux_water_pressure[qp] =  (-_tau_water[qp] * _grad_p[qp]);
+             _darcy_mass_flux_water_elevation[qp] = (-_tau_water[qp] * _gravity[qp] * _gravity_vector[qp] * _dens_water0);
+             _darcy_flux_water[qp] = _darcy_mass_flux_water[qp] / _dens_water0;  
          }
      }
     }

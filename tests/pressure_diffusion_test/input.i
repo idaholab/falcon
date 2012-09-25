@@ -47,27 +47,11 @@ full = true
 [AuxVariables]
  active = 'v_x'
 
-[./density_water]
-type = MaterialRealAux
-variable = density_water
-property = density_water
-[../]
-
-[./viscosity_water]
-type = MaterialRealAux
-variable = viscosity_water
-property = viscosity_water
-[../]
-
 [./v_x]
  order = CONSTANT
  family = MONOMIAL
 [../]
 
-[./v_y]
- order = CONSTANT
- family = MONOMIAL
-[../]
 [ ]
 
 [Kernels]

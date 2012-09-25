@@ -2,5 +2,7 @@ from options import *
 
 test = { INPUT : 'input_pt.i',
          EXODIFF : ['out.e'],
-    SKIP : 'test being revised'}
+             REL_ERR : 1.0e-5,
+ABS_ZERO : 1.0e-9,
+SKIP : 'test too long, fixing'}
 

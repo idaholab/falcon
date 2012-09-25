@@ -37,7 +37,7 @@ InputParameters validParams<StochasticPorousMedia>()
   params.addCoupledVar("z_disp", "modify permeability by z displacement");
   params.addParam<Real>("aperture",1.0e-7, "effective frac aperture");
 //  params.addParam<RealVectorValue>("strain",1.0e-7, "effective frac aperture");	  
-   params.addRequiredCoupledVar("permeability", "intrinsic permeability in m^2");
+  params.addRequiredCoupledVar("permeability", "intrinsic permeability in m^2");
  
   return params;
 }
@@ -45,10 +45,10 @@ InputParameters validParams<StochasticPorousMedia>()
 StochasticPorousMedia::StochasticPorousMedia(const std::string & name,
                          InputParameters parameters)
   :Material(name, parameters),
-   // _input_permeability(getParam<Real>("permeability")),
+   //_input_permeability(getParam<Real>("permeability")),
 
    _has_permeability(isCoupled("permeability")),
-   _init_permeability  (_has_permeability ? coupledValue("permeability") : _zero),
+   _init_permeability(_has_permeability ? coupledValue("permeability") : _zero),
    
    _input_material_porosity(getParam<Real>("material_porosity")),
    _input_density_rock(getParam<Real>("density_rock")),
@@ -65,15 +65,15 @@ StochasticPorousMedia::StochasticPorousMedia(const std::string & name,
    _density_rock(declareProperty<Real>("density_rock")),
    _compressibility(declareProperty<Real>("compressibility")),
    _gravity(declareProperty<Real>("gravity")),
-   _gravity_vector(declareProperty<RealVectorValue>("gravity_vector")),
+   _gravity_vector(declareProperty<RealVectorValue>("gravity_vector"))
 
 //rkp
-   _has_frac_perm(getParam<bool>("has_frac_perm")),
-   _z_disp( _has_frac_perm? coupledValue("z_disp"): _zero),
-   _z_disp_old( _has_frac_perm? coupledValueOld("z_disp"): _zero),
+//   _has_frac_perm(getParam<bool>("has_frac_perm")),
+//   _z_disp( _has_frac_perm? coupledValue("z_disp"): _zero),
+//   _z_disp_old( _has_frac_perm? coupledValueOld("z_disp"): _zero),
    // _permeability_old(declarePropertyOld<Real>("permeability")),
-   _aperture(declareProperty<Real>("aperture")), //,
-   _strain(declareProperty<RealVectorValue>("strain_normal_vector"))
+//   _aperture(declareProperty<Real>("aperture")), //,
+//   _strain(declareProperty<RealVectorValue>("strain_normal_vector"))
    
    // Get stochastic conductivity values from the coupled aux variable
 
@@ -89,48 +89,49 @@ StochasticPorousMedia::computeProperties()
 //rock properties
 	  
 	  //rkp
-	  if(_has_frac_perm)
-	  {
-		  if (_t_step == 1)
-		    {//std::cout << _t_step;
+//	  if(_has_frac_perm)
+//	  {
+//		  if (_t_step == 1)
+//		    {//std::cout << _t_step;
                       // _permeability[qp] = _input_permeability;
                       //  _aperture[qp] = std::sqrt(_input_permeability*12) ;
                 
-                _material_porosity[qp]    = _input_material_porosity;
-               _density_rock[qp]         = _input_density_rock;    
-                // fluid properties
-                _compressibility[qp]      = _input_compressibility;  
+//                _material_porosity[qp]    = _input_material_porosity;
+//               _density_rock[qp]         = _input_density_rock;    
+//                // fluid properties
+//                _compressibility[qp]      = _input_compressibility;  
                 
-			}
-		  else
-		  { 
+//			}
+//		  else
+//		  { 
 			 // aperture_old = std::sqrt(_permeability_old[qp]*12) ;
 			//  aperture_change = std::abs(_z_disp[qp]-_z_disp_old[qp]);
 			//  _aperture[qp] = std::sqrt(_input_permeability*12) ; 
             //  _strain[_qp] = strain_normal_vector
-              aperture_change = _strain[qp](0)+_strain[qp](1);
+//             aperture_change = _strain[qp](0)+_strain[qp](1);
 
               
-              if (_dim == 3) 
-                {aperture_change += _strain[qp](2);}
+//              if (_dim == 3) 
+//                {aperture_change += _strain[qp](2);}
               //  _aperture[qp] += (1.0-_aperture[qp]) * aperture_change;
               
               //if (aperture_change !=0)
               //    std::cout << "Aperture Change= " <<_q_point[qp](0)<<" "<<_q_point[qp](1)<<" "<<_q_point[qp](2)<<" "<<aperture_change<< "\n";
               
 			  //std::cout << aperture_change<< ".\n";
-                porosity =  _input_material_porosity;
-                _material_porosity[qp]= porosity +  aperture_change*(1.0- porosity);                
+//                porosity =  _input_material_porosity;
+//                _material_porosity[qp]= porosity +  aperture_change*(1.0- porosity);                
                 // _permeability[qp] = _input_permeability * pow((_material_porosity[qp]/_input_material_porosity),3);	
-		  }
-	  }
+//		  }
+//	  }
 	  
 	  //rkp
-	  if(_has_frac_perm==false)
-	  {
-      _permeability[qp]         = _init_permeability[qp];
-	  }
+//	  if(_has_frac_perm==false)
+//	  {
+//      _permeability[qp]         = _init_permeability[qp];
+//	  }
 	  
+    _permeability[qp]      = _init_permeability[qp];
     _material_porosity[qp]    = _input_material_porosity;
     _density_rock[qp]         = _input_density_rock;    
 

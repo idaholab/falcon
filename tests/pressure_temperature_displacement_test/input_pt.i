@@ -10,7 +10,7 @@
 ################################################################################################################
 [Mesh]
 dim = 3
-file = csiro_example4.e
+file = csiro_example_smaller_1.e
 [ ]
 
 [Variables]
@@ -599,7 +599,7 @@ type = WaterSteamEOS
 [ ]
 
 [Executioner]
-#active = 'Adaptivity '
+#  active = 'Adaptivity '
  active = 'Quadrature'
 # active = ' '
 # type = Steady
@@ -619,7 +619,7 @@ type = WaterSteamEOS
  l_max_its  =  60
 # l_tol =  1.0e-6
  nl_max_its =  12
-# nl_rel_tol =  1e-6
+# nl_rel_tol =  1e-9
 # nl_abs_tol = 1e-8
  num_steps = 3
  dt = 1.0

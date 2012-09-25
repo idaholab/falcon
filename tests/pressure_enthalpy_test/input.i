@@ -35,7 +35,20 @@
 [ ]
 
 [Preconditioning]
-active = 'FDP'
+# active = ' '
+# active= 'PBP'
+ active = 'FDP'
+# active = 'SMP'	 
+# active = 'SMP_newton'
+
+
+[./PBP]
+type= PBP
+solve_order='pressure enthalpy'
+preconditioner= 'LU LU'
+off_diag_row= 'enthalpy'
+off_diag_column= 'pressure'
+[../]
 
 [./FDP]
 type = FDP
@@ -46,12 +59,43 @@ petsc_options_value = ' lu 1.0e-9 ds'
 #  off_diag_column = 'enthalpy'
 full = true
 [../]
+
+[./SMP]
+type = SMP
+petsc_options =  '-snes_mf_operator -ksp_monitor'
+petsc_options_iname =  ' -pc_type -pc_hypre_type -ksp_gmres_restart'
+petsc_options_value =  '  hypre boomeramg 201'
+#     petsc_options_iname = ' -pc_type'
+#     petsc_options_value = ' lu'
+#    off_diag_row    = 'enthalpy'
+#    off_diag_column = 'pressure'
+#    petsc_options_iname =  ' -pc_type -sub_pc_type -ksp_gmres_restart'
+#    petsc_options_value =  ' asm  ilu  201'
+full = true
+[../]
+
+[./SMP_newton]
+type = SMP
+petsc_options =  '-snes -ksp_monitor'
+#petsc_options =  '-snes '
+petsc_options_iname =  ' -pc_type -pc_hypre_type -ksp_gmres_restart -snes_ls'
+petsc_options_value =  '  hypre boomeramg 201 basic'
+#     petsc_options_iname =  ' -pc_type -sub_pc_type -ksp_gmres_restart'
+#     petsc_options_value =  ' asm  ilu  201'
+#     petsc_options_iname = ' -pc_type'
+#     petsc_options_value = ' lu'
+#    off_diag_row    = 'enthalpy'
+#    off_diag_column = 'pressure'
+full = true
+[../]
+
 [ ]
 
 
 [AuxVariables]
-active = 'temperature viscosity_water density_water 
+ active = 'temperature viscosity_water density_water 
           v_x v_y v_z'
+# active = 'temperature density_water viscosity_water' 
 
 [./temperature]
 order = FIRST
@@ -87,7 +131,8 @@ family = MONOMIAL
 
 
 [Kernels]
-active = ' p_td p_wmfp p_wsfp t_td t_d t_cw t_cs'
+ active = ' p_td p_wmfp p_wsfp t_td t_d t_cw t_cs'
+# active = ' p_wmfp p_wsfp t_d t_cw t_cs'
 
 
 [./p_td]
@@ -142,7 +187,8 @@ pressure = pressure
 [ ]
 
 [AuxKernels]
-active = 'density_water temperature viscosity_water vx vy vz'
+ active = 'density_water temperature viscosity_water vx vy vz'
+# active = 'temperature density_water viscocity_water'
 
 [./temperature]
 type = CoupledTemperatureAux
@@ -198,7 +244,7 @@ component = 2
  [./left_t]
     type = DirichletBC
     variable = enthalpy
-    value = 800000
+    value = 850000
     boundary = '1'
  [../]
 
@@ -212,7 +258,7 @@ component = 2
 [./right_t]
     type = DirichletBC
     variable = enthalpy
-    value = 850000
+    value = 800000
     boundary = '2'
  [../]
 [ ]
@@ -283,7 +329,7 @@ petsc_options = '-snes_mf_operator'
  file_base = out
  output_initial = true
  interval = 1
- output_variables = 'pressure temperature enthalpy v_x v_y v_z'
+ output_variables = 'pressure temperature enthalpy'
  exodus = true
  print_out_info = true
  [ ]

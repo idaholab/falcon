@@ -28,7 +28,7 @@ InputParameters validParams<StochasticSolidMechanics>()
   params.addParam<Real>("t_ref",293.15,"initial temperature");
 
 //damage related parameters--------------------------------------------------------------------
-  params.addParam<bool>("has_damage",false,"switch for turning on/off damaging mechanics");
+/*  params.addParam<bool>("has_damage",false,"switch for turning on/off damaging mechanics");
   params.addParam<Real>("damage_coeff",0.0,"initial damage value");
 
   //following 4 parameters used by computeDamage- use tension failure
@@ -58,11 +58,11 @@ InputParameters validParams<StochasticSolidMechanics>()
   //smear crack model based on Mohr-Coulomb failure
   params.addParam<Real>("cohesion",0.0,"Rock's Cohesion strength");
   params.addParam<Real>("friction_angle",0.1,"Rock's internal friction angle");
-
+*/
 //stress/strain dependent permeability-----------------------------------------------------------------------------
   params.addParam<bool>("has_damage_couple_permeability",false,"switch for couple damage with porosity or not");
-  params.addParam<Real>("damage_couple_permeability_coeff1",2.0,"the first coeff for coupling damage with porosity");
-  params.addParam<Real>("damage_couple_permeability_coeff2",1.0e5,"the second coeff for coupling damage with porosity");
+//  params.addParam<Real>("damage_couple_permeability_coeff1",2.0,"the first coeff for coupling damage with porosity");
+//  params.addParam<Real>("damage_couple_permeability_coeff2",1.0e5,"the second coeff for coupling damage with porosity");
 
 //solid mechanics material model coupled with heat, pressure, and displacements--------------------------------------
   params.addCoupledVar("temperature", "TODO:  add description");
@@ -86,12 +86,16 @@ StochasticSolidMechanics::StochasticSolidMechanics(const std::string & name,
    _has_temp(isCoupled("temperature")),
    _grad_temp  (_has_temp ? coupledGradient("temperature") : _grad_zero),
    _temperature(_has_temp ? coupledValue("temperature")  : _zero),
+   _temperature_old(_has_temp ? coupledValueOld("temperature")  : _zero),
    _has_x_disp(isCoupled("x_disp")),
    _grad_x_disp(_has_x_disp ? coupledGradient("x_disp") : _grad_zero),
+  _grad_x_disp_old(_has_x_disp ? coupledGradientOld("x_disp") : _grad_zero),
    _has_y_disp(isCoupled("y_disp")),
    _grad_y_disp(_has_y_disp ? coupledGradient("y_disp") : _grad_zero),
+  _grad_y_disp_old(_has_y_disp ? coupledGradientOld("y_disp") : _grad_zero),
    _has_z_disp(isCoupled("z_disp")),
    _grad_z_disp(_has_z_disp ? coupledGradient("z_disp") : _grad_zero),
+  _grad_z_disp_old(_has_z_disp ? coupledGradientOld("z_disp") : _grad_zero),
 
    _input_thermal_expansion(getParam<Real>("thermal_expansion")),
    _input_youngs_modulus(getParam<Real>("youngs_modulus")),
@@ -100,7 +104,7 @@ StochasticSolidMechanics::StochasticSolidMechanics(const std::string & name,
    _input_biot_modulus(getParam<Real>("biot_modulus")),
    _input_t_ref(getParam<Real>("t_ref")),
 
-   _has_damage(getParam<bool>("has_damage")),
+/*   _has_damage(getParam<bool>("has_damage")),
    _input_damage_coeff(getParam<Real>("damage_coeff")),
    _input_strain_initialize_damage(getParam<Real>("strain_initialize_damage")),
    _input_strain_broken(getParam<Real>("strain_broken")),
@@ -123,13 +127,16 @@ StochasticSolidMechanics::StochasticSolidMechanics(const std::string & name,
    _critical_crack_strain(getParam<Real>("critical_crack_strain")),
    _cohesion(getParam<Real>("cohesion")),
    _friction_angle(getParam<Real>("friction_angle")),
+ */
    _has_damage_couple_permeability(getParam<bool>("has_damage_couple_permeability")),
-   _damage_couple_permeability_coeff1(getParam<Real>("damage_couple_permeability_coeff1")),
+
+/*   _damage_couple_permeability_coeff1(getParam<Real>("damage_couple_permeability_coeff1")),
    _damage_couple_permeability_coeff2(getParam<Real>("damage_couple_permeability_coeff2")),
 
    _total_strain (_dim,_dim),
    _total_stress (_dim,_dim),
    _total_stress1(_dim,_dim),
+ */
 
    //declare material properties
    _thermal_strain(declareProperty<Real>("thermal_strain")),
@@ -138,7 +145,8 @@ StochasticSolidMechanics::StochasticSolidMechanics(const std::string & name,
    _poissons_ratio(declareProperty<Real>("poissons_ratio")),
    _biot_coeff(declareProperty<Real>("biot_coeff")),
    _biot_modulus(declareProperty<Real>("biot_modulus")),
-   _damage_coeff(declareProperty<Real>("damage_coeff")),
+
+/*   _damage_coeff(declareProperty<Real>("damage_coeff")),
 
    _damage_indicator(declareProperty<int>("damage_indicator")),
    _damage_type_indicator(declareProperty<int>("damage_type_indicator")),
@@ -153,12 +161,13 @@ StochasticSolidMechanics::StochasticSolidMechanics(const std::string & name,
    _damage_indicator_old(declarePropertyOld<int>("damage_indicator")),
    _damage_type_indicator_old(declarePropertyOld<int>("damage_type_indicator")),
    _strain_history_old(declarePropertyOld<Real>("strain_history")),
+ */
 
    _stress_normal_vector(declareProperty<RealVectorValue>("stress_normal_vector")),
    _stress_shear_vector (declareProperty<RealVectorValue>("stress_shear_vector")),
    _strain_normal_vector(declareProperty<RealVectorValue>("strain_normal_vector")),
-   _strain_shear_vector (declareProperty<RealVectorValue>("strain_shear_vector")),
-   _pstress_normal_vector(declareProperty<RealVectorValue>("pstress_normal_vector")),
+   _strain_shear_vector (declareProperty<RealVectorValue>("strain_shear_vector"))
+/*   _pstress_normal_vector(declareProperty<RealVectorValue>("pstress_normal_vector")),
    _pstrain_normal_vector(declareProperty<RealVectorValue>("pstrain_normal_vector")),
 
    _init_status(NULL),
@@ -207,15 +216,16 @@ StochasticSolidMechanics::StochasticSolidMechanics(const std::string & name,
 
    _crack_flags(NULL),
    _crack_flags_old(NULL)
+ */
 
 {
-  _init_status = &declareProperty<int>("init_status");
+/*  _init_status = &declareProperty<int>("init_status");
   if ( _has_crack && _critical_crack_strain > 0)
   {
     _crack_flags     = &declareProperty<RealVectorValue>("crack_flags");
     _crack_flags_old = &declarePropertyOld<RealVectorValue>("crack_flags");
   }
-
+*/
 //  srand((unsigned)time(0));  //initialize random seed
 }
 //////////////////////////////////////////////////////////////////////////
@@ -245,10 +255,10 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
 
     _alpha[qp]            = _input_thermal_expansion;
 
-    _damage_coeff[qp]     = std::max(_input_damage_coeff, _damage_coeff[qp]);
+//    _damage_coeff[qp]     = std::max(_input_damage_coeff, _damage_coeff[qp]);
 
-    if(_has_damage_couple_permeability)
-    {
+//    if(_has_damage_couple_permeability)
+//    {
       //if (_damage_coeff[qp] > 1.0e-10)
        //RKP copmment out
 
@@ -257,7 +267,7 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
        // _permeability[qp] = _init_permeability;
 
 //     _permeability[qp] = _input_permeability*(1.0 + std::pow(_damage_coeff[qp] , _damage_couple_permeability_coeff1)*_damage_couple_permeability_coeff2);
-    }
+//    }
 
 
 
@@ -270,7 +280,7 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
     _biot_coeff[qp]       = _input_biot_coeff;
     _biot_modulus[qp]     = _input_biot_modulus;
 
-    if(_dim==3)
+/*    if(_dim==3)
     {
       _bond_nstiff[qp] = 3.*_youngs_modulus[qp]/(4.*3.14159265*(1.-2.*_poissons_ratio[qp]));
       _bond_sstiff[qp] = _bond_nstiff[qp]*(1.-4*_poissons_ratio[qp])/(1.+_poissons_ratio[qp]);
@@ -285,47 +295,49 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
         //  _bond_nstiff[qp] = 2.*_youngs_modulus[qp]/3.14159265/(1.+_poissons_ratio[qp])/(1.-2.*_poissons_ratio[qp]);
         //  _bond_sstiff[qp] = _bond_nstiff[qp]*(1.-4.*_poissons_ratio[qp])/2.;
     }
-
+*/
+ 
 // first try for strain and stress vectors
-    if (_has_x_disp && _has_y_disp)
-    {
-      _E  =  (1.0-_damage_coeff[qp])*_youngs_modulus[qp];
-      _nu =  _poissons_ratio[qp];
-      _c1 = _E*(1.-_nu)/(1.+_nu)/(1.-2.*_nu);
-      _c2 = _nu/(1.-_nu);
-      _c3 = 0.5*(1.-2.*_nu)/(1.-_nu);
-
-      _strain_normal_vector[qp](0) = _grad_x_disp[qp](0); //s_xx
-      _strain_normal_vector[qp](1) = _grad_y_disp[qp](1); //s_yy
-      if (_dim == 3)
-        _strain_normal_vector[qp](2) = _grad_z_disp[qp](2); //s_zz
-
-      _strain_shear_vector[qp](0) = 0.5*(_grad_x_disp[qp](1)+_grad_y_disp[qp](0)); // s_xy
-
-      if (_dim == 3)
+      if (_has_x_disp && _has_y_disp)
       {
-        _strain_shear_vector[qp](1) = 0.5*(_grad_x_disp[qp](2)+_grad_z_disp[qp](0)); // s_xz
-        _strain_shear_vector[qp](2) = 0.5*(_grad_y_disp[qp](2)+_grad_z_disp[qp](1)); // s_yz
+          //      _E  =  (1.0-_damage_coeff[qp])*_youngs_modulus[qp];
+          _E  =  _youngs_modulus[qp];
+          _nu =  _poissons_ratio[qp];
+          _c1 = _E*(1.-_nu)/(1.+_nu)/(1.-2.*_nu);
+          _c2 = _nu/(1.-_nu);
+          _c3 = 0.5*(1.-2.*_nu)/(1.-_nu);
+          
+          _strain_normal_vector[qp](0) = _grad_x_disp[qp](0); //s_xx
+          _strain_normal_vector[qp](1) = _grad_y_disp[qp](1); //s_yy
+          if (_has_z_disp) _strain_normal_vector[qp](2) = _grad_z_disp[qp](2); //s_zz
+          
+          _strain_shear_vector[qp](0) = 0.5*(_grad_x_disp[qp](1)+_grad_y_disp[qp](0)); // s_xy
+          
+          if (_has_z_disp)
+          {
+              //        std::cout << "_E=" << _youngs_modulus[qp] <<"\n";
+              _strain_shear_vector[qp](1) = 0.5*(_grad_x_disp[qp](2)+_grad_z_disp[qp](0)); // s_xz
+              _strain_shear_vector[qp](2) = 0.5*(_grad_y_disp[qp](2)+_grad_z_disp[qp](1)); // s_yz
+          }
+          
+          _stress_normal_vector[qp](0) = _c1*_strain_normal_vector[qp](0)+_c1*_c2*_strain_normal_vector[qp](1)+_c1*_c2*_strain_normal_vector[qp](2); //tau_xx
+          _stress_normal_vector[qp](1) = _c1*_c2*_strain_normal_vector[qp](0)+_c1*_strain_normal_vector[qp](1)+_c1*_c2*_strain_normal_vector[qp](2); //tau_yy
+          if (_has_z_disp) _stress_normal_vector[qp](2) = _c1*_c2*_strain_normal_vector[qp](0)+_c1*_c2*_strain_normal_vector[qp](1)+_c1*_strain_normal_vector[qp](2); //tau_zz
+          
+          _stress_shear_vector[qp](0) = _c1*_c3*2.0*_strain_shear_vector[qp](0); //tau_xy
+          if (_has_z_disp)
+          {
+              _stress_shear_vector[qp](1) = _c1*_c3*2.0*_strain_shear_vector[qp](1); //tau_xz
+              _stress_shear_vector[qp](2) = _c1*_c3*2.0*_strain_shear_vector[qp](2); //tau_yz
+          }
+          
+          
       }
 
-        _stress_normal_vector[qp](0) = _c1*_strain_normal_vector[qp](0)+_c1*_c2*_strain_normal_vector[qp](1)+_c1*_c2*_strain_normal_vector[qp](2); //tau_xx
-        _stress_normal_vector[qp](1) = _c1*_c2*_strain_normal_vector[qp](0)+_c1*_strain_normal_vector[qp](1)+_c1*_c2*_strain_normal_vector[qp](2); //tau_yy
-        if (_dim == 3)
-          _stress_normal_vector[qp](2) = _c1*_c2*_strain_normal_vector[qp](0)+_c1*_c2*_strain_normal_vector[qp](1)+_c1*_strain_normal_vector[qp](2); //tau_zz
-
-        _stress_shear_vector[qp](0) = _c1*_c3*2.0*_strain_shear_vector[qp](0); //tau_xy
-        if (_dim == 3)
-        {
-          _stress_shear_vector[qp](1) = _c1*_c3*2.0*_strain_shear_vector[qp](1); //tau_xz
-          _stress_shear_vector[qp](2) = _c1*_c3*2.0*_strain_shear_vector[qp](2); //tau_yz
-        }
-
-
-    }
 
 //various damage mechanics based models
 
-   if (_has_damage && _has_damage_method == "isotropic") computeDamage(qp); //by damage mechanics theory
+/*   if (_has_damage && _has_damage_method == "isotropic") computeDamage(qp); //by damage mechanics theory
    if (_has_damage && _has_damage_method == "anisotropic")   computeAnisoDamage(qp);
    if (_has_damage && _has_damage_method == "MC_damage") computeDamage_v2(qp); //by damage mechanics theory
    if (_has_damage && _has_damage_method == "Pstrain_damage") computeDamage_v3(qp); //by damage mechanics theory
@@ -352,11 +364,31 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
 
 
     }
+ */
 
 //newly added for handling damage couple with porosity/permeability
 
    if(_has_damage_couple_permeability)
    {
+       /*if (_t_step == 1)
+       {
+           _permeability[qp] = _input_permeability; //fisrt step doesn't do permeability adjustment because we're applying the initial stress
+       }
+       else
+       {
+           Real _strain_thermal;
+           Real _strain_thermal_old;
+           Real _porosity_old;
+           Real _porosity_now;
+           
+           _strain_thermal = _input_thermal_expansion*(_temperature[qp] - _input_t_ref);
+           _strain_thermal_old = _input_thermal_expansion*(_temperature_old[qp] - _input_t_ref);
+           
+           _material_porosity[qp] = _input_material_porosity - _strain_thermal;
+           _permeability[qp] = _input_permeability * std::pow((1.0 + _material_porosity[qp])/(1.0 + _input_material_porosity), 5.0);
+         */  
+           
+       }
      //  if (_damage_coeff[qp] > 1.0e-10)
 //RKP comment out 6-12-12
 
@@ -365,10 +397,11 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
        // _permeability[qp] = _init_permeability;
 
 //     _permeability[qp] = _input_permeability*(1.0 + std::pow(_damage_coeff[qp] , _damage_couple_permeability_coeff1)*_damage_couple_permeability_coeff2);
-   }
+ 
+   
 
    //smear crack model
-   if (_has_crack)
+/*   if (_has_crack)
    {
       if (_t_step == 1) // && _critical_crack_strain > 0)
       {
@@ -386,6 +419,8 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
       if( _has_crack_method == "tension") computeCrack_tension(qp);     //smeared crack model : tension induced crack
       if( _has_crack_method =="Mohr-Coulomb") computeCrack_Mohr_Coulomb_v2(qp); //smeared crack model : Mohr-Coulomb criteria
    }
+ */
+       
 //     if (_has_x_disp && _has_y_disp)
 //     {
 //       _E  =  _youngs_modulus[qp];//after updated
@@ -426,7 +461,7 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
 
 }
 
-void
+/*void
 StochasticSolidMechanics::computeDamage(const int qp)
 {
   Real _effective_strain=0.0 , _temp =0.0;                 //newly added
@@ -1206,72 +1241,74 @@ ColumnMajorMatrix trans(_dim,_dim);
 }
 //////////////////////////////////////////////////////////////////////////
 
+*/
 
 
 
-
+    
 void
 StochasticSolidMechanics::rotateSymmetricTensor( const ColumnMajorMatrix & R,
-                                      const RealTensorValue & T,
-                                      RealTensorValue & result )
+                                          const RealTensorValue & T,
+                                          RealTensorValue & result )
 {
+        
+        //     R           T         Rt
+        //  00 01 02   00 01 02   00 10 20
+        //  10 11 12 * 10 11 12 * 01 11 21
+        //  20 21 22   20 21 22   02 12 22
+        //
+        if ( _dim == 3)
+        {
+            
+            const Real T00 = R(0,0)*T(0,0) + R(0,1)*T(1,0) + R(0,2)*T(2,0);
+            const Real T01 = R(0,0)*T(0,1) + R(0,1)*T(1,1) + R(0,2)*T(2,1);
+            const Real T02 = R(0,0)*T(0,2) + R(0,1)*T(1,2) + R(0,2)*T(2,2);
+            
+            const Real T10 = R(1,0)*T(0,0) + R(1,1)*T(1,0) + R(1,2)*T(2,0);
+            const Real T11 = R(1,0)*T(0,1) + R(1,1)*T(1,1) + R(1,2)*T(2,1);
+            const Real T12 = R(1,0)*T(0,2) + R(1,1)*T(1,2) + R(1,2)*T(2,2);
+            
+            const Real T20 = R(2,0)*T(0,0) + R(2,1)*T(1,0) + R(2,2)*T(2,0);
+            const Real T21 = R(2,0)*T(0,1) + R(2,1)*T(1,1) + R(2,2)*T(2,1);
+            const Real T22 = R(2,0)*T(0,2) + R(2,1)*T(1,2) + R(2,2)*T(2,2);
+            
+            result = RealTensorValue(
+                                     T00 * R(0,0) + T01 * R(0,1) + T02 * R(0,2),
+                                     T00 * R(1,0) + T01 * R(1,1) + T02 * R(1,2),
+                                     T00 * R(2,0) + T01 * R(2,1) + T02 * R(2,2),
+                                     
+                                     T10 * R(0,0) + T11 * R(0,1) + T12 * R(0,2),
+                                     T10 * R(1,0) + T11 * R(1,1) + T12 * R(1,2),
+                                     T10 * R(2,0) + T11 * R(2,1) + T12 * R(2,2),
+                                     
+                                     T20 * R(0,0) + T21 * R(0,1) + T22 * R(0,2),
+                                     T20 * R(1,0) + T21 * R(1,1) + T22 * R(1,2),
+                                     T20 * R(2,0) + T21 * R(2,1) + T22 * R(2,2) );
+        }
+        else if ( _dim == 2)
+        {
+            const Real T00 = R(0,0)*T(0,0) + R(0,1)*T(1,0);
+            const Real T01 = R(0,0)*T(0,1) + R(0,1)*T(1,1) ;
+            
+            const Real T10 = R(1,0)*T(0,0) + R(1,1)*T(1,0) ;
+            const Real T11 = R(1,0)*T(0,1) + R(1,1)*T(1,1) ;
+            
+            result = RealTensorValue(
+                                     T00 * R(0,0) + T01 * R(0,1),
+                                     T00 * R(1,0) + T01 * R(1,1),
+                                     
+                                     T10 * R(0,0) + T11 * R(0,1),
+                                     T10 * R(1,0) + T11 * R(1,1));
+        }
+        
+    }
 
-  //     R           T         Rt
-  //  00 01 02   00 01 02   00 10 20
-  //  10 11 12 * 10 11 12 * 01 11 21
-  //  20 21 22   20 21 22   02 12 22
-  //
-  if ( _dim == 3)
-  {
-
-    const Real T00 = R(0,0)*T(0,0) + R(0,1)*T(1,0) + R(0,2)*T(2,0);
-    const Real T01 = R(0,0)*T(0,1) + R(0,1)*T(1,1) + R(0,2)*T(2,1);
-    const Real T02 = R(0,0)*T(0,2) + R(0,1)*T(1,2) + R(0,2)*T(2,2);
-
-    const Real T10 = R(1,0)*T(0,0) + R(1,1)*T(1,0) + R(1,2)*T(2,0);
-    const Real T11 = R(1,0)*T(0,1) + R(1,1)*T(1,1) + R(1,2)*T(2,1);
-    const Real T12 = R(1,0)*T(0,2) + R(1,1)*T(1,2) + R(1,2)*T(2,2);
-
-    const Real T20 = R(2,0)*T(0,0) + R(2,1)*T(1,0) + R(2,2)*T(2,0);
-    const Real T21 = R(2,0)*T(0,1) + R(2,1)*T(1,1) + R(2,2)*T(2,1);
-    const Real T22 = R(2,0)*T(0,2) + R(2,1)*T(1,2) + R(2,2)*T(2,2);
-
-    result = RealTensorValue(
-      T00 * R(0,0) + T01 * R(0,1) + T02 * R(0,2),
-      T00 * R(1,0) + T01 * R(1,1) + T02 * R(1,2),
-      T00 * R(2,0) + T01 * R(2,1) + T02 * R(2,2),
-
-      T10 * R(0,0) + T11 * R(0,1) + T12 * R(0,2),
-      T10 * R(1,0) + T11 * R(1,1) + T12 * R(1,2),
-      T10 * R(2,0) + T11 * R(2,1) + T12 * R(2,2),
-
-      T20 * R(0,0) + T21 * R(0,1) + T22 * R(0,2),
-      T20 * R(1,0) + T21 * R(1,1) + T22 * R(1,2),
-      T20 * R(2,0) + T21 * R(2,1) + T22 * R(2,2) );
-  }
-  else if ( _dim == 2)
-  {
-    const Real T00 = R(0,0)*T(0,0) + R(0,1)*T(1,0);
-    const Real T01 = R(0,0)*T(0,1) + R(0,1)*T(1,1) ;
-
-    const Real T10 = R(1,0)*T(0,0) + R(1,1)*T(1,0) ;
-    const Real T11 = R(1,0)*T(0,1) + R(1,1)*T(1,1) ;
-
-    result = RealTensorValue(
-      T00 * R(0,0) + T01 * R(0,1),
-      T00 * R(1,0) + T01 * R(1,1),
-
-      T10 * R(0,0) + T11 * R(0,1),
-      T10 * R(1,0) + T11 * R(1,1));
-  }
-
-}
 //////////////////////////////////////////////////////////////////////////
 
 
 
 
-void
+/*void
 StochasticSolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
 {
   //copy stress to a tensor , not need to initialize, but used to do stress transforming
@@ -1303,7 +1340,7 @@ StochasticSolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
     _total_stress1(2,1) = _stress_shear_vector[qp](2);
   }
 
-/*  //copy strain to a ColumnMajorMatrix
+  //copy strain to a ColumnMajorMatrix
   _total_strain(0,0)= _strain_normal_vector[qp](0);
   _total_strain(1,1)= _strain_normal_vector[qp](1);
   if (_dim == 3) _total_strain(2,2)= _strain_normal_vector[qp](2);
@@ -1325,7 +1362,7 @@ StochasticSolidMechanics::computeCrack_Mohr_Coulomb_v1(const int qp)
  //   (*_crack_flags_old)[qp](i) = (*_crack_flags)[qp](i);
  // }
 
-  const int ND = _dim;
+/*  const int ND = _dim;
   ColumnMajorMatrix e_vec(ND,ND);
   ColumnMajorMatrix norm_vect(ND,1);
   ColumnMajorMatrix force(ND,1);
@@ -1647,7 +1684,7 @@ StochasticSolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
     _total_stress1(2,1) = _stress_shear_vector[qp](2);
   }
 
-/*  //copy strain to a ColumnMajorMatrix
+  //copy strain to a ColumnMajorMatrix
   _total_strain(0,0)= _strain_normal_vector[qp](0);
   _total_strain(1,1)= _strain_normal_vector[qp](1);
   if (_dim == 3) _total_strain(2,2)= _strain_normal_vector[qp](2);
@@ -1660,7 +1697,7 @@ StochasticSolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
     _total_strain(1,2) = _strain_shear_vector[qp](2);
     _total_strain(2,1) = _strain_shear_vector[qp](2);
   }
-*/
+
 
     //it is done by MOOSE automatically, not need it
 //  update crack_flag before getting into calculation
@@ -2050,7 +2087,7 @@ StochasticSolidMechanics::computeCrack_Mohr_Coulomb_v2(const int qp)
 
 }
 ///////////////////////////////////////////////////////////////////////
-
+*/
 
 
 
