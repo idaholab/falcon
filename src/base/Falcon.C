@@ -49,39 +49,17 @@
 #include "WaterMassFluxElevation_PT.h"
 
 //auxkernels
-#include "CoupledDensityAux_PT.h"          // water density as function of (P,T)
-#include "CoupledDdensityDTAux_PT.h"       // derivative of water density to T at const P
-#include "CoupledDdensityDPAux_PT.h"       // derivative of water density to P at const T
+//test auxkernels
+#include "TestDensityWaterAux_PT.h"
+#include "TestDensitySteamAux_PT.h"
+#include "TestDensityAux_PH.h"
 
+//auxkernels
 #include "CoupledTemperatureAux.h"         // T as functon of (P,H) -two phase formulation
-#include "CoupledWaterSaturationAux.h"     // Sw as functon of (P,H) -two phase formulation
-#include "CoupledDWaterSaturationDHAux.h"
-#include "CoupledDensityAux.h"             // mixed density as functon of (P,H) -two phase formulation
-
-#include "CoupledWaterDensityAux.h"        // water density functon of (P,H) -two phase formulation
-#include "CoupledWaterViscosityAux.h"      // water viscosity functon of (P,T) - used by both PT and PH formaulations
-#include "CoupledViscosityAux.h"
-#include "CoupledSteamDensityAux.h"        // steam density functon of (P,H) -two phase formulation
-#include "CoupledSteamViscosityAux.h"      // steam viscosity functon of (P,T) - used by PH formaulations
-
-#include "CoupledWaterEnthalpyAux.h"       //water enthalpy as function of (P,H) (MJ/kg)
-#include "CoupledSteamEnthalpyAux.h"       //steam enthalpy as function of (P,H) (MJ/kg)
-#include "CoupledDsteamenthalpydH_PAux.h"  //derivative of steam enthalpy to H at const P: 1 (steam only ); 0 otherwise
-#include "CoupledDwaterenthalpydH_PAux.h"  //derivative of water enthalpy to H at const P: 1 (water only ); 0 otherwise
-
-#include "CoupledDdensityDTAux.h"          //derivative of mixed density to T at const P, not used now
-#include "CoupledDdensityDPAux.h"          //derivative of mixed density to P at const H,
-#include "CoupledDdensityDHAux.h"          //derivative of mixed density to H at const P,
-#include "CoupledDTDH_PAux.h"              //derivative of T to H at const P
-#include "CoupledDTDP_HAux.h" 
-
 #include "AnalyticalADE1D.h"
 #include "VelocityAux.h"
 #include "CoupledPorosityMaterialAux.h"
 #include "StressStrainDamageComputeAux.h"
-
-#include "CoupledDwaterenthalpydP_HAux.h"
-#include "CoupledDsteamenthalpydP_HAux.h"
 
 #include "PressureTimeDerivative.h"
 
@@ -115,6 +93,9 @@
 #include "StochasticHeatTransport.h"
 #include "StochasticSolidMechanics.h"
 #include "WaterSteamEOS.h"
+
+//postprocessors
+#include "WaterSteamEOSDensityPPS.h"
 
 namespace Falcon
 {
@@ -154,35 +135,18 @@ registerObjects()
   registerKernel(WaterMassFluxPressure_PT);
   registerKernel(WaterMassFluxElevation_PT);
 
-//auxkernels
-  registerAux(CoupledDdensityDTAux_PT);
-  registerAux(CoupledDdensityDPAux_PT);
-  registerAux(CoupledDensityAux_PT);
-  registerAux(CoupledWaterSaturationAux);
-  registerAux(CoupledDWaterSaturationDHAux);
-  registerAux(CoupledDdensityDHAux);
-  registerAux(CoupledDTDH_PAux);
-  registerAux(CoupledDTDP_HAux);
-  registerAux(CoupledDdensityDPAux);
-  registerAux(CoupledDdensityDTAux);
-  registerAux(CoupledDensityAux);
-  registerAux(CoupledWaterDensityAux);
-  registerAux(CoupledWaterViscosityAux);
-  registerAux(CoupledWaterEnthalpyAux);
-  registerAux(CoupledSteamDensityAux);
-  registerAux(CoupledSteamViscosityAux);
-  registerAux(CoupledSteamEnthalpyAux);
-  registerAux(CoupledDwaterenthalpydH_PAux);
-  registerAux(CoupledDsteamenthalpydH_PAux);
+    //test auxkernels
+    registerKernel(TestDensityWaterAux_PT);
+    registerKernel(TestDensitySteamAux_PT);
+    registerKernel(TestDensityAux_PH);
+    
+    //auxkernels
   registerAux(CoupledTemperatureAux);
 
   registerAux(AnalyticalADE1D);
   registerAux(VelocityAux);
   registerAux(CoupledPorosityMaterialAux);
   registerAux(StressStrainDamageComputeAux);
-
-  registerAux(CoupledDwaterenthalpydP_HAux);
-  registerAux(CoupledDsteamenthalpydP_HAux);
 
 //BCs    
   registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
@@ -215,8 +179,9 @@ registerObjects()
   registerMaterial(StochasticFluidFlow);
   registerMaterial(StochasticHeatTransport);
   registerMaterial(StochasticSolidMechanics);
-    
-     registerAux(CoupledViscosityAux);
+        
+    //postprocessors
+    registerPostprocessor(WaterSteamEOSDensityPPS);
 }
 
 }

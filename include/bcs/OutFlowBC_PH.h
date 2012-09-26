@@ -57,15 +57,6 @@ private:
     VariableGradient & _grad_p;
     unsigned int _p_var;
     VariableGradient & _grad_T;
-    
-    //VariableValue & _dTdH;
-    //VariableValue & _dTdP;
-    //VariableValue & _enthalpy_water;
-    //VariableValue & _enthalpy_steam;
-    //VariableValue &_denthalpy_waterdH_P;
-    //VariableValue &_denthalpy_steamdH_P;
-    //VariableValue &_denthalpy_waterdP_H;
-    //VariableValue &_denthalpy_steamdP_H;
 
     MaterialProperty<Real> & _dTdH;
     MaterialProperty<Real> & _dTdP;

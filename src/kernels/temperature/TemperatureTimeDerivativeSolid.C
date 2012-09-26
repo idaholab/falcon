@@ -19,7 +19,6 @@ template<>
 InputParameters validParams<TemperatureTimeDerivativeSolid>()
 {
   InputParameters params = validParams<TimeDerivative>();
-//  params.addRequiredCoupledVar("density_water", "Use CoupledAuxDensity here");
   params.addRequiredCoupledVar("porosity", "Use CoupledAuxPorosity here");
   return params;
 }
@@ -27,10 +26,6 @@ InputParameters validParams<TemperatureTimeDerivativeSolid>()
 TemperatureTimeDerivativeSolid::TemperatureTimeDerivativeSolid(const std::string & name,
                                                      InputParameters parameters)
   :TimeDerivative(name, parameters),
-
-
-//   _density_water(coupledValue("density_water")),
-//   _density_water_old(coupledValueOld("density_water")),
    
    _porosity(coupledValue("porosity")),
    _porosity_old(coupledValueOld("porosity")),

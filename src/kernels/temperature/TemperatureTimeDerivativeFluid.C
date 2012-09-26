@@ -19,7 +19,6 @@ template<>
 InputParameters validParams<TemperatureTimeDerivativeFluid>()
 {
   InputParameters params = validParams<TimeDerivative>();
-  //params.addRequiredCoupledVar("density_water", "Use CoupledAuxDensity here");
   params.addRequiredCoupledVar("porosity", "Use CoupledAuxPorosity here");
   return params;
 }
@@ -28,11 +27,8 @@ TemperatureTimeDerivativeFluid::TemperatureTimeDerivativeFluid(const std::string
                                                      InputParameters parameters)
   :TimeDerivative(name, parameters),
 
-
-   //_density_water(coupledValue("density_water")),                         //removed by kat
-   //_density_water_old(coupledValueOld("density_water")),                  //      V
-   _density_water(getMaterialProperty<Real>("density_water")),              //added by kat
-   _density_water_old(getMaterialProperty<Real>("time_old_density")),       //
+   _density_water(getMaterialProperty<Real>("density_water")),
+   _density_water_old(getMaterialProperty<Real>("time_old_density")),
    
    _porosity(coupledValue("porosity")),
    _porosity_old(coupledValueOld("porosity")),

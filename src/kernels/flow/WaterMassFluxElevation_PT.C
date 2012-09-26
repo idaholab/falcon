@@ -19,15 +19,13 @@ template<>
 InputParameters validParams<WaterMassFluxElevation_PT>()
 {
   InputParameters params = validParams<Kernel>();
-  //params.addRequiredCoupledVar("density_water", "Use density here to calculate Elevation Mass Flux");
   return params;
 }
 
 WaterMassFluxElevation_PT::WaterMassFluxElevation_PT(const std::string & name,
                                              InputParameters parameters)
   :Kernel(name, parameters),
-   //_density_water(coupledValue("density_water")),                     //removed by kat
-   _density_water(getMaterialProperty<Real>("density_water")),          //added by kat
+   _density_water(getMaterialProperty<Real>("density_water")),
 
    _tau_water(getMaterialProperty<Real>("tau_water")),
    _gravity(getMaterialProperty<Real>("gravity")),

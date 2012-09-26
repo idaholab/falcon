@@ -50,7 +50,6 @@ protected:
     VariableValue & _temperature;
     VariableValue & _temperature_old;
     
-  //VariableValue & temp_out;
     bool _has_enthalpy;
     VariableValue & _enthalpy;
     VariableValue & _enthalpy_old;
@@ -73,7 +72,7 @@ protected:
     MaterialProperty<Real> & _Dtau_steamDP;
     MaterialProperty<Real> & _Dtau_steamDH;
     
-    //Equation_of_State_Properties - Non-Derivative Material Outputs (added by Kat)
+    //Equation_of_State_Properties - Non-Derivative Material Outputs
     MaterialProperty<Real> & _temp_out;
     MaterialProperty<Real> & _sat_fraction_out;
     MaterialProperty<Real> & _dens_out;
@@ -84,7 +83,7 @@ protected:
     MaterialProperty<Real> & _visc_water_out;
     MaterialProperty<Real> & _visc_steam_out;
     
-    //Equations_of_State_Properties - Derivative Material Ouptuts (added by Kat)
+    //Equations_of_State_Properties - Derivative Material Ouptuts
     MaterialProperty<Real> & _d_dens_d_enth;
     MaterialProperty<Real> & _d_dens_d_press;
     MaterialProperty<Real> & _d_enth_water_d_enth;
@@ -95,12 +94,12 @@ protected:
     MaterialProperty<Real> & _d_enth_steam_d_press;
     MaterialProperty<Real> & _d_temp_d_press;
     
-    //Equations_of_State_Properties - Temperature/Pressure based (added by Kat)
+    //Equations_of_State_Properties - Temperature/Pressure based
     MaterialProperty<Real> & _d_dens_d_temp_PT;
     MaterialProperty<Real> & _d_dens_d_press_PT;
 
-    //Time Derivative Equation_of_State_Properties (added by Kat)
-    //Equation_of_State_Properties - Non-PH-Derivative Outputs (added by Kat)
+    //Time Derivative Equation_of_State_Properties
+    //Equation_of_State_Properties - Non-PH-Derivative Outputs
     MaterialProperty<Real> & _time_old_temp_out;
     MaterialProperty<Real> & _time_old_dens_out;
     MaterialProperty<Real> & _time_old_dens_water_out;

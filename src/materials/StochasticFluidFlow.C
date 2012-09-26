@@ -24,8 +24,6 @@ InputParameters validParams<StochasticFluidFlow>()
     params.addCoupledVar("temperature", "Use temperature to calculate variable density and viscosity");
     params.addParam<bool>("temp_dependent", true, "Flag to call temperature dependent density and viscosity routines");
     params.addRequiredParam<UserObjectName>("water_steam_properties", "EOS functions, calculate water steam properties");
-    //params.addCoupledVar("density_water", "Coupled NodalAux used to calculate density");
-    //params.addCoupledVar("viscosity_water", "Coupled NodalAux used to calculate viscosity");
   return params;
 }
 
@@ -44,9 +42,6 @@ _has_temp(isCoupled("temperature")),
 _temp_dependent(getParam<bool>("temp_dependent")),
 _temperature(_has_temp ? coupledValue("temperature")  : _zero),
 _temperature_old(_has_temp ? coupledValueOld("temperature") : _zero),
-   
-//_density_water(_has_temp ? coupledValue("density_water") : _zero),   //nodal Aux
-//_viscosity_water(_has_temp ? coupledValue("viscosity_water") : _zero), //nodal Aux
 
 _has_enthalpy(isCoupled("enthalpy")), 
 _enthalpy(_has_enthalpy ? coupledValue("enthalpy")  : _zero),
@@ -68,7 +63,7 @@ _darcy_mass_flux_steam_elevation(declareProperty<RealGradient>("darcy_mass_flux_
 _Dtau_steamDP(declareProperty<Real>("Dtau_steamDP")),
 _Dtau_steamDH(declareProperty<Real>("Dtau_steamDH")),
 
-//Equation_of_State_Properties - Pressure/Enthalpy based, Non-Derivative Outputs (variables added by Kat)
+//Equation_of_State_Properties - Pressure/Enthalpy based, Non-Derivative Outputs
 _temp_out(declareProperty<Real>("material_temperature")),
 _sat_fraction_out(declareProperty<Real>("saturation_water")),
 _dens_out(declareProperty<Real>("density")),
@@ -79,7 +74,7 @@ _enth_steam_out(declareProperty<Real>("enthalpy_steam")),
 _visc_water_out(declareProperty<Real>("viscosity_water")),
 _visc_steam_out(declareProperty<Real>("viscosity_steam")),
 
-//Equation_of_State_Properites - Pressure/Enthalpy based, Derivative Outputs (variables added by Kat)
+//Equation_of_State_Properites - Pressure/Enthalpy based, Derivative Outputs
 _d_dens_d_enth(declareProperty<Real>("ddensitydH_P")),
 _d_dens_d_press(declareProperty<Real>("ddensitydp_H")),
 _d_enth_water_d_enth(declareProperty<Real>("denthalpy_waterdH_P")),
@@ -90,12 +85,12 @@ _d_enth_water_d_press(declareProperty<Real>("denthalpy_waterdP_H")),
 _d_enth_steam_d_press(declareProperty<Real>("denthalpy_steamdP_H")),
 _d_temp_d_press(declareProperty<Real>("dTdP_H")),
 
-//Equation_of_State_Properties - Temperature/Pressure based, Derivative Outputs (variables added by Kat)
+//Equation_of_State_Properties - Temperature/Pressure based, Derivative Outputs
 _d_dens_d_temp_PT(declareProperty<Real>("dwdt")),
 _d_dens_d_press_PT(declareProperty<Real>("dwdp")),
 
-//Time Derivative Equation_of_State_Properties (variables added by Kat)
-//Equation_of_State_Properties - Non-Derivative_PH Outputs (variables added by Kat)
+//Time Derivative Equation_of_State_Properties
+//Equation_of_State_Properties - Non-Derivative_PH Outputs
 _time_old_temp_out(declareProperty<Real>("time_old_material_temperature")),
 _time_old_dens_out(declareProperty<Real>("time_old_density")),
 _time_old_dens_water_out(declareProperty<Real>("time_old_density_water")),

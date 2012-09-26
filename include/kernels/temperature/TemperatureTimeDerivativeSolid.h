@@ -32,9 +32,6 @@ public:
 protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
-
-//  VariableValue  & _density_water;
-//  VariableValue & _density_water_old;
   
   VariableValue  & _porosity;
   VariableValue  & _porosity_old;
