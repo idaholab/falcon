@@ -18,7 +18,7 @@ template<>
 InputParameters validParams<PressureNeumannBC2>()
 {
   InputParameters params = validParams<IntegratedBC>();
-  params.set<Real>("component");
+  params.addParam<Real>("component", "The component of the pressure");
   return params;
 }
 
