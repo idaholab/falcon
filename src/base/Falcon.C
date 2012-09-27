@@ -49,12 +49,6 @@
 #include "WaterMassFluxElevation_PT.h"
 
 //auxkernels
-//test auxkernels
-#include "TestDensityWaterAux_PT.h"
-#include "TestDensitySteamAux_PT.h"
-#include "TestDensityAux_PH.h"
-
-//auxkernels
 #include "CoupledTemperatureAux.h"         // T as functon of (P,H) -two phase formulation
 #include "AnalyticalADE1D.h"
 #include "VelocityAux.h"
@@ -94,9 +88,6 @@
 #include "StochasticSolidMechanics.h"
 #include "WaterSteamEOS.h"
 
-//postprocessors
-#include "WaterSteamEOSDensityPPS.h"
-
 namespace Falcon
 {
 
@@ -134,15 +125,9 @@ registerObjects()
   registerKernel(MassFluxTimeDerivative_PT);
   registerKernel(WaterMassFluxPressure_PT);
   registerKernel(WaterMassFluxElevation_PT);
-
-    //test auxkernels
-    registerKernel(TestDensityWaterAux_PT);
-    registerKernel(TestDensitySteamAux_PT);
-    registerKernel(TestDensityAux_PH);
     
-    //auxkernels
+  //auxkernels
   registerAux(CoupledTemperatureAux);
-
   registerAux(AnalyticalADE1D);
   registerAux(VelocityAux);
   registerAux(CoupledPorosityMaterialAux);
@@ -179,9 +164,7 @@ registerObjects()
   registerMaterial(StochasticFluidFlow);
   registerMaterial(StochasticHeatTransport);
   registerMaterial(StochasticSolidMechanics);
-        
-    //postprocessors
-    registerPostprocessor(WaterSteamEOSDensityPPS);
+
 }
 
 }
