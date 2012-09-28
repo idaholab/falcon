@@ -125,6 +125,8 @@ protected:
 //   Real _friction_angle;
 
   bool _has_strain_coupled_permeability;
+  Real _scaling_coeff;
+  
   
 //   bool _has_damage_couple_permeability;
 //   Real _damage_couple_permeability_coeff1;

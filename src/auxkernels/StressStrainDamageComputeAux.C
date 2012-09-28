@@ -79,6 +79,7 @@ StressStrainDamageComputeAux::computeValue()
 //   {
 //     _pstress(0) = _pstress_normal_vector[_qp](0);                //ptau_xx
 //     _pstress(1) = _pstress_normal_vector[_qp](1);                //ptau_yy
+//     
 //     _pstress(2) = _pstress_normal_vector[_qp](2);                //ptau_zz
 
 //     return _pstress(_component);

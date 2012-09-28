@@ -61,7 +61,7 @@ InputParameters validParams<SolidMechanics>()
 
 //stress/strain dependent permeability-----------------------------------------------------------------------------
   params.addParam<bool>("has_strain_coupled_permeability",false,"switch for couple damage with porosity or not");
-
+  params.addParam<Real>("scaling_coeff",1.0,"scaling factor for the strain-dependent permeability");
 //   params.addParam<bool>("has_damage_couple_permeability",false,"switch for couple damage with porosity or not");
 //   params.addParam<Real>("damage_couple_permeability_coeff1",2.0,"the first coeff for coupling damage with porosity");
 //   params.addParam<Real>("damage_couple_permeability_coeff2",1.0e5,"the second coeff for coupling damage with porosity");
@@ -126,6 +126,7 @@ SolidMechanics::SolidMechanics(const std::string & name,
 //    _friction_angle(getParam<Real>("friction_angle")),
 
    _has_strain_coupled_permeability(getParam<bool>("has_strain_coupled_permeability")),
+   _scaling_coeff(getParam<Real>("scaling_coeff")),
 
 //    _has_damage_couple_permeability(getParam<bool>("has_damage_couple_permeability")),
 //    _damage_couple_permeability_coeff1(getParam<Real>("damage_couple_permeability_coeff1")),
@@ -363,17 +364,18 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
      else
      {
        Real _strain_thermal;
-       Real _strain_thermal_old;
-       Real _porosity_old;
        Real _porosity_now;
        
-       _strain_thermal = _input_thermal_expansion*(_temperature[qp] - _input_t_ref);
-       _strain_thermal_old = _input_thermal_expansion*(_temperature_old[qp] - _input_t_ref);
-
-       _material_porosity[qp] = _input_material_porosity - _strain_thermal;
-       _permeability[qp] = _input_permeability * std::pow((1.0 + _material_porosity[qp])/(1.0 + _input_material_porosity), 5.0);
-       
-       
+//       if (_temperature[qp] < _input_t_ref)
+//       {
+           
+//         std::cout << "_t=" << _temperature[qp] <<"   _input_t_ref  " << _input_t_ref<<"\n";         
+         _strain_thermal     = _input_thermal_expansion*(_temperature[qp] - _input_t_ref);
+//         _material_porosity[qp] = _input_material_porosity - _strain_thermal;
+         _porosity_now = _input_material_porosity - _strain_thermal;
+         _permeability[qp] = _input_permeability * std::pow(_scaling_coeff * (1.0 + _porosity_now)/(1.0 + _input_material_porosity), 3.0);
+//       }
+         
      }
    }
 
