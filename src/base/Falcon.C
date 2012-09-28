@@ -88,6 +88,9 @@
 #include "StochasticSolidMechanics.h"
 #include "WaterSteamEOS.h"
 
+//postprocessors
+#include "WaterSteamEOSDensityPPS_PT.h"
+
 namespace Falcon
 {
 
@@ -126,7 +129,7 @@ registerObjects()
   registerKernel(WaterMassFluxPressure_PT);
   registerKernel(WaterMassFluxElevation_PT);
     
-  //auxkernels
+    //auxkernels
   registerAux(CoupledTemperatureAux);
   registerAux(AnalyticalADE1D);
   registerAux(VelocityAux);
@@ -164,7 +167,9 @@ registerObjects()
   registerMaterial(StochasticFluidFlow);
   registerMaterial(StochasticHeatTransport);
   registerMaterial(StochasticSolidMechanics);
-
+        
+    //postprocessors
+    registerPostprocessor(WaterSteamEOSDensityPPS_PT);
 }
 
 }
