@@ -366,15 +366,16 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
        Real _strain_thermal;
        Real _porosity_now;
        
-//       if (_temperature[qp] < _input_t_ref)
-//       {
+       if (_temperature[qp] < _input_t_ref)
+       {
            
-//         std::cout << "_t=" << _temperature[qp] <<"   _input_t_ref  " << _input_t_ref<<"\n";         
+//        std::cout << "_t=" << _temperature[qp] <<"   _input_t_ref  " << _input_t_ref<<"\n";         
          _strain_thermal     = _input_thermal_expansion*(_temperature[qp] - _input_t_ref);
-//         _material_porosity[qp] = _input_material_porosity - _strain_thermal;
+//        _material_porosity[qp] = _input_material_porosity - _strain_thermal;
          _porosity_now = _input_material_porosity - _strain_thermal;
-         _permeability[qp] = _input_permeability * std::pow(_scaling_coeff * (1.0 + _porosity_now)/(1.0 + _input_material_porosity), 3.0);
-//       }
+//         _permeability[qp] = _input_permeability * std::pow(_scaling_coeff * (1.0 + _porosity_now)/(1.0 + _input_material_porosity), 3.0);
+         _permeability[qp] = _input_permeability * (1.0 - _scaling_coeff*(_temperature[qp] - _input_t_ref)) ;
+       }
          
      }
    }
