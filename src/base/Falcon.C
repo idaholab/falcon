@@ -89,7 +89,9 @@
 #include "WaterSteamEOS.h"
 
 //postprocessors
-#include "WaterSteamEOSDensityPPS_PT.h"
+#include "EOSWaterAndSteamPTFuncPPS.h"
+#include "EOSPhaseDetermineFuncPPS.h"
+#include "EOSViscosityFuncPPS.h"
 
 namespace Falcon
 {
@@ -169,7 +171,9 @@ registerObjects()
   registerMaterial(StochasticSolidMechanics);
         
     //postprocessors
-    registerPostprocessor(WaterSteamEOSDensityPPS_PT);
+    registerPostprocessor(EOSWaterAndSteamPTFuncPPS);
+    registerPostprocessor(EOSPhaseDetermineFuncPPS);
+    registerPostprocessor(EOSViscosityFuncPPS);
 }
 
 }
