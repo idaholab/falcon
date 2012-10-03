@@ -121,7 +121,7 @@
 # active = 'Adaptivity '
 # active = ' '
 # type = Steady
-# type =  Transient
+ type =  Transient
 # perf_log =  true
 # petsc_options =  '-snes_mf_operator -ksp_monitor'
 # petsc_options_iname =  '-pc_type -pc_hypre_type -ksp_gmres_restart'
@@ -136,7 +136,7 @@
 # dtmax= 864000.0
 # dtmin= 1e-2
 # end_time = 1000
-  type = SolutionTimeAdaptive
+#  type = SolutionTimeAdaptive
   num_steps = 5
   dt = 10.0
   [./Quadrature]
