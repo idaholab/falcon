@@ -46,6 +46,7 @@ full = true
 
 [AuxVariables]
  active = 'v_x'
+ active = ' ' 
 
 [./v_x]
  order = CONSTANT
@@ -87,6 +88,7 @@ active = ' p_wmfp'
 
 [AuxKernels]
  active = 'vx'
+ active = ' '
 
  [./vx]
  type = VelocityAux

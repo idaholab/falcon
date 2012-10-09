@@ -5,7 +5,6 @@
   
 [Variables]
   [./pressure]
-# scaling = 1e9
   order = FIRST
   family = LAGRANGE
   initial_condition = 10e6
@@ -16,17 +15,9 @@
   initial_condition = 200.0
   [../]
   []
-  
-[AuxVariables]
-  active = ''
-  [./v_x]
-  order = CONSTANT
-  family = MONOMIAL
-  [../]
-  []
+
   
 [Kernels]
-# active = 'p_td p_wmfp t_td t_d t_c'
   [./p_td]
   type = MassFluxTimeDerivative_PT
   variable = pressure
@@ -48,18 +39,9 @@
   variable = temperature
   [../]
   []
-  
-[AuxKernels]
-  active = ''
-  [./vx]
-  type = VelocityAux
-  variable = v_x
-  component = 0
-  [../]
-  []
+
   
 [BCs]
-# active = 'left_t right_t'
   [./left_p]
   type = DirichletBC
   variable = pressure
@@ -88,8 +70,6 @@
   
 [Materials]
   [./rock]
-# has_crack = false
-# has_damage = false
   type = Geothermal
   block = 1
   pressure = pressure
@@ -118,25 +98,7 @@
   []
   
 [Executioner]
-# active = 'Adaptivity '
-# active = ' '
-# type = Steady
- type =  Transient
-# perf_log =  true
-# petsc_options =  '-snes_mf_operator -ksp_monitor'
-# petsc_options_iname =  '-pc_type -pc_hypre_type -ksp_gmres_restart'
-# petsc_options_value =  'hypre boomeramg 100'
-# petsc_options_iname =  ' -snes_ls -pc_type -pc_hypre_type -ksp_gmres_restart'
-# petsc_options_value =  ' basic  hypre boomeramg 201' 
-# l_max_its  =  100
-# l_tol =  1.0e-20
-# nl_max_its =  12
-# nl_rel_tol =  1e-6
-# nl_abs_tol = 1e-20
-# dtmax= 864000.0
-# dtmin= 1e-2
-# end_time = 1000
-#  type = SolutionTimeAdaptive
+  type =  Transient
   num_steps = 5
   dt = 10.0
   [./Quadrature]
