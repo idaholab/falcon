@@ -24,8 +24,8 @@
 [Functions]
   [./sin_func]
     type = ParsedFunction
-    value = sin(x)
-    vars = x
+    value = sin(y)
+    vars = y
   [../]
 []
 
@@ -67,9 +67,7 @@
 []
 
 [Executioner]
-  type = Transient
-  num_steps = 3
-  dt = 1
+  type = Steady
 []
 
 [Output]
