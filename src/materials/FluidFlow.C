@@ -22,7 +22,6 @@ InputParameters validParams<FluidFlow>()
   params.addCoupledVar("pressure", "Use pressure here to calculate Darcy Flux and Pore Velocity");
   params.addCoupledVar("enthalpy", "Use pressure here to calculate Darcy Flux and Pore Velocity");
   params.addCoupledVar("temperature", "Use temperature to calculate variable density and viscosity");
-  params.addParam<bool>("temp_dependent", true, "Flag to call temperature dependent density and viscosity routines");
   params.addRequiredParam<UserObjectName>("water_steam_properties", "EOS functions, calculate water steam properties");
   return params;
 }
@@ -37,7 +36,6 @@ FluidFlow::FluidFlow(const std::string & name, InputParameters parameters) :
     _pressure_old(_has_pressure ? coupledValueOld("pressure") : _zero),
 
     _has_temp(isCoupled("temperature")),
-    _temp_dependent(getParam<bool>("temp_dependent")),
     _temperature(_has_temp ? coupledValue("temperature")  : _zero),
     _temperature_old(_has_temp ? coupledValueOld("temperature") : _zero),
     
@@ -214,8 +212,8 @@ void FluidFlow::computeProperties()
             
             else 
             {
-                //For pressure-temperature based problems. In input file material property block, set temp_dependent = true
-                if (_temp_dependent == true)
+                //For pressure-temperature based problems.
+                if (_has_temp)
                 {
                 
                     Real _dens_water_PT;
@@ -226,10 +224,13 @@ void FluidFlow::computeProperties()
                     Real _density_with_pressure_step;
                 
                     //Obtaining value for density when given parameters are temperature and pressure (no enthalpy)
+					//mooseAssert(_temperature[qp] > 0 && _temperature[qp] < 1000, "Temperature is not a real number!!");
+										
                     _water_steam_properties.waterEquationOfStatePT (_pressure[qp], _temperature[qp], _var, _dens_water_PT);
-                
+					                
                     _dens_water_out[qp] = _dens_water_PT;
-                                
+                         
+			
                     //Obtaining value for density_old when given parameters are temperature and pressure (no enthalpy)
                     _water_steam_properties.waterEquationOfStatePT (_pressure_old[qp], _temperature_old[qp], _var, _time_old_dens_water_PT);
                 
@@ -268,7 +269,7 @@ void FluidFlow::computeProperties()
                     _darcy_flux_water[qp] = _darcy_mass_flux_water[qp] / _dens_water0;    
                 
                 }
-                if (_temp_dependent == false)
+                else
                 {
                     _dens_water_out[qp] = 1000.0;
                     _time_old_dens_water_out[qp] = 1000.0;

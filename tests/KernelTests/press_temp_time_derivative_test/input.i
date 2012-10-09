@@ -73,13 +73,14 @@
   type = Geothermal
   block = 1
   pressure = pressure
+  temperature = temperature
   water_steam_properties = water_steam_properties
   gravity = 0.0
   gx = 0.0
   gy = 0.0
   gz = 1.0
   material_porosity = 0.1
-  permeability = 1.0e-14
+  permeability = 1.0e-15
   thermal_conductivity = 7.5E-5
   specific_heat_water = 4186E-6
   specific_heat_rock = 920E-6
@@ -101,7 +102,9 @@
   type =  Transient
   num_steps = 5
   dt = 10.0
-  [./Quadrature]
+  nl_abs_tol = 1e-6
+
+[./Quadrature]
   type = Trap
   [../]
   []
