@@ -558,7 +558,6 @@ z_disp = disp_z
 pressure        = pressure
 temperature     = temperature
 water_steam_properties = water_steam_properties
-temp_dependent = true
 
 gravity           =  9.8
 gx                =  0.0

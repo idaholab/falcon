@@ -188,7 +188,6 @@ family = MONOMIAL
   pressure        = pressure
   temperature     = temperature
   water_steam_properties = water_steam_properties
-  temp_dependent = true
 
  gravity           =  0.0
  gx                =  0.0
