@@ -54,6 +54,8 @@
 #include "VelocityAux.h"
 #include "CoupledPorosityMaterialAux.h"
 #include "StressStrainDamageComputeAux.h"
+#include "ConstantDensityAux.h"
+#include "ConstantViscosityAux.h"
 
 #include "PressureTimeDerivative.h"
 
@@ -137,6 +139,8 @@ registerObjects()
   registerAux(VelocityAux);
   registerAux(CoupledPorosityMaterialAux);
   registerAux(StressStrainDamageComputeAux);
+	registerAux(ConstantDensityAux);
+	registerAux(ConstantViscosityAux);
 
 //BCs    
   registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
