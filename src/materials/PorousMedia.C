@@ -64,7 +64,8 @@ PorousMedia::PorousMedia(const std::string & name,
    _density_rock(declareProperty<Real>("density_rock")),
    _compressibility(declareProperty<Real>("compressibility")),
    _gravity(declareProperty<Real>("gravity")),
-   _gravity_vector(declareProperty<RealVectorValue>("gravity_vector"))
+   _gravity_vector(declareProperty<RealVectorValue>("gravity_vector")),
+   _already_computed(false)
 
 //    this part is for strain-dependent permeability and porosity   
 //    _has_x_disp(isCoupled("x_disp")),

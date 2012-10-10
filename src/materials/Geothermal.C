@@ -21,6 +21,7 @@ InputParameters validParams<Geothermal>()
   params += validParams<FluidFlow>();
   params += validParams<HeatTransport>();
   params += validParams<SolidMechanics>();
+
   return params;
 }
 
@@ -35,8 +36,14 @@ Geothermal::Geothermal(const std::string & name,
 void
 Geothermal::computeProperties()
 {
-  
+  PorousMedia::computeProperties();
+  // Set already computed to true as we compute the intermediate classes' properties
+  setPropsComputed(true);
+
   FluidFlow::computeProperties();
   HeatTransport::computeProperties();
   SolidMechanics::computeProperties();
+
+  // Now reset this parameter
+  setPropsComputed(false);
 }

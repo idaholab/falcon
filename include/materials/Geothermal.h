@@ -37,6 +37,5 @@ public:
 
 protected:
   virtual void computeProperties();
-
 };
 #endif //GEOTHERMAL_H

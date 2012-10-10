@@ -228,8 +228,9 @@ SolidMechanics::SolidMechanics(const std::string & name,
 void
 SolidMechanics::computeProperties()
 {
-  PorousMedia::computeProperties();
-
+  if (!areParentPropsComputed())
+    PorousMedia::computeProperties();
+  
 // //  srand((unsigned)time(0));
 //   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
 //   {
