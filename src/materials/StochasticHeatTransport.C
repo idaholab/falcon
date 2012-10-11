@@ -42,7 +42,8 @@ StochasticHeatTransport::StochasticHeatTransport(const std::string & name,
 void
 StochasticHeatTransport::computeProperties()
 {
-  StochasticPorousMedia::computeProperties();
+  if (!areParentPropsComputed())
+    StochasticPorousMedia::computeProperties();
   
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {

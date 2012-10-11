@@ -65,7 +65,8 @@ StochasticPorousMedia::StochasticPorousMedia(const std::string & name,
    _density_rock(declareProperty<Real>("density_rock")),
    _compressibility(declareProperty<Real>("compressibility")),
    _gravity(declareProperty<Real>("gravity")),
-   _gravity_vector(declareProperty<RealVectorValue>("gravity_vector"))
+   _gravity_vector(declareProperty<RealVectorValue>("gravity_vector")),
+   _already_computed(false)
 
 //rkp
 //   _has_frac_perm(getParam<bool>("has_frac_perm")),

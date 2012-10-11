@@ -63,7 +63,21 @@ protected:
   //VariableValue & _z_disp_old;
   //MaterialProperty<Real> & _permeability_old;
   //MaterialProperty<Real> & _aperture;
-  //MaterialProperty<RealVectorValue> & _strain;   
+  //MaterialProperty<RealVectorValue> & _strain;
+
+  void setPropsComputed(bool value) { _already_computed = value; }
+  
+  bool areParentPropsComputed() const { return _already_computed; }
+  
+private:
+
+  /**
+   * This parameter is here to indicate whether or not the PorousMedia Material
+   * properties have been computed.  Each of the classes in the diamond hierarchy
+   * should query this variable (using the accessor) to determine whether or
+   * not they should recompute the base class properties
+   */
+  bool _already_computed;
 };
 
 

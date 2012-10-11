@@ -233,7 +233,8 @@ StochasticSolidMechanics::StochasticSolidMechanics(const std::string & name,
 void
 StochasticSolidMechanics::computeProperties()
 {
-  StochasticPorousMedia::computeProperties();
+  if (!areParentPropsComputed())
+    StochasticPorousMedia::computeProperties();
 
 // //  srand((unsigned)time(0));
 //   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)

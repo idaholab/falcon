@@ -101,7 +101,9 @@ _time_old_visc_steam_out(declareProperty<Real>("time_old_viscosity_steam"))
 
 void StochasticFluidFlow::computeProperties()
 {
-
+  if (!areParentPropsComputed())
+    StochasticPorousMedia::computeProperties();
+  
     for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
  
     {  
