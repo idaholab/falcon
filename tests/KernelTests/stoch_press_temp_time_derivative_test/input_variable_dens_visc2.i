@@ -1,23 +1,33 @@
 [Mesh]
   type = MooseMesh
-  file = 3d_stochastic_course.e
+  file = gold/out_variable_dens_visc1.e
 []
 
 [Variables]
   [./pressure]
     order = FIRST
     family = LAGRANGE
-    initial_condition = 10e6
+    initial_from_file_var = pressure
+    initial_from_file_timestep = 21
   [../]
   [./temperature]
     order = FIRST
     family = LAGRANGE
-    initial_condition = 200.0
+    initial_from_file_var = temperature
+    initial_from_file_timestep = 21
   [../]
 []
 
 [AuxVariables]
   [./permeability]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./density_water]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./viscosity_water]
     order = CONSTANT
     family = MONOMIAL
   [../]
@@ -51,6 +61,16 @@
     type = StochasticFieldAux
     variable = permeability
     file_name = IESE_Permeability.txt
+  [../]
+  [./density_water]
+    type = MaterialRealAux
+    variable = density_water
+    property = density_water
+  [../]
+  [./viscosity_water]
+    type = MaterialRealAux
+    variable = viscosity_water
+    property = viscosity_water
   [../]
 []
 
@@ -86,6 +106,7 @@
     type = StochasticGeothermal
     block = 1
     pressure = pressure
+    temperature = temperature
     water_steam_properties = water_steam_properties
     permeability = permeability
     gravity = 0.0
@@ -113,7 +134,7 @@
 
 [Executioner]
   type = Transient
-  num_steps = 10
+  num_steps = 5
   dt = 1000000.0
   nl_abs_tol = 1e-6
   [./Quadrature]
@@ -122,7 +143,7 @@
 []
 
 [Output]
-  file_base = out
+  file_base = out_variable_dens_visc2
   output_initial = true
   interval = 1
   exodus = true
