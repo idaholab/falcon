@@ -32,7 +32,7 @@ StochasticField::StochasticField(std::string fname)
   std::getline(file, tmp);
 
   int num_pts = _nx*_ny*_nz;
-  _data.reserve(num_pts);
+  _data.resize(num_pts);
 
   // We'll index this array like [z][y][x] = [(z*_ny + y)*_nx + x], so
   // read straight from the file and plop the values straight in the array.
