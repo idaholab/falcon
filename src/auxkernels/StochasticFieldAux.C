@@ -9,14 +9,13 @@ InputParameters validParams<StochasticFieldAux>()
 }
 
 
-StochasticFieldAux::StochasticFieldAux(const std::string & name, InputParameters parameters)
-  :AuxKernel(name, parameters)
-{
-  _stoch_field = new StochasticField(getParam<std::string>("file_name"));
-}
+StochasticFieldAux::StochasticFieldAux(const std::string & name, InputParameters parameters) :
+    AuxKernel(name, parameters),
+    _stoch_field(getParam<std::string>("file_name"))
+{}
 
 Real
 StochasticFieldAux::computeValue()
 {
-  return _stoch_field->value(_current_elem->centroid());
+  return _stoch_field.value(_current_elem->centroid());
 }

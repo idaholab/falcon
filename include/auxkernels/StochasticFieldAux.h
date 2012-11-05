@@ -19,7 +19,7 @@ protected:
   virtual Real computeValue();
 
 private:
-  StochasticField * _stoch_field;
+  StochasticField  _stoch_field;
 };
 
 #endif // STOCHASTICFIELDAUX_H
