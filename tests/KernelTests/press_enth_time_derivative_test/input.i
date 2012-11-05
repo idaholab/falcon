@@ -110,16 +110,20 @@
     gz = 1.0
     material_porosity = 0.1
     permeability = 1.0e-15
-    density_rock = 2500
     thermal_conductivity = 7.5
-    specific_heat_water = 4186
-    specific_heat_rock = 920
   [../]
 []
 
 [UserObjects]
   [./water_steam_properties]
     type = WaterSteamEOS
+  [../]
+[]
+
+[Preconditioning]
+  [./SMP]
+    type = SMP
+    full = true
   [../]
 []
 
