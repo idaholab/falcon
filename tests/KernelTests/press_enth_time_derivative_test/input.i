@@ -14,18 +14,6 @@
   [../]
 []
 
-[Preconditioning] 
-[./FDP]
-    # off_diag_row    = 'pressure'
-    # off_diag_column = 'enthalpy'
-    type = FDP
-    petsc_options = '-snes_mf_operator -ksp_monitor'
-    petsc_options_iname = ' -pc_type -mat_fd_coloring_err -mat_fd_type'
-    petsc_options_value = ' lu 1.0e-9 ds'
-    full = true
-  [../]
-[]
-
 [AuxVariables]
   [./temperature]
     block = 1
@@ -37,7 +25,6 @@
     type = MassFluxTimeDerivative
     variable = pressure
     enthalpy = enthalpy
-    water_steam_properties = water_steam_properties
   [../]
   [./p_wmfp]
     type = WaterMassFluxPressure
@@ -52,9 +39,7 @@
   [./t_td]
     type = EnthalpyTimeDerivative
     variable = enthalpy
-    temperature = temperature
     pressure = pressure
-    water_steam_properties = water_steam_properties
   [../]
   [./t_d]
     type = EnthalpyDiffusion
@@ -140,7 +125,6 @@
 
 [Executioner]
   type = Transient
-  petsc_options = -snes_mf_operator
   dt = 1
   num_steps = 2
   [./Quadrature]
