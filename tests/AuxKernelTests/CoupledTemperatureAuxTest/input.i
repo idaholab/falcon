@@ -67,7 +67,7 @@
     type = DirichletBC
     variable = pressure
     boundary = 2
-    value = 19e6
+    value = 19999990
   [../]
   [./right_t]
     type = DirichletBC
@@ -105,6 +105,7 @@
 
 [Executioner]
   type = Steady
+  petsc_options = -snes_mf_operator
 []
 
 [Output]
