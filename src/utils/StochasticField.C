@@ -62,7 +62,7 @@ StochasticField::value(Point p)
   return _data[(z*_ny + y)*_nx + x];
 }
 
-void
+/*void
 test_sf(std::string fname)
 {
   StochasticField sf(fname);
@@ -87,3 +87,4 @@ test_sf(std::string fname)
   Point p8(0.4687E-03*640 - epsilon, 0.4687E-03*320 - epsilon, 1 - epsilon);
   std::cout << sf.value(p7) << ", " << sf.value(p8) << "\n\n";
 }
+*/

@@ -37,6 +37,6 @@ private:
 };
 
 // temporary: for testing
-void test_sf(std::string fname);
+//void test_sf(std::string fname);
 
 #endif // STOCHASTICFIELD_H
