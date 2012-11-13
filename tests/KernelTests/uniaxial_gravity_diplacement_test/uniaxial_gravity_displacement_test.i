@@ -11,11 +11,15 @@
 # u(x) = rho * g * h * x / E = rho * g * x^2 / E
 # = (2000) (10) (10)^2 / 1e10
 # = 0.0002 m
+# 
+# 
+# The analytic solution for the stress along at x = 10m is:
+# 
+# S(x) = rho * g * x = (2000) (10) (10) = 2e5 Pa
+# 
+# The analylic solution for the strain at x = 10m is:
 #
-#
-#The analytic solution for the stress along at x = 10m is:
-#
-#S(x) = rho * g * x = (2000) (10) (10) = 2e5 Pa
+# Tau(x) = u(x) / x = 0.0002 / 10 = 2e-5
 #
 
 [Mesh]
@@ -65,6 +69,30 @@
     family = MONOMIAL
   [../]
   [./tau_yz]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./s_xx]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./s_yy]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./s_zz]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./s_xy]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./s_xz]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./s_yz]
     order = CONSTANT
     family = MONOMIAL
   [../]
@@ -132,6 +160,42 @@
     type = StressStrainDamageComputeAux
     variable = tau_yz
     quantity = stress
+    component = 5
+  [../]
+  [./comp_s_xx]
+    type = StressStrainDamageComputeAux
+    variable = s_xx
+    quantity = strain
+    component = 0
+  [../]
+  [./comp_s_yy]
+    type = StressStrainDamageComputeAux
+    variable = s_yy
+    quantity = strain
+    component = 1
+  [../]
+  [./comp_s_zz]
+    type = StressStrainDamageComputeAux
+    variable = s_zz
+    quantity = strain
+    component = 2
+  [../]
+  [./comp_s_xy]
+    type = StressStrainDamageComputeAux
+    variable = s_xy
+    quantity = strain
+    component = 3
+  [../]
+  [./comp_s_xz]
+    type = StressStrainDamageComputeAux
+    variable = s_xz
+    quantity = strain
+    component = 4
+  [../]
+  [./comp_s_yz]
+    type = StressStrainDamageComputeAux
+    variable = s_yz
+    quantity = strain
     component = 5
   [../]
 []
