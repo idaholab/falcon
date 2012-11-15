@@ -47,17 +47,12 @@
 #include "MassFluxTimeDerivative_PT.h"
 #include "WaterMassFluxPressure_PT.h"
 #include "WaterMassFluxElevation_PT.h"
+#include "PressureTimeDerivative.h"
 
 //auxkernels
 #include "CoupledTemperatureAux.h"         // T as functon of (P,H) -two phase formulation
-#include "AnalyticalADE1D.h"
 #include "VelocityAux.h"
-#include "CoupledPorosityMaterialAux.h"
 #include "StressStrainDamageComputeAux.h"
-#include "ConstantDensityAux.h"
-#include "ConstantViscosityAux.h"
-
-#include "PressureTimeDerivative.h"
 
 //BCs
 #include "PressureNeumannBC2.h"
@@ -66,6 +61,7 @@
 #include "OutFlowBC_PH.h"
 #include "StepDirichletBC.h"
 #include "StepPressureBCFunc.h"
+
 //ICs
 #include "LinearDisEnthalpyIC.h"
 
@@ -77,9 +73,6 @@
 #include "SolidMechanics.h"
 #include "Geothermal.h"
 
-#include "PermeabilityAux.h"
-#include "ApertureAux.h"
-
 #include "StochasticMaterial.h"
 #include "StochasticPorousMedia.h"
 
@@ -88,6 +81,8 @@
 #include "StochasticFluidFlow.h"
 #include "StochasticHeatTransport.h"
 #include "StochasticSolidMechanics.h"
+
+//userobjects
 #include "WaterSteamEOS.h"
 
 //postprocessors
@@ -101,17 +96,12 @@ namespace Falcon
 void
 registerObjects()
 {
-    registerUserObject(WaterSteamEOS);
 //mechanics
   registerNamedKernel(SolidMechXFalcon, "SolidMechXFalcon");
   registerNamedKernel(SolidMechYFalcon, "SolidMechYFalcon");
   registerNamedKernel(SolidMechZFalcon, "SolidMechZFalcon");
   registerKernel(SolidMechImplicitEuler);
-/*
-  registerNamedKernel(SolidMechTempCoupleXFalcon, "SolidMechTempCoupleX");
-  registerNamedKernel(SolidMechTempCoupleYFalcon, "SolidMechTempCoupleY");
-  registerNamedKernel(SolidMechTempCoupleZFalcon, "SolidMechTempCoupleZ");
-*/
+
   registerKernel(SolidMechTempCoupleXFalcon);
   registerKernel(SolidMechTempCoupleYFalcon);
   registerKernel(SolidMechTempCoupleZFalcon);
@@ -120,29 +110,26 @@ registerObjects()
   registerKernel(SolidMechPoroCoupleY);
   registerKernel(SolidMechPoroCoupleZ);
   registerKernel(Gravity);
-//isothermal flow for pressure field
+
+  //isothermal flow for pressure field
   registerKernel(PressureTimeDerivative);
-//heat transport-PT formulation, single phase only
+  //heat transport-PT formulation, single phase only
   registerKernel(TemperatureTimeDerivative);
   registerKernel(TemperatureTimeDerivativeFluid);
   registerKernel(TemperatureTimeDerivativeSolid);
   registerKernel(TemperatureDiffusion);
   registerKernel(TemperatureConvection);
-//fluid-mass flow-single phase formulation
+  //fluid-mass flow-single phase formulation
   registerKernel(MassFluxTimeDerivative_PT);
   registerKernel(WaterMassFluxPressure_PT);
   registerKernel(WaterMassFluxElevation_PT);
     
-    //auxkernels
+  //auxkernels
   registerAux(CoupledTemperatureAux);
-  registerAux(AnalyticalADE1D);
   registerAux(VelocityAux);
-  registerAux(CoupledPorosityMaterialAux);
   registerAux(StressStrainDamageComputeAux);
-	registerAux(ConstantDensityAux);
-	registerAux(ConstantViscosityAux);
 
-//BCs    
+  //BCs    
   registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
   registerBoundaryCondition(GravityNeumannBC);
   registerBoundaryCondition(OutFlowBC);
@@ -152,18 +139,14 @@ registerObjects()
 
   // ICs
   registerInitialCondition(LinearDisEnthalpyIC);
-
-
-//materials
+  
+  //materials
   registerMaterial(Constant);
   registerMaterial(PorousMedia);
   registerMaterial(FluidFlow);
   registerMaterial(HeatTransport);
   registerMaterial(SolidMechanics);
   registerMaterial(Geothermal);
-   
-  registerAux(PermeabilityAux);
-  registerAux(ApertureAux);
 
   registerMaterial(StochasticMaterial);
   registerMaterial(StochasticPorousMedia);
@@ -173,11 +156,14 @@ registerObjects()
   registerMaterial(StochasticFluidFlow);
   registerMaterial(StochasticHeatTransport);
   registerMaterial(StochasticSolidMechanics);
+    
+  //userobjects
+  registerUserObject(WaterSteamEOS);
         
-    //postprocessors
-    registerPostprocessor(EOSWaterAndSteamPTFuncPPS);
-    registerPostprocessor(EOSPhaseDetermineFuncPPS);
-    registerPostprocessor(EOSViscosityFuncPPS);
+  //postprocessors
+  registerPostprocessor(EOSWaterAndSteamPTFuncPPS);
+  registerPostprocessor(EOSPhaseDetermineFuncPPS);
+  registerPostprocessor(EOSViscosityFuncPPS);
 }
 
 }
