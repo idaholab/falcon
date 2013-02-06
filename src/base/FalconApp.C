@@ -24,6 +24,6 @@ FalconApp::FalconApp(int argc, char * argv[]) :
   srand(libMesh::processor_id());
 
   init();
-  Elk::FluidMassEnergyBalance::registerObjects();
-  Falcon::registerObjects();
+  Elk::FluidMassEnergyBalance::registerObjects(_factory);
+  Falcon::registerObjects(_factory);
 }

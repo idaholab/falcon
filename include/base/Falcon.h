@@ -17,7 +17,7 @@
 
 namespace Falcon
 {
-  void registerObjects();
+  void registerObjects(Factory & factory);
 }
 
 #endif //FALCON_H

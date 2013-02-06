@@ -94,7 +94,7 @@ namespace Falcon
 {
 
 void
-registerObjects()
+registerObjects(Factory & factory)
 {
 //mechanics
   registerNamedKernel(SolidMechXFalcon, "SolidMechXFalcon");
