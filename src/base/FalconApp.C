@@ -22,8 +22,10 @@ FalconApp::FalconApp(int argc, char * argv[]) :
     MooseApp(argc, argv)
 {
   srand(libMesh::processor_id());
-
-  init();
+  
+  Moose::registerObjects(_factory);
   Elk::FluidMassEnergyBalance::registerObjects(_factory);
   Falcon::registerObjects(_factory);
+
+  Moose::associateSyntax(_syntax, _action_factory);
 }
