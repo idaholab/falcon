@@ -15,8 +15,6 @@
 #include "FalconApp.h"
 #include "MooseInit.h"
 #include "Moose.h"
-// libMesh includes
-#include "perf_log.h"
 
 PerfLog Moose::perf_log("Falcon");
 
