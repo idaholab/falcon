@@ -2,7 +2,7 @@
 #define STOCHASTICFIELD_H
 
 // libmesh includes
-#include "point.h" //need to include point instead of forward declaring to get Real
+#include "libmesh/point.h" //need to include point instead of forward declaring to get Real
 
 // c++ includes
 #include <vector>

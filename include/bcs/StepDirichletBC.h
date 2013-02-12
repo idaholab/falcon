@@ -15,7 +15,7 @@
 #ifndef STEPDIRICHLETBC_H
 #define STEPDIRICHLETBC_H
 
-#include "libmesh_common.h"
+#include "libmesh/libmesh_common.h"
 #include "NodalBC.h"
 
 
