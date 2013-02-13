@@ -1,6 +1,6 @@
 [Mesh]
   file = simple_3d_May_2012.e
-[ ]
+[]
 
 [Variables]
   active = 'pressure'
@@ -15,7 +15,7 @@
    family = LAGRANGE
    initial_condition = 200.0
   [../]
-[ ]
+[]
 
 
 [AuxVariables]
@@ -27,7 +27,7 @@
  family = MONOMIAL
 [../]
 
-[ ]
+[]
 
 [Kernels]
 active = ' p_wmfp'
@@ -37,7 +37,7 @@ active = ' p_wmfp'
  variable = pressure
  [../]
 
-[ ]
+[]
 
 [AuxKernels]
 #active = 'vx'
@@ -49,7 +49,7 @@ active = ' p_wmfp'
  component = 0
  [../]
 
-[ ]
+[]
  
 [BCs]
  active = 'left_p right_p'
@@ -81,7 +81,7 @@ value = 1e6
     value = 200.
 [../]
 
-[ ]
+[]
 
 [Materials]
  active = 'rock'
@@ -111,7 +111,7 @@ water_steam_properties = water_steam_properties
  t_ref                =   200
 
  [../]
-[ ]
+[]
 
 [UserObjects]
 active = 'water_steam_properties'
@@ -119,7 +119,7 @@ active = 'water_steam_properties'
 [./water_steam_properties]
 type = WaterSteamEOS
 [../]
-[ ]
+[]
 
 
 [Executioner]
@@ -133,7 +133,7 @@ type = WaterSteamEOS
   type = Trap
  [../]
  
-[ ]
+[]
  
 [Output]
  file_base = out
@@ -141,5 +141,5 @@ type = WaterSteamEOS
  interval = 1
  exodus = true
   print_out_info = true
- [ ]
+[]
  
