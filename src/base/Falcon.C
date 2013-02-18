@@ -14,7 +14,9 @@
 
 #include "Moose.h"
 #include "Falcon.h"
+#include "FalconApp.h"
 #include "Factory.h"
+#include "AppFactory.h"
 
 //kernels
 ///////////////////////////////////////////////////////////////
@@ -92,6 +94,11 @@
 
 namespace Falcon
 {
+
+void registerApps()
+{
+  registerApp(FalconApp);
+}
 
 void
 registerObjects(Factory & factory)

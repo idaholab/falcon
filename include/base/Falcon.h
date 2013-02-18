@@ -15,8 +15,19 @@
 #ifndef FALCON_H
 #define FALCON_H
 
+class Factory;
+class ActionFactory;
+class Syntax;
+
 namespace Falcon
 {
+  /**
+   * Register this application and any it depends on.
+   */
+  void registerApps();
+  /**
+   * Registers all Kernels and BCs
+   */
   void registerObjects(Factory & factory);
 }
 

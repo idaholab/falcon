@@ -17,10 +17,15 @@
 
 #include "MooseApp.h"
 
+class FalconApp;
+
+template<>
+InputParameters validParams<FalconApp>();
+
 class FalconApp : public MooseApp
 {
 public:
-  FalconApp(int argc, char * argv[]);
+  FalconApp(const std::string & name, InputParameters parameters);
 };
 
 #endif //FALCONAPP_H

@@ -18,8 +18,15 @@
 
 #include "FluidMassEnergyBalanceModule.h"
 
-FalconApp::FalconApp(int argc, char * argv[]) :
-    MooseApp(argc, argv)
+template<>
+InputParameters validParams<FalconApp>()
+{
+  InputParameters params = validParams<MooseApp>();
+  return params;
+}
+
+FalconApp::FalconApp(const std::string & name, InputParameters parameters) :
+    MooseApp(name, parameters)
 {
   srand(libMesh::processor_id());
   
