@@ -22,6 +22,7 @@ InputParameters validParams<FluidFlow>()
   params.addCoupledVar("pressure", "Use pressure here to calculate Darcy Flux and Pore Velocity");
   params.addCoupledVar("enthalpy", "Use pressure here to calculate Darcy Flux and Pore Velocity");
   params.addCoupledVar("temperature", "Use temperature to calculate variable density and viscosity");
+  params.addParam<bool>("temp_dependent_fluid_props", true, "Add discription");
   params.addParam<Real>("constant_density", 1000, "Use to set value of constant density");
   params.addParam<Real>("constant_viscosity", 0.12e-3, "Use to set value of constant viscosity");
   params.addRequiredParam<UserObjectName>("water_steam_properties", "EOS functions, calculate water steam properties");
@@ -41,6 +42,7 @@ FluidFlow::FluidFlow(const std::string & name, InputParameters parameters) :
     _pressure_old(_has_pressure ? coupledValueOld("pressure") : _zero),
 
     _has_temp(isCoupled("temperature")),
+    _temp_dependent_fluid_props(getParam<bool>("temp_dependent_fluid_props")),
     _temperature(_has_temp ? coupledValue("temperature")  : _zero),
     _temperature_old(_has_temp ? coupledValueOld("temperature") : _zero),
     
@@ -231,10 +233,10 @@ void FluidFlow::computeProperties()
     else 
     {
       //For when fluid properties are temperature dependant (ie. not constant).
-      //If temperature IS a provided coupled variable in the material block
-      //of the input file, this loop will execute and give temperature dependent
+      //If temperature IS a provided coupled variable and _temp_dependent_fluid_props = true
+      //in the material block of the input file, this loop will execute and give temperature dependent
       //fluid properties and their derivatives
-      if (_has_temp)
+      if (_temp_dependent_fluid_props && _has_temp)
       {
                 
         Real _dens_water_PT;
@@ -291,8 +293,8 @@ void FluidFlow::computeProperties()
                 
       }
       //For when fluid properties are temperature INdependent (ie. constant).
-      //If temperature IS NOT a provided coupled variable in the material block
-      //of the input file, this loop will execute and give constant single phase
+      //If temperature IS NOT a provided coupled variable or if _temp_dependent_fluid_props = false
+      //in the material block of the input file, this loop will execute and give constant single phase
       //fluid properties.  Input params constant_density and constant_viscosity can
       //be set in material block of input file to desired constant values, if not they
       //are initialized to 1000 kg/m3 and 0.12e-3 Pa.s
