@@ -1,5 +1,4 @@
 [Mesh]
-  type = MooseMesh
   file = gold/out_variable_dens_visc1.e
 []
 

@@ -1,5 +1,4 @@
 [Mesh]
-  type = MooseMesh
   file = stochastic_rock.e
 []
 

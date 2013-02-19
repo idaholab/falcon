@@ -1,5 +1,4 @@
 [Mesh]
-  type = MooseMesh
   file = 3d_stochastic_course.e
 []
 

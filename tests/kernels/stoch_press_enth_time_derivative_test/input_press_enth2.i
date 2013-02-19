@@ -1,5 +1,4 @@
 [Mesh]
-  type = MooseMesh
   file = gold/out_press_enth1.e
 []
 

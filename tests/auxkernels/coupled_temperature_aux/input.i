@@ -1,5 +1,4 @@
 [Mesh]
-  type = MooseMesh
   file = simple_3d_May_2012.e
 []
 
