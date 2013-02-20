@@ -10,10 +10,10 @@ falcon_LIB := $(FALCON_DIR)/libfalcon-$(METHOD).la
 falcon_APP := $(FALCON_DIR)/falcon-$(METHOD)
 
 # source files
-falcon_srcfiles    := $(shell find $(falcon_SRC_DIRS) -name *.C)
-falcon_csrcfiles   := $(shell find $(falcon_SRC_DIRS) -name *.c)
-falcon_fsrcfiles   := $(shell find $(falcon_SRC_DIRS) -name *.f)
-falcon_f90srcfiles := $(shell find $(falcon_SRC_DIRS) -name *.f90)
+falcon_srcfiles    := $(shell find $(falcon_SRC_DIRS) -name "*.C")
+falcon_csrcfiles   := $(shell find $(falcon_SRC_DIRS) -name "*.c")
+falcon_fsrcfiles   := $(shell find $(falcon_SRC_DIRS) -name "*.f")
+falcon_f90srcfiles := $(shell find $(falcon_SRC_DIRS) -name "*.f90")
 
 # object files
 falcon_objects	:= $(patsubst %.C, %.$(obj-suffix), $(falcon_srcfiles))
@@ -22,10 +22,10 @@ falcon_objects += $(patsubst %.f, %.$(obj-suffix), $(falcon_fsrcfiles))
 falcon_objects += $(patsubst %.f90, %.$(obj-suffix), $(falcon_f90srcfiles))
 
 # plugin files
-falcon_plugfiles   := $(shell find $(FALCON_DIR)/plugins/ -name *.C 2>/dev/null)
-falcon_cplugfiles  := $(shell find $(FALCON_DIR)/plugins/ -name *.c 2>/dev/null)
-falcon_fplugfiles  := $(shell find $(FALCON_DIR)/plugins/ -name *.f 2>/dev/null)
-falcon_f90plugfiles:= $(shell find $(FALCON_DIR)/plugins/ -name *.f90 2>/dev/null)
+falcon_plugfiles   := $(shell find $(FALCON_DIR)/plugins/ -name "*.C" 2>/dev/null)
+falcon_cplugfiles  := $(shell find $(FALCON_DIR)/plugins/ -name "*.c" 2>/dev/null)
+falcon_fplugfiles  := $(shell find $(FALCON_DIR)/plugins/ -name "*.f" 2>/dev/null)
+falcon_f90plugfiles:= $(shell find $(FALCON_DIR)/plugins/ -name "*.f90" 2>/dev/null)
 
 # plugins
 falcon_plugins     := $(patsubst %.C, %-$(METHOD).plugin, $(falcon_plugfiles))
