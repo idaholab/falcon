@@ -1,5 +1,3 @@
-falcon_SRC_DIRS := $(FALCON_DIR)/src/*/*
-
 falcon_INC_DIRS := $(shell find $(FALCON_DIR)/include -type d -not -path "*/.svn*")
 falcon_INCLUDE  := $(foreach i, $(falcon_INC_DIRS), -I$(i))
 
@@ -10,10 +8,10 @@ falcon_LIB := $(FALCON_DIR)/libfalcon-$(METHOD).la
 falcon_APP := $(FALCON_DIR)/falcon-$(METHOD)
 
 # source files
-falcon_srcfiles    := $(shell find $(falcon_SRC_DIRS) -name "*.C")
-falcon_csrcfiles   := $(shell find $(falcon_SRC_DIRS) -name "*.c")
-falcon_fsrcfiles   := $(shell find $(falcon_SRC_DIRS) -name "*.f")
-falcon_f90srcfiles := $(shell find $(falcon_SRC_DIRS) -name "*.f90")
+falcon_srcfiles    := $(shell find $(FALCON_DIR)/src -name "*.C")
+falcon_csrcfiles   := $(shell find $(FALCON_DIR)/src -name "*.c")
+falcon_fsrcfiles   := $(shell find $(FALCON_DIR)/src -name "*.f")
+falcon_f90srcfiles := $(shell find $(FALCON_DIR)/src -name "*.f90")
 
 # object files
 falcon_objects	:= $(patsubst %.C, %.$(obj-suffix), $(falcon_srcfiles))
