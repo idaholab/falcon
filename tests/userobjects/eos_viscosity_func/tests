@@ -1,0 +1,8 @@
+[Tests]
+  [./test]
+    type = 'CSVDiff'
+    input = 'eos_viscosity_func_test.i'
+    rel_err = 0.075
+    csvdiff = 'eos_viscosity_func_test_out.csv'
+  [../]
+[]

@@ -1,0 +1,14 @@
+[Tests]
+  [./test1]
+    type = 'Exodiff'
+    input = 'restart_diffusion_test_steady.i'
+    exodiff = 'steady_out.e'
+  [../]
+
+  [./test2]
+    type = 'Exodiff'
+    input = 'restart_diffusion_test_transient.i'
+    exodiff = 'out.e'
+    prereq = 'test1'
+  [../]
+[]

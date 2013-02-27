@@ -1,0 +1,8 @@
+[Tests]
+  [./test]
+    type = 'Exodiff'
+    input = 'displacement_test.i'
+    exodiff = 'out.e'
+    skip = 'fixing'
+  [../]
+[]

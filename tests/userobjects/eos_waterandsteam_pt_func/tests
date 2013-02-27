@@ -1,0 +1,29 @@
+[Tests]
+  [./test1]
+    type = 'CSVDiff'
+    input = 'densitywater_pt_test.i'
+    rel_err = 1.5e-05
+    csvdiff = 'densitywater_pt_test_out.csv'
+  [../]
+
+  [./test3]
+    type = 'CSVDiff'
+    input = 'enthalpywater_pt_test.i'
+    rel_err = 0.0002
+    csvdiff = 'enthalpywater_pt_test_out.csv'
+  [../]
+
+  [./test2]
+    type = 'CSVDiff'
+    input = 'densitysteam_pt_test.i'
+    rel_err = 0.00055
+    csvdiff = 'densitysteam_pt_test_out.csv'
+  [../]
+
+  [./test4]
+    type = 'CSVDiff'
+    input = 'enthalpysteam_pt_test.i'
+    rel_err = 0.0002
+    csvdiff = 'enthalpysteam_pt_test_out.csv'
+  [../]
+[]
