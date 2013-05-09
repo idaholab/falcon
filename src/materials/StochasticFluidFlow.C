@@ -22,6 +22,7 @@ InputParameters validParams<StochasticFluidFlow>()
   params.addCoupledVar("pressure", "Use pressure here to calculate Darcy Flux and Pore Velocity");
   params.addCoupledVar("enthalpy", "Use pressure here to calculate Darcy Flux and Pore Velocity");
   params.addCoupledVar("temperature", "Use temperature to calculate variable density and viscosity");
+  params.addParam<bool>("temp_dependent_fluid_props", true, "flag true for temperature dependent fluid properties");
   params.addParam<Real>("constant_density", 1000, "Use to set value of constant density");
   params.addParam<Real>("constant_viscosity", 0.12e-3, "Use to set value of constant viscosity");
   params.addRequiredParam<UserObjectName>("water_steam_properties", "EOS functions, calculate water steam properties");
@@ -43,6 +44,7 @@ StochasticFluidFlow::StochasticFluidFlow(const std::string & name,
      _pressure_old(_has_pressure ? coupledValue("pressure") : _zero),
 
      _has_temp(isCoupled("temperature")),
+     _temp_dependent_fluid_props(getParam<bool>("temp_dependent_fluid_props")),
      _temperature(_has_temp ? coupledValue("temperature")  : _zero),
      _temperature_old(_has_temp ? coupledValueOld("temperature") : _zero),
 
@@ -239,7 +241,7 @@ void StochasticFluidFlow::computeProperties()
       //If temperature IS a provided coupled variable in the material block
       //of the input file, this loop will execute and give temperature dependent
       //fluid properties and their derivatives
-      if (_has_temp)
+      if (_temp_dependent_fluid_props && _has_temp)
       {
              
         Real _dens_water_PT;

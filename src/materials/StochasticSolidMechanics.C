@@ -60,13 +60,13 @@ InputParameters validParams<StochasticSolidMechanics>()
   params.addParam<Real>("friction_angle",0.1,"Rock's internal friction angle");
 */
 //stress/strain dependent permeability-----------------------------------------------------------------------------
-  params.addParam<bool>("has_damage_couple_permeability",false,"switch for couple damage with porosity or not");
+//  params.addParam<bool>("has_damage_couple_permeability",false,"switch for couple damage with porosity or not");
 //  params.addParam<Real>("damage_couple_permeability_coeff1",2.0,"the first coeff for coupling damage with porosity");
 //  params.addParam<Real>("damage_couple_permeability_coeff2",1.0e5,"the second coeff for coupling damage with porosity");
 
 //solid mechanics material model coupled with heat, pressure, and displacements--------------------------------------
   params.addCoupledVar("temperature", "TODO:  add description");
-  params.addCoupledVar("pressure", "TODO:  add description");
+//  params.addCoupledVar("pressure", "TODO:  add description");
   params.addCoupledVar("x_disp", "TODO: ad description");
   params.addCoupledVar("y_disp", "TODO: ad description");
   params.addCoupledVar("z_disp", "TODO: ad description");
@@ -84,9 +84,9 @@ StochasticSolidMechanics::StochasticSolidMechanics(const std::string & name,
                                InputParameters parameters)
   :StochasticPorousMedia(name, parameters),
    _has_temp(isCoupled("temperature")),
-   _grad_temp  (_has_temp ? coupledGradient("temperature") : _grad_zero),
+//   _grad_temp  (_has_temp ? coupledGradient("temperature") : _grad_zero),
    _temperature(_has_temp ? coupledValue("temperature")  : _zero),
-   _temperature_old(_has_temp ? coupledValueOld("temperature")  : _zero),
+//   _temperature_old(_has_temp ? coupledValueOld("temperature")  : _zero),
    _has_x_disp(isCoupled("x_disp")),
    _grad_x_disp(_has_x_disp ? coupledGradient("x_disp") : _grad_zero),
   _grad_x_disp_old(_has_x_disp ? coupledGradientOld("x_disp") : _grad_zero),
@@ -128,7 +128,7 @@ StochasticSolidMechanics::StochasticSolidMechanics(const std::string & name,
    _cohesion(getParam<Real>("cohesion")),
    _friction_angle(getParam<Real>("friction_angle")),
  */
-   _has_damage_couple_permeability(getParam<bool>("has_damage_couple_permeability")),
+//   _has_damage_couple_permeability(getParam<bool>("has_damage_couple_permeability")),
 
 /*   _damage_couple_permeability_coeff1(getParam<Real>("damage_couple_permeability_coeff1")),
    _damage_couple_permeability_coeff2(getParam<Real>("damage_couple_permeability_coeff2")),
@@ -250,8 +250,6 @@ StochasticSolidMechanics::computeProperties()
 
 for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
-//    _permeability[qp] = _input_permeability;
-
     _youngs_modulus[qp] = _input_youngs_modulus;
 
     _alpha[qp]            = _input_thermal_expansion;
@@ -369,8 +367,8 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
 
 //newly added for handling damage couple with porosity/permeability
 
-   if(_has_damage_couple_permeability)
-   {
+   //if(_has_damage_couple_permeability)
+   //{
        /*if (_t_step == 1)
        {
            _permeability[qp] = _input_permeability; //fisrt step doesn't do permeability adjustment because we're applying the initial stress
@@ -389,7 +387,7 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
            _permeability[qp] = _input_permeability * std::pow((1.0 + _material_porosity[qp])/(1.0 + _input_material_porosity), 5.0);
          */  
            
-       }
+     //  }
      //  if (_damage_coeff[qp] > 1.0e-10)
 //RKP comment out 6-12-12
 

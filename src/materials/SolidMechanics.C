@@ -60,15 +60,15 @@ InputParameters validParams<SolidMechanics>()
 //   params.addParam<Real>("friction_angle",0.1,"Rock's internal friction angle");
 
 //stress/strain dependent permeability-----------------------------------------------------------------------------
-  params.addParam<bool>("has_strain_coupled_permeability",false,"switch for couple damage with porosity or not");
-  params.addParam<Real>("scaling_coeff",1.0,"scaling factor for the strain-dependent permeability");
+//   params.addParam<bool>("has_strain_coupled_permeability",false,"switch for couple damage with porosity or not");
+//   params.addParam<Real>("scaling_coeff",1.0,"scaling factor for the strain-dependent permeability");
 //   params.addParam<bool>("has_damage_couple_permeability",false,"switch for couple damage with porosity or not");
 //   params.addParam<Real>("damage_couple_permeability_coeff1",2.0,"the first coeff for coupling damage with porosity");
 //   params.addParam<Real>("damage_couple_permeability_coeff2",1.0e5,"the second coeff for coupling damage with porosity");
 
 //solid mechanics material model coupled with heat, pressure, and displacements--------------------------------------
   params.addCoupledVar("temperature", "TODO:  add description");
-  params.addCoupledVar("pressure", "TODO:  add description");
+//   params.addCoupledVar("pressure", "TODO:  add description");
   params.addCoupledVar("x_disp", "TODO: ad description");
   params.addCoupledVar("y_disp", "TODO: ad description");
   params.addCoupledVar("z_disp", "TODO: ad description");
@@ -81,9 +81,9 @@ SolidMechanics::SolidMechanics(const std::string & name,
                                InputParameters parameters)
   :PorousMedia(name, parameters),
    _has_temp(isCoupled("temperature")),
-   _grad_temp  (_has_temp ? coupledGradient("temperature") : _grad_zero),
+//   _grad_temp  (_has_temp ? coupledGradient("temperature") : _grad_zero),
    _temperature(_has_temp ? coupledValue("temperature")  : _zero),
-   _temperature_old(_has_temp ? coupledValueOld("temperature")  : _zero),
+//   _temperature_old(_has_temp ? coupledValueOld("temperature")  : _zero),
    _has_x_disp(isCoupled("x_disp")),
    _grad_x_disp(_has_x_disp ? coupledGradient("x_disp") : _grad_zero),
    _grad_x_disp_old(_has_x_disp ? coupledGradientOld("x_disp") : _grad_zero),
@@ -125,8 +125,8 @@ SolidMechanics::SolidMechanics(const std::string & name,
 //    _cohesion(getParam<Real>("cohesion")),
 //    _friction_angle(getParam<Real>("friction_angle")),
 
-   _has_strain_coupled_permeability(getParam<bool>("has_strain_coupled_permeability")),
-   _scaling_coeff(getParam<Real>("scaling_coeff")),
+//    _has_strain_coupled_permeability(getParam<bool>("has_strain_coupled_permeability")),
+//    _scaling_coeff(getParam<Real>("scaling_coeff")),
 
 //    _has_damage_couple_permeability(getParam<bool>("has_damage_couple_permeability")),
 //    _damage_couple_permeability_coeff1(getParam<Real>("damage_couple_permeability_coeff1")),
@@ -356,30 +356,29 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
 
 //newly added for handling damage couple with porosity/permeability
 
-   if(_has_strain_coupled_permeability)
-   {
-     if (_t_step == 1)
-     {
-       _permeability[qp] = _input_permeability; //fisrt step doesn't do permeability adjustment because we're applying the initial stress
-     }
-     else
-     {
-       Real _strain_thermal;
-       Real _porosity_now;
-       
-       if (_temperature[qp] < _input_t_ref)
-       {
+//   if(_has_strain_coupled_permeability)
+//   {
+//     if (_t_step == 1)
+///     {
+//       _permeability[qp] = _input_permeability; //fisrt step doesn't do permeability adjustment because we're applying the initial stress
+//     }
+//     else
+//     {
+//       Real _strain_thermal;
+//       Real _porosity_now;
+
+//       if (_temperature[qp] < _input_t_ref)
+//       {
            
-//        std::cout << "_t=" << _temperature[qp] <<"   _input_t_ref  " << _input_t_ref<<"\n";         
-         _strain_thermal     = _input_thermal_expansion*(_temperature[qp] - _input_t_ref);
+//         _strain_thermal     = _input_thermal_expansion*(_temperature[qp] - _input_t_ref);
 //        _material_porosity[qp] = _input_material_porosity - _strain_thermal;
-         _porosity_now = _input_material_porosity - _strain_thermal;
+//         _porosity_now = _input_material_porosity - _strain_thermal;
 //         _permeability[qp] = _input_permeability * std::pow(_scaling_coeff * (1.0 + _porosity_now)/(1.0 + _input_material_porosity), 3.0);
-         _permeability[qp] = _input_permeability * (1.0 - _scaling_coeff*(_temperature[qp] - _input_t_ref)) ;
-       }
+//         _permeability[qp] = _input_permeability * (1.0 - _scaling_coeff*(_temperature[qp] - _input_t_ref)) ;
+//       }
          
-     }
-   }
+//     }
+  //}
 
 //    //smear crack model
 //    if (_has_crack)

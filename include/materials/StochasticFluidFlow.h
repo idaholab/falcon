@@ -46,6 +46,7 @@ protected:
   VariableValue & _pressure_old;
 
   bool _has_temp;
+  bool _temp_dependent_fluid_props;
   VariableValue  & _temperature;
   VariableValue & _temperature_old;
   

@@ -76,9 +76,9 @@ protected:
  virtual void computeProperties();
 
   bool _has_temp;
-  VariableGradient & _grad_temp;
+//  VariableGradient & _grad_temp;
   VariableValue  & _temperature;
-    VariableValue  & _temperature_old;
+//    VariableValue  & _temperature_old;
 
   bool _has_x_disp;
   VariableGradient & _grad_x_disp;
@@ -125,7 +125,7 @@ protected:
   Real _friction_angle;
  */
 
-  bool _has_damage_couple_permeability;
+//  bool _has_damage_couple_permeability;
     
 /*  Real _damage_couple_permeability_coeff1;
   Real _damage_couple_permeability_coeff2;
