@@ -55,6 +55,7 @@
 #include "CoupledTemperatureAux.h"         // T as functon of (P,H) -two phase formulation
 #include "VelocityAux.h"
 #include "StressStrainDamageComputeAux.h"
+#include "StochasticFieldAux.h"
 
 //BCs
 #include "PressureNeumannBC2.h"
@@ -75,10 +76,14 @@
 #include "SolidMechanics.h"
 #include "Geothermal.h"
 
+#include "FracturesPorousMedia.h"
+#include "FracturesFluidFlow.h"
+#include "FracturesHeatTransport.h"
+#include "FracturesSolidMechanics.h"
+#include "FracturesGeothermal.h"
+
 #include "StochasticMaterial.h"
 #include "StochasticPorousMedia.h"
-
-#include "StochasticFieldAux.h"
 #include "StochasticGeothermal.h"
 #include "StochasticFluidFlow.h"
 #include "StochasticHeatTransport.h"
@@ -135,8 +140,9 @@ registerObjects(Factory & factory)
   registerAux(CoupledTemperatureAux);
   registerAux(VelocityAux);
   registerAux(StressStrainDamageComputeAux);
+  registerAux(StochasticFieldAux);
 
-  //BCs    
+  //BCs
   registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
   registerBoundaryCondition(GravityNeumannBC);
   registerBoundaryCondition(OutFlowBC);
@@ -154,12 +160,16 @@ registerObjects(Factory & factory)
   registerMaterial(HeatTransport);
   registerMaterial(SolidMechanics);
   registerMaterial(Geothermal);
-
+    
+  registerMaterial(FracturesPorousMedia);
+  registerMaterial(FracturesFluidFlow);
+  registerMaterial(FracturesHeatTransport);
+  registerMaterial(FracturesSolidMechanics);
+  registerMaterial(FracturesGeothermal);
+    
   registerMaterial(StochasticMaterial);
   registerMaterial(StochasticPorousMedia);
-  registerAux(StochasticFieldAux);
   registerMaterial(StochasticGeothermal);
-  
   registerMaterial(StochasticFluidFlow);
   registerMaterial(StochasticHeatTransport);
   registerMaterial(StochasticSolidMechanics);
