@@ -35,6 +35,7 @@ InputParameters validParams<FracturesPorousMedia>()
   params.addRequiredCoupledVar("fractures", "coupled aux variable that maps where the fracture are");
   params.addParam<Real>("fracture_num", 0, "number in fracture map that indicates fractures");
   params.addParam<Real>("matrix_num", 255, "number in fracture map that indicates matrix");
+  params.addParam<Real>("model_fracture_aperture", 1.0, "width of fracture/high permeability area in the model");
   
   return params;
 }
@@ -67,6 +68,7 @@ FracturesPorousMedia::FracturesPorousMedia(const std::string & name,
     _fractures(_has_fractures ? coupledValue("fractures") : _zero),
     _fracture_num(getParam<Real>("fracture_num")),
     _matrix_num(getParam<Real>("matrix_num")),
+    _model_fracture_aperture(getParam<Real>("model_fracture_aperture")),
 
     _already_computed(false)
 
@@ -85,7 +87,9 @@ FracturesPorousMedia::computeProperties()
       }
       else if (_fractures[qp] == _fracture_num) //fractures
       {
-          _permeability[qp]         = _fracture_permeability;
+          Real aperture = sqrt(12 * _fracture_permeability);
+          
+          _permeability[qp]         = std::pow(aperture , 3) / (12 * _model_fracture_aperture);
           _material_porosity[qp]    = _fracture_porosity;
           _density_rock[qp]         = _fracture_density;
       }

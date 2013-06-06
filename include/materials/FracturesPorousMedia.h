@@ -59,6 +59,7 @@ protected:
   VariableValue & _fractures;
   Real _fracture_num;
   Real _matrix_num;
+  Real _model_fracture_aperture;
 
   void setPropsComputed(bool value) { _already_computed = value; }
   
