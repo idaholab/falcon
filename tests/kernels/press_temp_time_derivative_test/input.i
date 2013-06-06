@@ -73,6 +73,7 @@
   block = 1
   pressure = pressure
   temperature = temperature
+  temp_dependent_fluid_props = true
   water_steam_properties = water_steam_properties
   gravity = 0.0
   gx = 0.0

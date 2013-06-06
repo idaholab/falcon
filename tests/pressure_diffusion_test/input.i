@@ -90,8 +90,7 @@ value = 1e6
  block = 1 
 
 
-pressure = pressure
-water_steam_properties = water_steam_properties
+ pressure = pressure
 
  gravity           =  0.0
  gx                =  0.0
@@ -112,15 +111,6 @@ water_steam_properties = water_steam_properties
 
  [../]
 []
-
-[UserObjects]
-active = 'water_steam_properties'
-
-[./water_steam_properties]
-type = WaterSteamEOS
-[../]
-[]
-
 
 [Executioner]
  active = 'Quadrature'

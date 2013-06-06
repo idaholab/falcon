@@ -85,7 +85,8 @@
     type = StochasticGeothermal
     block = 1
     pressure = pressure
-    water_steam_properties = water_steam_properties
+    temperature = temperature
+    temp_dependent_fluid_props = false
     permeability = permeability
     gravity = 0.0
     gx = 0.0
@@ -101,12 +102,6 @@
     biot_coeff = 1.0
     thermal_expansion = 1.0e-6
     t_ref = 50
-  [../]
-[]
-
-[UserObjects]
-  [./water_steam_properties]
-    type = WaterSteamEOS
   [../]
 []
 

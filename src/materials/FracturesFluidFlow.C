@@ -25,14 +25,14 @@ InputParameters validParams<FracturesFluidFlow>()
   params.addParam<bool>("temp_dependent_fluid_props", true, "Add discription");
   params.addParam<Real>("constant_density", 1000, "Use to set value of constant density");
   params.addParam<Real>("constant_viscosity", 0.12e-3, "Use to set value of constant viscosity");
-  params.addRequiredParam<UserObjectName>("water_steam_properties", "EOS functions, calculate water steam properties");
+  params.addParam<UserObjectName>("water_steam_properties", "EOS functions, calculate water steam properties");
   return params;
 }
 
 FracturesFluidFlow::FracturesFluidFlow(const std::string & name, InputParameters parameters) :
     FracturesPorousMedia (name, parameters),
     //UserObject used to calculate fluid properties and their derivatives
-    _water_steam_properties(getUserObject<WaterSteamEOS>("water_steam_properties")),
+    _water_steam_properties(parameters.isParamValid("water_steam_properties") ? &getUserObject<WaterSteamEOS>("water_steam_properties") : NULL),
 
     //Three main varaibles (Pressure, Temperature, Enthalpy)
     //used for either PT (single phase) or PH (two phase) problems
@@ -133,8 +133,11 @@ void FracturesFluidFlow::computeProperties()
     //of input file, it will run this loop for material fluid properties
     if (_has_enthalpy)
     {
-      //Calling EOS function and assigning fluid properties (sat_fraction, density, visosity, ..., and their derivatives) to output material values
-      _water_steam_properties.waterAndSteamEquationOfStatePropertiesWithDerivativesPH (_enthalpy[qp], _pressure[qp], temp_out, sat_fraction_out, dens_out, dens_water_out, dens_steam_out, enth_water_out, enth_steam_out, visc_water_out, visc_steam_out, d_enth_water_d_press, d_enth_steam_d_press, d_dens_d_press, d_temp_d_press, d_enth_water_d_enth, d_enth_steam_d_enth, d_dens_d_enth, d_temp_d_enth, d_sat_fraction_d_enth);
+      if (_water_steam_properties == NULL)
+          mooseError("You forgot to provide a UserObject for the EOS fluid property calculations... water_steam_properties in the material block of your input file needs an entry");
+        
+        //Calling EOS function and assigning fluid properties (sat_fraction, density, visosity, ..., and their derivatives) to output material values
+      _water_steam_properties->waterAndSteamEquationOfStatePropertiesWithDerivativesPH (_enthalpy[qp], _pressure[qp], temp_out, sat_fraction_out, dens_out, dens_water_out, dens_steam_out, enth_water_out, enth_steam_out, visc_water_out, visc_steam_out, d_enth_water_d_press, d_enth_steam_d_press, d_dens_d_press, d_temp_d_press, d_enth_water_d_enth, d_enth_steam_d_enth, d_dens_d_enth, d_temp_d_enth, d_sat_fraction_d_enth);
                         
       _temp_out[qp] = temp_out;
       _sat_fraction_out[qp] = sat_fraction_out;
@@ -165,7 +168,7 @@ void FracturesFluidFlow::computeProperties()
         Real time_old_visc_water_out, time_old_visc_steam_out;
         Real var[7];
                 
-        _water_steam_properties.waterAndSteamEquationOfStatePropertiesPH (_enthalpy_old[qp], _pressure_old[qp], var[0], time_old_temp_out, var[1], var[2], time_old_dens_out, time_old_dens_water_out, time_old_dens_steam_out, var[3], var[4], time_old_visc_water_out, time_old_visc_steam_out, var[5], var[6]);
+        _water_steam_properties->waterAndSteamEquationOfStatePropertiesPH (_enthalpy_old[qp], _pressure_old[qp], var[0], time_old_temp_out, var[1], var[2], time_old_dens_out, time_old_dens_water_out, time_old_dens_steam_out, var[3], var[4], time_old_visc_water_out, time_old_visc_steam_out, var[5], var[6]);
                                 
         _time_old_temp_out[qp] = time_old_temp_out;
         _time_old_dens_out[qp] = time_old_dens_out;
@@ -186,7 +189,7 @@ void FracturesFluidFlow::computeProperties()
       Real del_p=1.0, del_h=1e-7;
                 
       //Obtaining properties to compute derivative of tau_water/steam w.r.t. a pressure step (enthalpy held constant)
-      _water_steam_properties.waterAndSteamEquationOfStatePropertiesPH (_enthalpy[qp], (_pressure[qp] + del_p), _var[0], _var[1], _var[2], _sat_fraction, _var[3], _dens_water, _dens_steam, _var[4], _var[5], _visc_water, _visc_steam, _var[6], _var[7]);
+      _water_steam_properties->waterAndSteamEquationOfStatePropertiesPH (_enthalpy[qp], (_pressure[qp] + del_p), _var[0], _var[1], _var[2], _sat_fraction, _var[3], _dens_water, _dens_steam, _var[4], _var[5], _visc_water, _visc_steam, _var[6], _var[7]);
                 
       FracturesFluidFlow::compute2PhProperties0( _permeability[qp], _sat_fraction, _dens_water, _dens_steam, _visc_water, _visc_steam, _tau_water[qp],_tau_steam[qp]);
                 
@@ -195,7 +198,7 @@ void FracturesFluidFlow::computeProperties()
                 
                 
       //Obtaining properties to compute derivative of tau_water/steam w.r.t. a enthalpy step (pressure held constant)
-      _water_steam_properties.waterAndSteamEquationOfStatePropertiesPH ((_enthalpy[qp] + del_h), _pressure[qp], _var[0], _var[1], _var[2], _sat_fraction, _var[3], _dens_water, _dens_steam, _var[4], _var[5], _visc_water, _visc_steam, _var[6], _var[7]);
+      _water_steam_properties->waterAndSteamEquationOfStatePropertiesPH ((_enthalpy[qp] + del_h), _pressure[qp], _var[0], _var[1], _var[2], _sat_fraction, _var[3], _dens_water, _dens_steam, _var[4], _var[5], _visc_water, _visc_steam, _var[6], _var[7]);
                 
       FracturesFluidFlow::compute2PhProperties0( _permeability[qp], _sat_fraction, _dens_water, _dens_steam, _visc_water, _visc_steam, _tau_water[qp],_tau_steam[qp]);
                 
@@ -238,7 +241,9 @@ void FracturesFluidFlow::computeProperties()
       //fluid properties and their derivatives
       if (_temp_dependent_fluid_props && _has_temp)
       {
-                
+        if (_water_steam_properties == NULL)
+            mooseError("You forgot to provide a UserObject for the EOS fluid property calculations... water_steam_properties in the material block of your input file needs an entry");
+          
         Real _dens_water_PT;
         Real _visc_water_PT;
         Real _time_old_dens_water_PT;
@@ -249,31 +254,31 @@ void FracturesFluidFlow::computeProperties()
         //Obtaining value for density when given parameters are temperature and pressure (no enthalpy)
         //mooseAssert(_temperature[qp] > 0 && _temperature[qp] < 1000, "Temperature is not a real number!!");
 										
-        _water_steam_properties.waterEquationOfStatePT (_pressure[qp], _temperature[qp], _var, _dens_water_PT);
+        _water_steam_properties->waterEquationOfStatePT (_pressure[qp], _temperature[qp], _var, _dens_water_PT);
 					                
         _dens_water_out[qp] = _dens_water_PT;
                          
 			
         //Obtaining value for density_old when given parameters are temperature and pressure (no enthalpy)
-        _water_steam_properties.waterEquationOfStatePT (_pressure_old[qp], _temperature_old[qp], _var, _time_old_dens_water_PT);
+        _water_steam_properties->waterEquationOfStatePT (_pressure_old[qp], _temperature_old[qp], _var, _time_old_dens_water_PT);
                 
         _time_old_dens_water_out[qp] = _time_old_dens_water_PT;
                 
                 
         //Obtaining value for viscosity when given parameters are temperature and pressure (no enthalpy)
-        _water_steam_properties.viscosity (_dens_water_PT, _temperature[qp], _visc_water_PT);
+        _water_steam_properties->viscosity (_dens_water_PT, _temperature[qp], _visc_water_PT);
                 
         _visc_water_out[qp] = _visc_water_PT;
                 
     
         //Obtaining numerical derivative of water density w.r.t. a pressure step (temperature held constant)
-        _water_steam_properties.waterEquationOfStatePT ((_pressure[qp] + 0.1), _temperature[qp], _var, _density_with_pressure_step);
+        _water_steam_properties->waterEquationOfStatePT ((_pressure[qp] + 0.1), _temperature[qp], _var, _density_with_pressure_step);
                 
         _d_dens_d_press_PT[qp] = ((_density_with_pressure_step - _dens_water_PT) / 0.1);
                 
                 
         //Obtaining numerical derivative of water density w.r.t. a temperature step (pressure held constant)
-        _water_steam_properties.waterEquationOfStatePT (_pressure[qp], (_temperature[qp] + 1.0e-6), _var, _density_with_temperature_step);
+        _water_steam_properties->waterEquationOfStatePT (_pressure[qp], (_temperature[qp] + 1.0e-6), _var, _density_with_temperature_step);
                 
         _d_dens_d_temp_PT[qp] = ((_density_with_temperature_step - _dens_water_PT) / 1.0e-6);
                 

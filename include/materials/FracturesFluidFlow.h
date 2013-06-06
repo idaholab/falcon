@@ -38,7 +38,7 @@ protected:
   virtual void computeProperties();
   virtual void compute2PhProperties0(Real _per, Real _Sw, Real _Denw, Real _Dens, Real _visw, Real _viss, Real &_watertau, Real  &_steamtau);
 
-  const WaterSteamEOS & _water_steam_properties;
+  const WaterSteamEOS * _water_steam_properties;
     
   bool _has_pressure;
   VariableGradient & _grad_p;

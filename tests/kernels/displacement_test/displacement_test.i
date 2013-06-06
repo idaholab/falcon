@@ -1,14 +1,3 @@
-# ###############################################################################################################
-# A simple themo-poro-elastic example for iceland injection
-# injection of 50 degree water into 500x500x500 m^3 reservoir at rate of 24Kg/s (using Trap integration rule)
-# initial reservoir pressure & temperature are 10MP and 200, respectively
-# initial vetitial stress is set to be 25MP (~1km over burden), and initial horizontal confining stress is 12.5MP
-# 
-# !! a relatively large linear tolerance is used since mechanical deformation reach equilibrium very quickly
-# !! the pressure also reach near steady state fairly quicky
-# !! cooling zone also reaches quasi-steady at later stage: temperature change very slowing
-# ###############################################################################################################
-
 [Mesh]
   type = GeneratedMesh
   dim = 3
