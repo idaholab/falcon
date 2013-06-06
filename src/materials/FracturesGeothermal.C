@@ -104,15 +104,15 @@ FracturesGeothermal::computeProperties()
                     }
                     else if (_fractures[qp] == _fracture_num)
                     {
-                        Real aperture = sqrt(12*_fracture_permeability);
-                        //Real fracture_ratio = _model_fracture_aperture / aperture;
-                        //Real transmissivity_rel = std::pow((1 + (fracture_strain_normal / fracture_ratio)),3);
+                        Real aperture = sqrt(12 * _fracture_permeability);
+                        Real fracture_ratio = aperture / _model_fracture_aperture;
+                        Real transmissivity_rel = std::pow((1 + (fracture_strain_normal / fracture_ratio)),3);
                         
-                        //_permeability[qp] = (transmissivity_rel/_model_fracture_aperture) * _fracture_permeability;
+                        _permeability[qp] = (transmissivity_rel / _model_fracture_aperture) * _fracture_permeability;
                         
-                        Real transmissivity_rel = std::pow((1 + fracture_strain_normal),3);
+                        //Real transmissivity_rel = std::pow((1 + fracture_strain_normal),3);
                         
-                        _permeability[qp] = transmissivity_rel * _fracture_permeability;
+                        //_permeability[qp] = transmissivity_rel * _fracture_permeability;
                         
                         _eq_aperture[qp] = sqrt(12*_permeability[qp]);
                         
