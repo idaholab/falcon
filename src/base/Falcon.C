@@ -55,6 +55,7 @@
 #include "CoupledTemperatureAux.h"         // T as functon of (P,H) -two phase formulation
 #include "VelocityAux.h"
 #include "StressStrainDamageComputeAux.h"
+#include "FracManMapAux.h"
 #include "StochasticFieldAux.h"
 
 //BCs
@@ -88,6 +89,12 @@
 #include "StochasticFluidFlow.h"
 #include "StochasticHeatTransport.h"
 #include "StochasticSolidMechanics.h"
+
+#include "FracManPorousMedia.h"
+#include "FracManFluidFlow.h"
+#include "FracManHeatTransport.h"
+#include "FracManSolidMechanics.h"
+#include "FracManGeothermal.h"
 
 //userobjects
 #include "WaterSteamEOS.h"
@@ -141,7 +148,8 @@ registerObjects(Factory & factory)
   registerAux(VelocityAux);
   registerAux(StressStrainDamageComputeAux);
   registerAux(StochasticFieldAux);
-
+  registerAux(FracManMapAux);
+    
   //BCs
   registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
   registerBoundaryCondition(GravityNeumannBC);
@@ -173,6 +181,12 @@ registerObjects(Factory & factory)
   registerMaterial(StochasticFluidFlow);
   registerMaterial(StochasticHeatTransport);
   registerMaterial(StochasticSolidMechanics);
+    
+  registerMaterial(FracManPorousMedia);
+  registerMaterial(FracManFluidFlow);
+  registerMaterial(FracManHeatTransport);
+  registerMaterial(FracManSolidMechanics);
+  registerMaterial(FracManGeothermal);
     
   //userobjects
   registerUserObject(WaterSteamEOS);
