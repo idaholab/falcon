@@ -1,11 +1,10 @@
 [Mesh]
+  type = FileMesh
   file = gold/out_variable_dens_visc1.e
 []
 
 [Variables]
   [./pressure]
-    order = FIRST
-    family = LAGRANGE
     initial_from_file_var = pressure
     initial_from_file_timestep = 21
   [../]
@@ -112,11 +111,6 @@
     gx = 0.0
     gy = 0.0
     gz = 1.0
-    material_porosity = 0.3
-    density_rock = 2500
-    thermal_conductivity = 2.5E-6
-    specific_heat_water = 4186E-6
-    specific_heat_rock = 920E-6
     youngs_modulus = 1.50e10
     poissons_ratio = 0.3
     biot_coeff = 1.0
@@ -133,8 +127,9 @@
 
 [Executioner]
   type = Transient
-  num_steps = 5
+  num_steps = 2
   dt = 1000000.0
+  petsc_options = '-ksp_monitor -snes_mf_operator'
   nl_abs_tol = 1e-6
   [./Quadrature]
     type = Trap

@@ -1,4 +1,5 @@
 [Mesh]
+  type = FileMesh
   file = 3d_stochastic_course.e
 []
 
@@ -110,11 +111,6 @@
     gx = 0.0
     gy = 0.0
     gz = 1.0
-    material_porosity = 0.3
-    density_rock = 2500
-    thermal_conductivity = 2.5E-6
-    specific_heat_water = 4186E-6
-    specific_heat_rock = 920E-6
     youngs_modulus = 1.50e10
     poissons_ratio = 0.3
     biot_coeff = 1.0
@@ -132,7 +128,7 @@
 [Executioner]
   type = Transient
   num_steps = 20
-  dt = 1000000.0
+  dt = 5000000.0
   nl_abs_tol = 1e-6
   [./Quadrature]
     type = Trap
