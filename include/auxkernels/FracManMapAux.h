@@ -18,6 +18,7 @@
 #include "AuxKernel.h"
 #include "libmesh/plane.h"
 #include "libmesh/point.h"
+#include "MooseEnum.h"
 #include <string>
 
 //Forward Declarations
@@ -45,10 +46,19 @@ public:
 protected:
   virtual Real computeValue();
   
-    Real frac_array[219][6];
+    std::vector<std::string> _file_names;
+    std::vector<Real> fracture_normal_x;
+    std::vector<Real> fracture_normal_y;
+    std::vector<Real> fracture_normal_z;
     std::vector<int> _fracture_number_vec;
-    Real _tol;
+    std::vector<Real> fracture_vertices_x;
+    std::vector<Real> fracture_vertices_y;
+    std::vector<Real> fracture_vertices_z;
+    MooseEnum _normal_component;
     unsigned int num_vec_entries;
+    MooseEnum _output_type;
+    Real _tol;
+    
     /*Real _frac_man_map;
     std::string _file_name;
     //std::string _west_reduced_file_name;

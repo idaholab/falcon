@@ -17,293 +17,311 @@
 template<>
 InputParameters validParams<FracManMapAux>()
 {
-     InputParameters params = validParams<AuxKernel>();
+    InputParameters params = validParams<AuxKernel>();
+
+    MooseEnum normal_component_code("0,1,2");
+    MooseEnum output_type_code("0,1");
+     
+     
     //params.addRequiredParam<std::string>("West_Reduced_File_name", "Name of the file containing the West Reduced fracture data.");
     //params.addRequiredParam<std::string>("Fault_File_name", "Name of the file containing the main fault fracture data.");
+    params.addRequiredParam<std::vector<std::string> >("file_names", "A list of the FracMan files to be loaded");
     params.addRequiredParam<std::vector<int> >("fracture_numbers","The number associated with each of the fractures you would like to include from this file");
+    params.addParam<MooseEnum>("normal_component", normal_component_code, "Choose the normal component to be calculated:  0 = x, 1 = y, 2 = z.");
+    params.addParam<MooseEnum>("output_type", output_type_code, "Choose the output:  0 = _frac_man_map, 1 = _frac_man_normal<component>.");
     params.addParam<Real>("tolerance", 0.9, "closest_point tolerance");
-     return params;
+
+    return params;
 }
 
 FracManMapAux::FracManMapAux(const std::string & name, InputParameters parameters)
   :AuxKernel(name, parameters),
 //_west_reduced_file_name(getParam<std::string>("West_Reduced_File_name")),
 //_fault_file_name(getParam<std::string>("Fault_File_name")),
+_file_names(getParam<std::vector<std::string> > ("file_names")),
 _fracture_number_vec(getParam<std::vector<int> >("fracture_numbers")),
+_normal_component(getParam<MooseEnum>("normal_component")),   
+_output_type(getParam<MooseEnum>("output_type")),   
 _tol(getParam<Real>("tolerance"))
 
 {
-    std::string buffer;
-    std::vector<int> frac_plane_vector;
-    int frac_face_num = 0;
-    int frac_file_code = 1;
-    int frac_num = 0;
-    Real frac_prop1 = 0;
-    Real frac_prop2 = 0;
-    Real frac_prop3 = 0;
-    int frac_set_num = 0;
-    int frac_total = 15;
-    int frac_vert = 0;
-    int frac_vert_num = 0;
-    int i = 0;
-    unsigned int j = 0;
-    int k = 0;
-    int line_num = 0;
-    int m = 0;
-    int vert_count = 0;
-    bool vert_end = false;
-    std::string vert_end_line;
-    bool vert_start = false;
-    std::string vert_start_line;
-    int vert_start_line_num = 0;
+
+    std::string buffer = "None";
+    unsigned int current_number_of_fractures = 0;
+    Real extra = 0;
+    std::string file_name = "None";
+    bool found_fracture_vertices_start_line = false;
+    bool found_number_of_fractures_line = false;
+    bool found_tessfracture_vertices_start_line = false;
+    //unsigned int fracture_number = 0;
+    std::string fracture_vertices_start_line_key = "BEGIN FRACTURE";
+    unsigned int normal_index = 0;
+    unsigned int number_of_files = 0;
+    std::vector<unsigned int> number_of_fractures;
+    unsigned int number_of_fractures_in_file = 0;
+    std::string number_of_fractures_start_line_key = "Scale";
+    std::vector<unsigned int> number_of_tessfractures;
+    unsigned int number_of_tessfractures_in_file = 0;
+    unsigned int number_of_vertices = 0;
+    unsigned int number_of_vertices_in_fracture = 0;
+    Real nx = 0, ny = 0, nz = 0;
+    unsigned int point_index = 0;
+    Plane tessfrac;
+    std::string tessfracture_vertices_start_line_key = "BEGIN TESSFRACTURE";
+    Real txp = 0, typ = 0, tzp = 0;
+    unsigned int vertice_index = 0;
     Real x = 0, y = 0, z = 0;
     
-    //resizing _fracture_number vector to the number of values provided in input file
+    
+
+    //Determine the size of num_vec_entries for indexing purposes
     num_vec_entries = _fracture_number_vec.size();
     
-    //opeing file
-    //std::ifstream openfile ("East_Reduced.fab");
-    //if (openfile.is_open())
-    //{
-    //    std::cout << "file is open.\n";
-    //}
-    //else std::cout << "Unable to open file.\n";
-    
-    //Open East_Reduced.fab file
-    std::ifstream openfile("East_Reduced.fab");
-    if (!openfile)
-        mooseError("Can't open FracMan file ");
-    
-    vert_end_line = "END FRACTURE";
-    vert_start_line = "BEGIN FRACTURE";
-    
-    //Find the start of the vertices in the FracMan file
-    while (vert_start == false)
-    {
-        getline (openfile,buffer);
-        //cout << buffer << "\n";
-        if (buffer.compare(0,14,vert_start_line,0,14) == 0)
-        {
-            vert_start = true;
-        }
-        else vert_start = false;
-        
-        line_num = line_num + 1;
-    }
-    
-    //Build fracture array
-    while (frac_total > 0)
-	{
-        openfile >> frac_num >> frac_vert >> frac_set_num >> frac_prop1 >> frac_prop2 >> frac_prop3;
-        line_num = line_num +1;
-        
-        frac_vert = frac_vert + 1;
-        while (vert_count < 3)
-	    {
-            openfile >> frac_vert_num >> x >> y >> z;
-            frac_array [i][0] = frac_file_code;
-            frac_array [i][1] = frac_num;
-            frac_array [i][2] = frac_vert_num;
-            frac_array [i][3] = x;
-            frac_array [i][4] = y;
-            frac_array [i][5] = z;
-            vert_count = vert_count + 1;
-            i = i +1;
-            line_num = line_num +1;
-	    }
-        while (vert_count < frac_vert)
-	    {
-            openfile >> frac_vert_num >> x >> y >> z;
-            vert_count = vert_count +1;
-            line_num = line_num + 1;
-	    }
-        vert_count = 0;
-        frac_total = frac_total - 1;
-	}
-    openfile.close();
-    
-    // Rest Variables for West_Reduced.fab
-    buffer = "nothing";
-    frac_file_code = 2;
-    frac_num = 0;
-    frac_prop1 = 0;
-    frac_prop2 = 0;
-    frac_prop3 = 0;
-    frac_set_num = 0;
-    frac_total = 57;
-    frac_vert = 0;
-    frac_vert_num = 0;
-    line_num = 0;
-    vert_count = 0;
-    vert_end = false;
-    vert_end_line = "END FRACTURE";
-    vert_start = false;
-    vert_start_line = "BEGIN FRACTURE";
-    vert_start_line_num = 0;
-    x = 0;
-    y = 0;
-    z = 0;
-    
-    //Open West_Reduced.fab file
-    std::ifstream west_file("West_Reduced.fab");
-    if (!west_file)
-    {
-        mooseError("Can't open West_Reduced file ");
-    }
-    
-    //Find the start of the vertices in the FracMan file
-    while (vert_start == false)
-    {
-        getline (west_file,buffer);
-        //cout << buffer << "\n";
-        if (buffer.compare(0,14,vert_start_line,0,14) == 0)
-        {
-            vert_start = true;
-        }
-        else vert_start = false;
-        
-        line_num = line_num + 1;
-    }
-    
-    //Build fracture array
-    while (frac_total > 0)
-	{
-        west_file >> frac_num >> frac_vert >> frac_set_num >> frac_prop1 >> frac_prop2 >> frac_prop3;
-        line_num = line_num +1;
-        
-        frac_vert = frac_vert + 1;
-        while (vert_count < 3)
-	    {
-            west_file >> frac_vert_num >> x >> y >> z;
-            frac_array [i][0] = frac_file_code;
-            frac_array [i][1] = frac_num;
-            frac_array [i][2] = frac_vert_num;
-            frac_array [i][3] = x;
-            frac_array [i][4] = y;
-            frac_array [i][5] = z;
-            vert_count = vert_count + 1;
-            i = i +1;
-            line_num = line_num +1;
-	    }
-        while (vert_count < frac_vert)
-	    {
-            west_file >> frac_vert_num >> x >> y >> z;
-            vert_count = vert_count +1;
-            line_num = line_num + 1;
-	    }
-        vert_count = 0;
-        frac_total = frac_total - 1;
-	}
-    west_file.close();
-    
-    // Rest Variables for Fault.fab
-    buffer = "nothing";
-    frac_file_code = 3;
-    frac_num = 0;
-    frac_prop1 = 0;
-    frac_prop2 = 0;
-    frac_prop3 = 0;
-    frac_set_num = 0;
-    frac_total = 1;
-    frac_vert = 0;
-    frac_vert_num = 0;
-    line_num = 0;
-    vert_count = 0;
-    vert_end = false;
-    vert_end_line = "END TESSFRACTURE";
-    vert_start = false;
-    vert_start_line = "BEGIN TESSFRACTURE";
-    vert_start_line_num = 0;
-    x = 0;
-    y = 0;
-    z = 0;
-    
-    //Open Fault.fab file
-    std::ifstream fault_file("Fault.fab");
-    if (!fault_file)
-    {
-        mooseError("Can't open Fault file ");
-    }
-    
-    //Find the start of the vertices in the FracMan file
-    while (vert_start == false)
-    {
-        getline (fault_file,buffer);
-        //cout << buffer << "\n";
-        if (buffer.compare(0,18,vert_start_line,0,18) == 0)
-        {
-            vert_start = true;
-        }
-        else vert_start = false;
-        
-        line_num = line_num + 1;
-    }
-    
-    //Build fracture array
-    while (frac_total > 0)
-	{
-        fault_file >> frac_num >> frac_vert >> frac_face_num >> frac_set_num;
-        line_num = line_num +1;
-        
-        frac_vert = frac_vert;
-        while (vert_count < 3)
-	    {
-            fault_file >> frac_vert_num >> x >> y >> z;
-            frac_array [i][0] = frac_file_code;
-            frac_array [i][1] = frac_num;
-            frac_array [i][2] = frac_vert_num;
-            frac_array [i][3] = x;
-            frac_array [i][4] = y;
-            frac_array [i][5] = z;
-            vert_count = vert_count + 1;
-            i = i +1;
-            line_num = line_num +1;
-	    }
-        while (vert_count < frac_vert)
-	    {
-            fault_file >> frac_vert_num >> x >> y >> z;
-            vert_count = vert_count +1;
-            line_num = line_num + 1;
-	    }
-        vert_count = 0;
-        frac_total = frac_total - 1;
-	}
-    fault_file.close();
 
+    //Determine the size of _file_names for indexing purposes
+    number_of_files = _file_names.size();
+
+    //Resize number_of_fractures and number_of_tessfractures based on user input for storage purposes
+    number_of_fractures.resize(number_of_files);
+    number_of_tessfractures.resize(number_of_files);
+
+    // Open FracMan files to read in fracture vertices
+    for (unsigned int i = 0; i < number_of_files; i++)
+    {
+
+        //Set file_name to the file that is to be loaded so that it can function with ifstream
+        file_name = _file_names [i];
+
+        //Load the file for reading
+        std::ifstream fracman_file(file_name.c_str());
+
+        //Check that the file loaded correctly
+        if (!fracman_file)
+        {
+            mooseError("Error opening FracMan file");
+        }
+
+        //Find the number of fractures and tessfractures in the file
+        while (found_number_of_fractures_line == false)
+        {
+            //Read a line from the file so it can be compared with the key
+            getline(fracman_file,buffer);
+
+            if (buffer.compare(4,5,number_of_fractures_start_line_key,0,5) == 0)
+            {
+                found_number_of_fractures_line = true;
+
+                //Read the next line to determine the number of fractures in the file then store that value
+                getline(fracman_file,buffer,'=');
+                fracman_file >> number_of_fractures_in_file;
+                number_of_fractures[i] = number_of_fractures_in_file;
+
+                //Read the next line to determine the number of tessfractures in the file then store that value
+                getline(fracman_file,buffer,'=');
+                fracman_file >> number_of_tessfractures_in_file;
+                number_of_tessfractures[i] = number_of_tessfractures_in_file;
+            }
+        }
+
+        //Reset variable for next iteration
+        found_number_of_fractures_line = false;
+
+        //Resize the fracture vertices vectors in preperation to store values read from the FracMan file
+        current_number_of_fractures = current_number_of_fractures + number_of_fractures[i] + number_of_tessfractures[i];
+        number_of_vertices = current_number_of_fractures * 3;
+        fracture_vertices_x.resize(number_of_vertices);
+        fracture_vertices_y.resize(number_of_vertices);
+        fracture_vertices_z.resize(number_of_vertices);
+
+        //Resize the fracture normal vectors in preperation to store values read from the FracMan file
+        fracture_normal_x.resize(current_number_of_fractures);
+        fracture_normal_y.resize(current_number_of_fractures);
+        fracture_normal_z.resize(current_number_of_fractures);
+
+        //Check if the file has fractures and if so begin the process of extracting their vertices
+        if (number_of_fractures[i] > 0)
+        {
+
+            //Look for the start of the fracture vertices in the file
+            while (found_fracture_vertices_start_line == false)
+            {
+                //Read a line from the file so it can be compared with the key
+                getline(fracman_file,buffer);
+
+                if (buffer.compare(0,14,fracture_vertices_start_line_key,0,14) == 0)
+                {
+                    found_fracture_vertices_start_line = true;
+                }
+            }
+
+            //Reset variable for next iteration
+            found_fracture_vertices_start_line = false;
+
+            //Read and store the fracture vertices
+            for (unsigned int j = 0; j < number_of_fractures[i]; j++)
+            {
+                //Read the first line of the fracture vertice block
+                fracman_file >> extra >> number_of_vertices_in_fracture >> extra >> extra >> extra >> extra;
+
+                //Read and store the first 3 vertices of the fracture
+                for (unsigned int k = 0; k < 3; k++)
+                {
+                  fracman_file >> extra >> x >> y >> z;
+
+                  //std::cout << "x = " << x << "\n";
+                  fracture_vertices_x[vertice_index] = x;
+                  fracture_vertices_y[vertice_index] = y;
+                  fracture_vertices_z[vertice_index] = z;
+                  vertice_index = vertice_index + 1;
+                  
+                }
+
+                //Read and discard the remaning vertices of the fracture
+                for (unsigned int l = 3; l < number_of_vertices_in_fracture; l++)
+                {
+                  fracman_file >> extra >> x >> y >> z;
+                  
+                }
+
+                //Read and store the fracture plane normal values
+                fracman_file >> extra >> nx >> ny >> nz;
+
+                fracture_normal_x[normal_index] = nx;
+                fracture_normal_y[normal_index] = ny;
+                fracture_normal_z[normal_index] = nz;
+                normal_index = normal_index + 1;
+            }
+            
+        
+        }
+
+        //Check if the file has tessfractures and if so begin the process of extracting their vertices
+        if (number_of_tessfractures[i] > 0)
+        {
+
+            //Look for the start of the fracture vertices in the file
+            while (found_tessfracture_vertices_start_line == false)
+            {
+                //Read a line from the file so it can be compared with the key
+                getline(fracman_file,buffer);
+
+                if (buffer.compare(0,18,tessfracture_vertices_start_line_key,0,18) == 0)
+                {
+                    found_tessfracture_vertices_start_line = true;
+                }
+            }
+
+            //Reset variable for next iteration
+            found_tessfracture_vertices_start_line = false;
+
+            //Read and store the fracture vertices
+            for (unsigned int j = 0; j < number_of_tessfractures[i]; j++)
+            {
+                //Read the first line of the fracture vertice block
+                fracman_file >> extra >> number_of_vertices_in_fracture >> extra >> extra;
+
+                //Read and store the first 3 vertices of the tessfracture
+                for (unsigned int k = 0; k < 3; k++)
+                {
+                  fracman_file >> extra >> x >> y >> z;
+
+                  //std::cout << "x = " << x << "\n";
+                  fracture_vertices_x[vertice_index] = x;
+                  fracture_vertices_y[vertice_index] = y;
+                  fracture_vertices_z[vertice_index] = z;
+                  vertice_index = vertice_index + 1;
+                  
+                }
+
+                //Read and discard the remaning vertices of the tessfracture
+                for (unsigned int l = 3; l < number_of_vertices_in_fracture; l++)
+                {
+                  fracman_file >> extra >> x >> y >> z;
+                  
+                }
+
+                //Tessfractures do not have fracture plane normal values so the last line will be discarded
+                fracman_file >> extra >> extra >> extra >> extra >> extra >> extra >> extra >> extra >> extra >> extra;
+
+                //Create 3 points so that a plane for the tessfracture can be created
+                point_index = vertice_index -3;
+                txp = fracture_vertices_x [point_index];
+                typ = fracture_vertices_y [point_index];
+                tzp = fracture_vertices_z [point_index];
+                Point tp0(txp,typ,tzp);
+
+                point_index = vertice_index -2;
+                txp = fracture_vertices_x [point_index];
+                typ = fracture_vertices_y [point_index];
+                tzp = fracture_vertices_z [point_index];
+                Point tp1(txp,typ,tzp);
+
+                point_index = vertice_index -1;
+                txp = fracture_vertices_x [point_index];
+                typ = fracture_vertices_y [point_index];
+                tzp = fracture_vertices_z [point_index];
+                Point tp2(txp,typ,tzp);
+
+                //Create a plan from 3 points so that a unit normal vector can be created
+                tessfrac.create_from_three_points(tp0,tp1,tp2);
+
+                //Create a point that is a unit normal of tessfrac and store the results
+                Point tessfrac_normal = tessfrac.unit_normal(tp0);
+                fracture_normal_x[normal_index] = tessfrac_normal.operator()(0);
+                fracture_normal_y[normal_index] = tessfrac_normal.operator()(1);
+                fracture_normal_z[normal_index] = tessfrac_normal.operator()(2);
+                normal_index = normal_index + 1;
+                
+            }
+        }
+        
+        fracman_file.close();
+    }
+  
 }
 
 Real
 FracManMapAux::computeValue()
 {
     Real _frac_man_map = 0;
+    Real _frac_man_normal_x = 0;
+    Real _frac_man_normal_y = 0;
+    Real _frac_man_normal_z = 0;
     Real xp = 0, yp = 0, zp = 0;
     Plane frac;
+
     
+    //Assign fracture codes to elements containg fractures
     for (unsigned int k = 0; k < num_vec_entries; k++)
     {
         int j = _fracture_number_vec[k];
         int i = 0;
+        int m = j - 1;
+        
     
         //for (j = 0; j < 72; j++)
         //{
+
+        //Create points for each vertice so that a plane can be calculated
         i = (2*j) + (j-3);
-        xp = frac_array[i][3];
-        yp = frac_array[i][4];
-        zp = frac_array[i][5];
+        xp = fracture_vertices_x [i];
+        yp = fracture_vertices_y [i];
+        zp = fracture_vertices_z [i];
         Point p0(xp,yp,zp);
         
         i = (2*j) + (j-2);
-        xp = frac_array[i][3];
-        yp = frac_array[i][4];
-        zp = frac_array[i][5];
+        xp = fracture_vertices_x [i];
+        yp = fracture_vertices_y [i];
+        zp = fracture_vertices_z [i];
         Point p1(xp,yp,zp);
         
         i = (3*j) - 1;
-        xp = frac_array[i][3];
-        yp = frac_array[i][4];
-        zp = frac_array[i][5];
+        xp = fracture_vertices_x [i];
+        yp = fracture_vertices_y [i];
+        zp = fracture_vertices_z [i];
         Point p2(xp,yp,zp);
-        
+
+        //Create the plane and check if the current element contains the fracture
         /*frac_plane_vector[j] = */frac.create_from_three_points(p0,p1,p2);
         
         //for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
@@ -313,14 +331,53 @@ FracManMapAux::computeValue()
             Point point_closest = frac.closest_point(current_point);
             
             bool test = point_closest.absolute_fuzzy_equals(current_point, _tol);
-            
+
+        //If the element contains the fracture assign the fracture code and normal components    
         if (test == true)
         {
+            //Assign fracture code to element
             _frac_man_map = j;
-        //std::cout << "true" << std::endl;
+            
+            //Assign fracture normal components to element
+            _frac_man_normal_x = fracture_normal_x[m];
+            _frac_man_normal_y = fracture_normal_y[m];
+            _frac_man_normal_z = fracture_normal_z[m];
+            //std::cout << "true" << std::endl;
         }
-        //}
+       //}
     //}
     }
-    return _frac_man_map;
+
+    //Run through a series of logic statements to output the required information based on user input
+    if (_output_type == 0)
+    {
+        return _frac_man_map;
+    }
+    else if (_output_type == 1)
+    {
+        if (_normal_component == 0)
+        {
+            return _frac_man_normal_x;
+        }
+        else if (_normal_component == 1)
+        {
+            return _frac_man_normal_y;
+        }
+        else if (_normal_component == 2)
+        {
+          return _frac_man_normal_z;
+          
+        }
+        else
+        {
+          mooseError("component is out of bounds.  Must be either 0, 1, or 2");
+        }
+        
+    }
+    else
+    {
+        mooseError("output type is out of bounds. Must be either 0 and 1.");
+    }
+    
+    
 }
