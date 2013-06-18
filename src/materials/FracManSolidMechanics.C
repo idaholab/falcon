@@ -102,21 +102,21 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
       {
           _youngs_modulus[qp]       = _matrix_youngs_modulus;
           _alpha[qp]                = _matrix_thermal_expansion;
-          _thermal_strain[qp] = _matrix_thermal_expansion * (_temperature[qp] - _matrix_t_ref);
+          _thermal_strain[qp]       = _matrix_thermal_expansion * (_temperature[qp] - _matrix_t_ref);
       }
       for (unsigned int k = 0; k < num_frac_vec_entries; k++)
       {
           if (_fracture_map[qp] == _fracture_number_vec[k])
           {
               if (num_ym_vec_entries < 2)
-                  _youngs_modulus[qp] = _fracture_youngs_modulus_vec[0];
+                  _youngs_modulus[qp]       = _fracture_youngs_modulus_vec[0];
               else
-                  _youngs_modulus[qp]         = _fracture_youngs_modulus_vec[k];
+                  _youngs_modulus[qp]       = _fracture_youngs_modulus_vec[k];
               
               if (num_te_vec_entries <2)
-                  _material_porosity[qp] = _fracture_thermal_expansion_vec[0];
+                  _alpha[qp]     = _fracture_thermal_expansion_vec[0];
               else
-                  _material_porosity[qp]    = _fracture_thermal_expansion_vec[k];
+                  _alpha[qp]     = _fracture_thermal_expansion_vec[k];
            }
        }
       

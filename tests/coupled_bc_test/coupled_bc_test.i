@@ -1,19 +1,18 @@
-[Mesh]
-  dim = 2
-  file = square.e
-[]
-
 # Solves a pair of coupled diffusion equations where u=v on the boundary
 
-[Variables]
-  active = 'u v'
+[Mesh]
+  type = GeneratedMesh
+  dim = 2
+  nx = 2
+  ny = 2
+[]
 
+[Variables]
   [./u]
     order = FIRST
     family = LAGRANGE
     initial_condition = 3
   [../]
-
   [./v]
     order = FIRST
     family = LAGRANGE
@@ -22,13 +21,10 @@
 []
 
 [Kernels]
-  active = 'diff_u diff_v'
-
   [./diff_u]
     type = Diffusion
     variable = u
   [../]
-
   [./diff_v]
     type = Diffusion
     variable = v
@@ -36,37 +32,31 @@
 []
 
 [BCs]
-  active = 'right_v left_u'
-
   [./right_v]
     type = DirichletBC
     variable = v
-    boundary = 2
+    boundary = right
     value = 3
   [../]
-
   [./left_u]
     type = MatchedValueBC
     variable = u
-    boundary = 1
+    boundary = left
     v = v
     value = 3
   [../]
 []
 
 [Materials]
-  active = constant
-
   [./constant]
     type = Constant
-    block = 1
+    block = 0
   [../]
 []
 
 [Executioner]
   type = Steady
-  petsc_options = '-snes_mf_operator'
-
+  petsc_options = -snes_mf_operator
   nl_rel_tol = 1e-15
   l_tol = 1e-12
 []
@@ -78,5 +68,4 @@
   exodus = true
   perf_log = true
 []
-   
-    
+

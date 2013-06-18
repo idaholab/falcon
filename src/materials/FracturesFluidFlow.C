@@ -121,7 +121,6 @@ void FracturesFluidFlow::computeProperties()
     Real dens_out, dens_water_out, dens_steam_out;
     Real enth_water_out, enth_steam_out;
     Real visc_water_out, visc_steam_out;
-    Real del_press, del_enth;
     Real d_enth_water_d_press, d_enth_steam_d_press;
     Real d_dens_d_press, d_temp_d_press;
     Real d_enth_water_d_enth, d_enth_steam_d_enth;

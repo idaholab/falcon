@@ -41,8 +41,7 @@ FracturesGeothermal::FracturesGeothermal(const std::string & name,
     _matrix_num(getParam<Real>("matrix_num")),
 
     _has_strain_change_permeability(getParam<bool>("has_strain_change_permeability")),
-    _model_fracture_aperture(getParam<Real>("model_fracture_aperture")),
-    _eq_aperture(declareProperty<Real>("eq_aperture"))
+    _model_fracture_aperture(getParam<Real>("model_fracture_aperture"))
 
 {}
 
@@ -58,9 +57,7 @@ FracturesGeothermal::computeProperties()
   FracturesSolidMechanics::computeProperties();
 
     for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
-    {
-        _eq_aperture[qp] = 0.0;
-        
+    {        
         if (_has_strain_change_permeability)
         {
             //////Determining magnitude of aperture change (ie. strain perpandicular to fracture surface)/
@@ -88,12 +85,10 @@ FracturesGeothermal::computeProperties()
                     if (_fractures[qp] == _matrix_num)
                     {
                         _permeability[qp] = _matrix_permeability;
-                        _eq_aperture[qp] = 0.0;
                     }
                     else
                     {
                         _permeability[qp] = ((std::pow(_model_fracture_aperture,2)) * (std::pow((1/fracture_ratio) , 3)))/12;
-                        _eq_aperture[qp] = sqrt(12*_permeability[qp]);
                     }
             }
             else
@@ -103,24 +98,19 @@ FracturesGeothermal::computeProperties()
                     if (_fractures[qp] == _matrix_num)
                     {
                         _permeability[qp] = _matrix_permeability;
-                        _eq_aperture[qp] = 0.0;
                     }
                     else if (_fractures[qp] == _fracture_num)
                     {                        
                         _permeability[qp] = ((std::pow(_model_fracture_aperture,2)) * (std::pow(((1/fracture_ratio) + fracture_strain_normal) , 3)))/12;
-                        
-                        _eq_aperture[qp] = sqrt(12*_permeability[qp]);
-                        
+                                                
                         if (_permeability[qp] <= (0.9*(std::pow(aperture , 3) / (12 * _model_fracture_aperture))))
                         {
                             _permeability[qp] = 0.9 * (std::pow(aperture , 3) / (12 * _model_fracture_aperture));
-                            _eq_aperture[qp] = 0.0;
                         }
                     }
                     else
                     {
                         _permeability[qp] = _matrix_permeability;
-                        _eq_aperture[qp] = 0.0;
                     }
                 }
             }

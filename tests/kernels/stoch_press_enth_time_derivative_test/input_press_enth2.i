@@ -121,7 +121,7 @@
     gx = 0.0
     gy = 0.0
     gz = 1.0
-    material_porosity = 0.3
+    porosity = 0.3
     density_rock = 2500
     thermal_conductivity = 2.5
     specific_heat_water = 4186

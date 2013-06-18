@@ -17,6 +17,7 @@
 #include "FalconApp.h"
 
 #include "FluidMassEnergyBalanceModule.h"
+#include "ChemicalReactionsModule.h"
 
 template<>
 InputParameters validParams<FalconApp>()
@@ -32,7 +33,9 @@ FalconApp::FalconApp(const std::string & name, InputParameters parameters) :
   
   Moose::registerObjects(_factory);
   Elk::FluidMassEnergyBalance::registerObjects(_factory);
+  Elk::ChemicalReactions::registerObjects(_factory);
   Falcon::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
+  Elk::ChemicalReactions::associateSyntax(_syntax, _action_factory);
 }

@@ -47,7 +47,7 @@ protected:
   Real _gz;
 
   MaterialProperty<Real> & _permeability;
-  MaterialProperty<Real> & _material_porosity;
+  MaterialProperty<Real> & _porosity;
   MaterialProperty<Real> & _density_rock;
   MaterialProperty<Real> & _gravity;
   MaterialProperty<RealVectorValue> & _gravity_vector;

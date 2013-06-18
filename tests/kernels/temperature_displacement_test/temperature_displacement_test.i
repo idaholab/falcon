@@ -1,14 +1,3 @@
-# ###############################################################################################################
-# A simple themo-poro-elastic example for iceland injection
-# injection of 50 degree water into 500x500x500 m^3 reservoir at rate of 24Kg/s (using Trap integration rule)
-# initial reservoir pressure & temperature are 10MP and 200, respectively
-# initial vetitial stress is set to be 25MP (~1km over burden), and initial horizontal confining stress is 12.5MP
-# 
-# !! a relatively large linear tolerance is used since mechanical deformation reach equilibrium very quickly
-# !! the pressure also reach near steady state fairly quicky
-# !! cooling zone also reaches quasi-steady at later stage: temperature change very slowing
-# ###############################################################################################################
-
 [Mesh]
   type = GeneratedMesh
   dim = 3
@@ -21,7 +10,7 @@
   [./temperature]
     order = FIRST
     family = LAGRANGE
-    initial_condition = 200.
+    initial_condition = 473.15
   [../]
   [./disp_x]
     order = FIRST
@@ -90,13 +79,13 @@
     type = DirichletBC
     variable = temperature
     boundary = left
-    value = 200.
+    value = 473.15
   [../]
   [./right_t]
     type = DirichletBC
     variable = temperature
     boundary = right
-    value = 10.
+    value = 283.15
   [../]
   [./top_w]
     type = NeumannBC
@@ -140,16 +129,12 @@
   [./frac]
     type = Geothermal
     block = 0
-    water_steam_properties = water_steam_properties
+    temperature = temperature
+    temp_dependent_fluid_props = false
+ 
     x_disp = disp_x
     y_disp = disp_y
     z_disp = disp_z
-  [../]
-[]
-
-[UserObjects]
-  [./water_steam_properties]
-    type = WaterSteamEOS
   [../]
 []
 

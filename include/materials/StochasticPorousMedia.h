@@ -38,7 +38,7 @@ protected:
 
   bool _has_permeability;
   VariableValue & _init_permeability;
-  Real _input_material_porosity;  //this is what get out into the material kernel input
+  Real _input_porosity;  //this is what get out into the material kernel input
   Real _input_density_rock;
 
   Real _input_gravity;
@@ -48,7 +48,7 @@ protected:
 
 
   MaterialProperty<Real> & _permeability;
-  MaterialProperty<Real> & _material_porosity;
+  MaterialProperty<Real> & _porosity;
   MaterialProperty<Real> & _density_rock;
   MaterialProperty<Real> & _gravity;
   MaterialProperty<RealVectorValue> & _gravity_vector;

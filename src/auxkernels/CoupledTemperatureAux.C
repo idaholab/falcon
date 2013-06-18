@@ -21,7 +21,7 @@ InputParameters validParams<CoupledTemperatureAux>()
     InputParameters params = validParams<AuxKernel>();
     params.addCoupledVar("pressure", "Use pressure to calculate variable temperature");
     params.addCoupledVar("enthalpy", "Use enthalpy to calculate variable temperature");
-    params.addParam("temperature", 100., "Initial value for temperature");
+    params.addParam("temperature", 373.15, "Initial value for temperature");
     params.addRequiredParam<UserObjectName>("water_steam_properties", "EOS functions, calculate water and steam properties");
     return params;
 }
@@ -30,7 +30,6 @@ CoupledTemperatureAux::CoupledTemperatureAux(const std::string & name,
                                                InputParameters parameters)
     :AuxKernel(name, parameters),
     _water_steam_properties(getUserObject<WaterSteamEOS>("water_steam_properties")),
-
     _pressure(coupledValue("pressure")),
     _enthalpy(coupledValue("enthalpy")),
     _input_temperature(getParam<Real>("temperature"))

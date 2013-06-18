@@ -34,7 +34,7 @@ InputParameters validParams<FracturesPorousMedia>()
 
   params.addRequiredCoupledVar("fractures", "coupled aux variable that maps where the fracture are");
   params.addParam<Real>("fracture_num", 0, "number in fracture map that indicates fractures");
-  params.addParam<Real>("matrix_num", 255, "number in fracture map that indicates matrix");
+  params.addParam<Real>("matrix_num", 1, "number in fracture map that indicates matrix");
   params.addParam<Real>("model_fracture_aperture", 1.0, "width of fracture/high permeability area in the model");
   
   return params;
@@ -59,7 +59,7 @@ FracturesPorousMedia::FracturesPorousMedia(const std::string & name,
 
     //delcare material properties
     _permeability(declareProperty<Real>("permeability")),
-    _material_porosity(declareProperty<Real>("material_porosity")),
+    _porosity(declareProperty<Real>("porosity")),
     _density_rock(declareProperty<Real>("density_rock")),
     _gravity(declareProperty<Real>("gravity")),
     _gravity_vector(declareProperty<RealVectorValue>("gravity_vector")),
@@ -82,7 +82,7 @@ FracturesPorousMedia::computeProperties()
       if (_fractures[qp] == _matrix_num) //matrix
       {
           _permeability[qp]         = _matrix_permeability;
-          _material_porosity[qp]    = _matrix_porosity;
+          _porosity[qp]             = _matrix_porosity;
           _density_rock[qp]         = _matrix_density;
       }
       else if (_fractures[qp] == _fracture_num) //fractures
@@ -90,13 +90,13 @@ FracturesPorousMedia::computeProperties()
           Real aperture = sqrt(12 * _fracture_permeability);
           
           _permeability[qp]         = std::pow(aperture , 3) / (12 * _model_fracture_aperture);
-          _material_porosity[qp]    = _fracture_porosity;
+          _porosity[qp]             = _fracture_porosity;
           _density_rock[qp]         = _fracture_density;
       }
       else
       {
           _permeability[qp]         = _matrix_permeability;
-          _material_porosity[qp]    = _matrix_porosity;
+          _porosity[qp]             = _matrix_porosity;
           _density_rock[qp]         = _matrix_density;
       }
   

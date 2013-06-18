@@ -43,26 +43,26 @@ InputParameters validParams<FracManPorousMedia>()
 FracManPorousMedia::FracManPorousMedia(const std::string & name,
                          InputParameters parameters)
   :Material(name, parameters),
-_input_density_rock(getParam<Real>("density_rock")),
-_matrix_permeability(getParam<Real>("matrix_permeability")),
-_matrix_porosity(getParam<Real>("matrix_porosity")),
+   _input_density_rock(getParam<Real>("density_rock")),
+   _matrix_permeability(getParam<Real>("matrix_permeability")),
+   _matrix_porosity(getParam<Real>("matrix_porosity")),
 
    _input_gravity(getParam<Real>("gravity")),
    _gx(getParam<Real>("gx")),
    _gy(getParam<Real>("gy")),
    _gz(getParam<Real>("gz")),
 
-//delcare material properties
+   //delcare material properties
    _permeability(declareProperty<Real>("permeability")),
-   _material_porosity(declareProperty<Real>("material_porosity")),
+   _porosity(declareProperty<Real>("porosity")),
    _density_rock(declareProperty<Real>("density_rock")),
    _gravity(declareProperty<Real>("gravity")),
    _gravity_vector(declareProperty<RealVectorValue>("gravity_vector")),
 
-_fracture_number_vec(getParam<std::vector<int> >("fracture_numbers")),
-_fracture_permeability_vec(getParam<std::vector<Real> >("fracture_permeabilities")),
-_fracture_porosity_vec(getParam<std::vector<Real> >("fracture_porosities")),
-_fracture_map(coupledValue("fracture_map")),
+   _fracture_number_vec(getParam<std::vector<int> >("fracture_numbers")),
+   _fracture_permeability_vec(getParam<std::vector<Real> >("fracture_permeabilities")),
+   _fracture_porosity_vec(getParam<std::vector<Real> >("fracture_porosities")),
+   _fracture_map(coupledValue("fracture_map")),
 
    _already_computed(false)
 
@@ -81,7 +81,7 @@ FracManPorousMedia::computeProperties()
       if (_fracture_map[qp] == 0)
       {
           _permeability[qp]         = _matrix_permeability;
-          _material_porosity[qp]    = _matrix_porosity;
+          _porosity[qp]             = _matrix_porosity;
       }
       
       for (unsigned int k = 0; k < num_frac_vec_entries; k++)
@@ -91,12 +91,12 @@ FracManPorousMedia::computeProperties()
               if (num_perm_vec_entries < 2)
                   _permeability[qp] = _fracture_permeability_vec[0];
               else
-                  _permeability[qp]         = _fracture_permeability_vec[k];
+                  _permeability[qp] = _fracture_permeability_vec[k];
               
               if (num_poro_vec_entries <2)
-                  _material_porosity[qp] = _fracture_porosity_vec[0];
+                  _porosity[qp]    = _fracture_porosity_vec[0];
               else
-                  _material_porosity[qp]    = _fracture_porosity_vec[k];
+                  _porosity[qp]    = _fracture_porosity_vec[k];
           }
       }
 

@@ -19,7 +19,7 @@ template<>
 InputParameters validParams<StochasticPorousMedia>()
 {
   InputParameters params = validParams<Material>();
-  params.addParam<Real>("material_porosity", 0.3, "Rock porosity set from the StochasticPorousMedia material kernel");
+  params.addParam<Real>("porosity", 0.3, "Rock porosity set from the StochasticPorousMedia material kernel");
   params.addParam<Real>("density_rock", 2.50e3, "rock density in Kg/m^3");
      
   params.addParam<Real>("gravity",9.80665,"gravity acceleration constant");
@@ -39,7 +39,7 @@ StochasticPorousMedia::StochasticPorousMedia(const std::string & name,
    _has_permeability(isCoupled("permeability")),
    _init_permeability(_has_permeability ? coupledValue("permeability") : _zero),
    
-   _input_material_porosity(getParam<Real>("material_porosity")),
+   _input_porosity(getParam<Real>("porosity")),
    _input_density_rock(getParam<Real>("density_rock")),
 
    _input_gravity(getParam<Real>("gravity")),
@@ -49,7 +49,7 @@ StochasticPorousMedia::StochasticPorousMedia(const std::string & name,
 
 //delcare material properties
    _permeability(declareProperty<Real>("permeability")),
-   _material_porosity(declareProperty<Real>("material_porosity")),
+   _porosity(declareProperty<Real>("porosity")),
    _density_rock(declareProperty<Real>("density_rock")),
    _gravity(declareProperty<Real>("gravity")),
    _gravity_vector(declareProperty<RealVectorValue>("gravity_vector")),
@@ -59,14 +59,12 @@ StochasticPorousMedia::StochasticPorousMedia(const std::string & name,
 
 void
 StochasticPorousMedia::computeProperties()
-{
-	Real aperture_old, aperture_change, aperture_new, porosity;
-	
+{	
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
 	  
-    _permeability[qp]      = _init_permeability[qp];
-    _material_porosity[qp]    = _input_material_porosity;
+    _permeability[qp]         = _init_permeability[qp];
+    _porosity[qp]             = _input_porosity;
     _density_rock[qp]         = _input_density_rock;
       
 //  gravity    

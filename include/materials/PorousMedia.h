@@ -39,19 +39,30 @@ protected:
 
   
   Real _input_permeability;
-  Real _input_material_porosity;
+  Real _input_porosity;
   Real _input_density_rock;
 
   Real _input_gravity;
   Real _gx;
   Real _gy;
   Real _gz;
+    
+  bool _has_chem_reactions;
+  Real _input_chem_diff;
+  std::vector<Real> _mineral;
+  std::vector<Real> _molecular_weight;
+  std::vector<Real> _mineral_density;
 
   MaterialProperty<Real> & _permeability;
-  MaterialProperty<Real> & _material_porosity;
+  MaterialProperty<Real> & _porosity;
   MaterialProperty<Real> & _density_rock;
+    
   MaterialProperty<Real> & _gravity;
   MaterialProperty<RealVectorValue> & _gravity_vector;
+    
+  MaterialProperty<Real> & _diffusivity;
+  
+  std::vector<VariableValue *> _vals; //coupled to mineral
 
   void setPropsComputed(bool value) { _already_computed = value; }
   

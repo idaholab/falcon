@@ -12,7 +12,7 @@
   [./temperature]
     order = FIRST
     family = LAGRANGE
-    initial_condition = 200.0
+    initial_condition = 473.15
   [../]
 []
 
@@ -65,7 +65,7 @@
     type = DirichletBC
     variable = temperature
     boundary = 1
-    value = 100.
+    value = 373.15
   [../]
   [./left_p]
     type = DirichletBC
@@ -77,7 +77,7 @@
     type = DirichletBC
     variable = temperature
     boundary = 2
-    value = 200.
+    value = 473.15
   [../]
 []
 
@@ -93,11 +93,6 @@
     gx = 0.0
     gy = 0.0
     gz = 1.0
-    youngs_modulus = 1.50e10
-    poissons_ratio = 0.3
-    biot_coeff = 1.0
-    thermal_expansion = 1.0e-6
-    t_ref = 50
   [../]
 []
 

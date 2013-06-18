@@ -35,8 +35,11 @@ protected:
 
     MaterialProperty<Real> & _density_water;
     MaterialProperty<Real> & _density_water_old;
-//  VariableValue  & _porosity_old;
+    
+    bool _has_chem_reactions;
     MaterialProperty<Real> & _porosity;
+    MaterialProperty<Real> & _porosity_old;
+    
     MaterialProperty<Real> & _specific_heat_water;
     MaterialProperty<Real> & _specific_heat_rock;
     MaterialProperty<Real> & _density_rock;

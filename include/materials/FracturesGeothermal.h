@@ -43,7 +43,6 @@ protected:
     
     bool _has_strain_change_permeability;
     Real _model_fracture_aperture;
-    MaterialProperty<Real> & _eq_aperture;
     
 };
 #endif //FRACTURESGEOTHERMAL_H

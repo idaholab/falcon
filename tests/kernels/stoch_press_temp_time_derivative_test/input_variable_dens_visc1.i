@@ -12,7 +12,7 @@
   [./temperature]
     order = FIRST
     family = LAGRANGE
-    initial_condition = 200.0
+    initial_condition = 473.15
   [../]
 []
 
@@ -83,7 +83,7 @@
     type = DirichletBC
     variable = temperature
     boundary = 1
-    value = 100.
+    value = 373.15
   [../]
   [./left_p]
     type = DirichletBC
@@ -95,7 +95,7 @@
     type = DirichletBC
     variable = temperature
     boundary = 2
-    value = 200.
+    value = 473.15
   [../]
 []
 
@@ -105,17 +105,13 @@
     block = 1
     pressure = pressure
     temperature = temperature
+    temp_dependent_fluid_props = true
     water_steam_properties = water_steam_properties
     permeability = permeability
     gravity = 0.0
     gx = 0.0
     gy = 0.0
     gz = 1.0
-    youngs_modulus = 1.50e10
-    poissons_ratio = 0.3
-    biot_coeff = 1.0
-    thermal_expansion = 1.0e-6
-    t_ref = 50
   [../]
 []
 
@@ -127,8 +123,9 @@
 
 [Executioner]
   type = Transient
-  num_steps = 20
+  num_steps = 5
   dt = 5000000.0
+  petsc_options = '-ksp_monitor -snes_mf_operator'
   nl_abs_tol = 1e-6
   [./Quadrature]
     type = Trap

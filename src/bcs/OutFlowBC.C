@@ -32,7 +32,7 @@ OutFlowBC::OutFlowBC(const std::string & name, InputParameters parameters)
 Real
 OutFlowBC::computeQpResidual()
 {
-  Real val = (-_thermal_conductivity[_qp]*_grad_u[_qp]+_darcy_mass_flux_water[_qp]*_specific_heat_water[_qp]*(_u[_qp]+273.0))*_test[_i][_qp]*_normals[_qp];
+  Real val = (-_thermal_conductivity[_qp]*_grad_u[_qp]+_darcy_mass_flux_water[_qp]*_specific_heat_water[_qp]*_u[_qp])*_test[_i][_qp]*_normals[_qp];
   return val;
 }
 
