@@ -35,17 +35,18 @@ public:
   
 protected:
   virtual void computeProperties();
-
-  Real _fracture_num;
-  Real _matrix_num;
-    
+////Grab user input parameters
+  //General
   Real _input_specific_heat_rock;
   Real _input_specific_heat_water;
-    
+  //Matrix
+  Real _matrix_num;
   Real _matrix_thermal_conductivity;
-    
+  //Fractures
+  Real _fracture_num;
   Real _fracture_thermal_conductivity;
 
+////Declare material properties
   MaterialProperty<Real> & _specific_heat_rock;
   MaterialProperty<Real> & _thermal_conductivity;
   MaterialProperty<Real> & _specific_heat_water;

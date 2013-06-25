@@ -19,13 +19,13 @@ template<>
 InputParameters validParams<StochasticFluidFlow>()
 {
   InputParameters params = validParams<StochasticPorousMedia>(); 
-  params.addCoupledVar("pressure", "Use pressure here to calculate Darcy Flux and Pore Velocity");
-  params.addCoupledVar("enthalpy", "Use pressure here to calculate Darcy Flux and Pore Velocity");
-  params.addCoupledVar("temperature", "Use temperature to calculate variable density and viscosity");
-  params.addParam<bool>("temp_dependent_fluid_props", true, "flag true for temperature dependent fluid properties");
-  params.addParam<Real>("constant_density", 1000, "Use to set value of constant density");
-  params.addParam<Real>("constant_viscosity", 0.12e-3, "Use to set value of constant viscosity");
-  params.addParam<UserObjectName>("water_steam_properties", "EOS functions, calculate water steam properties");
+  params.addCoupledVar("pressure", "Use pressure here to calculate Darcy Flux and Pore Velocity, [Pa]");
+  params.addCoupledVar("enthalpy", "Use enthalpy here to calculate Darcy Flux and Pore Velocity for two-phase flow, [J]");
+  params.addCoupledVar("temperature", "Use temperature to calculate Darcy Flux and Pore Velocity for single-phase flow, [K]");
+  params.addParam<bool>("temp_dependent_fluid_props", true, "flag true if single-phase and fluid properties are temperature dependent, default = true");
+  params.addParam<Real>("constant_density", 1000, "Use to set value of constant density, [kg/m^3]");
+  params.addParam<Real>("constant_viscosity", 0.12e-3, "Use to set value of constant viscosity, [Pa.s]");
+  params.addParam<UserObjectName>("water_steam_properties", "EOS functions, calculates water steam properties, provide if doing two-phase or if temp_dependent_fluid_props = true");
   return params;
 }
 
@@ -33,7 +33,7 @@ StochasticFluidFlow::StochasticFluidFlow(const std::string & name,
                                          InputParameters parameters)
     :StochasticPorousMedia(name, parameters),
 
-     //UserObject used to calculate fluid properties and their derivatives
+    //UserObject used to calculate two-phase flow or temp-depnt fluid properties and their derivatives
      _water_steam_properties(parameters.isParamValid("water_steam_properties") ? &getUserObject<WaterSteamEOS>("water_steam_properties") : NULL),
 
      //Three main variables (pressure, temperature, enthalpy)
@@ -124,7 +124,6 @@ void StochasticFluidFlow::computeProperties()
     Real dens_out, dens_water_out, dens_steam_out;
     Real enth_water_out, enth_steam_out;
     Real visc_water_out, visc_steam_out;
-    Real del_press, del_enth;
     Real d_enth_water_d_press, d_enth_steam_d_press;
     Real d_dens_d_press, d_temp_d_press;
     Real d_enth_water_d_enth, d_enth_steam_d_enth;

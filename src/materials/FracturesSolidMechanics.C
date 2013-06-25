@@ -18,38 +18,37 @@ template<>
 InputParameters validParams<FracturesSolidMechanics>()
 {
   InputParameters params= validParams<FracturesPorousMedia>();
+////General
+  //coupled variables
+  params.addCoupledVar("temperature", "Coupled non-linear termperature variable, [K]");
+  params.addCoupledVar("x_disp", "Coupled non-linear x-disp variable, [m]");
+  params.addCoupledVar("y_disp", "Coupled non-linear y-disp variable, [m]");
+  params.addCoupledVar("z_disp", "Coupled non-linear z-disp variable. [m]");
+  //rock property inputs
+  params.addParam<Real>("poissons_ratio",0.2,"dimensionless");
+  params.addParam<Real>("biot_coeff",1.0,"dimensionless");
+  params.addParam<Real>("biot_modulus",2.5e10,"dimensionless");
     
-    params.addParam<Real>("fracture_num", 0, "number in fracture map that indicates fractures");
-    params.addParam<Real>("matrix_num", 255, "number in fracture map that indicates matrix");
+////Matrix
+  params.addParam<Real>("matrix_num", 1, "number in fracture map that indicates matrix");
+  params.addParam<Real>("matrix_thermal_expansion",1.0e-6,"thermal expansion coefficient of matrix, [1/K]");
+  params.addParam<Real>("matrix_youngs_modulus",1.50e10,"youngs modulus of matrix, [Pa]");
+  params.addParam<Real>("matrix_thermal_strain_ref_temp",293.15,"Initial reference temperature of matrix where there is no thermal strain, [K]");
     
-    params.addParam<Real>("poissons_ratio",0.2,"dimensionless");
-    params.addParam<Real>("biot_coeff",1.0,"dimensionless");
-    params.addParam<Real>("biot_modulus",2.5e10,"dimensionless");
-    
-    params.addParam<Real>("fracture_thermal_expansion",1.0e-6,"thermal expansion coefficient of fractures (1/K)");
-    params.addParam<Real>("fracture_youngs_modulus",1.50e10,"youngs modulus of fractures (Pa)");
-    params.addParam<Real>("fracture_t_ref",293.15,"temperature of fractures where there is zero thermal strain (C)");
-    
-    params.addParam<Real>("matrix_thermal_expansion",1.0e-6,"thermal expansion coefficient of matrix (1/K)");
-    params.addParam<Real>("matrix_youngs_modulus",1.50e10,"youngs modulus of matrix (Pa)");
-    params.addParam<Real>("matrix_t_ref",293.15,"temperature of matrix where there is zero thermal strain (C)");
+////Fractures
+  params.addParam<Real>("fracture_num", 0, "number in fracture map that indicates fractures");
+  params.addParam<Real>("fracture_thermal_expansion",1.0e-6,"thermal expansion coefficient of fractures, [1/K]");
+  params.addParam<Real>("fracture_youngs_modulus",1.50e10,"youngs modulus of fractures, [Pa]");
+  params.addParam<Real>("fracture_thermal_strain_ref_temp",293.15,"Initial reference temperature of fractures where there is no thermal strain, [K]");
 
-    params.addCoupledVar("temperature", "coupled non-linear termperature variable");
-    params.addCoupledVar("x_disp", "coupled non-linear x-disp variable");
-    params.addCoupledVar("y_disp", "coupled non-linear y-disp variable");
-    params.addCoupledVar("z_disp", "coupled non-linear z-disp variable");
-
-    return params;
+  return params;
 
 }
 //////////////////////////////////////////////////////////////////////////
 FracturesSolidMechanics::FracturesSolidMechanics(const std::string & name,
                                InputParameters parameters)
   :FracturesPorousMedia(name, parameters),
-
-    _fracture_num(getParam<Real>("fracture_num")),
-    _matrix_num(getParam<Real>("matrix_num")),
-
+////Grab coupled variables
     _has_temp(isCoupled("temperature")),
     _temperature(_has_temp ? coupledValue("temperature")  : _zero),
     _has_x_disp(isCoupled("x_disp")),
@@ -62,26 +61,33 @@ FracturesSolidMechanics::FracturesSolidMechanics(const std::string & name,
     _grad_z_disp(_has_z_disp ? coupledGradient("z_disp") : _grad_zero),
     _grad_z_disp_old(_has_z_disp ? coupledGradientOld("z_disp") : _grad_zero),
 
+////Grab user input parameters
+    ////General
     _input_poissons_ratio(getParam<Real>("poissons_ratio")),
     _input_biot_coeff(getParam<Real>("biot_coeff")),
     _input_biot_modulus(getParam<Real>("biot_modulus")),
 
-    _fracture_thermal_expansion(getParam<Real>("fracture_thermal_expansion")),
-    _fracture_youngs_modulus(getParam<Real>("fracture_youngs_modulus")),
-    _fracture_t_ref(getParam<Real>("fracture_t_ref")),
-
+    ////Matrix
+    _matrix_num(getParam<Real>("matrix_num")),
     _matrix_thermal_expansion(getParam<Real>("matrix_thermal_expansion")),
     _matrix_youngs_modulus(getParam<Real>("matrix_youngs_modulus")),
-    _matrix_t_ref(getParam<Real>("matrix_t_ref")),
+    _matrix_t_ref(getParam<Real>("matrix_thermal_strain_ref_temp")),
 
-    //declare material properties
+    ////Fractures
+    _fracture_num(getParam<Real>("fracture_num")),
+    _fracture_thermal_expansion(getParam<Real>("fracture_thermal_expansion")),
+    _fracture_youngs_modulus(getParam<Real>("fracture_youngs_modulus")),
+    _fracture_t_ref(getParam<Real>("fracture_thermal_strain_ref_temp")),
+
+////Declare material properties
+    //rock material props
     _thermal_strain(declareProperty<Real>("thermal_strain")),
     _alpha(declareProperty<Real>("alpha")),
     _youngs_modulus(declareProperty<Real>("youngs_modulus")),
     _poissons_ratio(declareProperty<Real>("poissons_ratio")),
     _biot_coeff(declareProperty<Real>("biot_coeff")),
     _biot_modulus(declareProperty<Real>("biot_modulus")),
-
+    //stress/strain material props
     _stress_normal_vector(declareProperty<RealVectorValue>("stress_normal_vector")),
     _stress_shear_vector (declareProperty<RealVectorValue>("stress_shear_vector")),
     _strain_normal_vector(declareProperty<RealVectorValue>("strain_normal_vector")),
@@ -95,9 +101,12 @@ FracturesSolidMechanics::computeProperties()
   if (!areParentPropsComputed())
     FracturesPorousMedia::computeProperties();
 
-
     for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
     {
+//----------------------------------------------------------------------------------------------------------------------------//
+////calculating/assigning rock material properties:
+        
+        //material property assignment for matrix
         if(_fractures[qp] == _matrix_num)
         {
             _youngs_modulus[qp] = _matrix_youngs_modulus;
@@ -108,6 +117,7 @@ FracturesSolidMechanics::computeProperties()
             else
                 _thermal_strain[qp] = 0.0;
         }
+        //material property assignment for the fractures
         else if (_fractures[qp] == _fracture_num)
         {
             _youngs_modulus[qp] = _fracture_youngs_modulus;
@@ -118,6 +128,7 @@ FracturesSolidMechanics::computeProperties()
             else
                 _thermal_strain[qp] = 0.0;
         }
+        //material property assignment for everything else
         else
         {
             _youngs_modulus[qp] = _matrix_youngs_modulus;
@@ -129,100 +140,53 @@ FracturesSolidMechanics::computeProperties()
                 _thermal_strain[qp] = 0.0;
         }
      
+        //general material property assignment
         _poissons_ratio[qp]   = _input_poissons_ratio;
         _biot_coeff[qp]       = _input_biot_coeff;
         _biot_modulus[qp]     = _input_biot_modulus;
 
-        // first try for strain and stress vectors
+//----------------------------------------------------------------------------------------------------------------------------//
+////calculating/assigning stress/strain material properties:
+        
         if (_has_x_disp && _has_y_disp)
         {
-            _E  =  _youngs_modulus[qp];
-            _nu =  _poissons_ratio[qp];
-            _c1 = _E*(1.-_nu)/(1.+_nu)/(1.-2.*_nu);
-            _c2 = _nu/(1.-_nu);
-            _c3 = 0.5*(1.-2.*_nu)/(1.-_nu);
-
-            _strain_normal_vector[qp](0) = _grad_x_disp[qp](0); //s_xx
-            _strain_normal_vector[qp](1) = _grad_y_disp[qp](1); //s_yy
-            if (_has_z_disp) _strain_normal_vector[qp](2) = _grad_z_disp[qp](2); //s_zz
-
-            _strain_shear_vector[qp](0) = 0.5*(_grad_x_disp[qp](1)+_grad_y_disp[qp](0)); // s_xy
-
+            E  = _youngs_modulus[qp];
+            nu = _poissons_ratio[qp];
+            c1 = E * (1.0 - nu) / (1.0 + nu) / (1.0 - 2.0 * nu);
+            c2 = nu / (1.0 - nu);
+            c3 = 0.5 * (1.0 - 2.0 * nu) / (1.0 - nu);
+            
+            //start with strain_normal (s_xx and s_yy)
+            _strain_normal_vector[qp](0) = _grad_x_disp[qp](0);
+            _strain_normal_vector[qp](1) = _grad_y_disp[qp](1);
+            //if 3D problem, strain_normal in z_direction (s_zz)
+            if (_has_z_disp)
+                _strain_normal_vector[qp](2) = _grad_z_disp[qp](2);
+            
+            //next strain_shear (s_xy)
+            _strain_shear_vector[qp](0) = 0.5 * (_grad_x_disp[qp](1) + _grad_y_disp[qp](0));
+            //if 3D problem, strain_shear in z_directions (s_xz and s_yz)
             if (_has_z_disp)
             {
-                _strain_shear_vector[qp](1) = 0.5*(_grad_x_disp[qp](2)+_grad_z_disp[qp](0)); // s_xz
-                _strain_shear_vector[qp](2) = 0.5*(_grad_y_disp[qp](2)+_grad_z_disp[qp](1)); // s_yz
+                _strain_shear_vector[qp](1) = 0.5 * (_grad_x_disp[qp](2) + _grad_z_disp[qp](0));
+                _strain_shear_vector[qp](2) = 0.5 * (_grad_y_disp[qp](2) + _grad_z_disp[qp](1));
             }
-
-            _stress_normal_vector[qp](0) = _c1*_strain_normal_vector[qp](0)+_c1*_c2*_strain_normal_vector[qp](1)+_c1*_c2*_strain_normal_vector[qp](2); //tau_xx
-            _stress_normal_vector[qp](1) = _c1*_c2*_strain_normal_vector[qp](0)+_c1*_strain_normal_vector[qp](1)+_c1*_c2*_strain_normal_vector[qp](2); //tau_yy
             
-            if (_has_z_disp) _stress_normal_vector[qp](2) = _c1*_c2*_strain_normal_vector[qp](0)+_c1*_c2*_strain_normal_vector[qp](1)+_c1*_strain_normal_vector[qp](2); //tau_zz
-
-            _stress_shear_vector[qp](0) = _c1*_c3*2.0*_strain_shear_vector[qp](0); //tau_xy
+            //now stress_normal (tau_xx and tau_yy)
+            _stress_normal_vector[qp](0) = c1 * _strain_normal_vector[qp](0) + c1 * c2 * _strain_normal_vector[qp](1) + c1 * c2 * _strain_normal_vector[qp](2);
+            _stress_normal_vector[qp](1) = c1 * c2 * _strain_normal_vector[qp](0) + c1 * _strain_normal_vector[qp](1) + c1 * c2 * _strain_normal_vector[qp](2);
+            //if 3D problem, stress_normal in z-direction (tau_zz)
+            if (_has_z_disp)
+                _stress_normal_vector[qp](2) = c1 * c2 * _strain_normal_vector[qp](0) + c1 * c2 * _strain_normal_vector[qp](1) + c1 * _strain_normal_vector[qp](2);
             
+            //then stress_shear (tau_xy)
+            _stress_shear_vector[qp](0) = c1 * c3 * 2.0 * _strain_shear_vector[qp](0);
+            //if 3D problem, stress_shear in z_directions (tau_xz and tau_yz)
             if (_has_z_disp)
             {
-                _stress_shear_vector[qp](1) = _c1*_c3*2.0*_strain_shear_vector[qp](1); //tau_xz
-                _stress_shear_vector[qp](2) = _c1*_c3*2.0*_strain_shear_vector[qp](2); //tau_yz
+                _stress_shear_vector[qp](1) = c1 * c3 * 2.0 * _strain_shear_vector[qp](1);
+                _stress_shear_vector[qp](2) = c1 * c3 * 2.0 * _strain_shear_vector[qp](2);
             }
         }
     }
-}
-
-void
-FracturesSolidMechanics::rotateSymmetricTensor( const ColumnMajorMatrix & R,
-                                      const RealTensorValue & T,
-                                      RealTensorValue & result )
-{
-
-  //     R           T         Rt
-  //  00 01 02   00 01 02   00 10 20
-  //  10 11 12 * 10 11 12 * 01 11 21
-  //  20 21 22   20 21 22   02 12 22
-  //
-  if ( _dim == 3)
-  {
-
-    const Real T00 = R(0,0)*T(0,0) + R(0,1)*T(1,0) + R(0,2)*T(2,0);
-    const Real T01 = R(0,0)*T(0,1) + R(0,1)*T(1,1) + R(0,2)*T(2,1);
-    const Real T02 = R(0,0)*T(0,2) + R(0,1)*T(1,2) + R(0,2)*T(2,2);
-
-    const Real T10 = R(1,0)*T(0,0) + R(1,1)*T(1,0) + R(1,2)*T(2,0);
-    const Real T11 = R(1,0)*T(0,1) + R(1,1)*T(1,1) + R(1,2)*T(2,1);
-    const Real T12 = R(1,0)*T(0,2) + R(1,1)*T(1,2) + R(1,2)*T(2,2);
-
-    const Real T20 = R(2,0)*T(0,0) + R(2,1)*T(1,0) + R(2,2)*T(2,0);
-    const Real T21 = R(2,0)*T(0,1) + R(2,1)*T(1,1) + R(2,2)*T(2,1);
-    const Real T22 = R(2,0)*T(0,2) + R(2,1)*T(1,2) + R(2,2)*T(2,2);
-
-    result = RealTensorValue(
-      T00 * R(0,0) + T01 * R(0,1) + T02 * R(0,2),
-      T00 * R(1,0) + T01 * R(1,1) + T02 * R(1,2),
-      T00 * R(2,0) + T01 * R(2,1) + T02 * R(2,2),
-
-      T10 * R(0,0) + T11 * R(0,1) + T12 * R(0,2),
-      T10 * R(1,0) + T11 * R(1,1) + T12 * R(1,2),
-      T10 * R(2,0) + T11 * R(2,1) + T12 * R(2,2),
-
-      T20 * R(0,0) + T21 * R(0,1) + T22 * R(0,2),
-      T20 * R(1,0) + T21 * R(1,1) + T22 * R(1,2),
-      T20 * R(2,0) + T21 * R(2,1) + T22 * R(2,2) );
-  }
-  else if ( _dim == 2)
-  {
-    const Real T00 = R(0,0)*T(0,0) + R(0,1)*T(1,0);
-    const Real T01 = R(0,0)*T(0,1) + R(0,1)*T(1,1) ;
-
-    const Real T10 = R(1,0)*T(0,0) + R(1,1)*T(1,0) ;
-    const Real T11 = R(1,0)*T(0,1) + R(1,1)*T(1,1) ;
-
-    result = RealTensorValue(
-      T00 * R(0,0) + T01 * R(0,1),
-      T00 * R(1,0) + T01 * R(1,1),
-
-      T10 * R(0,0) + T11 * R(0,1),
-      T10 * R(1,0) + T11 * R(1,1));
-  }
-
 }

@@ -35,23 +35,35 @@ public:
   
 protected:
   virtual void computeProperties();
-
+////Grab user input parameters
+  //rock property inputs
   bool _has_permeability;
   VariableValue & _init_permeability;
-  Real _input_porosity;  //this is what get out into the material kernel input
+  Real _input_porosity;
   Real _input_density_rock;
-
+  //gravity inputs
   Real _input_gravity;
   Real _gx;
   Real _gy;
   Real _gz;
+  //chem reaction inputs
+  bool _has_chem_reactions;
+  Real _input_chem_diff;
+  std::vector<Real> _mineral;
+  std::vector<Real> _molecular_weight;
+  std::vector<Real> _mineral_density;
+  std::vector<VariableValue *> _vals;
 
-
+////Declare material properties
+  //rock material props
   MaterialProperty<Real> & _permeability;
   MaterialProperty<Real> & _porosity;
   MaterialProperty<Real> & _density_rock;
+  //gravity material props
   MaterialProperty<Real> & _gravity;
   MaterialProperty<RealVectorValue> & _gravity_vector;
+  //chem reactions material props
+  MaterialProperty<Real> & _diffusivity;
 
   void setPropsComputed(bool value) { _already_computed = value; }
   

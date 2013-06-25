@@ -38,7 +38,7 @@ MassFluxTimeDerivative_PT::MassFluxTimeDerivative_PT(const std::string & name, I
 Real
 MassFluxTimeDerivative_PT::computeQpResidual()
 {
-        return (((_porosity[_qp]*_density_water[_qp])-(_porosity_old[_qp]*_density_water_old[_qp]))/_dt) * _test[_i][_qp];
+    return (((_porosity[_qp]*_density_water[_qp])-(_porosity_old[_qp]*_density_water_old[_qp]))/_dt) * _test[_i][_qp];
 }
 
 Real

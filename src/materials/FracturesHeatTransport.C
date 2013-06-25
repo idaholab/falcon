@@ -18,13 +18,15 @@ template<>
 InputParameters validParams<FracturesHeatTransport>()
 {
   InputParameters params = validParams<FracturesPorousMedia>();
-  
+  ////General
+    params.addParam<Real>("specific_heat_rock",0.92e3,  "specific heat of the rock, [J/(kg.K)]");
+    params.addParam<Real>("specific_heat_water",4.186e3,"specific heat of water, [J/(kg.K)]");
+  ////Matrix
+    params.addParam<Real>("matrix_thermal_conductivity", 2.5, "thermal conductivity of matrix rock, [W/(m.K)]");
+    params.addParam<Real>("matrix_num", 1, "number in fracture map that indicates matrix");
+  ////Fractures
     params.addParam<Real>("fracture_num", 0, "number in fracture map that indicates fractures");
-    params.addParam<Real>("matrix_num", 255, "number in fracture map that indicates matrix");
-    params.addParam<Real>("specific_heat_rock",0.92e3,  "units of J/(kg.K)");
-    params.addParam<Real>("specific_heat_water",4.186e3,"units of J/(kg.K)");
-    params.addParam<Real>("matrix_thermal_conductivity", 2.5, "thermal conductivity of matrix in W/(m.K)");
-    params.addParam<Real>("fracture_thermal_conductivity", 2.5, "thermal conductivity of fractures in W/(m.K)");
+    params.addParam<Real>("fracture_thermal_conductivity", 2.5, "thermal conductivity of fractures, [W/(m.K)]");
   
   return params;
 }
@@ -32,17 +34,18 @@ InputParameters validParams<FracturesHeatTransport>()
 FracturesHeatTransport::FracturesHeatTransport(const std::string & name,
                              InputParameters parameters)
   :FracturesPorousMedia(name, parameters),
-
-    _fracture_num(getParam<Real>("fracture_num")),
-    _matrix_num(getParam<Real>("matrix_num")),
-
+////Grab user input parameters
+    ////General
     _input_specific_heat_rock(getParam<Real>("specific_heat_rock")),
     _input_specific_heat_water(getParam<Real>("specific_heat_water")),
-
+    ////Matrix
+    _matrix_num(getParam<Real>("matrix_num")),
     _matrix_thermal_conductivity(getParam<Real>("matrix_thermal_conductivity")),
+    ////Fractures
+    _fracture_num(getParam<Real>("fracture_num")),
     _fracture_thermal_conductivity(getParam<Real>("fracture_thermal_conductivity")),
 
-    //declare material properties
+////Declare material properties
     _specific_heat_rock(declareProperty<Real>("specific_heat_rock")),
     _thermal_conductivity(declareProperty<Real>("thermal_conductivity")),
     _specific_heat_water(declareProperty<Real>("specific_heat_water"))
@@ -57,15 +60,16 @@ FracturesHeatTransport::computeProperties()
   
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
-      
-      //rock properties
       _specific_heat_rock[qp]  = _input_specific_heat_rock;
       _specific_heat_water[qp] = _input_specific_heat_water;
 
+      //material property assignment for matrix
       if (_fractures[qp] == _matrix_num)
           _thermal_conductivity[qp] = _matrix_thermal_conductivity;
+      //material property assignment for the fractures
       else if (_fractures[qp] == _fracture_num)
           _thermal_conductivity[qp] = _fracture_thermal_conductivity;
+      //material property assignment for all else
       else
           _thermal_conductivity[qp] = _matrix_thermal_conductivity;
   }

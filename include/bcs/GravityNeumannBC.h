@@ -44,11 +44,11 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
 
-  Real _permeability;
-  Real _density;
-  Real _viscosity_water;
-  
-  RealVectorValue _gravity;
+  MaterialProperty<Real> & _permeability;
+  MaterialProperty<Real> & _density_water;
+  MaterialProperty<Real> & _viscosity_water;
+  MaterialProperty<Real> & _gravity;
+  MaterialProperty<RealVectorValue> & _gravity_vector;
   
 private:
 };

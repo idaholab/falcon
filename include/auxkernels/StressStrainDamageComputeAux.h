@@ -16,6 +16,7 @@
 #define STRESSSTRAINDAMAGECOMPUTEAUX_H
 
 #include "AuxKernel.h"
+#include "MooseEnum.h"
 
 //libMesh includes
 #include "libmesh/tensor_value.h"
@@ -47,13 +48,13 @@ public:
 protected:
   virtual Real computeValue();
 
-
   std::string  _quantity_string;
-
+   
   int _component;
-
+    
   VectorValue<Number> _stress;
   VectorValue<Number> _strain;
+    
   MaterialProperty<RealVectorValue> & _stress_normal_vector;
   MaterialProperty<RealVectorValue> & _stress_shear_vector;
   MaterialProperty<RealVectorValue> & _strain_normal_vector;

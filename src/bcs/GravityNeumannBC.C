@@ -18,34 +18,29 @@ template<>
 InputParameters validParams<GravityNeumannBC>()
 {
   InputParameters params = validParams<IntegratedBC>();
-  params.set<Real>("permeability") = 0;
-  params.set<Real>("density") = 0;
-  params.set<Real>("viscosity_water") = 0;
   return params;
 }
 
 GravityNeumannBC::GravityNeumannBC(const std::string & name, InputParameters parameters)
   :IntegratedBC(name, parameters),
-     _permeability(getParam<Real>("permeability")),
-     _density(getParam<Real>("density")),
-     _viscosity_water(getParam<Real>("viscosity_water")),
-     _gravity(0.0,0.0,-9.8065)
+    _permeability(getMaterialProperty<Real>("permeability")),
+    _density_water(getMaterialProperty<Real>("density_water")),
+    _viscosity_water(getMaterialProperty<Real>("viscosity_water")),
+    _gravity(getMaterialProperty<Real>("gravity")),
+    _gravity_vector(getMaterialProperty<RealVectorValue>("gravity_vector"))
 {}
 
 Real
 GravityNeumannBC::computeQpResidual()
 {
-  return _test[_i][_qp]*(
-    -(((_permeability*_density)/_viscosity_water)*_grad_u[_qp]*_normals[_qp])
-    -
-    (((_permeability*_density*_density)/_viscosity_water)*_gravity*_normals[_qp])
+  return _test[_i][_qp]*(-(((_permeability[_qp]*_density_water[_qp])/_viscosity_water[_qp])*_grad_u[_qp]*_normals[_qp])
+    -(((_permeability[_qp]*_density_water[_qp]*_density_water[_qp])/_viscosity_water[_qp])*_gravity[_qp]*_gravity_vector[_qp]*_normals[_qp])
     );
 }
 
 Real
 GravityNeumannBC::computeQpJacobian()
 {
-  return _test[_i][_qp]*(
-    -(((_permeability*_density)/_viscosity_water)*_grad_phi[_j][_qp]*_normals[_qp]));
+  return _test[_i][_qp]*(-(((_permeability[_qp]*_density_water[_qp])/_viscosity_water[_qp])*_grad_phi[_j][_qp]*_normals[_qp]));
 }
 

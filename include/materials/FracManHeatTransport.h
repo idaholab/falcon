@@ -35,16 +35,22 @@ public:
   
 protected:
   virtual void computeProperties();
-
+    
+////Grab user input parameters
+  //General
   Real _input_specific_heat_rock;
   Real _input_specific_heat_water;
-    
-    Real _matrix_thermal_conductivity;
-    std::vector<Real> _fracture_thermal_conductivity_vec;
-    std::vector<int> _fracture_number_vec;
-    unsigned int num_frac_vec_entries;
-    unsigned int num_therm_cond_vec_entries;
+  //Matrix
+  Real _matrix_thermal_conductivity;
+  //Fractures
+  std::vector<Real> _fracture_thermal_conductivity_vec;
+  std::vector<int> _fracture_number_vec;
+  
+////Storing the number of vector entries into respective local variables
+  unsigned int num_frac_vec_entries;
+  unsigned int num_therm_cond_vec_entries;
 
+////Declare material properties
   MaterialProperty<Real> & _specific_heat_rock;
   MaterialProperty<Real> & _thermal_conductivity;
   MaterialProperty<Real> & _specific_heat_water;

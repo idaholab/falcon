@@ -37,10 +37,11 @@ protected:
   virtual void computeProperties();
   
 private:
-
+////Grab coupled variables
   bool _has_temp;
   VariableValue & _temp;
-
+    
+////Grab user input parameters
   Real _my_thermal_conductivity;
   Real _my_thermal_expansion;
   Real _my_specific_heat;
@@ -49,7 +50,8 @@ private:
   Real _my_poissons_ratio;
   Real _my_biot_coeff;  
   Real _my_t_ref;
-
+    
+////Declare material properties
   MaterialProperty<Real> & _thermal_conductivity;
   MaterialProperty<Real> & _thermal_strain;
   MaterialProperty<Real> & _alpha;

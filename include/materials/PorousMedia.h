@@ -36,34 +36,35 @@ public:
 protected:
 //  virtual void initQpStatefulProperties();
   virtual void computeProperties();
-
-  
+////Grab user input parameters
+  //rock property inputs
   Real _input_permeability;
   Real _input_porosity;
   Real _input_density_rock;
-
+  //gravity inputs
   Real _input_gravity;
   Real _gx;
   Real _gy;
   Real _gz;
-    
+  //chem reaction iputs
   bool _has_chem_reactions;
   Real _input_chem_diff;
   std::vector<Real> _mineral;
   std::vector<Real> _molecular_weight;
   std::vector<Real> _mineral_density;
+  std::vector<VariableValue *> _vals; //coupled to mineral
 
+////Declare material properties
+  //rock material props
   MaterialProperty<Real> & _permeability;
   MaterialProperty<Real> & _porosity;
   MaterialProperty<Real> & _density_rock;
-    
+  //gravity material props
   MaterialProperty<Real> & _gravity;
   MaterialProperty<RealVectorValue> & _gravity_vector;
-    
+  //chem reactions material props
   MaterialProperty<Real> & _diffusivity;
   
-  std::vector<VariableValue *> _vals; //coupled to mineral
-
   void setPropsComputed(bool value) { _already_computed = value; }
   
   bool areParentPropsComputed() const { return _already_computed; }

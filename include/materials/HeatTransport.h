@@ -35,11 +35,12 @@ public:
   
 protected:
   virtual void computeProperties();
-
+////Grab user input parameters
   Real _input_specific_heat_rock;
   Real _input_thermal_conductivity;
   Real _input_specific_heat_water;
 
+////Declare material properties
   MaterialProperty<Real> & _specific_heat_rock;
   MaterialProperty<Real> & _thermal_conductivity;
   MaterialProperty<Real> & _specific_heat_water;

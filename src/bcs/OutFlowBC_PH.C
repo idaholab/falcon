@@ -18,13 +18,14 @@ template<>
 InputParameters validParams<OutFlowBC_PH>()
 {
     InputParameters params = validParams<IntegratedBC>();
-    params.addCoupledVar("pressure", "Use pressure here");
-    params.addCoupledVar("temperature", "Use temperature here");    
+    params.addCoupledVar("pressure", "Non-linear pressure variable, [Pa]");
+    params.addCoupledVar("temperature", "Non-linear temperature variable, [K]");    
     return params;
 }
 
 OutFlowBC_PH::OutFlowBC_PH(const std::string & name, InputParameters parameters)
 :IntegratedBC(name, parameters),
+
 _grad_p(coupledGradient("pressure")),
 _p_var(coupled("pressure")), 
 _grad_T(coupledGradient("temperature")),

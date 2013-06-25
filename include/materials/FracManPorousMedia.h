@@ -35,30 +35,61 @@ public:
   
 protected:
   virtual void computeProperties();
-
-  Real _input_density_rock;
-
+////Grab user input parameters
+  ////Matrix
+  //rock property inputs
   Real _matrix_permeability;
   Real _matrix_porosity;
-
+  Real _matrix_density;
+  //chem reaction inputs
+  Real _matrix_chem_diff;
+  std::vector<Real> _matrix_mineral;
+  std::vector<Real> _matrix_molecular_weight;
+  std::vector<Real> _matrix_mineral_density;
+    
+  ////Gravity
   Real _input_gravity;
   Real _gx;
   Real _gy;
   Real _gz;
-
+    
+  ////Fractures
+  //fracture map inputs
+  VariableValue & _fracture_map;
+  std::vector<int> _fracture_number_vec;
+  //rock property inputs
+  std::vector<Real> _fracture_permeability_vec;
+  std::vector<Real> _fracture_porosity_vec;
+  std::vector<Real> _fracture_density_vec;
+  //chem reaction inputs
+  std::vector<Real> _fracture_chem_diff_vec;
+  std::vector<Real> _fracture_mineral_vec;
+  std::vector<Real> _fracture_molecular_weight_vec;
+  std::vector<Real> _fracture_mineral_density_vec;
+  bool _has_chem_reactions;
+  std::vector<VariableValue *> _vals;
+    
+////Storing the number of vector entries into respective local variables
+  unsigned int num_frac_vec_entries;
+  unsigned int num_perm_vec_entries;
+  unsigned int num_poro_vec_entries;
+  unsigned int num_dens_vec_entries;
+  unsigned int num_chem_diff_vec_entries;
+  unsigned int num_mineral_vec_entries;
+  unsigned int num_mol_weight_vec_entries;
+  unsigned int num_min_dens_vec_entries;
+  unsigned int num_vals;
+    
+////Delcare material properties
+  //rock material props
   MaterialProperty<Real> & _permeability;
   MaterialProperty<Real> & _porosity;
   MaterialProperty<Real> & _density_rock;
+  //gravity material props
   MaterialProperty<Real> & _gravity;
   MaterialProperty<RealVectorValue> & _gravity_vector;
-
-    std::vector<int> _fracture_number_vec;
-    std::vector<Real> _fracture_permeability_vec;
-    std::vector<Real> _fracture_porosity_vec;
-    unsigned int num_frac_vec_entries;
-    unsigned int num_perm_vec_entries;
-    unsigned int num_poro_vec_entries;
-    VariableValue & _fracture_map;
+  //chem reactions material props
+  MaterialProperty<Real> & _diffusivity;
 
   void setPropsComputed(bool value) { _already_computed = value; }
   

@@ -18,15 +18,19 @@ template<>
 InputParameters validParams<Constant>()
 {
   InputParameters params = validParams<Material>();
-  params.set<Real>("thermal_conductivity")=1.0;
-  params.set<Real>("thermal_expansion")=1.0;
-  params.set<Real>("specific_heat")=1.0;
-  params.set<Real>("density")=1.0;
-  params.set<Real>("density_rock")=1.0;
-  params.set<Real>("youngs_modulus")=1.0;
-  params.set<Real>("poissons_ratio")=1.0;
-  params.set<Real>("biot_coeff")=1.0;
-  params.set<Real>("t_ref")=300;
+  //coupled variables
+  params.addCoupledVar("temperature", "Coupled non-linear termperature variable, [K]");
+    
+  //rock property inputs
+  params.addParam<Real>("thermal_conductivity", 1.0, "thermal conductivity coefficient, [W/(m.K)]");
+  params.addParam<Real>("thermal_expansion", 1.0, "thermal expansion coefficient, [1/K]");
+  params.addParam<Real>("specific_heat", 1.0, "specific heat of material, [J/(kg.K)]");
+  params.addParam<Real>("density", 1.0, "density of the water, [kg/m^3]");
+  params.addParam<Real>("density_rock", 1.0, "density of the rock matrix, [kg/m^3]");
+  params.addParam<Real>("youngs_modulus", 1.0, "youngs modulus, [Pa]");
+  params.addParam<Real>("poissons_ratio", 1.0, "Dimentionless");
+  params.addParam<Real>("biot_coeff", 1.0, "Dimentionless");
+  params.addParam<Real>("thermal_strain_ref_temp", 300.0, "Initial reference temperature where there is no thermal strain, [K]");
 
   return params;
 }
@@ -34,8 +38,11 @@ InputParameters validParams<Constant>()
 Constant::Constant(const std::string & name,
                    InputParameters parameters)
   :Material(name, parameters),
+////Grab coupled variables
      _has_temp(isCoupled("temp")),
      _temp(_has_temp ? coupledValue("temp") : _zero),
+
+////Grab user input parameters
      _my_thermal_conductivity(getParam<Real>("thermal_conductivity")),
      _my_thermal_expansion(getParam<Real>("thermal_expansion")),
      _my_specific_heat(getParam<Real>("specific_heat")),
@@ -43,7 +50,9 @@ Constant::Constant(const std::string & name,
      _my_youngs_modulus(getParam<Real>("youngs_modulus")),
      _my_poissons_ratio(getParam<Real>("poissons_ratio")),
      _my_biot_coeff(getParam<Real>("biot_coeff")),     
-     _my_t_ref(getParam<Real>("t_ref")),
+     _my_t_ref(getParam<Real>("thermal_strain_ref_temp")),
+
+////Declare material properties
      _thermal_conductivity(declareProperty<Real>("thermal_conductivity")),
      _thermal_strain(declareProperty<Real>("thermal_strain")),
      _alpha(declareProperty<Real>("alpha")),

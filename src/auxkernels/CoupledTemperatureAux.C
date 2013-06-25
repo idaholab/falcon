@@ -19,9 +19,9 @@ template<>
 InputParameters validParams<CoupledTemperatureAux>()
 {
     InputParameters params = validParams<AuxKernel>();
-    params.addCoupledVar("pressure", "Use pressure to calculate variable temperature");
-    params.addCoupledVar("enthalpy", "Use enthalpy to calculate variable temperature");
-    params.addParam("temperature", 373.15, "Initial value for temperature");
+    params.addCoupledVar("pressure", "Use pressure to calculate variable temperature, [Pa]");
+    params.addCoupledVar("enthalpy", "Use enthalpy to calculate variable temperature, [J]");
+    params.addParam("temperature", 373.15, "Initial value for temperature, [K]");
     params.addRequiredParam<UserObjectName>("water_steam_properties", "EOS functions, calculate water and steam properties");
     return params;
 }

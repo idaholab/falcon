@@ -16,13 +16,6 @@
 #define FRACTURESSOLIDMECHANICS_H
 
 #include "FracturesPorousMedia.h"
-#include "ColumnMajorMatrix.h"
-#include <cmath>
-
-//libMesh includes
-#include "libmesh/tensor_value.h"
-#include "libmesh/vector_value.h"
-
 
 //Forward Declarations
 class FracturesSolidMechanics;
@@ -40,18 +33,10 @@ public:
                  InputParameters parameters);
 
 protected:
-
-  void rotateSymmetricTensor( const ColumnMajorMatrix & , const RealTensorValue & ,
-                                     RealTensorValue & );
-  
   virtual void computeProperties();
-
-  Real _fracture_num;
-  Real _matrix_num;
-    
+////Grab coupled variables
   bool _has_temp;
   VariableValue  & _temperature;
-
   bool _has_x_disp;
   VariableGradient & _grad_x_disp;
   VariableGradient & _grad_x_disp_old;
@@ -62,35 +47,42 @@ protected:
   VariableGradient & _grad_z_disp;
   VariableGradient & _grad_z_disp_old;
 
+////Grab user input parameters
+  //General
   Real _input_poissons_ratio;
   Real _input_biot_coeff;
   Real _input_biot_modulus;
-    
+  //Matrix
+  Real _matrix_num;
+  Real _matrix_thermal_expansion;
+  Real _matrix_youngs_modulus;
+  Real _matrix_t_ref;
+  //Fractures
+  Real _fracture_num;
   Real _fracture_thermal_expansion;
   Real _fracture_youngs_modulus;
   Real _fracture_t_ref;
   
-  Real _matrix_thermal_expansion;
-  Real _matrix_youngs_modulus;
-  Real _matrix_t_ref;
-
+///Declare material properties
+  //rock material props
   MaterialProperty<Real> & _thermal_strain;
   MaterialProperty<Real> & _alpha;
   MaterialProperty<Real> & _youngs_modulus;
   MaterialProperty<Real> & _poissons_ratio;
   MaterialProperty<Real> & _biot_coeff;
   MaterialProperty<Real> & _biot_modulus;
-
+  //stress/strain material props
   MaterialProperty<RealVectorValue> & _stress_normal_vector;
   MaterialProperty<RealVectorValue> & _stress_shear_vector;
   MaterialProperty<RealVectorValue> & _strain_normal_vector;
   MaterialProperty<RealVectorValue> & _strain_shear_vector;
 
-  Real _E;
-  Real _nu;
-  Real _c1;
-  Real _c2;
-  Real _c3;
+////Local variables declared
+  Real E;
+  Real nu;
+  Real c1;
+  Real c2;
+  Real c3;
 };
 
 #endif //FRACTURESSOLIDMECHANICS_H
