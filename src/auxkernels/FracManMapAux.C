@@ -19,16 +19,17 @@ InputParameters validParams<FracManMapAux>()
 {
     InputParameters params = validParams<AuxKernel>();
 
+    MooseEnum metric_conversion_code("0,1");
     MooseEnum normal_component_code("0,1,2");
     MooseEnum output_type_code("0,1");
      
      
-    //params.addRequiredParam<std::string>("West_Reduced_File_name", "Name of the file containing the West Reduced fracture data.");
-    //params.addRequiredParam<std::string>("Fault_File_name", "Name of the file containing the main fault fracture data.");
-    params.addRequiredParam<std::vector<std::string> >("file_names", "A list of the FracMan files to be loaded");
-    params.addRequiredParam<std::vector<int> >("fracture_numbers","The number associated with each of the fractures you would like to include from this file");
+    params.addRequiredParam<std::vector<Real> >("coordinate_shift", "Enter the x y and z elements of the coordinate shift (ft)");
+    params.addRequiredParam<std::vector<std::string> >("file_names", "List the FracMan files to be loaded");
+    params.addRequiredParam<std::vector<int> >("fracture_numbers","List the ID number of the fractures to be included in the simulation");
+    params.addParam<MooseEnum>("metric_conversion", metric_conversion_code, "Convert to metric? 0 = no, 1 = yes.");
     params.addParam<MooseEnum>("normal_component", normal_component_code, "Choose the normal component to be calculated:  0 = x, 1 = y, 2 = z.");
-    params.addParam<MooseEnum>("output_type", output_type_code, "Choose the output:  0 = _frac_man_map, 1 = _frac_man_normal<component>.");
+    params.addParam<MooseEnum>("output_type", output_type_code, "Choose output:  0 = _frac_man_map, 1 = _frac_man_normal<component>.");
     params.addParam<Real>("tolerance", 0.9, "closest_point tolerance");
 
     return params;
@@ -36,10 +37,10 @@ InputParameters validParams<FracManMapAux>()
 
 FracManMapAux::FracManMapAux(const std::string & name, InputParameters parameters)
   :AuxKernel(name, parameters),
-//_west_reduced_file_name(getParam<std::string>("West_Reduced_File_name")),
-//_fault_file_name(getParam<std::string>("Fault_File_name")),
+_coordinate_shift(getParam<std::vector<Real> >("coordinate_shift")),
 _file_names(getParam<std::vector<std::string> > ("file_names")),
 _fracture_number_vec(getParam<std::vector<int> >("fracture_numbers")),
+_metric_conversion(getParam<MooseEnum>("metric_conversion")),   
 _normal_component(getParam<MooseEnum>("normal_component")),   
 _output_type(getParam<MooseEnum>("output_type")),   
 _tol(getParam<Real>("tolerance"))
@@ -53,7 +54,6 @@ _tol(getParam<Real>("tolerance"))
     bool found_fracture_vertices_start_line = false;
     bool found_number_of_fractures_line = false;
     bool found_tessfracture_vertices_start_line = false;
-    //unsigned int fracture_number = 0;
     std::string fracture_vertices_start_line_key = "BEGIN FRACTURE";
     unsigned int normal_index = 0;
     unsigned int number_of_files = 0;
@@ -73,10 +73,8 @@ _tol(getParam<Real>("tolerance"))
     Real x = 0, y = 0, z = 0;
     
     
-
     //Determine the size of num_vec_entries for indexing purposes
     num_vec_entries = _fracture_number_vec.size();
-    
 
     //Determine the size of _file_names for indexing purposes
     number_of_files = _file_names.size();
@@ -168,10 +166,9 @@ _tol(getParam<Real>("tolerance"))
                 {
                   fracman_file >> extra >> x >> y >> z;
 
-                  //std::cout << "x = " << x << "\n";
-                  fracture_vertices_x[vertice_index] = x;
-                  fracture_vertices_y[vertice_index] = y;
-                  fracture_vertices_z[vertice_index] = z;
+                  fracture_vertices_x[vertice_index] = (x + _coordinate_shift[0]) * (1 - (0.6952 * _metric_conversion));
+                  fracture_vertices_y[vertice_index] = (y + _coordinate_shift[1]) * (1 - (0.6952 * _metric_conversion));
+                  fracture_vertices_z[vertice_index] = (z + _coordinate_shift[2]) * (1 - (0.6952 * _metric_conversion));
                   vertice_index = vertice_index + 1;
                   
                 }
@@ -194,6 +191,8 @@ _tol(getParam<Real>("tolerance"))
             
         
         }
+
+        
 
         //Check if the file has tessfractures and if so begin the process of extracting their vertices
         if (number_of_tessfractures[i] > 0)
@@ -225,10 +224,9 @@ _tol(getParam<Real>("tolerance"))
                 {
                   fracman_file >> extra >> x >> y >> z;
 
-                  //std::cout << "x = " << x << "\n";
-                  fracture_vertices_x[vertice_index] = x;
-                  fracture_vertices_y[vertice_index] = y;
-                  fracture_vertices_z[vertice_index] = z;
+                  fracture_vertices_x[vertice_index] = (x + _coordinate_shift[0]) * (1 - (0.6952 * _metric_conversion));
+                  fracture_vertices_y[vertice_index] = (y + _coordinate_shift[1]) * (1 - (0.6952 * _metric_conversion));
+                  fracture_vertices_z[vertice_index] = (z + _coordinate_shift[2]) * (1 - (0.6952 * _metric_conversion));
                   vertice_index = vertice_index + 1;
                   
                 }
@@ -299,7 +297,7 @@ FracManMapAux::computeValue()
         int m = j - 1;
         
     
-        //for (j = 0; j < 72; j++)
+       
         //{
 
         //Create points for each vertice so that a plane can be calculated
@@ -322,15 +320,13 @@ FracManMapAux::computeValue()
         Point p2(xp,yp,zp);
 
         //Create the plane and check if the current element contains the fracture
-        /*frac_plane_vector[j] = */frac.create_from_three_points(p0,p1,p2);
+        frac.create_from_three_points(p0,p1,p2);
         
-        //for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
-        //{
-            Point current_point(_current_elem->centroid());
+        Point current_point(_current_elem->centroid());
             
-            Point point_closest = frac.closest_point(current_point);
+        Point point_closest = frac.closest_point(current_point);
             
-            bool test = point_closest.absolute_fuzzy_equals(current_point, _tol);
+        bool test = point_closest.absolute_fuzzy_equals(current_point, _tol);
 
         //If the element contains the fracture assign the fracture code and normal components    
         if (test == true)
@@ -344,8 +340,6 @@ FracManMapAux::computeValue()
             _frac_man_normal_z = fracture_normal_z[m];
             //std::cout << "true" << std::endl;
         }
-       //}
-    //}
     }
 
     //Run through a series of logic statements to output the required information based on user input
@@ -376,7 +370,7 @@ FracManMapAux::computeValue()
     }
     else
     {
-        mooseError("output type is out of bounds. Must be either 0 and 1.");
+        mooseError("output type is out of bounds. Must be either 0 or 1.");
     }
     
     
