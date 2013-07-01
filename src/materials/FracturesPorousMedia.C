@@ -43,14 +43,14 @@ InputParameters validParams<FracturesPorousMedia>()
   params.addParam<Real>("matrix_num", 1, "number in fracture map that indicates matrix");
   params.addParam<Real>("model_fracture_aperture", 1.0, "width of fracture/high permeability area in the model");
   //rock property inputs
-  params.addParam<Real>("fracture_permeability", "intrinsic permeability of fractures (m^2)");
-  params.addParam<Real>("fracture_porosity", "rock porosity of fractures");
-  params.addParam<Real>("fracture_density", "rock density of fractures (kg/m^3)");
+  params.addParam<Real>("fracture_permeability", 1e-12, "intrinsic permeability of fractures (m^2)");
+  params.addParam<Real>("fracture_porosity", 0.3, "rock porosity of fractures");
+  params.addParam<Real>("fracture_density", 2500, "rock density of fractures (kg/m^3)");
   //chem reaction coupled variables and parameters
-  params.addParam<Real>("fracture_diffusivity", "the chemical diffusivity of the fractures, [m^2/s]");
-  params.addParam<std::vector<Real> >("fracture_mineral", "Initial mineral concentration in fractures, [mol/L] solution");
-  params.addParam<std::vector<Real> >("fracture_molecular_weight", "The molecular weight of mineral in fractures, [g/mol]");
-  params.addParam<std::vector<Real> >("fracture_mineral_density", "The density of mineral in fractures, [g/cm^3]");
+  params.addParam<Real>("fracture_diffusivity", 1.0e-8, "the chemical diffusivity of the fractures, [m^2/s]");
+  params.addParam<std::vector<Real> >("fracture_mineral", std::vector<Real>(1, 16.65), "Initial mineral concentration in fractures, [mol/L] solution");
+  params.addParam<std::vector<Real> >("fracture_molecular_weight", std::vector<Real>(1, 100.08), "The molecular weight of mineral in fractures, [g/mol]");
+  params.addParam<std::vector<Real> >("fracture_mineral_density", std::vector<Real>(1, 2.5), "The density of mineral in fractures, [g/cm^3]");
   params.addParam<bool>("has_chem_reactions", false, "flag if chemical reactions are present");
   params.addCoupledVar("v", "caco3");
     

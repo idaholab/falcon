@@ -31,9 +31,9 @@ InputParameters validParams<StochasticPorousMedia>()
   //chemical reaction coupled variables and paramerters
   params.addParam<bool>("has_chem_reactions", false, "flag true if chemical reactions are present");
   params.addParam<Real>("diffusivity", 1e-8, "the chemical diffusicity, [m^2/s]");
-  params.addParam<std::vector<Real> >("mineral", "Initial mineral concentration, [mol/L] solution");
-  params.addParam<std::vector<Real> >("molecular_weight", "The molecular weight of mineral, [g/mol]");
-  params.addParam<std::vector<Real> >("mineral_density", "The density of mineral [g/cm^3]");
+  params.addParam<std::vector<Real> >("mineral", std::vector<Real>(1, 16.65), "Initial mineral concentration, [mol/L] solution");
+  params.addParam<std::vector<Real> >("molecular_weight", std::vector<Real>(1, 100.08), "The molecular weight of mineral, [g/mol]");
+  params.addParam<std::vector<Real> >("mineral_density", std::vector<Real>(1, 2.5), "The density of mineral [g/cm^3]");
   params.addCoupledVar("v", "caco3");
     
   return params;

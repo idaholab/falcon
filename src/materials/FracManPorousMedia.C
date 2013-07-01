@@ -41,14 +41,14 @@ InputParameters validParams<FracManPorousMedia>()
   params.addCoupledVar("fracture_map", "AuxVariable that serves as a map of which elements are fractures or matrix from the FracMan input file, unique numbers are assigned to each fracture");
   params.addRequiredParam<std::vector<int> >("fracture_numbers","The number associated with each of the fractures you would like to include from the FracMan file");
   //rock property inputs
-  params.addParam<std::vector<Real> >("fracture_permeabilities", "The permeability values associated with each of the fractures, [m^2]");
-  params.addParam<std::vector<Real> >("fracture_porosities", "The porosity values associated with each of the fractures");
-  params.addParam<std::vector<Real> >("fracture_densities", "The rock density values associated with each of the fractures, kg/m^3]");
+  params.addParam<std::vector<Real> >("fracture_permeabilities", std::vector<Real>(1, 1.0e-12), "The permeability values associated with each of the fractures, [m^2]");
+  params.addParam<std::vector<Real> >("fracture_porosities", std::vector<Real>(1, 0.3), "The porosity values associated with each of the fractures");
+  params.addParam<std::vector<Real> >("fracture_densities", std::vector<Real>(1, 2500), "The rock density values associated with each of the fractures, [kg/m^3]");
   //chem reaction coupled variables and parameters
-  params.addParam<std::vector<Real> >("fracture_diffusivity", "The chemical diffusivity of the fractures, [m^2/s]");
-  params.addParam<std::vector<Real> >("fracture_mineral", "Initial mineral concentration in fractures, [mol/L] solution");
-  params.addParam<std::vector<Real> >("fracture_molecular_weight", "The molecular weight of mineral in fractures, [g/mol]");
-  params.addParam<std::vector<Real> >("fracture_mineral_density", "The density of mineral in fractures, [g/cm^3]");
+  params.addParam<std::vector<Real> >("fracture_diffusivity", std::vector<Real>(1, 1.0e-8), "The chemical diffusivity of the fractures, [m^2/s]");
+  params.addParam<std::vector<Real> >("fracture_mineral", std::vector<Real>(1, 16.65), "Initial mineral concentration in fractures, [mol/L] solution");
+  params.addParam<std::vector<Real> >("fracture_molecular_weight", std::vector<Real>(1, 100.08), "The molecular weight of mineral in fractures, [g/mol]");
+  params.addParam<std::vector<Real> >("fracture_mineral_density", std::vector<Real>(1, 2.5), "The density of mineral in fractures, [g/cm^3]");
   params.addParam<bool>("has_chem_reactions", false, "flag true if chemical reactions are present");
   params.addCoupledVar("v", "caco3");
     
@@ -116,13 +116,13 @@ FracManPorousMedia::FracManPorousMedia(const std::string & name,
     num_min_dens_vec_entries    = _fracture_mineral_density_vec.size();
     
     // we want either one value of perm/poro/density/diffusivity to assign to all fractures or an individual value to assign to each fracture
-    if ((num_perm_vec_entries > 2) && (num_perm_vec_entries < num_frac_vec_entries) || (num_perm_vec_entries > num_frac_vec_entries))
+    if (((num_perm_vec_entries > 2) && (num_perm_vec_entries < num_frac_vec_entries)) || (num_perm_vec_entries > num_frac_vec_entries))
         mooseError("You must provide either one permeability value for all fractures or a permeability value for each fracture");
-    if ((num_poro_vec_entries > 2) && (num_poro_vec_entries < num_frac_vec_entries) || (num_poro_vec_entries > num_frac_vec_entries))
+    if (((num_poro_vec_entries > 2) && (num_poro_vec_entries < num_frac_vec_entries)) || (num_poro_vec_entries > num_frac_vec_entries))
         mooseError("You must provide either one porosity value for all fractures or a porosity value for each fracture");
-    if ((num_dens_vec_entries > 2) && (num_dens_vec_entries < num_frac_vec_entries) || (num_dens_vec_entries > num_frac_vec_entries))
+    if (((num_dens_vec_entries > 2) && (num_dens_vec_entries < num_frac_vec_entries)) || (num_dens_vec_entries > num_frac_vec_entries))
         mooseError("You must provide either one rock_density value for all fractures or a rock_density value for each fracture");
-    if ((num_chem_diff_vec_entries > 2) && (num_chem_diff_vec_entries < num_frac_vec_entries) || (num_chem_diff_vec_entries > num_frac_vec_entries))
+    if (((num_chem_diff_vec_entries > 2) && (num_chem_diff_vec_entries < num_frac_vec_entries)) || (num_chem_diff_vec_entries > num_frac_vec_entries))
         mooseError("You must provide either one diffusivity value for all fractures or a diffusivity value for each fracture");
 
     //resize and fill in _vals with number of provided chem species
