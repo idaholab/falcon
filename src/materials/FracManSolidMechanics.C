@@ -100,11 +100,11 @@ FracManSolidMechanics::FracManSolidMechanics(const std::string & name,
     num_tref_vec_entries = _fracture_t_ref_vec.size();
     
     // we want either one value of thermal_expantion/youngs_modulus/reference_temp to assign to all fractures or an individual value to assign to each fracture
-    if ((num_te_vec_entries > 2) && (num_te_vec_entries < num_frac_vec_entries) || (num_te_vec_entries > num_frac_vec_entries))
+    if (((num_te_vec_entries > 2) && (num_te_vec_entries < num_frac_vec_entries)) || (num_te_vec_entries > num_frac_vec_entries))
         mooseError("You must provide either one thermal_expansion value for all fractures or a thermal_expansion value for each fracture");
-    if ((num_ym_vec_entries > 2) && (num_ym_vec_entries < num_frac_vec_entries) || (num_ym_vec_entries > num_frac_vec_entries))
+    if (((num_ym_vec_entries > 2) && (num_ym_vec_entries < num_frac_vec_entries)) || (num_ym_vec_entries > num_frac_vec_entries))
         mooseError("You must provide either one youngs_modulus value for all fractures or a youngs_modulus value for each fracture");
-    if ((num_tref_vec_entries > 2) && (num_perm_vec_entries < num_tref_vec_entries) || (num_tref_vec_entries > num_frac_vec_entries))
+    if (((num_tref_vec_entries > 2) && (num_perm_vec_entries < num_tref_vec_entries)) || (num_tref_vec_entries > num_frac_vec_entries))
         mooseError("You must provide either one t_ref value for all fractures or a t_ref value for each fracture");}
 
 void

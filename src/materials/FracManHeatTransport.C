@@ -55,7 +55,7 @@ FracManHeatTransport::FracManHeatTransport(const std::string & name,
     num_therm_cond_vec_entries  = _fracture_thermal_conductivity_vec.size();
     
     // we want either one value of thermal_conductivity to assign to all fractures or an individual value to assign to each fracture
-    if ((num_therm_cond_vec_entries > 2) && (num_therm_cond_vec_entries < num_frac_vec_entries) || (num_therm_cond_vec_entries > num_frac_vec_entries))
+    if (((num_therm_cond_vec_entries > 2) && (num_therm_cond_vec_entries < num_frac_vec_entries)) || (num_therm_cond_vec_entries > num_frac_vec_entries))
         mooseError("You must provide either one thermal conductivity value for all fractures or a thermal conductivity value for each fracture");
 }
 

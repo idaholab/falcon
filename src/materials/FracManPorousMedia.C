@@ -135,11 +135,11 @@ FracManPorousMedia::FracManPorousMedia(const std::string & name,
     num_vals = _vals.size();
     
     // we want either one value per species of mineral/molecular_weight/mineral_density to assign to all fractures or an individual value per species to assign to each fracture
-    if ((num_mineral_vec_entries > 2*num_vals) && (num_mineral_vec_entries < num_frac_vec_entries*num_vals) || (num_mineral_vec_entries > num_frac_vec_entries*num_vals))
+    if (((num_mineral_vec_entries > 2*num_vals) && (num_mineral_vec_entries < num_frac_vec_entries*num_vals)) || (num_mineral_vec_entries > num_frac_vec_entries*num_vals))
         mooseError("You must provide either one mineral value per species for all fractures or a mineral value per species for each fracture");
-    if ((num_mol_weight_vec_entries > 2*num_vals) && (num_mol_weight_vec_entries < num_frac_vec_entries*num_vals) || (num_mol_weight_vec_entries > num_frac_vec_entries*num_vals))
+    if (((num_mol_weight_vec_entries > 2*num_vals) && (num_mol_weight_vec_entries < num_frac_vec_entries*num_vals)) || (num_mol_weight_vec_entries > num_frac_vec_entries*num_vals))
         mooseError("You must provide either one molecular weight value per species for all fractures or a molecular weight value per species for each fracture");
-    if ((num_min_dens_vec_entries > 2*num_vals) && (num_min_dens_vec_entries < num_frac_vec_entries*num_vals) || (num_min_dens_vec_entries > num_frac_vec_entries*num_vals))
+    if (((num_min_dens_vec_entries > 2*num_vals) && (num_min_dens_vec_entries < num_frac_vec_entries*num_vals)) || (num_min_dens_vec_entries > num_frac_vec_entries*num_vals))
         mooseError("You must provide either one mineral density value per species for all fractures or a mineral density value per species for each fracture");
     
     // to make life easier, we ask that the number of mineral/molecular_weight/mineral_density values provided are the same
