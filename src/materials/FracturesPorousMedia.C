@@ -26,9 +26,9 @@ InputParameters validParams<FracturesPorousMedia>()
   params.addParam<Real>("matrix_density", 2.50e3, "rock density of matrix (kg/m^3)");
   //chem reaction inputs
   params.addParam<Real>("matrix_diffusivity", 1e-8, "the chemical diffusivity of the matrix, [m^2/s]");
-  params.addParam<std::vector<Real> >("matrix_mineral", "Initial mineral concentration in matrix, [mol/L] solution");
-  params.addParam<std::vector<Real> >("matrix_molecular_weight", "The molecular weight of mineral in the matrix, [g/mol]");
-  params.addParam<std::vector<Real> >("matrix_mineral_density", "The density of mineral in the matrix, [g/cm^3]");
+  params.addParam<std::vector<Real> >("matrix_mineral", std::vector<Real>(1, 16.65), "Initial mineral concentration in matrix, [mol/L] solution");
+  params.addParam<std::vector<Real> >("matrix_molecular_weight", std::vector<Real>(1, 100.08), "The molecular weight of mineral in the matrix, [g/mol]");
+  params.addParam<std::vector<Real> >("matrix_mineral_density", std::vector<Real>(1, 2.5), "The density of mineral in the matrix, [g/cm^3]");
 
 ////Gravity
   params.addParam<Real>("gravity",9.80665,"gravity acceleration constant");
