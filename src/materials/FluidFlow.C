@@ -258,12 +258,14 @@ void FluidFlow::computeProperties()
 					                
         _dens_water_out[qp] = _dens_water_PT;
                          
-			
-        //Obtaining value for density_old when given parameters are temperature and pressure (no enthalpy)
-        _water_steam_properties->waterEquationOfStatePT (_pressure_old[qp], _temperature_old[qp], _var, _time_old_dens_water_PT);
+		if (_is_transient)
+        {
+            //Obtaining value for density_old when given parameters are temperature and pressure (no enthalpy)
+            _water_steam_properties->waterEquationOfStatePT (_pressure_old[qp], _temperature_old[qp], _var, _time_old_dens_water_PT);
                 
-        _time_old_dens_water_out[qp] = _time_old_dens_water_PT;
-                
+            _time_old_dens_water_out[qp] = _time_old_dens_water_PT;
+        }
+          
                 
         //Obtaining value for viscosity when given parameters are temperature and pressure (no enthalpy)
         _water_steam_properties->viscosity (_dens_water_PT, _temperature[qp], _visc_water_PT);
