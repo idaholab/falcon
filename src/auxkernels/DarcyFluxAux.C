@@ -12,38 +12,37 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#include "VelocityAux.h"
+#include "DarcyFluxAux.h"
 
 template<>
-InputParameters validParams<VelocityAux>()
+InputParameters validParams<DarcyFluxAux>()
 {
      InputParameters params = validParams<AuxKernel>();
-     params.addParam<int>("component",0,"Direction/component of the velocity vector (0=x, 1=y, 2=z)");
+     params.addParam<int>("component",0,"component of the pressure vector");
      MooseEnum fluid_phase("steam, water", "water");
      params.addParam<MooseEnum>("phase", fluid_phase, "Sets the phase of interest (water, steam)");
      return params;
 }
 
-VelocityAux::VelocityAux(const std::string & name, InputParameters parameters)
+DarcyFluxAux::DarcyFluxAux(const std::string & name, InputParameters parameters)
   :AuxKernel(name, parameters),
    _darcy_flux_water(getMaterialProperty<RealGradient>("darcy_flux_water")),
    _darcy_flux_steam(getMaterialProperty<RealGradient>("darcy_flux_steam")),
-   _porosity(getMaterialProperty<Real>("porosity")),
-   _phase(getParam<MooseEnum>("phase")),
+   _phase(getParam<MooseEnum>("fluid_phase")),
    _i(getParam<int>("component"))
 
 {}
 
 Real
-VelocityAux::computeValue()
+DarcyFluxAux::computeValue()
 {
   if (_phase == "steam")
   {
-    return _darcy_flux_steam[_qp](_i)/_porosity[_qp];
+    return _darcy_flux_steam[_qp](_i);
   }
   else //the phase is water
   {
-    return _darcy_flux_water[_qp](_i)/_porosity[_qp];
+    return _darcy_flux_water[_qp](_i);
   }
   
 }

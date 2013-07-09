@@ -53,6 +53,7 @@
 
 //auxkernels
 #include "CoupledTemperatureAux.h"         // T as functon of (P,H) -two phase formulation
+#include "DarcyFluxAux.h"
 #include "VelocityAux.h"
 #include "StressStrainDamageComputeAux.h"
 #include "FracManMapAux.h"

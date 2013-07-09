@@ -12,22 +12,22 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef VELOCITYAUX_H
-#define VELOCITYAUX_H
+#ifndef DARCYFLUXAUX_H
+#define DARCYFLUXAUX_H
 
 #include "AuxKernel.h"
 
 
 //Forward Declarations
-class VelocityAux;
+class DarcyFluxAux;
 
 template<>
-InputParameters validParams<VelocityAux>();
+InputParameters validParams<DarcyFluxAux>();
 
 /** 
  * Coupled auxiliary value
  */
-class VelocityAux : public AuxKernel
+class DarcyFluxAux : public AuxKernel
 {
 public:
 
@@ -36,19 +36,18 @@ public:
    * derived classes can be built using the same
    * constructor.
    */
-  VelocityAux(const std::string & name, InputParameters parameters);
+  DarcyFluxAux(const std::string & name, InputParameters parameters);
 
-  virtual ~VelocityAux() {}
+  virtual ~DarcyFluxAux() {}
   
 protected:
   virtual Real computeValue();
 
   MaterialProperty<RealGradient> & _darcy_flux_water;
   MaterialProperty<RealGradient> & _darcy_flux_steam;
-  MaterialProperty<Real> & _porosity;
   std::string _phase;
   int _i;
 
 };
 
-#endif //VELOCITYAUX_H
+#endif //DARCYFLUXAUX_H
