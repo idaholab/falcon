@@ -122,46 +122,13 @@ FracturesPorousMedia::computeProperties()
 {
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
-      //material property assignment for matrix
-      if (_fractures[qp] == _matrix_num)
-      {
-          _permeability[qp]         = _matrix_permeability;
-          _porosity[qp]             = _matrix_porosity;
-          _density_rock[qp]         = _matrix_density;
-          _diffusivity[qp]          = _matrix_chem_diff;
-          
-          // if dissolution or precipitation is taking place, we need to adjust permeability and porosity accordingly
-          if (_has_chem_reactions)
-          {
-              if (_vals.size())
-              {
-                  Real _initial_vf = 1.0;
-                  Real _vf = 1.0;
-                  
-                  for (unsigned int i=0; i<_vals.size(); ++i)
-                  {
-                      _initial_vf += 1.0e-3*_matrix_mineral[i]*_matrix_molecular_weight[i]/_matrix_mineral_density[i];
-                      _vf += 1.0e-3*(*_vals[i])[qp]*_matrix_molecular_weight[i]/_matrix_mineral_density[i];
-                  }
-                  _porosity[qp] = _initial_vf *_matrix_porosity/_vf;
-              }
-              // Update porosity
-              if (_porosity[qp] < 1.0e-3)
-                  _porosity[qp]=1.0e-3;
-              
-              // Permeability changes calculated from porosity changes according to Carman-Kozeny relationship k=ki*(1-ni)^2 * (n/ni)^3 / (1-n)^2
-              _permeability[qp] = _matrix_permeability * (1.0-_matrix_porosity) * (1.0-_matrix_porosity) * std::pow(_porosity[qp]/_matrix_porosity,3)/(1.0-_porosity[qp])/(1.0-_porosity[qp]);
-              
-              // The diffusivity used in the kernels (already multiplied by porosity)
-              _diffusivity[qp] = _matrix_chem_diff*_porosity[qp];
-          }
-      }
       //material property assignment for fractures
-      else if (_fractures[qp] == _fracture_num)
+      if (_fractures[qp] == _fracture_num)
       {
           Real aperture = sqrt(12 * _fracture_permeability);
+          Real fracture_ratio = _model_fracture_aperture / aperture;
           
-          _permeability[qp]         = std::pow(aperture , 3) / (12 * _model_fracture_aperture);
+          _permeability[qp]         = ((std::pow(_model_fracture_aperture,2)) * (std::pow((1/fracture_ratio) , 3)))/12;
           _porosity[qp]             = _fracture_porosity;
           _density_rock[qp]         = _fracture_density;
           _diffusivity[qp]          = _fracture_chem_diff;
@@ -190,7 +157,7 @@ FracturesPorousMedia::computeProperties()
               _permeability[qp] = std::pow(aperture , 3) / (12 * _model_fracture_aperture);
 
               // The diffusivity used in the kernels (already multiplied by porosity)
-              _diffusivity[qp] = _matrix_chem_diff*_porosity[qp];
+              _diffusivity[qp] = _fracture_chem_diff*_porosity[qp];
           }
       }
       //material property assignment for anything else will get lumped in with the matrix

@@ -147,6 +147,7 @@ registerObjects(Factory & factory)
   //auxkernels
   registerAux(CoupledTemperatureAux);
   registerAux(VelocityAux);
+  registerAux(DarcyFluxAux);
   registerAux(StressStrainDamageComputeAux);
   registerAux(StochasticFieldAux);
   registerAux(FracManMapAux);

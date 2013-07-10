@@ -28,7 +28,7 @@ DarcyFluxAux::DarcyFluxAux(const std::string & name, InputParameters parameters)
   :AuxKernel(name, parameters),
    _darcy_flux_water(getMaterialProperty<RealGradient>("darcy_flux_water")),
    _darcy_flux_steam(getMaterialProperty<RealGradient>("darcy_flux_steam")),
-   _phase(getParam<MooseEnum>("fluid_phase")),
+   _phase(getParam<MooseEnum>("phase")),
    _i(getParam<int>("component"))
 
 {}

@@ -45,7 +45,7 @@ protected:
 
   MaterialProperty<RealGradient> & _darcy_flux_water;
   MaterialProperty<RealGradient> & _darcy_flux_steam;
-  std::string _phase;
+  MooseEnum _phase;
   int _i;
 
 };
