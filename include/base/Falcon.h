@@ -29,6 +29,7 @@ namespace Falcon
    * Registers all Kernels and BCs
    */
   void registerObjects(Factory & factory);
+  void associateSyntax(Syntax & syntax, ActionFactory & action_factory);
 }
 
 #endif //FALCON_H

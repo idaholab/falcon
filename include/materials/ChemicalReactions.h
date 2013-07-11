@@ -12,31 +12,40 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#include "Moose.h"
-#include "Falcon.h"
-#include "FalconApp.h"
+#ifndef CHEMICALREACTIONS_H
+#define CHEMICALREACTIONS_H
 
-#include "FluidMassEnergyBalanceModule.h"
-#include "ChemicalReactionsModule.h"
+#include "PorousMedia.h"
+
+
+//Forward Declarations
+class ChemicalReactions;
 
 template<>
-InputParameters validParams<FalconApp>()
-{
-  InputParameters params = validParams<MooseApp>();
-  return params;
-}
+InputParameters validParams<ChemicalReactions>();
 
-FalconApp::FalconApp(const std::string & name, InputParameters parameters) :
-    MooseApp(name, parameters)
+/**
+ * Simple material with PorousMedia properties.
+ */
+class ChemicalReactions : virtual public PorousMedia
 {
-  srand(libMesh::processor_id());
+public:
+  ChemicalReactions(const std::string & name,
+              InputParameters parameters);
   
-  Moose::registerObjects(_factory);
-  Elk::FluidMassEnergyBalance::registerObjects(_factory);
-  Elk::ChemicalReactions::registerObjects(_factory);
-  Falcon::registerObjects(_factory);
+protected:
+  virtual void computeProperties();
+////Grab user input parameters
+  Real _input_chem_diff;
+  std::vector<Real> _mineral;
+  std::vector<Real> _molecular_weight;
+  std::vector<Real> _mineral_density;
+  std::vector<VariableValue *> _vals;
 
-  Moose::associateSyntax(_syntax, _action_factory);
-  Elk::ChemicalReactions::associateSyntax(_syntax, _action_factory);
-  Falcon::associateSyntax(_syntax, _action_factory);
-}
+////Declare material properties
+  MaterialProperty<Real> & _diffusivity;
+  
+};
+
+
+#endif //POROUSMEDIA_H

@@ -126,10 +126,15 @@
 []
 
 [Materials]
-  [./frac]
-    type = Geothermal
+  active = 'GeothermalMaterial'
+  [./GeothermalMaterial]
     block = 0
+    solid_mechanics = true
+    heat_transport = false
+    fluid_flow = true
+    chemical_reactions = false
     pressure = pressure
+    temp_dependent_fluid_props = false
     x_disp = disp_x
     y_disp = disp_y
     z_disp = disp_z

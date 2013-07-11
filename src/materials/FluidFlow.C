@@ -105,14 +105,16 @@ FluidFlow::FluidFlow(const std::string & name, InputParameters parameters) :
     //Equation of State Properties - Temperature/Pressure based, constant density and viscosity inputs
     _constant_density(getParam<Real>("constant_density")),
     _constant_viscosity(getParam<Real>("constant_viscosity"))
+
+    //_permeability(getMaterialProperty<Real>("permeability"))
 { }
 
 
 
 void FluidFlow::computeProperties()
 {
-  if (!areParentPropsComputed())
-    PorousMedia::computeProperties();
+    if (!areParentPropsComputed())
+        PorousMedia::computeProperties();
     
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {  

@@ -18,6 +18,7 @@
 #include "FluidFlow.h"
 #include "HeatTransport.h"
 #include "SolidMechanics.h"
+#include "ChemicalReactions.h"
 
 
 //Forward Declarations
@@ -29,7 +30,7 @@ InputParameters validParams<Geothermal>();
 /**
  * Simple material with Geothermal properties.
  */
-class Geothermal : public FluidFlow, public HeatTransport, public SolidMechanics
+class Geothermal : public FluidFlow, public HeatTransport, public SolidMechanics, public ChemicalReactions
 {
 public:
   Geothermal(const std::string & name,

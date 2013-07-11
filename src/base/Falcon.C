@@ -17,6 +17,8 @@
 #include "FalconApp.h"
 #include "Factory.h"
 #include "AppFactory.h"
+#include "ActionFactory.h"
+#include "Syntax.h"
 
 //kernels
 ///////////////////////////////////////////////////////////////
@@ -76,6 +78,7 @@
 #include "FluidFlow.h"
 #include "HeatTransport.h"
 #include "SolidMechanics.h"
+#include "ChemicalReactions.h"
 #include "Geothermal.h"
 
 #include "FracturesPorousMedia.h"
@@ -86,10 +89,10 @@
 
 #include "StochasticMaterial.h"
 #include "StochasticPorousMedia.h"
-#include "StochasticGeothermal.h"
 #include "StochasticFluidFlow.h"
 #include "StochasticHeatTransport.h"
 #include "StochasticSolidMechanics.h"
+#include "StochasticGeothermal.h"
 
 #include "FracManPorousMedia.h"
 #include "FracManFluidFlow.h"
@@ -104,6 +107,10 @@
 #include "EOSWaterAndSteamPTFuncPPS.h"
 #include "EOSPhaseDetermineFuncPPS.h"
 #include "EOSViscosityFuncPPS.h"
+
+//actions
+#include "GeothermalMaterialAction.h"
+
 
 namespace Falcon
 {
@@ -169,6 +176,7 @@ registerObjects(Factory & factory)
   registerMaterial(FluidFlow);
   registerMaterial(HeatTransport);
   registerMaterial(SolidMechanics);
+  registerMaterial(ChemicalReactions);
   registerMaterial(Geothermal);
     
   registerMaterial(FracturesPorousMedia);
@@ -179,10 +187,10 @@ registerObjects(Factory & factory)
     
   registerMaterial(StochasticMaterial);
   registerMaterial(StochasticPorousMedia);
-  registerMaterial(StochasticGeothermal);
   registerMaterial(StochasticFluidFlow);
   registerMaterial(StochasticHeatTransport);
   registerMaterial(StochasticSolidMechanics);
+  registerMaterial(StochasticGeothermal);
     
   registerMaterial(FracManPorousMedia);
   registerMaterial(FracManFluidFlow);
@@ -198,5 +206,12 @@ registerObjects(Factory & factory)
   registerPostprocessor(EOSPhaseDetermineFuncPPS);
   registerPostprocessor(EOSViscosityFuncPPS);
 }
-
+    
+    void
+    associateSyntax(Syntax & syntax, ActionFactory & action_factory)
+    {
+        registerAction(GeothermalMaterialAction, "add_material");
+        
+        syntax.registerActionSyntax("GeothermalMaterialAction", "Materials/GeothermalMaterial");
+    }
 }

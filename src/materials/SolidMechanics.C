@@ -101,11 +101,12 @@ SolidMechanics::computeProperties()
         
         //----------------------------------------------------------------------------------------------------------------------------//
         ////calculating/assigning stress/strain material properties:
-        
+                
         if (_has_x_disp && _has_y_disp)
         {
             E  = _youngs_modulus[qp];
             nu = _poissons_ratio[qp];
+            //std::cout << E << std::endl;
             c1 = E * (1.0 - nu) / (1.0 + nu) / (1.0 - 2.0 * nu);
             c2 = nu / (1.0 - nu);
             c3 = 0.5 * (1.0 - 2.0 * nu) / (1.0 - nu);

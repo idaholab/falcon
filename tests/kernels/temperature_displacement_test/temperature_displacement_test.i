@@ -126,12 +126,14 @@
 []
 
 [Materials]
-  [./frac]
-    type = Geothermal
+  [./GeothermalMaterial]
     block = 0
+    solid_mechanics = true
+    heat_transport = true
+    fluid_flow = false
+    chemical_reactions = false
     temperature = temperature
     temp_dependent_fluid_props = false
- 
     x_disp = disp_x
     y_disp = disp_y
     z_disp = disp_z
@@ -147,7 +149,7 @@
 
 [Executioner]
   type = Steady
-  petsc_options = -snes_mf_operator
+  petsc_options = '-snes_mf_operator -ksp_monitor'
   nl_rel_tol = 1e-12
 []
 

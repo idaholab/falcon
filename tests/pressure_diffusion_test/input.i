@@ -36,9 +36,12 @@
 []
 
 [Materials]
-  [./rock]
-    type = Geothermal
+  [./GeothermalMaterial]
     block = 0
+    solid_mechanics = false
+    heat_transport = true
+    fluid_flow = true
+    chemical_reactions = false
     pressure = pressure
     gravity = 0.0
     gx = 0.0
@@ -46,6 +49,7 @@
     gz = 1.0
     porosity = 0.5
     permeability = 1.0e-14
+    temp_dependent_fluid_props = false
   [../]
 []
 

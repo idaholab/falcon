@@ -222,9 +222,13 @@
 []
 
 [Materials]
-  [./frac]
-    type = SolidMechanics
+active = 'GeothermalMaterial '
+  [./GeothermalMaterial]
     block = 0
+    solid_mechanics = true
+    heat_transport = false
+    fluid_flow = false
+    chemical_reactions = false
     x_disp = disp_x
     y_disp = disp_y
     z_disp = disp_z
@@ -233,7 +237,7 @@
     poissons_ratio = 0
     gz = 0
     gx = 1
-    youngs_modulus = 1e10
+    youngs_modulus = 1e10    
   [../]
 []
 

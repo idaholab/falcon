@@ -46,13 +46,6 @@ protected:
   Real _gx;
   Real _gy;
   Real _gz;
-  //chem reaction iputs
-  bool _has_chem_reactions;
-  Real _input_chem_diff;
-  std::vector<Real> _mineral;
-  std::vector<Real> _molecular_weight;
-  std::vector<Real> _mineral_density;
-  std::vector<VariableValue *> _vals; //coupled to mineral
 
 ////Declare material properties
   //rock material props
@@ -62,22 +55,21 @@ protected:
   //gravity material props
   MaterialProperty<Real> & _gravity;
   MaterialProperty<RealVectorValue> & _gravity_vector;
-  //chem reactions material props
-  MaterialProperty<Real> & _diffusivity;
-  
-  void setPropsComputed(bool value) { _already_computed = value; }
-  
-  bool areParentPropsComputed() const { return _already_computed; }
-  
+    
+    void setPropsComputed(bool value) { _already_computed = value; }
+    
+    bool areParentPropsComputed() const { return _already_computed; }
+    
 private:
-
-  /**
-   * This parameter is here to indicate whether or not the PorousMedia Material
-   * properties have been computed.  Each of the classes in the diamond hierarchy
-   * should query this variable (using the accessor) to determine whether or
-   * not they should recompute the base class properties
-   */
-  bool _already_computed;
+    
+    /**
+     * This parameter is here to indicate whether or not the PorousMedia Material
+     * properties have been computed.  Each of the classes in the diamond hierarchy
+     * should query this variable (using the accessor) to determine whether or
+     * not they should recompute the base class properties
+     */
+    bool _already_computed;
+    
 };
 
 

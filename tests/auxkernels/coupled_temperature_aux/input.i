@@ -76,9 +76,13 @@
 []
 
 [Materials]
-  [./rock]
-    type = Geothermal
+active = 'GeothermalMaterial '
+  [./GeothermalMaterial]
     block = 0
+    solid_mechanics = false
+    heat_transport = true
+    fluid_flow = true
+    chemical_reactions = false
     pressure = pressure
     enthalpy = enthalpy
     water_steam_properties = water_steam_properties
@@ -88,7 +92,7 @@
     gz = 1.0
     porosity = 0.1
     permeability = 1.0e-15
-    thermal_conductivity = 7.5
+    thermal_conductivity = 7.5  
   [../]
 []
 
