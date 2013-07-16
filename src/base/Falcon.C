@@ -1,3 +1,4 @@
+
 /****************************************************************/
 /*             DO NOT MODIFY OR REMOVE THIS HEADER              */
 /*          FALCON - Fracturing And Liquid CONvection           */
@@ -153,8 +154,8 @@ registerObjects(Factory & factory)
     
   //auxkernels
   registerAux(CoupledTemperatureAux);
-  registerAux(VelocityAux);
   registerAux(DarcyFluxAux);
+  registerAux(VelocityAux);
   registerAux(StressStrainDamageComputeAux);
   registerAux(StochasticFieldAux);
   registerAux(FracManMapAux);
