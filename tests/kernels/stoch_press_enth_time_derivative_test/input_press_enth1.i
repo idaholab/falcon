@@ -117,7 +117,7 @@
 []
 
 [Materials]
-active = 'StochasticGeothermalMaterial '
+active = 'rock'
   [./StochasticGeothermalMaterial]
     block = 1
     solid_mechanics = false

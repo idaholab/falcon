@@ -106,7 +106,7 @@
 []
 
 [Output]
-  file_base = out
+  file_base = out_PT_time_derivative_w_action_material
   output_initial = true
   interval = 1
   exodus = true

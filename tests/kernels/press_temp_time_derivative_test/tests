@@ -1,7 +1,13 @@
 [Tests]
-  [./test]
+  [./diamond_material_test]
     type = 'Exodiff'
-    input = 'input.i'
-    exodiff = 'out.e'
+    input = 'PT_time_derivative_w_diamond_material.i'
+    exodiff = 'out_PT_time_derivative_w_diamond_material.e'
   [../]
+  [./action_material_test]
+    type = 'Exodiff'
+    input = 'PT_time_derivative_w_action_material.i'
+    exodiff = 'out_PT_time_derivative_w_action_material.e'
+  [../]
+
 []

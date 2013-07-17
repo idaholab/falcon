@@ -1,6 +1,8 @@
 [Mesh]
-  type = FileMesh
-  file = 3d_stochastic_course.e
+  type = GeneratedMesh
+  dim = 3
+  nx = 10
+  xmax = 10
 []
 
 [Variables]
@@ -13,13 +15,6 @@
     order = FIRST
     family = LAGRANGE
     initial_condition = 473.15
-  [../]
-[]
-
-[AuxVariables]
-  [./permeability]
-    order = CONSTANT
-    family = MONOMIAL
   [../]
 []
 
@@ -46,77 +41,61 @@
   [../]
 []
 
-[AuxKernels]
-  [./aux_permeability]
-    type = StochasticFieldAux
-    variable = permeability
-    file_name = IESE_Permeability.txt
-  [../]
-[]
-
 [BCs]
-  [./right_p]
-    type = DirichletBC
-    variable = pressure
-    boundary = 1
-    value = 10e6
-  [../]
-  [./right_t]
-    type = DirichletBC
-    variable = temperature
-    boundary = 1
-    value = 373.15
-  [../]
   [./left_p]
     type = DirichletBC
     variable = pressure
-    boundary = 2
-    value = 1e6
+    boundary = left
+    value = 10e6
   [../]
   [./left_t]
     type = DirichletBC
     variable = temperature
-    boundary = 2
+    boundary = left
+    value = 373.15
+  [../]
+  [./right_p]
+    type = DirichletBC
+    variable = pressure
+    boundary = right
+    value = 1e6
+  [../]
+  [./right_t]
+    type = DirichletBC
+    variable = temperature
+    boundary = right
     value = 473.15
   [../]
 []
 
 [Materials]
-active = 'rock'
-  [./StochasticGeothermalMaterial]
-    block = 1
-    solid_mechanics = false
-    heat_transport = true
-    fluid_flow = true
-    chemical_reactions = false
-    pressure = pressure
-    temperature = temperature
-    permeability = permeability
-    temp_dependent_fluid_props = false
-    gravity = 0.0
-    gx = 0.0
-    gy = 0.0
-    gz = 1.0 
-  [../]
-
   [./rock]
-    type = StochasticGeothermal
-    block = 1
+    type = Geothermal
+    block = 0
     pressure = pressure
     temperature = temperature
-    temp_dependent_fluid_props = false
-    permeability = permeability
+    water_steam_properties = water_steam_properties
     gravity = 0.0
     gx = 0.0
     gy = 0.0
     gz = 1.0
+    porosity = 0.1
+    permeability = 1.0e-15
+    thermal_conductivity = 7.5  
+  [../]
+[]
+
+[UserObjects]
+  [./water_steam_properties]
+    type = WaterSteamEOS
   [../]
 []
 
 [Executioner]
   type = Transient
   num_steps = 5
-  dt = 2500000.0
+  dt = 10.0
+  petsc_options = '-snes_mf_operator -ksp_monitor'
   nl_abs_tol = 1e-6
   [./Quadrature]
     type = Trap
@@ -124,7 +103,7 @@ active = 'rock'
 []
 
 [Output]
-  file_base = out_const_dens_visc
+  file_base = out_PT_time_derivative_w_diamond_material
   output_initial = true
   interval = 1
   exodus = true
