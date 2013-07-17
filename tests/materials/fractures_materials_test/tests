@@ -1,0 +1,19 @@
+[Tests]
+  [./test1]
+    type = 'Exodiff'
+    input = 'input_PH.i'
+    exodiff = 'out_PH.e'
+  [../]
+
+  [./test2]
+    type = 'Exodiff'
+    input = 'input_PT_const_fluid_props.i'
+    exodiff = 'out_PT_const_fluid_props.e'
+  [../]
+
+  [./test3]
+    type = 'Exodiff'
+    input = 'input_PT_variable_fluid_props.i'
+    exodiff = 'out_PT_variable_fluid_props.e'
+  [../]
+[]
