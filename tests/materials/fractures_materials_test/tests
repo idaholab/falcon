@@ -3,6 +3,7 @@
     type = 'Exodiff'
     input = 'input_PH.i'
     exodiff = 'out_PH.e'
+    skip = 'fixing'
   [../]
 
   [./PT_const_test]
