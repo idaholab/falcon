@@ -1,19 +1,26 @@
 [Tests]
-  [./test1]
+  [./PH_test]
     type = 'Exodiff'
     input = 'input_PH.i'
     exodiff = 'out_PH.e'
   [../]
 
-  [./test2]
+  [./PT_const_test]
     type = 'Exodiff'
     input = 'input_PT_const_fluid_props.i'
     exodiff = 'out_PT_const_fluid_props.e'
   [../]
 
-  [./test3]
+  [./PT_variable_test]
     type = 'Exodiff'
     input = 'input_PT_variable_fluid_props.i'
     exodiff = 'out_PT_variable_fluid_props.e'
   [../]
+
+  [./mechanics_test]
+    type = 'Exodiff'
+    input = 'input_mechanics.i'
+    exodiff = 'out_mechanics.e'
+  [../]
+
 []
