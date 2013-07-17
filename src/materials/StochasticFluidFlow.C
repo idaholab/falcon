@@ -107,7 +107,6 @@ StochasticFluidFlow::StochasticFluidFlow(const std::string & name,
      //Equation_of_State_Properties - Temperature/Pressure based, constant density and viscosity inputs
      _constant_density(getParam<Real>("constant_density")),
      _constant_viscosity(getParam<Real>("constant_viscosity"))
-
 { }
 
 

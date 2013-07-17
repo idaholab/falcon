@@ -24,7 +24,7 @@ InputParameters validParams<StochasticGeothermalMaterialAction>()
   params.addParam<std::vector<NonlinearVariableName> >("v", "The list of primary species to add");
 //Input parameters
   //porous_media
-  params.addRequiredParam<VariableName>("permeability", "[m^2]");
+  params.addParam<std::vector<AuxVariableName> >("permeability", "[m^2]");
   params.addParam<Real>("porosity", 0.3,"dimentionless");
   params.addParam<Real>("density_rock", 2.5e3, "[kg/m^3]");
   params.addParam<Real>("gravity", 9.80665, "[m/s^2]");
@@ -35,9 +35,9 @@ InputParameters validParams<StochasticGeothermalMaterialAction>()
   params.addParam<Real>("biot_coeff", 1.0, "dimentionless");
   params.addParam<Real>("biot_modulus", 2.5e10, "dimenstionless");
   params.addParam<Real>("poissons_ratio", 0.2, "dimentionless");
-  params.addParam<Real>("thermal_expansion", 1e-6, "Coupled z_displacement variable, [m]");
-  params.addParam<Real>("thermal_strain_ref_temp", 293.15, "[1/K]");
-  params.addParam<Real>("youngs_modulus", 1.5e10, "[K]");
+  params.addParam<Real>("thermal_expansion", 1e-6, "[1/K]");
+  params.addParam<Real>("thermal_strain_ref_temp", 293.15, "[K]");
+  params.addParam<Real>("youngs_modulus", 1.5e10, "[Pa]");
   //heat_transport
   params.addParam<Real>("specific_heat_rock", 0.92e3, "[J/kg.K]");
   params.addParam<Real>("specific_heat_water", 4.186e3, "[J/kg.K]");
@@ -45,7 +45,7 @@ InputParameters validParams<StochasticGeothermalMaterialAction>()
   //fluid_flow
   params.addParam<Real>("constant_density", 1000, "[kg/m^3]");
   params.addParam<Real>("constant_viscosity", 0.12e-3, "[Pa.s]");
-  params.addParam<bool>("temp_dependent_fluid_props", "flag true if single-phase and fluid properties are temperature dependent");
+  params.addParam<bool>("temp_dependent_fluid_props", true, "flag true if single-phase and fluid properties are temperature dependent");
   params.addParam<UserObjectName>("water_steam_properties", "If temp_dependent_fluid_props = true, select which user object to use for EOS calculations");
   //chemical_reactions
   params.addParam<Real>("diffusivity", 1e-8, "[kg/m^3]");
@@ -119,8 +119,8 @@ StochasticGeothermalMaterialAction::act()
         shared_params.set<std::vector<NonlinearVariableName> >("v") = chem_vars;
     }
     
-    //get base class (PorousMedia) paramerters from input
-    std::vector<VariableName> permeability (1, getParam<VariableName>("permeability"));
+    //get base class (StochasticPorousMedia) paramerters from input
+    std::vector<AuxVariableName> permeability = getParam<std::vector<AuxVariableName> >("permeability");
     Real porosity = getParam<Real>("porosity");
     Real density_rock = getParam<Real>("density_rock");
     Real gravity = getParam<Real>("gravity");
@@ -129,7 +129,7 @@ StochasticGeothermalMaterialAction::act()
     Real gz = getParam<Real>("gz");
     
     //add these base class paramerters to shared_params, since all dependent classes need these parameters
-    shared_params.set<std::vector<VariableName> >("permeability") = permeability;
+    shared_params.set<std::vector<AuxVariableName> >("permeability") = permeability;
     shared_params.set<Real>("porosity") = porosity;
     shared_params.set<Real>("density_rock") = density_rock;
     shared_params.set<Real>("gravity") = gravity;

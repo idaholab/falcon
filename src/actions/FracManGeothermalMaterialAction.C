@@ -58,7 +58,7 @@ InputParameters validParams<FracManGeothermalMaterialAction>()
   params.addParam<std::vector<Real> >("matrix_molecular_weight", std::vector<Real>(1, 2.5), "[g/mol]");
     
   //fractures - general
-  params.addParam<VariableName>("fracture_map", "AuxVariable that serves as a map of which elements are fractures or matrix from the FracMan input file, unique numbers are assigned to each fracture");
+  params.addParam<AuxVariableName>("fracture_map", "AuxVariable that serves as a map of which elements are fractures or matrix from the FracMan input file, unique numbers are assigned to each fracture");
   params.addRequiredParam<std::vector<int> >("fracture_numbers","The number associated with each of the fractures you would like to include from the FracMan file");
   //fractures - porous_media
   params.addParam<std::vector<Real> >("fracture_permeabilities", std::vector<Real>(1, 1.0e-12), "The permeability values associated with each of the fractures, [m^2]");
@@ -152,7 +152,7 @@ FracManGeothermalMaterialAction::act()
     Real matrix_porosity = getParam<Real>("matrix_porosity");
     Real matrix_density = getParam<Real>("matrix_density");
     
-    std::vector<VariableName> fracture_map (1, getParam<VariableName>("fracture_map"));
+    AuxVariableName fracture_map = getParam<AuxVariableName>("fracture_map");
     std::vector<int> fracture_numbers = getParam<std::vector<int> >("fracture_numbers");
     std::vector<Real> fracture_permeabilities = getParam<std::vector<Real> >("fracture_permeabilities");
     std::vector<Real> fracture_porosities = getParam<std::vector<Real> >("fracture_porosities");
@@ -168,7 +168,7 @@ FracManGeothermalMaterialAction::act()
     shared_params.set<Real>("matrix_porosity") = matrix_porosity;
     shared_params.set<Real>("matrix_density") = matrix_density;
     
-    shared_params.set<std::vector<VariableName> >("fracture_map") = fracture_map;
+    shared_params.set<AuxVariableName>("fracture_map") = fracture_map;
     shared_params.set<std::vector<int> >("fracture_numbers") = fracture_numbers;
     shared_params.set<std::vector<Real> >("fracture_permeabilities") = fracture_permeabilities;
     shared_params.set<std::vector<Real> >("fracture_porosities") = fracture_porosities;

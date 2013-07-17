@@ -110,7 +110,6 @@ protected:
   //Equation_of_State_Properties - Temperature/Pressure based, constant density and viscosity inputs
   Real _constant_density;
   Real _constant_viscosity;
-
 };
 
 #endif //STOCHASTICFLUIDFLOW_H

@@ -113,7 +113,6 @@ protected:
   Real _constant_viscosity;
     
   //Terms needed for strain dependent permeability calcs.  we use the direction of fluid flow to determine appropriate component of strain to use
-  bool _has_strain_dependent_permeability;
   MaterialProperty<RealGradient> * _darcy_flux_water_old;
 
 };

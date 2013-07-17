@@ -38,8 +38,8 @@ InputParameters validParams<FracturesGeothermalMaterialAction>()
   //general - fluid_flow
   params.addParam<Real>("constant_density", 1000, "[kg/m^3]");
   params.addParam<Real>("constant_viscosity", 0.12e-3, "[Pa.s]");
-  params.addParam<bool>("temp_dependent_fluid_props", "flag true if single-phase and fluid properties are temperature dependent");
-  params.addParam<UserObjectName>("water_steam_properties", "add discription");
+  params.addParam<bool>("temp_dependent_fluid_props", true, "flag true if single-phase and fluid properties are temperature dependent");
+  params.addParam<UserObjectName>("water_steam_properties", "If temp_dependent_fluid_props = true, select which user object to use for EOS calculations");
     
   //matrix - porous_media
   params.addParam<Real>("matrix_permeability", 1e-12, "[m^2]");
@@ -58,7 +58,7 @@ InputParameters validParams<FracturesGeothermalMaterialAction>()
   params.addParam<std::vector<Real> >("matrix_molecular_weight", std::vector<Real>(1, 2.5), "[g/mol]");
     
   //fractures - general
-  params.addParam<VariableName>("fractures", "coupled aux variable that maps where the fracture are");
+  params.addParam<std::vector<AuxVariableName> >("fractures", "coupled aux variable that maps where the fracture are");
   params.addParam<Real>("fracture_num", 0, "number in fracture map that indicates fractures");
   params.addParam<Real>("model_fracture_aperture", 1.0, "width of fracture/high permeability area in the model");
   params.addParam<bool>("has_strain_dependent_permeability", false, "switch for displacement dependent permeability changes");
@@ -155,7 +155,7 @@ FracturesGeothermalMaterialAction::act()
     Real matrix_porosity = getParam<Real>("matrix_porosity");
     Real matrix_density = getParam<Real>("matrix_density");
     
-    std::vector<VariableName> fractures (1, getParam<VariableName>("fractures"));
+    std::vector<AuxVariableName> fractures = getParam<std::vector<AuxVariableName> >("fractures");
     Real fracture_num = getParam<Real>("fracture_num");
     Real model_fracture_aperture = getParam<Real>("model_fracture_aperture");
     bool has_strain_dependent_permeability = getParam<bool>("has_strain_dependent_permeability");
@@ -174,10 +174,10 @@ FracturesGeothermalMaterialAction::act()
     shared_params.set<Real>("matrix_porosity") = matrix_porosity;
     shared_params.set<Real>("matrix_density") = matrix_density;
     
-    shared_params.set<std::vector<VariableName> >("fractures") = fractures;
+    shared_params.set<std::vector<AuxVariableName> >("fractures") = fractures;
     shared_params.set<Real>("fracture_num") = fracture_num;
     shared_params.set<Real>("model_fracture_aperture") = model_fracture_aperture;
-    shared_params.set<Real>("has_strain_dependent_permeability") = has_strain_dependent_permeability;
+    shared_params.set<bool>("has_strain_dependent_permeability") = has_strain_dependent_permeability;
     
     shared_params.set<Real>("fracture_permeability") = fracture_permeability;
     shared_params.set<Real>("fracture_porosity") = fracture_porosity;

@@ -189,6 +189,7 @@ registerObjects(Factory & factory)
   registerMaterial(FracturesFluidFlow);
   registerMaterial(FracturesHeatTransport);
   registerMaterial(FracturesSolidMechanics);
+  registerMaterial(FracturesChemicalReactions);
   registerMaterial(FracturesGeothermal);
     
   registerMaterial(StochasticMaterial);
@@ -196,12 +197,14 @@ registerObjects(Factory & factory)
   registerMaterial(StochasticFluidFlow);
   registerMaterial(StochasticHeatTransport);
   registerMaterial(StochasticSolidMechanics);
+  registerMaterial(StochasticChemicalReactions);
   registerMaterial(StochasticGeothermal);
     
   registerMaterial(FracManPorousMedia);
   registerMaterial(FracManFluidFlow);
   registerMaterial(FracManHeatTransport);
   registerMaterial(FracManSolidMechanics);
+  registerMaterial(FracManChemicalReactions);
   registerMaterial(FracManGeothermal);
     
   //userobjects

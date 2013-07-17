@@ -107,7 +107,6 @@ FracturesFluidFlow::FracturesFluidFlow(const std::string & name, InputParameters
     _constant_viscosity(getParam<Real>("constant_viscosity")),
 
     //Terms needed for strain dependent permeability calcs.  we use the direction of fluid flow to determine appropriate component of strain to use
-    _has_strain_dependent_permeability(getParam<bool>("has_strain_dependent_permeability")),
     _darcy_flux_water_old(_has_strain_dependent_permeability ? &declarePropertyOld<RealGradient>("darcy_flux_water") : NULL)
 { }
 
