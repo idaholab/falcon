@@ -21,11 +21,7 @@ InputParameters validParams<FracturesGeothermal>()
   params += validParams<FracturesFluidFlow>();
   params += validParams<FracturesHeatTransport>();
   params += validParams<FracturesSolidMechanics>();
-    
-    params.addParam<Real>("fracture_num", 0, "number in fracture map that indicates fractures");
-    params.addParam<Real>("matrix_num", 1, "number in fracture map that indicates matrix");
-    params.addParam<bool>("has_strain_change_permeability",false,"switch for displacement dependent permeability changes");
-    params.addParam<Real>("model_fracture_aperture", 1.0, "width of fracture/high permeability area in the model");
+  params += validParams<FracturesChemicalReactions>();
     
   return params;
 }
@@ -36,12 +32,7 @@ FracturesGeothermal::FracturesGeothermal(const std::string & name,
    FracturesFluidFlow(name, parameters),
    FracturesHeatTransport(name, parameters),
    FracturesSolidMechanics(name, parameters),
-
-    _fracture_num(getParam<Real>("fracture_num")),
-    _matrix_num(getParam<Real>("matrix_num")),
-
-    _has_strain_change_permeability(getParam<bool>("has_strain_change_permeability")),
-    _model_fracture_aperture(getParam<Real>("model_fracture_aperture"))
+   FracturesChemicalReactions(name, parameters)
 
 {}
 
@@ -55,70 +46,7 @@ FracturesGeothermal::computeProperties()
   FracturesFluidFlow::computeProperties();
   FracturesHeatTransport::computeProperties();
   FracturesSolidMechanics::computeProperties();
-
-    for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
-    {        
-        if (_has_strain_change_permeability)
-        {
-            //////Determining magnitude of aperture change (ie. strain perpandicular to fracture surface)/
-        
-            //determining direction of fluid flow (which is parallel with fracture direction)
-            Real vx = _darcy_flux_water[qp](0);
-            Real vy = _darcy_flux_water[qp](1);
-                    
-            //finding vector perpendicular to fluid flow
-            Real ux = std::abs((1/sqrt(vx*vx + vy*vy))*vy);
-            Real uy = std::abs((1/sqrt(vx*vx + vy*vy))*vx);
-        
-            //finding strain vector perpendicular to fluid flow
-            Real fracture_strain_normal_x = ux*_strain_normal_vector[qp](0);
-            Real fracture_strain_normal_y = uy*_strain_normal_vector[qp](1);
-                    
-            //magnitude of strain perpandicular to fluid flow
-            Real fracture_strain_normal = fracture_strain_normal_x + fracture_strain_normal_y;
-        
-            Real aperture = sqrt(12 * _fracture_permeability);
-            Real fracture_ratio = _model_fracture_aperture / aperture;
-
-            if (_t_step == 1)
-            {
-                    if (_fractures[qp] == _matrix_num)
-                    {
-                        _permeability[qp] = _matrix_permeability;
-                    }
-                    else
-                    {
-                        _permeability[qp] = ((std::pow(_model_fracture_aperture,2)) * (std::pow((1/fracture_ratio) , 3)))/12;
-                    }
-            }
-            else
-            {
-                if (_has_fractures)
-                {
-                    if (_fractures[qp] == _matrix_num)
-                    {
-                        _permeability[qp] = _matrix_permeability;
-                    }
-                    else if (_fractures[qp] == _fracture_num)
-                    {                        
-                        _permeability[qp] = ((std::pow(_model_fracture_aperture,2)) * (std::pow(((1/fracture_ratio) + fracture_strain_normal) , 3)))/12;
-                                                
-                        if (_permeability[qp] <= (0.9*(std::pow(aperture , 3) / (12 * _model_fracture_aperture))))
-                        {
-                            _permeability[qp] = 0.9 * (std::pow(aperture , 3) / (12 * _model_fracture_aperture));
-                        }
-                    }
-                    else
-                    {
-                        _permeability[qp] = _matrix_permeability;
-                    }
-                }
-            }
-        
-        }
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    }
+  FracturesChemicalReactions::computeProperties();
     
   // Now reset this parameter
   setPropsComputed(false);

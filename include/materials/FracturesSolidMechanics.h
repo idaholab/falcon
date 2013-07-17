@@ -53,12 +53,10 @@ protected:
   Real _input_biot_coeff;
   Real _input_biot_modulus;
   //Matrix
-  Real _matrix_num;
   Real _matrix_thermal_expansion;
   Real _matrix_youngs_modulus;
   Real _matrix_t_ref;
   //Fractures
-  Real _fracture_num;
   Real _fracture_thermal_expansion;
   Real _fracture_youngs_modulus;
   Real _fracture_t_ref;
@@ -76,6 +74,9 @@ protected:
   MaterialProperty<RealVectorValue> & _stress_shear_vector;
   MaterialProperty<RealVectorValue> & _strain_normal_vector;
   MaterialProperty<RealVectorValue> & _strain_shear_vector;
+    
+////Grab darcy_flux_water_old stateful material property from FracturesFluidFlow
+  MaterialProperty<RealGradient> * _darcy_flux_water_old;
 
 ////Local variables declared
   Real E;

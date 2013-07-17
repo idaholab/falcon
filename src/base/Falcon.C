@@ -86,6 +86,7 @@
 #include "FracturesFluidFlow.h"
 #include "FracturesHeatTransport.h"
 #include "FracturesSolidMechanics.h"
+#include "FracturesChemicalReactions.h"
 #include "FracturesGeothermal.h"
 
 #include "StochasticMaterial.h"
@@ -93,12 +94,14 @@
 #include "StochasticFluidFlow.h"
 #include "StochasticHeatTransport.h"
 #include "StochasticSolidMechanics.h"
+#include "StochasticChemicalReactions.h"
 #include "StochasticGeothermal.h"
 
 #include "FracManPorousMedia.h"
 #include "FracManFluidFlow.h"
 #include "FracManHeatTransport.h"
 #include "FracManSolidMechanics.h"
+#include "FracManChemicalReactions.h"
 #include "FracManGeothermal.h"
 
 //userobjects
@@ -111,7 +114,9 @@
 
 //actions
 #include "GeothermalMaterialAction.h"
-
+#include "StochasticGeothermalMaterialAction.h"
+#include "FracManGeothermalMaterialAction.h"
+#include "FracturesGeothermalMaterialAction.h"
 
 namespace Falcon
 {
@@ -212,7 +217,13 @@ registerObjects(Factory & factory)
     associateSyntax(Syntax & syntax, ActionFactory & action_factory)
     {
         registerAction(GeothermalMaterialAction, "add_material");
+        registerAction(StochasticGeothermalMaterialAction, "add_material");
+        registerAction(FracManGeothermalMaterialAction, "add_material");
+        registerAction(FracturesGeothermalMaterialAction, "add_material");
         
         syntax.registerActionSyntax("GeothermalMaterialAction", "Materials/GeothermalMaterial");
+        syntax.registerActionSyntax("StochasticGeothermalMaterialAction", "Materials/StochasticGeothermalMaterial");
+        syntax.registerActionSyntax("FracManGeothermalMaterialAction", "Materials/FracManGeothermalMaterial");
+        syntax.registerActionSyntax("FracturesGeothermalMaterialAction", "Materials/FracturesGeothermalMaterial");
     }
 }

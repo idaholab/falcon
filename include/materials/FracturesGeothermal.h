@@ -18,6 +18,7 @@
 #include "FracturesFluidFlow.h"
 #include "FracturesHeatTransport.h"
 #include "FracturesSolidMechanics.h"
+#include "FracturesChemicalReactions.h"
 
 
 //Forward Declarations
@@ -29,7 +30,7 @@ InputParameters validParams<FracturesGeothermal>();
 /**
  * Simple material with Geothermal properties.
  */
-class FracturesGeothermal : public FracturesFluidFlow, public FracturesHeatTransport, public FracturesSolidMechanics
+class FracturesGeothermal : public FracturesFluidFlow, public FracturesHeatTransport, public FracturesSolidMechanics, public FracturesChemicalReactions
 {
 public:
   FracturesGeothermal(const std::string & name,
@@ -37,12 +38,6 @@ public:
 
 protected:
   virtual void computeProperties();
-    
-    Real _fracture_num;
-    Real _matrix_num;
-    
-    bool _has_strain_change_permeability;
-    Real _model_fracture_aperture;
     
 };
 #endif //FRACTURESGEOTHERMAL_H

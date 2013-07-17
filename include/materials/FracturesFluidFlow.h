@@ -35,6 +35,7 @@ public:
             InputParameters parameters);
   
 protected:
+  virtual void initQpStatefulProperties();
   virtual void computeProperties();
   virtual void compute2PhProperties0(Real _per, Real _Sw, Real _Denw, Real _Dens, Real _visw, Real _viss, Real &_watertau, Real  &_steamtau);
 
@@ -110,6 +111,10 @@ protected:
   //Equation_of_State_Properties - Temperature/Pressure based, constant density and viscosity inputs
   Real _constant_density;
   Real _constant_viscosity;
+    
+  //Terms needed for strain dependent permeability calcs.  we use the direction of fluid flow to determine appropriate component of strain to use
+  bool _has_strain_dependent_permeability;
+  MaterialProperty<RealGradient> * _darcy_flux_water_old;
 
 };
 

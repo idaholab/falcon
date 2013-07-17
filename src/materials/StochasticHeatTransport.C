@@ -11,9 +11,6 @@
 /*                                                              */
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
-
-
-
 #include "StochasticHeatTransport.h"
 
 template<>

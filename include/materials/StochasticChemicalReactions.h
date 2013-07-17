@@ -12,31 +12,45 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef FRACMANGEOTHERMAL_H
-#define FRACNMANGEOTHERMAL_H
+#ifndef STOCHASTICCHEMICALREACTIONS_H
+#define STOCHASTICCHEMICALREACTIONS_H
 
-#include "FracManFluidFlow.h"
-#include "FracManHeatTransport.h"
-#include "FracManSolidMechanics.h"
-#include "FracManChemicalReactions.h"
+#include "StochasticPorousMedia.h"
 
 
 //Forward Declarations
-class FracManGeothermal;
+class StochasticChemicalReactions;
 
 template<>
-InputParameters validParams<FracManGeothermal>();
+InputParameters validParams<StochasticChemicalReactions>();
 
 /**
- * Simple material with Geothermal properties.
+ * Simple material with StochasticPorousMedia properties.
  */
-class FracManGeothermal : public FracManFluidFlow, public FracManHeatTransport, public FracManSolidMechanics, public FracManChemicalReactions
+class StochasticChemicalReactions : virtual public StochasticPorousMedia
 {
 public:
-  FracManGeothermal(const std::string & name,
-             InputParameters parameters);
-
+  StochasticChemicalReactions(const std::string & name,
+              InputParameters parameters);
+  
 protected:
+//  virtual void initQpStatefulProperties();
   virtual void computeProperties();
+////Grab user input parameters
+  Real _input_chem_diff;
+  std::vector<Real> _mineral;
+  std::vector<Real> _molecular_weight;
+  std::vector<Real> _mineral_density;
+  std::vector<VariableValue *> _vals;
+    
+  bool _has_permeability;
+  VariableValue & _input_permeability;
+  Real _input_porosity;
+    
+////Declare material properties
+  MaterialProperty<Real> & _diffusivity;
+  
 };
-#endif //FRACMANGEOTHERMAL_H
+
+
+#endif //STOCHASTICCHEMICALREACTIONS_H

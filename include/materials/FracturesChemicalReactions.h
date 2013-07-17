@@ -12,64 +12,56 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef FRACMANPOROUSMEDIA_H
-#define FRACMANPOROUSMEDIA_H
+#ifndef FRACTURESCHEMICALREACTIONS_H
+#define FRACTURESCHEMICALREACTIONS_H
 
-#include "Material.h"
+#include "FracturesPorousMedia.h"
 
 
 //Forward Declarations
-class FracManPorousMedia;
+class FracturesChemicalReactions;
 
 template<>
-InputParameters validParams<FracManPorousMedia>();
+InputParameters validParams<FracturesChemicalReactions>();
 
 /**
- * Simple material with PorousMedia properties.
+ * Simple material with FracturesPorousMedia properties.
  */
-class FracManPorousMedia : public Material
+class FracturesChemicalReactions : virtual public FracturesPorousMedia
 {
 public:
-  FracManPorousMedia(const std::string & name,
+  FracturesChemicalReactions(const std::string & name,
               InputParameters parameters);
   
 protected:
   virtual void computeProperties();
 ////Grab user input parameters
   ////Matrix
+  //rock property inputs
   Real _matrix_permeability;
   Real _matrix_porosity;
-  Real _matrix_density;
-    
-  ////Gravity
-  Real _input_gravity;
-  Real _gx;
-  Real _gy;
-  Real _gz;
+  //chem reaction inputs
+  Real _matrix_chem_diff;
+  std::vector<Real> _matrix_mineral;
+  std::vector<Real> _matrix_molecular_weight;
+  std::vector<Real> _matrix_mineral_density;
     
   ////Fractures
   //fracture map inputs
-  VariableValue & _fracture_map;
-  std::vector<int> _fracture_number_vec;
+  Real _fracture_num;
+  Real _model_fracture_aperture;
   //rock property inputs
-  std::vector<Real> _fracture_permeability_vec;
-  std::vector<Real> _fracture_porosity_vec;
-  std::vector<Real> _fracture_density_vec;
-    
-////Storing the number of vector entries into respective local variables
-  unsigned int num_frac_vec_entries;
-  unsigned int num_perm_vec_entries;
-  unsigned int num_poro_vec_entries;
-  unsigned int num_dens_vec_entries;
-    
+  Real _fracture_permeability;
+  Real _fracture_porosity;
+  //chem reaction inputs
+  Real _fracture_chem_diff;
+  std::vector<Real> _fracture_mineral;
+  std::vector<Real> _fracture_molecular_weight;
+  std::vector<Real> _fracture_mineral_density;
+  std::vector<VariableValue *> _vals;
+  
 ////Delcare material properties
-  //rock material props
-  MaterialProperty<Real> & _permeability;
-  MaterialProperty<Real> & _porosity;
-  MaterialProperty<Real> & _density_rock;
-  //gravity material props
-  MaterialProperty<Real> & _gravity;
-  MaterialProperty<RealVectorValue> & _gravity_vector;
+  MaterialProperty<Real> & _diffusivity;
 
   void setPropsComputed(bool value) { _already_computed = value; }
   
@@ -87,4 +79,4 @@ private:
 };
 
 
-#endif //FRACMANPOROUSMEDIA_H
+#endif //FRACTURESCHEMICALREACTIONS_H

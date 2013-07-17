@@ -82,6 +82,23 @@
 []
 
 [Materials]
+active = 'StochasticGeothermalMaterial '
+  [./StochasticGeothermalMaterial]
+    block = 1
+    solid_mechanics = false
+    heat_transport = true
+    fluid_flow = true
+    chemical_reactions = false
+    pressure = pressure
+    temperature = temperature
+    permeability = permeability
+    temp_dependent_fluid_props = false
+    gravity = 0.0
+    gx = 0.0
+    gy = 0.0
+    gz = 1.0 
+  [../]
+
   [./rock]
     type = StochasticGeothermal
     block = 1

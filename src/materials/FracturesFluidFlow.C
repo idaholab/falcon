@@ -104,10 +104,21 @@ FracturesFluidFlow::FracturesFluidFlow(const std::string & name, InputParameters
 
     //Equation of State Properties - Temperature/Pressure based, constant density and viscosity inputs
     _constant_density(getParam<Real>("constant_density")),
-    _constant_viscosity(getParam<Real>("constant_viscosity"))
+    _constant_viscosity(getParam<Real>("constant_viscosity")),
+
+    //Terms needed for strain dependent permeability calcs.  we use the direction of fluid flow to determine appropriate component of strain to use
+    _has_strain_dependent_permeability(getParam<bool>("has_strain_dependent_permeability")),
+    _darcy_flux_water_old(_has_strain_dependent_permeability ? &declarePropertyOld<RealGradient>("darcy_flux_water") : NULL)
 { }
 
-
+void
+FracturesFluidFlow::initQpStatefulProperties()
+{
+    for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
+    {
+        _darcy_flux_water[qp] = (-_permeability[qp] * _constant_density / _constant_viscosity) * (_grad_p[qp] + _constant_density * _gravity[qp] * _gravity_vector[qp]) / _constant_density;
+    }
+}
 
 void FracturesFluidFlow::computeProperties()
 {

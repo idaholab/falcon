@@ -46,13 +46,6 @@ protected:
   Real _gx;
   Real _gy;
   Real _gz;
-  //chem reaction inputs
-  bool _has_chem_reactions;
-  Real _input_chem_diff;
-  std::vector<Real> _mineral;
-  std::vector<Real> _molecular_weight;
-  std::vector<Real> _mineral_density;
-  std::vector<VariableValue *> _vals;
 
 ////Declare material properties
   //rock material props
@@ -62,8 +55,6 @@ protected:
   //gravity material props
   MaterialProperty<Real> & _gravity;
   MaterialProperty<RealVectorValue> & _gravity_vector;
-  //chem reactions material props
-  MaterialProperty<Real> & _diffusivity;
 
   void setPropsComputed(bool value) { _already_computed = value; }
   

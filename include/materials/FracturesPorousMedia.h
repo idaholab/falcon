@@ -37,15 +37,9 @@ protected:
   virtual void computeProperties();
 ////Grab user input parameters
   ////Matrix
-  //rock property inputs
   Real _matrix_permeability;
   Real _matrix_porosity;
   Real _matrix_density;
-  //chem reaction inputs
-  Real _matrix_chem_diff;
-  std::vector<Real> _matrix_mineral;
-  std::vector<Real> _matrix_molecular_weight;
-  std::vector<Real> _matrix_mineral_density;
   
   ////Gravity
   Real _input_gravity;
@@ -58,30 +52,22 @@ protected:
   bool _has_fractures;
   VariableValue & _fractures;
   Real _fracture_num;
-  Real _matrix_num;
   Real _model_fracture_aperture;
   //rock property inputs
   Real _fracture_permeability;
   Real _fracture_porosity;
   Real _fracture_density;
-  //chem reaction inputs
-  Real _fracture_chem_diff;
-  std::vector<Real> _fracture_mineral;
-  std::vector<Real> _fracture_molecular_weight;
-  std::vector<Real> _fracture_mineral_density;
-  bool _has_chem_reactions;
-  std::vector<VariableValue *> _vals;
   
 ////Delcare material properties
   //rock material props
   MaterialProperty<Real> & _permeability;
+  bool _has_strain_dependent_permeability;
+  MaterialProperty<Real> * _permeability_old;
   MaterialProperty<Real> & _porosity;
   MaterialProperty<Real> & _density_rock;
   //gravity material props
   MaterialProperty<Real> & _gravity;
   MaterialProperty<RealVectorValue> & _gravity_vector;
-  //chem reactions material props
-  MaterialProperty<Real> & _diffusivity;
 
   void setPropsComputed(bool value) { _already_computed = value; }
   

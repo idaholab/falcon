@@ -18,6 +18,7 @@
 #include "StochasticFluidFlow.h"
 #include "StochasticHeatTransport.h"
 #include "StochasticSolidMechanics.h"
+#include "StochasticChemicalReactions.h"
 
 
 //Forward Declarations
@@ -29,7 +30,7 @@ InputParameters validParams<StochasticGeothermal>();
 /**
  * Simple material with Geothermal properties.
  */
-class StochasticGeothermal : public StochasticFluidFlow, public StochasticHeatTransport, public StochasticSolidMechanics
+class StochasticGeothermal : public StochasticFluidFlow, public StochasticHeatTransport, public StochasticSolidMechanics, public StochasticChemicalReactions
 {
 public:
   StochasticGeothermal(const std::string & name,

@@ -21,6 +21,7 @@ InputParameters validParams<FracManGeothermal>()
   params += validParams<FracManFluidFlow>();
   params += validParams<FracManHeatTransport>();
   params += validParams<FracManSolidMechanics>();
+  params += validParams<FracManChemicalReactions>();
 
   return params;
 }
@@ -30,7 +31,8 @@ FracManGeothermal::FracManGeothermal(const std::string & name,
   :FracManPorousMedia(name, parameters),
    FracManFluidFlow(name, parameters),
    FracManHeatTransport(name, parameters),
-   FracManSolidMechanics(name, parameters)
+   FracManSolidMechanics(name, parameters),
+   FracManChemicalReactions(name, parameters)
 {}
 
 void
@@ -43,6 +45,7 @@ FracManGeothermal::computeProperties()
   FracManFluidFlow::computeProperties();
   FracManHeatTransport::computeProperties();
   FracManSolidMechanics::computeProperties();
+  FracManChemicalReactions::computeProperties();
 
   // Now reset this parameter
   setPropsComputed(false);

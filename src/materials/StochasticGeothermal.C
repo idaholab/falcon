@@ -21,6 +21,7 @@ InputParameters validParams<StochasticGeothermal>()
   params += validParams<StochasticFluidFlow>();
   params += validParams<StochasticHeatTransport>();
   params += validParams<StochasticSolidMechanics>();
+  params += validParams<StochasticChemicalReactions>();
   return params;
 }
 
@@ -29,7 +30,8 @@ StochasticGeothermal::StochasticGeothermal(const std::string & name,
   :StochasticPorousMedia(name, parameters),
    StochasticFluidFlow(name, parameters),
    StochasticHeatTransport(name, parameters),
-   StochasticSolidMechanics(name, parameters)
+   StochasticSolidMechanics(name, parameters),
+   StochasticChemicalReactions(name, parameters)
 {}
 
 void
@@ -42,6 +44,7 @@ StochasticGeothermal::computeProperties()
   StochasticFluidFlow::computeProperties();
   StochasticHeatTransport::computeProperties();
   StochasticSolidMechanics::computeProperties();
+  StochasticChemicalReactions::computeProperties();
 
   //Now reset this parameter
   setPropsComputed(false);

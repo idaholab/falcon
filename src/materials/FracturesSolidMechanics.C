@@ -30,13 +30,11 @@ InputParameters validParams<FracturesSolidMechanics>()
   params.addParam<Real>("biot_modulus",2.5e10,"dimensionless");
     
 ////Matrix
-  params.addParam<Real>("matrix_num", 1, "number in fracture map that indicates matrix");
   params.addParam<Real>("matrix_thermal_expansion",1.0e-6,"thermal expansion coefficient of matrix, [1/K]");
   params.addParam<Real>("matrix_youngs_modulus",1.50e10,"youngs modulus of matrix, [Pa]");
   params.addParam<Real>("matrix_thermal_strain_ref_temp",293.15,"Initial reference temperature of matrix where there is no thermal strain, [K]");
     
 ////Fractures
-  params.addParam<Real>("fracture_num", 0, "number in fracture map that indicates fractures");
   params.addParam<Real>("fracture_thermal_expansion",1.0e-6,"thermal expansion coefficient of fractures, [1/K]");
   params.addParam<Real>("fracture_youngs_modulus",1.50e10,"youngs modulus of fractures, [Pa]");
   params.addParam<Real>("fracture_thermal_strain_ref_temp",293.15,"Initial reference temperature of fractures where there is no thermal strain, [K]");
@@ -68,13 +66,11 @@ FracturesSolidMechanics::FracturesSolidMechanics(const std::string & name,
     _input_biot_modulus(getParam<Real>("biot_modulus")),
 
     ////Matrix
-    _matrix_num(getParam<Real>("matrix_num")),
     _matrix_thermal_expansion(getParam<Real>("matrix_thermal_expansion")),
     _matrix_youngs_modulus(getParam<Real>("matrix_youngs_modulus")),
     _matrix_t_ref(getParam<Real>("matrix_thermal_strain_ref_temp")),
 
     ////Fractures
-    _fracture_num(getParam<Real>("fracture_num")),
     _fracture_thermal_expansion(getParam<Real>("fracture_thermal_expansion")),
     _fracture_youngs_modulus(getParam<Real>("fracture_youngs_modulus")),
     _fracture_t_ref(getParam<Real>("fracture_thermal_strain_ref_temp")),
@@ -91,7 +87,10 @@ FracturesSolidMechanics::FracturesSolidMechanics(const std::string & name,
     _stress_normal_vector(declareProperty<RealVectorValue>("stress_normal_vector")),
     _stress_shear_vector (declareProperty<RealVectorValue>("stress_shear_vector")),
     _strain_normal_vector(declareProperty<RealVectorValue>("strain_normal_vector")),
-    _strain_shear_vector (declareProperty<RealVectorValue>("strain_shear_vector"))
+    _strain_shear_vector (declareProperty<RealVectorValue>("strain_shear_vector")),
+
+    ////Grab darcy_flux_water_old stateful material property from FracturesFluidFlow to calculate strain dependent permeability mod
+    _darcy_flux_water_old(_has_strain_dependent_permeability ? &getMaterialPropertyOld<RealGradient>("darcy_flux_water") : NULL)
 
 { }
 
@@ -105,20 +104,9 @@ FracturesSolidMechanics::computeProperties()
     {
 //----------------------------------------------------------------------------------------------------------------------------//
 ////calculating/assigning rock material properties:
-        
-        //material property assignment for matrix
-        if(_fractures[qp] == _matrix_num)
-        {
-            _youngs_modulus[qp] = _matrix_youngs_modulus;
-            _alpha[qp] = _matrix_thermal_expansion;
-          
-            if(_has_temp)
-                _thermal_strain[qp] = _matrix_thermal_expansion * (_temperature[qp] - _matrix_t_ref);
-            else
-                _thermal_strain[qp] = 0.0;
-        }
+
         //material property assignment for the fractures
-        else if (_fractures[qp] == _fracture_num)
+        if (_fractures[qp] == _fracture_num)
         {
             _youngs_modulus[qp] = _fracture_youngs_modulus;
             _alpha[qp] = _fracture_thermal_expansion;
@@ -128,7 +116,7 @@ FracturesSolidMechanics::computeProperties()
             else
                 _thermal_strain[qp] = 0.0;
         }
-        //material property assignment for everything else
+        //material property assignment for matrix
         else
         {
             _youngs_modulus[qp] = _matrix_youngs_modulus;
@@ -188,5 +176,45 @@ FracturesSolidMechanics::computeProperties()
                 _stress_shear_vector[qp](2) = c1 * c3 * 2.0 * _strain_shear_vector[qp](2);
             }
         }
+        
+//----------------------------------------------------------------------------------------------------------------------------//
+////calculating strain dependent permeability:
+        
+        if (_has_strain_dependent_permeability)
+        {
+            //////Determining magnitude of aperture change (ie. strain perpandicular to fracture surface)/
+            
+            //determining direction of fluid flow (which is parallel with fracture direction)
+            Real vx = (*_darcy_flux_water_old)[qp](0);
+            Real vy = (*_darcy_flux_water_old)[qp](1);
+            
+            //finding vector perpendicular to fluid flow
+            Real ux = std::abs((1/sqrt(vx*vx + vy*vy))*vy);
+            Real uy = std::abs((1/sqrt(vx*vx + vy*vy))*vx);
+            
+            //finding strain vector perpendicular to fluid flow
+            Real fracture_strain_normal_x = ux * _strain_normal_vector[qp](0);
+            Real fracture_strain_normal_y = uy * _strain_normal_vector[qp](1);
+            
+            //magnitude of strain perpandicular to fluid flow
+            Real fracture_strain_normal = fracture_strain_normal_x + fracture_strain_normal_y;
+            
+            Real aperture = sqrt(12 * _fracture_permeability);
+            Real fracture_ratio = _model_fracture_aperture / aperture;
+            
+            if (_fractures[qp] == _fracture_num)
+            {
+                if (_t_step == 1)
+                    _permeability[qp] = ((std::pow(_model_fracture_aperture,2)) * (std::pow((1/fracture_ratio) , 3)))/12;
+                else
+                    _permeability[qp] = ((std::pow(_model_fracture_aperture,2)) * (std::pow(((1/fracture_ratio) + fracture_strain_normal) , 3)))/12;
+                
+                if (_permeability[qp] <= (0.9*(std::pow(aperture , 3) / (12 * _model_fracture_aperture))))
+                    _permeability[qp] = 0.9 * (std::pow(aperture , 3) / (12 * _model_fracture_aperture));
+            }
+            else
+                _permeability[qp] = _matrix_permeability;
+        }
+        
     }
 }
