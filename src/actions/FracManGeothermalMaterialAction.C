@@ -103,7 +103,7 @@ FracManGeothermalMaterialAction::act()
     InputParameters shared_params = _factory.getValidParams("PorousMedia");
     //get block #/name that we want to assign this material action to and add it to the shared_params
     std::vector<SubdomainName> block = getParam<std::vector<SubdomainName> >("block");
-    _pars.set<std::vector<SubdomainName> >("block") = block;
+    shared_params.set<std::vector<SubdomainName> >("block") = block;
     
     //check which NL variables are coupled and add them to shared_params if valid
     if (_pars.isParamValid("x_disp"))
