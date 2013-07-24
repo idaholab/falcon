@@ -136,6 +136,7 @@ StochasticGeothermalMaterialAction::act()
     shared_params.set<Real>("gx") = gx;
     shared_params.set<Real>("gy") = gy;
     shared_params.set<Real>("gz") = gz;
+    shared_params.set<bool>("has_chem_reactions") = _has_chem_react;
     
     // based upon user input for this action, we will appropriately add materials (and their respective parameters)
     // for a customizable mix-and-match THMC material
@@ -145,6 +146,9 @@ StochasticGeothermalMaterialAction::act()
     // mechanical problems: _has_solid_mech = true
     // chemical problems: _has_chem_react = true
     
+    if (_has_chem_react)
+        addChemicalReactionsMaterial(shared_params);
+    
     if (_has_fluid_flow)
         addFluidFlowMaterial(shared_params);
     
@@ -153,9 +157,6 @@ StochasticGeothermalMaterialAction::act()
     
     if (_has_solid_mech)
         addSolidMechanicsMaterial(shared_params);
-    
-    if (_has_chem_react)
-        addChemicalReactionsMaterial(shared_params);
 }
 
 void

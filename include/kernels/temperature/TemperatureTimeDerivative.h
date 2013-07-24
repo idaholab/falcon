@@ -38,7 +38,7 @@ protected:
     
     bool _has_chem_reactions;
     MaterialProperty<Real> & _porosity;
-    MaterialProperty<Real> & _porosity_old;
+    MaterialProperty<Real> * _porosity_old;
     
     MaterialProperty<Real> & _specific_heat_water;
     MaterialProperty<Real> & _specific_heat_rock;

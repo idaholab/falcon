@@ -31,7 +31,7 @@ TemperatureTimeDerivative::TemperatureTimeDerivative(const std::string & name,
 
    _has_chem_reactions(getParam<bool>("has_chem_reactions")),
    _porosity(getMaterialProperty<Real>("porosity")),
-   _porosity_old(_has_chem_reactions ? getMaterialPropertyOld<Real>("porosity") : getMaterialProperty<Real>("porosity")),
+   _porosity_old(_has_chem_reactions ? &getMaterialPropertyOld<Real>("porosity") : &getMaterialProperty<Real>("porosity")),
 
    _specific_heat_water(getMaterialProperty<Real>("specific_heat_water")),
    _specific_heat_rock(getMaterialProperty<Real>("specific_heat_rock")),
@@ -45,8 +45,8 @@ TemperatureTimeDerivative::computeQpResidual()
     
   Real tmp1=(((_porosity[_qp]*_density_water[_qp]*_specific_heat_water[_qp]) 
               + ((1.0-_porosity[_qp])*_density_rock[_qp]*_specific_heat_rock[_qp]))*_u[_qp]
-             - ((_porosity_old[_qp]*_density_water_old[_qp]*_specific_heat_water[_qp])
-                + ((1.0-_porosity_old[_qp])*_density_rock[_qp]*_specific_heat_rock[_qp]))*_u_old[_qp])
+             - (((*_porosity_old)[_qp]*_density_water_old[_qp]*_specific_heat_water[_qp])
+                + ((1.0-(*_porosity_old)[_qp])*_density_rock[_qp]*_specific_heat_rock[_qp]))*_u_old[_qp])
     *_test[_i][_qp]/_dt;
   
     

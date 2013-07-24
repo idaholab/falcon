@@ -37,6 +37,7 @@ StochasticChemicalReactions::StochasticChemicalReactions(const std::string & nam
    _molecular_weight(getParam<std::vector<Real> >("molecular_weight")),
    _mineral_density(getParam<std::vector<Real> >("mineral_density")),
 
+////Get coupled permeability aux variable
    _has_permeability(isCoupled("permeability")),
    _input_permeability(_has_permeability ? coupledValue("permeability") : _zero),
    _input_porosity(getParam<Real>("porosity")),

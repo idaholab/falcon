@@ -183,6 +183,8 @@ FracturesGeothermalMaterialAction::act()
     shared_params.set<Real>("fracture_porosity") = fracture_porosity;
     shared_params.set<Real>("fracture_density") = fracture_density;
     
+    shared_params.set<bool>("has_chem_reactions") = _has_chem_react;
+    
     // based upon user input for this action, we will appropriately add materials (and their respective parameters)
     // for a customizable mix-and-match THMC material
     

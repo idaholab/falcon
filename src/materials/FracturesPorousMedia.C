@@ -41,6 +41,9 @@ InputParameters validParams<FracturesPorousMedia>()
   params.addParam<Real>("fracture_density", 2500, "rock density of fractures (kg/m^3)");
   params.addParam<bool>("has_strain_dependent_permeability",false,"switch for displacement dependent permeability changes");
     
+  //flag if chemical reactions are present.  determines whether porosity_old is called
+  params.addParam<bool>("has_chem_reactions", false, "add discription");
+    
   return params;
 }
 
@@ -73,9 +76,12 @@ FracturesPorousMedia::FracturesPorousMedia(const std::string & name,
 ////Delcare material properties
     //rock material props
     _permeability(declareProperty<Real>("permeability")),
+    //do we have strain dependent permeability? then we need to declare permeability_old
     _has_strain_dependent_permeability(getParam<bool>("has_strain_dependent_permeability")),
     _permeability_old(_has_strain_dependent_permeability ? &declarePropertyOld<Real>("permeability") : NULL),
     _porosity(declareProperty<Real>("porosity")),
+    //do we have chemical reactions happening? then we need to declare porosity_old
+    _porosity_old(_has_chem_reactions ? &declarePropertyOld<Real>("porosity") : NULL),
     _density_rock(declareProperty<Real>("density_rock")),
     //gravity material props
     _gravity(declareProperty<Real>("gravity")),
@@ -84,6 +90,15 @@ FracturesPorousMedia::FracturesPorousMedia(const std::string & name,
     _already_computed(false)
 
 {}
+
+void
+FracturesPorousMedia::initQpStatefulProperties()
+{
+    if (_fractures[_qp] == _fracture_num)
+        _porosity[_qp] = _fracture_porosity;
+    else
+        _porosity[_qp] = _matrix_porosity;
+}
 
 void
 FracturesPorousMedia::computeProperties()

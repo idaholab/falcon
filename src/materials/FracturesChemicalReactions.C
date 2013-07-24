@@ -64,9 +64,7 @@ FracturesChemicalReactions::FracturesChemicalReactions(const std::string & name,
     _fracture_mineral_density(getParam<std::vector<Real> >("fracture_mineral_density")),
 
 ////Delcare material properties
-    _diffusivity(declareProperty<Real>("diffusivity")),
-
-    _already_computed(false)
+    _diffusivity(declareProperty<Real>("diffusivity"))
 
 {
     //resize and fill in _vals with number of provided chem species

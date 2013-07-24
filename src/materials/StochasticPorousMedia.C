@@ -29,6 +29,9 @@ InputParameters validParams<StochasticPorousMedia>()
   params.addParam<Real>("gy",0.0,"y component of the gravity pressure vector");
   params.addParam<Real>("gz",1.0,"z component of the gravity pressure vector");
     
+  //flag if chemical reactions are present.  determines whether porosity_old is called
+  params.addParam<bool>("has_chem_reactions", false, "add discription");
+    
   return params;
 }
 
@@ -46,11 +49,15 @@ StochasticPorousMedia::StochasticPorousMedia(const std::string & name,
     _gx(getParam<Real>("gx")),
     _gy(getParam<Real>("gy")),
     _gz(getParam<Real>("gz")),
+    //chemical reactions
+    _has_chem_reactions(getParam<bool>("has_chem_reactions")),
 
 ////Delcare material properties
     //rock material props
     _permeability(declareProperty<Real>("permeability")),
     _porosity(declareProperty<Real>("porosity")),
+    //do we have chemical reactions happening? then we need to declare porosity_old
+    _porosity_old(_has_chem_reactions ? &declarePropertyOld<Real>("porosity") : NULL),
     _density_rock(declareProperty<Real>("density_rock")),
     //gravity material props
     _gravity(declareProperty<Real>("gravity")),
@@ -59,6 +66,12 @@ StochasticPorousMedia::StochasticPorousMedia(const std::string & name,
    _already_computed(false)
 
 {}
+
+void
+StochasticPorousMedia::initQpStatefulProperties()
+{
+    _porosity[_qp] = _input_porosity;
+}
 
 void
 StochasticPorousMedia::computeProperties()

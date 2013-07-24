@@ -34,6 +34,7 @@ public:
               InputParameters parameters);
   
 protected:
+  virtual void initQpStatefulProperties();
   virtual void computeProperties();
 ////Grab user input parameters
   ////Matrix
@@ -46,6 +47,8 @@ protected:
   Real _gx;
   Real _gy;
   Real _gz;
+    
+  bool _has_chem_reactions;
     
   ////Fractures
   //fracture map inputs
@@ -64,6 +67,7 @@ protected:
   bool _has_strain_dependent_permeability;
   MaterialProperty<Real> * _permeability_old;
   MaterialProperty<Real> & _porosity;
+  MaterialProperty<Real> * _porosity_old;
   MaterialProperty<Real> & _density_rock;
   //gravity material props
   MaterialProperty<Real> & _gravity;

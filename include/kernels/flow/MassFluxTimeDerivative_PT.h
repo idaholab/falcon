@@ -39,7 +39,7 @@ protected:
     
     bool _has_chem_reactions;
     MaterialProperty<Real> & _porosity;
-    MaterialProperty<Real> & _porosity_old;
+    MaterialProperty<Real> * _porosity_old;
 
 };
 #endif //MASSFLUXTIMEDERIVATIVE_PT

@@ -41,6 +41,10 @@ protected:
   std::vector<Real> _molecular_weight;
   std::vector<Real> _mineral_density;
   std::vector<VariableValue *> _vals;
+    
+////Get coupled permeability aux varaible
+  Real _input_permeability;
+  Real _input_porosity;
 
 ////Declare material properties
   MaterialProperty<Real> & _diffusivity;

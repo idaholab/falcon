@@ -37,6 +37,9 @@ ChemicalReactions::ChemicalReactions(const std::string & name,
    _molecular_weight(getParam<std::vector<Real> >("molecular_weight")),
    _mineral_density(getParam<std::vector<Real> >("mineral_density")),
 
+   _input_permeability(getParam<Real>("permeability")),
+   _input_porosity(getParam<Real>("porosity")),
+
 ////Delcare material properties
    _diffusivity(declareProperty<Real>("diffusivity"))
 

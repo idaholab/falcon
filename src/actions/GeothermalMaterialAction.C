@@ -137,6 +137,7 @@ GeothermalMaterialAction::act()
     shared_params.set<Real>("gx") = gx;
     shared_params.set<Real>("gy") = gy;
     shared_params.set<Real>("gz") = gz;
+    shared_params.set<bool>("has_chem_reactions") = _has_chem_react;
     
     // based upon user input for this action, we will appropriately add materials (and their respective parameters)
     // for a customizable mix-and-match THMC material
@@ -254,12 +255,14 @@ GeothermalMaterialAction::addChemicalReactionsMaterial(InputParameters shared_pa
     cr_params += shared_params;
     
     //get ChemicalReactions paramerters from input file
+    bool has_chem_reactions = true;
     Real diffusivity = getParam<Real>("diffusivity");
     std::vector<Real> mineral = getParam<std::vector<Real> >("mineral");
     std::vector<Real> molecular_weight = getParam<std::vector<Real> >("molecular_weight");
     std::vector<Real> mineral_density = getParam<std::vector<Real> >("mineral_density");
 
     //add these paramerters to cr_params
+    cr_params.set<bool>("has_chem_reactions") = has_chem_reactions;
     cr_params.set<Real>("diffusivity") = diffusivity;
     cr_params.set<std::vector<Real> >("mineral") = mineral;
     cr_params.set<std::vector<Real> >("molecular_weight") = molecular_weight;
