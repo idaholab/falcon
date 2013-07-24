@@ -47,9 +47,7 @@ protected:
   Real _gx;
   Real _gy;
   Real _gz;
-    
-  bool _has_chem_reactions;
-    
+        
   ////Fractures
   //fracture map inputs
   bool _has_fractures;
@@ -67,6 +65,7 @@ protected:
   bool _has_strain_dependent_permeability;
   MaterialProperty<Real> * _permeability_old;
   MaterialProperty<Real> & _porosity;
+  bool _has_chem_reactions;
   MaterialProperty<Real> * _porosity_old;
   MaterialProperty<Real> & _density_rock;
   //gravity material props

@@ -81,6 +81,7 @@ FracturesPorousMedia::FracturesPorousMedia(const std::string & name,
     _permeability_old(_has_strain_dependent_permeability ? &declarePropertyOld<Real>("permeability") : NULL),
     _porosity(declareProperty<Real>("porosity")),
     //do we have chemical reactions happening? then we need to declare porosity_old
+    _has_chem_reactions(getParam<bool>("has_chem_reactions")),
     _porosity_old(_has_chem_reactions ? &declarePropertyOld<Real>("porosity") : NULL),
     _density_rock(declareProperty<Real>("density_rock")),
     //gravity material props
