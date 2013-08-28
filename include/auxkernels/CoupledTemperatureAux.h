@@ -47,6 +47,8 @@ protected:
     VariableValue & _pressure;
     VariableValue & _enthalpy;
     Real _input_temperature;
+  // Real _temp_guess;
+  
                      
 };
 

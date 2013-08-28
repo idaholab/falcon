@@ -138,7 +138,7 @@ void StochasticFluidFlow::computeProperties()
           mooseError("You forgot to provide a UserObject for the EOS fluid property calculations... water_steam_properties in the material block of your input file needs an entry");
         
       //Calling EOS function and assigning fluid properties (sat_fraction, density, visosity, ..., and their derivatives) to output material values
-      _water_steam_properties->waterAndSteamEquationOfStatePropertiesWithDerivativesPH (_enthalpy[qp], _pressure[qp], temp_out, sat_fraction_out, dens_out, dens_water_out, dens_steam_out, enth_water_out, enth_steam_out, visc_water_out, visc_steam_out, d_enth_water_d_press, d_enth_steam_d_press, d_dens_d_press, d_temp_d_press, d_enth_water_d_enth, d_enth_steam_d_enth, d_dens_d_enth, d_temp_d_enth, d_sat_fraction_d_enth);
+      _water_steam_properties->waterAndSteamEquationOfStatePropertiesWithDerivativesPH (_enthalpy[qp], _pressure[qp], _temperature[_qp], temp_out, sat_fraction_out, dens_out, dens_water_out, dens_steam_out, enth_water_out, enth_steam_out, visc_water_out, visc_steam_out, d_enth_water_d_press, d_enth_steam_d_press, d_dens_d_press, d_temp_d_press, d_enth_water_d_enth, d_enth_steam_d_enth, d_dens_d_enth, d_temp_d_enth, d_sat_fraction_d_enth);
          
       _temp_out[qp] = temp_out;
       _sat_fraction_out[qp] = sat_fraction_out;
@@ -169,7 +169,7 @@ void StochasticFluidFlow::computeProperties()
         Real time_old_visc_water_out, time_old_visc_steam_out;
         Real var[7];
              
-        _water_steam_properties->waterAndSteamEquationOfStatePropertiesPH (_enthalpy_old[qp], _pressure_old[qp], var[0], time_old_temp_out, var[1], var[2], time_old_dens_out, time_old_dens_water_out, time_old_dens_steam_out, var[3], var[4], time_old_visc_water_out, time_old_visc_steam_out, var[5], var[6]);
+        _water_steam_properties->waterAndSteamEquationOfStatePropertiesPH (_enthalpy_old[qp], _pressure_old[qp], _temperature_old[_qp], var[0], time_old_temp_out, var[1], var[2], time_old_dens_out, time_old_dens_water_out, time_old_dens_steam_out, var[3], var[4], time_old_visc_water_out, time_old_visc_steam_out, var[5], var[6]);
              
         _time_old_temp_out[qp] = time_old_temp_out;
         _time_old_dens_out[qp] = time_old_dens_out;
@@ -191,7 +191,7 @@ void StochasticFluidFlow::computeProperties()
 
          
       //Obtaining properties to compute derivative of tau_water/steam w.r.t. a pressure step (enthalpy held constant)
-      _water_steam_properties->waterAndSteamEquationOfStatePropertiesPH (_enthalpy[qp], (_pressure[qp] + del_p), _var[0], _var[1], _var[2], _sat_fraction, _var[3], _dens_water, _dens_steam, _var[4], _var[5], _visc_water, _visc_steam, _var[6], _var[7]);
+      _water_steam_properties->waterAndSteamEquationOfStatePropertiesPH (_enthalpy[qp], (_pressure[qp] + del_p), _temperature[_qp], _var[0], _var[1], _var[2], _sat_fraction, _var[3], _dens_water, _dens_steam, _var[4], _var[5], _visc_water, _visc_steam, _var[6], _var[7]);
          
       StochasticFluidFlow:: compute2PhProperties0( _permeability[qp], _sat_fraction, _dens_water, _dens_steam, _visc_water, _visc_steam, _tau_water[qp],_tau_steam[qp]);
 
@@ -200,7 +200,7 @@ void StochasticFluidFlow::computeProperties()
          
          
       //Obtaining properties to compute derivative of tau_water/steam w.r.t. a enthalpy step (pressure held constant)
-      _water_steam_properties->waterAndSteamEquationOfStatePropertiesPH ((_enthalpy[qp] + del_h), _pressure[qp], _var[0], _var[1], _var[2], _sat_fraction, _var[3], _dens_water, _dens_steam, _var[4], _var[5], _visc_water, _visc_steam, _var[6], _var[7]);
+      _water_steam_properties->waterAndSteamEquationOfStatePropertiesPH ((_enthalpy[qp] + del_h), _pressure[qp], _temperature[_qp], _var[0], _var[1], _var[2], _sat_fraction, _var[3], _dens_water, _dens_steam, _var[4], _var[5], _visc_water, _visc_steam, _var[6], _var[7]);
 
       StochasticFluidFlow:: compute2PhProperties0( _permeability[qp], _sat_fraction, _dens_water, _dens_steam, _visc_water, _visc_steam, _tau_water[qp],_tau_steam[qp]);
          
