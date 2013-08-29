@@ -2,6 +2,8 @@
 #include "StochasticField.h"
 #include "MooseError.h" //for mooseError/Assert
 
+#include <fstream>
+
 StochasticField::StochasticField(std::string fname)
 {
   std::ifstream file(fname.c_str());
