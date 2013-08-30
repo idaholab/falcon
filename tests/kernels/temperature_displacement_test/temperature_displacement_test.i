@@ -149,7 +149,11 @@
 
 [Executioner]
   type = Steady
-  petsc_options = '-snes_mf_operator -ksp_monitor'
+
+  #Preconditioned JFNK (default)
+  solve_type = 'PJFNK'
+
+  petsc_options = '-ksp_monitor'
   nl_rel_tol = 1e-12
 []
 

@@ -118,6 +118,9 @@ active = 'rock'
   num_steps = 5
   dt = 2500000.0
   nl_abs_tol = 1e-6
+  
+  solve_type = 'NEWTON'
+
   [./Quadrature]
     type = Trap
   [../]

@@ -141,7 +141,11 @@ active = 'rock'
   type = Transient
   num_steps = 2
   dt = 1000000.0
-  petsc_options = '-ksp_monitor -snes_mf_operator'
+
+  #Preconditioned JFNK (default)
+  solve_type = 'PJFNK'
+
+  petsc_options = '-ksp_monitor '
   nl_abs_tol = 1e-6
   [./Quadrature]
     type = Trap

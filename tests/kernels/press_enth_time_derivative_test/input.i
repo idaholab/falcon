@@ -132,7 +132,10 @@
   type = Transient
   dt = 1000000
   num_steps = 2
-  petsc_options = -snes_mf_operator
+
+  #Preconditioned JFNK (default)
+  solve_type = 'PJFNK'
+
   [./Quadrature]
     type = Trap
   [../]

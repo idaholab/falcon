@@ -98,7 +98,11 @@
   type = Transient
   num_steps = 5
   dt = 10.0
-  petsc_options = '-snes_mf_operator -ksp_monitor'
+
+  #Preconditioned JFNK (default)
+  solve_type = 'PJFNK'
+
+  petsc_options = '-ksp_monitor'
   nl_abs_tol = 1e-6
   [./Quadrature]
     type = Trap
