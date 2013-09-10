@@ -40,6 +40,7 @@ protected:
   //rock property inputs
   Real _input_permeability;
   Real _input_porosity;
+  Real _input_compressibility;
   Real _input_density_rock;
   //gravity inputs
   Real _input_gravity;
@@ -53,6 +54,7 @@ protected:
   //rock material props
   MaterialProperty<Real> & _permeability;
   MaterialProperty<Real> & _porosity;
+  MaterialProperty<Real> & _compressibility;
   MaterialProperty<Real> * _porosity_old;
   MaterialProperty<Real> & _density_rock;
   //gravity material props

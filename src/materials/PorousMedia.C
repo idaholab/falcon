@@ -22,6 +22,7 @@ InputParameters validParams<PorousMedia>()
   //rock property inputs
   params.addParam<Real>("permeability",1.0e-12, "intrinsic permeability in [m^2]");
   params.addParam<Real>("porosity", 0.3, "rock porosity");
+  params.addParam<Real>("compressibility", 1.0e-5, "total compressibility of the researvoir");  
   params.addParam<Real>("density_rock", 2.50e3, "rock density, [kg/m^3]");
   //gravity inputs
   params.addParam<Real>("gravity",9.80665,"gravity acceleration constant, [m/s^2]");
@@ -42,6 +43,7 @@ PorousMedia::PorousMedia(const std::string & name,
    //rock property inputs
    _input_permeability(getParam<Real>("permeability")),
    _input_porosity(getParam<Real>("porosity")),
+   _input_compressibility(getParam<Real>("compressibility")),
    _input_density_rock(getParam<Real>("density_rock")),
    //gravity inputs
    _input_gravity(getParam<Real>("gravity")),
@@ -55,6 +57,7 @@ PorousMedia::PorousMedia(const std::string & name,
    //rock material props
    _permeability(declareProperty<Real>("permeability")),
    _porosity(declareProperty<Real>("porosity")),
+   _compressibility(declareProperty<Real>("compressibility")),
    //do we have chemical reactions happening? then we need to declare porosity_old
    _porosity_old(_has_chem_reactions ? &declarePropertyOld<Real>("porosity") : NULL),
    _density_rock(declareProperty<Real>("density_rock")),
@@ -80,6 +83,7 @@ PorousMedia::computeProperties()
     //porous media
     _permeability[qp]       = _input_permeability;
     _porosity[qp]           = _input_porosity;
+    _compressibility[qp]    = _input_compressibility;
     _density_rock[qp]       = _input_density_rock;
       
     //gravity    

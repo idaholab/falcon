@@ -31,18 +31,21 @@ MassFluxTimeDerivative_PT::MassFluxTimeDerivative_PT(const std::string & name, I
 
    _has_chem_reactions(getParam<bool>("has_chem_reactions")),
    _porosity(getMaterialProperty<Real>("porosity")),
-   _porosity_old(_has_chem_reactions ? &getMaterialPropertyOld<Real>("porosity") : &getMaterialProperty<Real>("porosity"))
-
+   _compressibility(getMaterialProperty<Real>("compressibility")),
+   _porosity_old(_has_chem_reactions ? &getMaterialPropertyOld<Real>("porosity") : &getMaterialProperty<Real>("porosity")),
+   _u_old(valueOld())
 {}
 
 Real
 MassFluxTimeDerivative_PT::computeQpResidual()
 {
-    return (((_porosity[_qp]*_density_water[_qp])-((*_porosity_old)[_qp]*_density_water_old[_qp]))/_dt) * _test[_i][_qp];
+//    return (((_porosity[_qp]*_density_water[_qp])-((*_porosity_old)[_qp]*_density_water_old[_qp]))/_dt) * _test[_i][_qp];
+  return _porosity[_qp]*_density_water[_qp]*_compressibility[_qp]*(_u[_qp] - _u_old[_qp])/_dt * _test[_i][_qp];
 }
 
 Real
 MassFluxTimeDerivative_PT::computeQpJacobian()
 {
-    return (_porosity[_qp]*_dwdp[_qp]*_phi[_j][_qp])*_test[_i][_qp]/_dt;
+//    return (_porosity[_qp]*_dwdp[_qp]*_phi[_j][_qp])*_test[_i][_qp]/_dt;
+  return _porosity[_qp]*_density_water[_qp]*_compressibility[_qp] * _phi[_j][_qp]/_dt * _test[_i][_qp];
 }
