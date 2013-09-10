@@ -145,7 +145,9 @@ active = 'rock'
   #Preconditioned JFNK (default)
   solve_type = 'PJFNK'
 
-  petsc_options = '-ksp_monitor '
+
+  print_linear_residuals = true
+
   nl_abs_tol = 1e-6
   [./Quadrature]
     type = Trap
