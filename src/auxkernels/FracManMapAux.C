@@ -19,17 +19,17 @@ InputParameters validParams<FracManMapAux>()
 {
     InputParameters params = validParams<AuxKernel>();
 
-    MooseEnum metric_conversion_code("0,1");
-    MooseEnum normal_component_code("0,1,2");
-    MooseEnum output_type_code("0,1");
+    MooseEnum metric_conversion_code("no,yes");
+    MooseEnum normal_component_code("x,y,z");
+    MooseEnum output_type_code("fracture_map,fracture_normal");
      
      
-    params.addRequiredParam<std::vector<Real> >("coordinate_shift", "Enter the x y and z elements of the coordinate shift (ft)");
+    params.addRequiredParam<std::vector<Real> >("coordinate_shift", "Enter the x, y, and z elements of the coordinate shift (ft)");
     params.addRequiredParam<std::vector<std::string> >("file_names", "List the FracMan files to be loaded");
     params.addRequiredParam<std::vector<int> >("fracture_numbers","List the ID number of the fractures to be included in the simulation");
-    params.addParam<MooseEnum>("metric_conversion", metric_conversion_code, "Convert to metric? 0 = no, 1 = yes.");
-    params.addParam<MooseEnum>("normal_component", normal_component_code, "Choose the normal component to be calculated:  0 = x, 1 = y, 2 = z.");
-    params.addParam<MooseEnum>("output_type", output_type_code, "Choose output:  0 = _frac_man_map, 1 = _frac_man_normal<component>.");
+    params.addParam<MooseEnum>("metric_conversion", metric_conversion_code, "Convert to metric? no, yes.");
+    params.addParam<MooseEnum>("normal_component", normal_component_code, "Choose the normal component to be calculated:  x, y, or z.");
+    params.addParam<MooseEnum>("output_type", output_type_code, "Choose output:  _frac_man_map, _frac_man_normal<component>.");
     params.addParam<Real>("tolerance", 0.9, "closest_point tolerance");
 
     return params;
@@ -364,13 +364,13 @@ FracManMapAux::computeValue()
         }
         else
         {
-          mooseError("component is out of bounds.  Must be either 0, 1, or 2");
+          mooseError("component is out of bounds.  Must be either x, y, z");
         }
         
     }
     else
     {
-        mooseError("output type is out of bounds. Must be either 0 or 1.");
+        mooseError("output type is out of bounds. Must be either fracture_map or fracture_normal.");
     }
     
     
