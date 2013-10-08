@@ -58,8 +58,6 @@
 #include "StressStrainDamageComputeAux.h"
 #include "FracManMapAux.h"
 #include "StochasticFieldAux.h"
-#include "StressFieldAux.h"
-#include "FracPropAux.h"
 
 //BCs
 #include "PressureNeumannBC2.h"
@@ -189,9 +187,7 @@ FalconApp::registerObjects(Factory & factory)
   registerAux(StressStrainDamageComputeAux);
   registerAux(StochasticFieldAux);
   registerAux(FracManMapAux);
-  registerAux(StressFieldAux);
-  registerAux(FracPropAux);
-
+ 
   //BCs
   registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
   registerBoundaryCondition(GravityNeumannBC);
