@@ -46,7 +46,8 @@
 #include "TemperatureDiffusion.h"
 #include "TemperatureConvection.h"
 
-#include "MassFluxTimeDerivative_PT.h"
+#include "MassFluxTimeDerivative_PT.h" 
+#include "MassFluxTimeDerivative_PT_comp.h" 
 #include "WaterMassFluxPressure_PT.h"
 #include "WaterMassFluxElevation_PT.h"
 #include "PressureTimeDerivative.h"
@@ -177,6 +178,7 @@ FalconApp::registerObjects(Factory & factory)
   registerKernel(TemperatureConvection);
   //fluid-mass flow-single phase formulation
   registerKernel(MassFluxTimeDerivative_PT);
+  registerKernel(MassFluxTimeDerivative_PT_comp);
   registerKernel(WaterMassFluxPressure_PT);
   registerKernel(WaterMassFluxElevation_PT);
 

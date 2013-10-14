@@ -14,20 +14,20 @@
 
 #include "TimeDerivative.h"
 
-#ifndef MASSFLUXTIMEDERIVATIVE_PT
-#define MASSFLUXTIMEDERIVATIVE_PT
+#ifndef MASSFLUXTIMEDERIVATIVE_PT_COMP
+#define MASSFLUXTIMEDERIVATIVE_PT_COMP
 
 //Forward Declarations
-class MassFluxTimeDerivative_PT;
+class MassFluxTimeDerivative_PT_comp;
 
 template<>
-InputParameters validParams<MassFluxTimeDerivative_PT>();
+InputParameters validParams<MassFluxTimeDerivative_PT_comp>();
 
-class MassFluxTimeDerivative_PT : public TimeDerivative
+class MassFluxTimeDerivative_PT_comp : public TimeDerivative
 {
 public:
 
-  MassFluxTimeDerivative_PT(const std::string & name, InputParameters parameters);
+  MassFluxTimeDerivative_PT_comp(const std::string & name, InputParameters parameters);
 
 protected:
   virtual Real computeQpResidual();
@@ -39,9 +39,9 @@ protected:
     
     bool _has_chem_reactions;
     MaterialProperty<Real> & _porosity;
-  //MaterialProperty<Real> & _compressibility;
+    MaterialProperty<Real> & _compressibility;
     MaterialProperty<Real> * _porosity_old;
   VariableValue & _u_old;  
 
 };
-#endif //MASSFLUXTIMEDERIVATIVE_PT
+#endif //MASSFLUXTIMEDERIVATIVE_PT_COMP
