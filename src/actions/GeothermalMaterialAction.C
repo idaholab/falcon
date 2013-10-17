@@ -26,6 +26,7 @@ InputParameters validParams<GeothermalMaterialAction>()
   //porous_media
   params.addParam<Real>("permeability", 1e-12, "[m^2]");
   params.addParam<Real>("porosity", 0.3,"dimentionless");
+  params.addParam<Real>("compressibility", 1e-15,"dimentionless");
   params.addParam<Real>("density_rock", 2.5e3, "[kg/m^3]");
   params.addParam<Real>("gravity", 9.80665, "[m/s^2]");
   params.addParam<Real>("gx", 0.0, "dimentionless");
@@ -123,6 +124,7 @@ GeothermalMaterialAction::act()
     //get base class (PorousMedia) paramerters from input
     Real permeability = getParam<Real>("permeability");
     Real porosity = getParam<Real>("porosity");
+    Real compressibility = getParam<Real>("compressibility");
     Real density_rock = getParam<Real>("density_rock");
     Real gravity = getParam<Real>("gravity");
     Real gx = getParam<Real>("gx");
@@ -132,6 +134,8 @@ GeothermalMaterialAction::act()
     //add these base class paramerters to shared_params, since all dependent classes need these parameters
     shared_params.set<Real>("permeability") = permeability;
     shared_params.set<Real>("porosity") = porosity;
+    shared_params.set<Real>("compressibility") = compressibility;
+
     shared_params.set<Real>("density_rock") = density_rock;
     shared_params.set<Real>("gravity") = gravity;
     shared_params.set<Real>("gx") = gx;

@@ -120,6 +120,7 @@ StochasticGeothermalMaterialAction::act()
     }
     
     //get base class (StochasticPorousMedia) paramerters from input
+
     std::vector<AuxVariableName> permeability = getParam<std::vector<AuxVariableName> >("permeability");
     Real porosity = getParam<Real>("porosity");
     Real density_rock = getParam<Real>("density_rock");
