@@ -4,6 +4,10 @@
 # is used to provide a stochastic permeability field and the water/steam EOS routine is coupled in to 
 # determine pressure/temperature dependent density and viscosity
 
+#19 Oct 2013 - the material properties need to be updated.  There is a bug in the StochasticGeothermalMaterial Action 
+#that tried to double allocate the permeability. This example is currently using the "old" material setup
+#with diamond inheritance.  It needs to be updated.
+
 [Mesh]
   type = FileMesh
   file = 3d_stochastic_course.e
