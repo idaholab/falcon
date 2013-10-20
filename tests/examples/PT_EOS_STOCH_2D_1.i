@@ -185,7 +185,7 @@
 
 [Executioner]
  type = Transient
-  num_steps = 10
+  num_steps = 5
   dt = 2500000.0
   nl_abs_tol = 1e-6
   solve_type = PJFNK
@@ -199,7 +199,7 @@
 [Output]
   file_base = PT_EOS_STOCH_2d_1_out
   output_initial = true
-  interval = 1
+  interval = 5
   exodus = true
   print_out_info = true
 []

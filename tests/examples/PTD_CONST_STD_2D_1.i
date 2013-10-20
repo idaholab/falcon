@@ -413,7 +413,7 @@
 
 [Executioner]
   type = Transient
-  num_steps = 25
+  num_steps = 10
   print_linear_residuals = false
   nl_rel_tol = 1e-06
   dt = 50

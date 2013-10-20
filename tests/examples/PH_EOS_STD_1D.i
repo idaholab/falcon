@@ -218,7 +218,7 @@
 
 [Executioner]
   type = Transient
-  num_steps = 20
+  num_steps = 5
   solve_type = PJFNK
   petsc_options_iname = ' -snes_ls -pc_type -pc_hypre_type -ksp_gmres_restart'
   petsc_options_value = ' basic  hypre boomeramg 201'
