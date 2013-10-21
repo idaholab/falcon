@@ -1,17 +1,17 @@
 [Tests]
   [./P_CONST_STD_1d_1]
     type = 'Exodiff'
-    input = 'P_CONST_STD_1d_1.i'
+    input = 'P_CONST_STD_1D_1.i'
     exodiff = 'P_CONST_STD_1d_1_out.e'
   [../]
   [./P_EOS_STD_1d_1]
     type = 'Exodiff'
-    input = 'P_EOS_STD_1d_1.i'
+    input = 'P_EOS_STD_1D_1.i'
     exodiff = 'P_EOS_STD_1d_1_out.e'
   [../]
  [./P_EOS_STD_3d_1]
     type = 'Exodiff'
-    input = 'P_EOS_STD_3d_1.i'
+    input = 'P_EOS_STD_3D_1.i'
     exodiff = 'P_EOS_STD_3d_1_out.e'
   [../]
  [./T_CONST_STD_1D_1]
