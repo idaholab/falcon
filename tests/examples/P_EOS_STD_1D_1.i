@@ -18,17 +18,10 @@
 # which are temp and pressure dependent
 
   [./pressure]
-    initial_condition = 0.1e6 #<-- [Pa]
+    initial_condition = 0.1e7 #<-- [Pa]
   [../]
   [./temperature]
     initial_condition = 293.15 #<-- [K]
-  [../]
-[]
-
-[AuxVariables]
-  [./v_x]           # This aux variable is not necessary to run the problem, it just displays the velocity, which changes due to viscous effects
-    order = CONSTANT
-    family = MONOMIAL
   [../]
 []
 
@@ -47,26 +40,19 @@
   [../]
 []
 
-[AuxKernels]
-  [./vx]            # This aux kernel is not necessary to run the problem, it just displays the velocity, which changes due to viscous effects
-    type = VelocityAux
-    variable = v_x
-    component = 0
-  [../]
-[]
 
 [BCs]
   [./left_p]
     type = DirichletBC
     variable = pressure
     boundary = left
-    value = 0.11e6
+    value = 0.2e7
   [../]
   [./right_p]
     type = DirichletBC
     variable = pressure
     boundary = right
-    value = 0.1e6
+    value = 0.1e7
   [../]
   [./const_temp]
     type = DirichletBC
@@ -123,9 +109,10 @@
   dt = 1
   num_steps = 5
   solve_type = PJFNK
-  petsc_options_iname = 'pc_type -pc_hypre_type -ksp_gmres_restart -snes_ls -pc_hypre_boomeramg_strong_threshold'
-  petsc_options_value = 'hypre boomeramg 201 basic 0.7'
-  nl_abs_tol = 1e-10
+  petsc_options_iname = 'pc_type -pc_hypre_type -ksp_gmres_restart -pc_hypre_boomeramg_strong_threshold'
+  petsc_options_value = 'hypre boomeramg 201 0.7'
+  nl_abs_tol = 1e-8
+nl_rel_tol = 1e-6
 []
 
 [Output]

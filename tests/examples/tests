@@ -8,6 +8,7 @@
     type = 'Exodiff'
     input = 'P_EOS_STD_1D_1.i'
     exodiff = 'P_EOS_STD_1d_1_out.e'
+    skip = 'Needs revision for mpi stability'
   [../]
  [./P_EOS_STD_3d_1]
     type = 'Exodiff'
