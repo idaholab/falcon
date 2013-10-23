@@ -96,9 +96,9 @@
     gx                          = 0.0       # x-component of gravity vector
     gy                          = 0.0       # y-component of gravity vector
     gz                          = 1.0       # z-component of gravity vector
-    porosity                    = 0.5
+    porosity                    = 0.2
     permeability                = 1.0e-12   # [m^2]
-    compressibility             = 1e-15
+    #compressibility             = 1e-15
     
     # material property inputs from HeatTransport
     specific_heat_water         = 4186      # [J/(kg.K)]
@@ -120,8 +120,8 @@
 
 [Executioner]
   type = Transient
-  dt = 5
-  num_steps = 10
+  dt = 1
+  num_steps = 5
   solve_type = PJFNK
   petsc_options_iname = 'pc_type -pc_hypre_type -ksp_gmres_restart -snes_ls -pc_hypre_boomeramg_strong_threshold'
   petsc_options_value = 'hypre boomeramg 201 basic 0.7'
