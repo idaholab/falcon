@@ -58,6 +58,6 @@
 [./PTD_CONST_STD_2D_1]
     type = 'Exodiff'
     input = 'PTD_CONST_STD_2D_1.i'
-    exodiff = 'PTD_CONST_STD_2D_1_out.e-s002'
+    exodiff = 'PTD_CONST_STD_2D_1_out.e'
   [../]
 []

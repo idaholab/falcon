@@ -7,15 +7,20 @@
   [./temperature]
     initial_condition = 413.15
   [../]
+
   [./pressure]
     initial_condition = 2e6
   [../]
+
   [./disp_x]
   [../]
+
   [./disp_y]
   [../]
+
   [./disp_z]
   [../]
+
 []
 
 
@@ -413,9 +418,9 @@
 
 [Executioner]
   type = Transient
-  num_steps = 10
+  num_steps = 1
   print_linear_residuals = false
-  nl_rel_tol = 1e-06
+  nl_rel_tol = 1e-10
   dt = 50
   solve_type = PJFNK
   petsc_options_iname = '-pc_type -pc_hypre_type -ksp_gmres_restart -snes_ls -pc_hypre_boomeramg_strong_threshold'
@@ -436,7 +441,7 @@
 
 [Output]
   file_base = PTD_CONST_STD_2D_1_out
-  output_initial = true
-  interval = 100
+  output_initial = false
+  interval = 1
   exodus = true
 []
