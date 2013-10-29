@@ -103,7 +103,7 @@
 
 [Executioner]
   type = Transient
-  num_steps = 300
+  num_steps = 50
   dt = 10000.0
 
   #Preconditioned JFNK (default)
