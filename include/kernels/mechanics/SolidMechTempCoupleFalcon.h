@@ -36,6 +36,8 @@ public:
   void recomputeCouplingConstants();
   
 protected:
+  const unsigned int _mesh_dimension;
+  
   unsigned int _temp_var;
   
   MaterialProperty<Real> & _thermal_strain;

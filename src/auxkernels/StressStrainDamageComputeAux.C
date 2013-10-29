@@ -25,6 +25,7 @@ InputParameters validParams<StressStrainDamageComputeAux>()
 
 StressStrainDamageComputeAux::StressStrainDamageComputeAux(const std::string & name, InputParameters parameters)
   :AuxKernel(name, parameters),
+    _mesh_dimension(_mesh.dimension()),
 
     _quantity_string( getParam<std::string>("quantity") ),
     _component(getParam<int>("component")),
@@ -48,13 +49,13 @@ StressStrainDamageComputeAux::computeValue()
         _stress(0) = _stress_normal_vector[_qp](0);
         _stress(1) = _stress_normal_vector[_qp](1);
         //if 3D problem, stress_normal in z-direction (tau_zz)
-        if (_dim == 3)
+        if (_mesh_dimension == 3)
             _stress(2) = _stress_normal_vector[_qp](2); //tau_zz
         
         //stress_shear (tau_xy)
         _stress(3) = _stress_shear_vector[_qp](0);
         //if 3D problem, stress_shear in z_directions (tau_xz and tau_yz)
-        if (_dim == 3)
+        if (_mesh_dimension == 3)
         {
             _stress(4) =  _stress_shear_vector[_qp](1);
             _stress(5) =  _stress_shear_vector[_qp](2);
@@ -68,13 +69,13 @@ StressStrainDamageComputeAux::computeValue()
         _strain(0) = _strain_normal_vector[_qp](0);
         _strain(1) = _strain_normal_vector[_qp](1);
         //if 3D problem, strain_normal in z_direction (s_zz)
-        if (_dim == 3)
+        if (_mesh_dimension == 3)
             _strain(2) = _strain_normal_vector[_qp](2);
         
         //strain_shear (s_xy)
         _strain(3) = _strain_shear_vector[_qp](0);
         //if 3D problem, strain_shear in z_directions (s_xz and s_yz)
-        if (_dim == 3)
+        if (_mesh_dimension == 3)
         {
             _strain(4) =  _strain_shear_vector[_qp](1);
             _strain(5) =  _strain_shear_vector[_qp](2);

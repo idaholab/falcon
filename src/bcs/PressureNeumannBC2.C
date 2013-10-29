@@ -30,8 +30,8 @@ PressureNeumannBC2::PressureNeumannBC2(const std::string & name, InputParameters
     _u_vel(coupledValue("u")),
     _v_vel_var(coupled("v")),
     _v_vel(coupledValue("v")),
-    _w_vel_var(_dim == 3 ? coupled("w") : 0),
-    _w_vel(_dim == 3 ? coupledValue("w") : _zero),
+    _w_vel_var(_mesh.dimension() == 3 ? coupled("w") : 0),
+    _w_vel(_mesh.dimension() == 3 ? coupledValue("w") : _zero),
     _component(getParam<Real>("component")),
     _gamma(getMaterialProperty<Real>("gamma"))
 {

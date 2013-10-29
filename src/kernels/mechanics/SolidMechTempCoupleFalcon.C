@@ -23,6 +23,7 @@ InputParameters validParams<SolidMechTempCoupleFalcon>()
 
 SolidMechTempCoupleFalcon::SolidMechTempCoupleFalcon(const std::string & name, InputParameters parameters)
   :SolidMechFalcon(name, parameters),
+   _mesh_dimension(_mesh.dimension()),
    _temp_var(coupled("temperature")),
    _thermal_strain(getMaterialProperty<Real>("thermal_strain")),
    _alpha(getMaterialProperty<Real>("alpha"))
@@ -35,6 +36,6 @@ SolidMechTempCoupleFalcon::recomputeCouplingConstants()
   
   _c4 = _E/(1.-_nu);
   
-  if( 3 == _dim )
+  if( 3 == _mesh_dimension )
     _c4 = _E/(1.-2.*_nu);    
 }

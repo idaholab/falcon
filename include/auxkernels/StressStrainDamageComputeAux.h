@@ -48,6 +48,8 @@ public:
 protected:
   virtual Real computeValue();
 
+  const unsigned int _mesh_dimension;
+
   std::string  _quantity_string;
    
   int _component;
