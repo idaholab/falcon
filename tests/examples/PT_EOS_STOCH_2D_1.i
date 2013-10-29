@@ -24,6 +24,7 @@
 []
 
 [AuxVariables]
+  active = 'permeability viscosity_water density_water'
   [./permeability]          # permeability aux variable is required when running using the stochastic geothermal material. This aux variable provides the random permeability field to the material
     order = CONSTANT
     family = MONOMIAL
@@ -70,6 +71,7 @@
 []
 
 [AuxKernels]
+  active = 'permeability_field viscosity_water density_water'
   [./permeability_field]    # permeability aux kernel is required when running using the stochastic geothermal material. This aux kernel provides the random permeability field to the material
     type = StochasticFieldAux
     variable = permeability
@@ -185,9 +187,9 @@
 
 [Executioner]
  type = Transient
-  num_steps = 5
+  num_steps = 3
   dt = 2500000.0
-  nl_abs_tol = 1e-6
+  nl_abs_tol = 1e-12
   solve_type = PJFNK
   line_search = basic
 
@@ -199,7 +201,7 @@
 [Output]
   file_base = PT_EOS_STOCH_2d_1_out
   output_initial = true
-  interval = 5
+  interval = 1
   exodus = true
   print_out_info = true
 []
