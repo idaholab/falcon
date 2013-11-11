@@ -154,12 +154,12 @@
   solve_type = 'PJFNK'
 
 
-  print_linear_residuals = true
 
   nl_rel_tol = 1e-12
 []
 
 [Output]
+  linear_residuals = true
   file_base = out
   output_initial = true
   exodus = true

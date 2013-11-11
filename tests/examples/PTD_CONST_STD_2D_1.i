@@ -419,7 +419,6 @@
 [Executioner]
   type = Transient
   num_steps = 1
-  print_linear_residuals = false
   nl_rel_tol = 1e-10
   dt = 50
   solve_type = PJFNK
@@ -440,6 +439,7 @@
 []
 
 [Output]
+  linear_residuals = true
   file_base = PTD_CONST_STD_2D_1_out
   output_initial = false
   interval = 1

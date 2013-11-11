@@ -174,7 +174,6 @@
   type = Steady
   l_max_its = 200
   solve_type = PJFNK
-  print_linear_residuals = true
   petsc_options_iname = '-pc_type -pc_hypre_type -ksp_gmres_restart'
   petsc_options_value = 'hypre boomeramg 201 '
   line_search = basic
@@ -188,6 +187,7 @@
 []
 
 [Output]
+  linear_residuals = true
   file_base = PH_EOS_STD_2D_1_out
   output_initial = true
   exodus = true

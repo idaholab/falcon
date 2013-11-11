@@ -148,7 +148,6 @@ active = 'rock'
   solve_type = 'PJFNK'
 
 
-  print_linear_residuals = true
 
   nl_abs_tol = 1e-6
   [./Quadrature]
@@ -157,6 +156,7 @@ active = 'rock'
 []
 
 [Output]
+  linear_residuals = true
   file_base = out_variable_dens_visc1
   output_initial = true
   interval = 1

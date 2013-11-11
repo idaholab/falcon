@@ -154,7 +154,6 @@
   solve_type = 'PJFNK'
 
 
-  print_linear_residuals = true
 
   [./Quadrature]
     type = Trap
@@ -162,6 +161,7 @@
 []
 
 [Output]
+  linear_residuals = true
   file_base = out_PH
   output_initial = true
   interval = 1

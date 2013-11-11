@@ -103,7 +103,6 @@
   solve_type = 'PJFNK'
 
 
-  print_linear_residuals = true
 
   nl_abs_tol = 1e-6
   [./Quadrature]
@@ -112,6 +111,7 @@
 []
 
 [Output]
+  linear_residuals = true
   file_base = out_PT_time_derivative_w_action_material
   output_initial = true
   interval = 1
