@@ -40,6 +40,9 @@ falcon_deps := $(patsubst %.C, %.$(obj-suffix).d, $(falcon_srcfiles)) \
                $(patsubst %.c, %.$(obj-suffix).d, $(falcon_csrcfiles)) \
                $(patsubst %.C, %.$(obj-suffix).d, $(falcon_main_src))
 
+# clang static analyzer files
+falcon_analyzer := $(patsubst %.C, %.plist.$(obj-suffix), $(falcon_srcfiles))
+
 # If building shared libs, make the plugins a dependency, otherwise don't.
 ifeq ($(libmesh_shared),yes)
   falcon_plugin_deps := $(falcon_plugins)
@@ -54,6 +57,9 @@ $(falcon_LIB): $(falcon_objects) $(falcon_plugin_deps)
 	@$(libmesh_LIBTOOL) --tag=CXX $(LIBTOOLFLAGS) --mode=link --quiet \
 	  $(libmesh_CXX) $(libmesh_CXXFLAGS) -o $@ $(falcon_objects) $(libmesh_LIBS) $(libmesh_LDFLAGS) $(EXTERNAL_FLAGS) -rpath $(FALCON_DIR)
 	@$(libmesh_LIBTOOL) --mode=install --quiet install -c $(falcon_LIB) $(FALCON_DIR)
+
+# Clang static analyzer
+sa:: $(falcon_analyzer)
 
 # include FALCON dep files
 -include $(falcon_deps)
