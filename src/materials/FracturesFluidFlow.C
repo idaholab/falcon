@@ -39,16 +39,16 @@ FracturesFluidFlow::FracturesFluidFlow(const std::string & name, InputParameters
     _has_pressure(isCoupled("pressure")),
     _grad_p(_has_pressure ? coupledGradient("pressure") : _grad_zero),
     _pressure(_has_pressure ? coupledValue("pressure")  : _zero),
-    _pressure_old(_has_pressure ? coupledValueOld("pressure") : _zero),
+    _pressure_old(_has_pressure && _is_transient ? coupledValueOld("pressure") : _zero),
 
     _has_temp(isCoupled("temperature")),
     _temp_dependent_fluid_props(getParam<bool>("temp_dependent_fluid_props")),
     _temperature(_has_temp ? coupledValue("temperature")  : _zero),
-    _temperature_old(_has_temp ? coupledValueOld("temperature") : _zero),
+    _temperature_old(_has_temp && _is_transient ?  coupledValueOld("temperature") : _zero),
     
     _has_enthalpy(isCoupled("enthalpy")), 
     _enthalpy(_has_enthalpy ? coupledValue("enthalpy")  : _zero),
-    _enthalpy_old(_has_enthalpy ? coupledValueOld("enthalpy") : _zero),
+    _enthalpy_old(_has_enthalpy && _is_transient ? coupledValueOld("enthalpy") : _zero),
 
     //Fluid velocity terms Tau and Darcy Flux (water and steam) and their derivatives
     _tau_water(declareProperty<Real>("tau_water")),
