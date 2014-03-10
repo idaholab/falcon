@@ -117,8 +117,8 @@
 #include "FracturesGeothermalMaterialAction.h"
 
 // Elk stuff
-#include "FluidMassEnergyBalanceModule.h"
-#include "ChemicalReactionsModule.h"
+#include "FluidMassEnergyBalanceApp.h"
+#include "ChemicalReactionsApp.h"
 
 
 template<>
@@ -134,12 +134,13 @@ FalconApp::FalconApp(const std::string & name, InputParameters parameters) :
   srand(libMesh::processor_id());
   
   Moose::registerObjects(_factory);
-  Elk::FluidMassEnergyBalance::registerObjects(_factory);
-  Elk::ChemicalReactions::registerObjects(_factory);
+  FluidMassEnergyBalanceApp::registerObjects(_factory);
+  ChemicalReactionsApp::registerObjects(_factory);
   FalconApp::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
-  Elk::ChemicalReactions::associateSyntax(_syntax, _action_factory);
+  FluidMassEnergyBalanceApp::associateSyntax(_syntax, _action_factory);
+  ChemicalReactionsApp::associateSyntax(_syntax, _action_factory);
   FalconApp::associateSyntax(_syntax, _action_factory);
 }
 
