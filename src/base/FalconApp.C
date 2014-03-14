@@ -46,8 +46,8 @@
 #include "TemperatureDiffusion.h"
 #include "TemperatureConvection.h"
 
-#include "MassFluxTimeDerivative_PT.h" 
-#include "MassFluxTimeDerivative_PT_comp.h" 
+#include "MassFluxTimeDerivative_PT.h"
+#include "MassFluxTimeDerivative_PT_comp.h"
 #include "WaterMassFluxPressure_PT.h"
 #include "WaterMassFluxElevation_PT.h"
 #include "PressureTimeDerivative.h"
@@ -132,7 +132,7 @@ FalconApp::FalconApp(const std::string & name, InputParameters parameters) :
     MooseApp(name, parameters)
 {
   srand(libMesh::processor_id());
-  
+
   Moose::registerObjects(_factory);
   FluidMassEnergyBalanceApp::registerObjects(_factory);
   ChemicalReactionsApp::registerObjects(_factory);
@@ -190,7 +190,7 @@ FalconApp::registerObjects(Factory & factory)
   registerAux(StressStrainDamageComputeAux);
   registerAux(StochasticFieldAux);
   registerAux(FracManMapAux);
- 
+
   //BCs
   registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
   registerBoundaryCondition(GravityNeumannBC);
@@ -256,4 +256,9 @@ FalconApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
   syntax.registerActionSyntax("StochasticGeothermalMaterialAction", "Materials/StochasticGeothermalMaterial");
   syntax.registerActionSyntax("FracManGeothermalMaterialAction", "Materials/FracManGeothermalMaterial");
   syntax.registerActionSyntax("FracturesGeothermalMaterialAction", "Materials/FracturesGeothermalMaterial");
+
+  syntax.registerActionSyntax("RecoverBaseAction", "Output");
+  syntax.registerActionSyntax("SetupOutputAction", "Output");
+  syntax.registerActionSyntax("SetupOutputNameAction", "Output");
+  syntax.registerActionSyntax("SetupOverSamplingAction", "Output/OverSampling");
 }
