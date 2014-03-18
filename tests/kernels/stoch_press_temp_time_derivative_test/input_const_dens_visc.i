@@ -96,7 +96,7 @@ active = 'rock'
     gravity = 0.0
     gx = 0.0
     gy = 0.0
-    gz = 1.0 
+    gz = 1.0
   [../]
 
   [./rock]
@@ -118,7 +118,7 @@ active = 'rock'
   num_steps = 5
   dt = 2500000.0
   nl_abs_tol = 1e-6
-  
+
   solve_type = 'NEWTON'
 
   [./Quadrature]
@@ -126,11 +126,13 @@ active = 'rock'
   [../]
 []
 
-[Output]
+[Outputs]
   file_base = out_const_dens_visc
   output_initial = true
-  interval = 1
   exodus = true
-  print_out_info = true
+  [./console]
+   type = Console
+   perf_log = true
+   linear_residuals = true
+  [../]
 []
-

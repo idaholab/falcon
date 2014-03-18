@@ -1,6 +1,6 @@
 # This is a simple single-phase, non-isothermal, heat advection-diffusion problem on a 100mx10x1m column
 # Temperature is initially 200 C.  A BC of 100 C is applied to the left-hand side of the column
-# The standard GeothermalMaterial is used, with the water/steam EOS routine coupled in to determine variable 
+# The standard GeothermalMaterial is used, with the water/steam EOS routine coupled in to determine variable
 # density/viscosity.
 # This is the same problem as T_CONST_STD_1D_1.i, but with variable fluid properties
 
@@ -32,7 +32,7 @@
   [./v_x]           # This aux variables are not necessary to run the problem, it just display the velocity
     order = CONSTANT
     family = MONOMIAL
-  [../]             
+  [../]
   [./viscosity_water]# This aux variables are not necessary to run the problem, it just display the viscosity
     order = CONSTANT
     family = MONOMIAL
@@ -107,17 +107,17 @@
 [Materials]
   [./GeothermalMaterial]
     block = 0
-    
+
     # flag booleans to define THMC problem
-    heat_transport              = true      # T 
+    heat_transport              = true      # T
     fluid_flow                  = true      # H - flaged true to provide fluid props to pressure diffusion kernel even though this is not a H problem
     solid_mechanics             = false     # M
-    chemical_reactions          = false     # C    
-    
+    chemical_reactions          = false     # C
+
     # couple in main NL variables
     pressure                    = pressure
     temperature                 = temperature
-    
+
     # material property inputs from PorousMedia (base class - parameters availible to all THMC materials)
     gravity                     = 0.0       # gravity magnitude [m/s^2]
     gx                          = 0.0       # x-component of gravity vector
@@ -125,15 +125,15 @@
     gz                          = 1.0       # z-component of gravity vector
     porosity                    = 0.2
     permeability                = 1.0e-13   # [m^2]
-    
+
     # material property inputs from HeatTransport
     specific_heat_water         = 4186      # [J/(kg.K)]
     specific_heat_rock          = 920       # [J/(kg.K)]
-    thermal_conductivity        = 2.5       # [W/(kg.K)]    
-    
+    thermal_conductivity        = 2.5       # [W/(kg.K)]
+
     # material property inputs from FluidFlow (must have temp_dependent_fluid_props = true and temperature coupled in to get varaible density/viscosity)
     temp_dependent_fluid_props  = true      # we want to have variable density and viscosity in this problem, so we use the water/steam EOS routine
-    water_steam_properties      = water_steam_properties    # coupling of WaterSteamEOS UserObject below to use for calculation of fluid props   
+    water_steam_properties      = water_steam_properties    # coupling of WaterSteamEOS UserObject below to use for calculation of fluid props
 
   [../]
 []
@@ -155,11 +155,10 @@
   nl_abs_tol = 1e-6
 []
 
-[Output]
+[Outputs]
   file_base = T_EOS_STD_1D_1_out
   output_initial = true
   interval = 10
   exodus = true
-  print_out_info = true
+  console = true
 []
-

@@ -1,10 +1,10 @@
 # This is a single phase, non-isothermal, advection-diffusion example problem on a 63mx63m square.
-# Pressure is initially 1 MPa and temperature 200 C. BCs of 10 MPa and 100 C are applied to the 
+# Pressure is initially 1 MPa and temperature 200 C. BCs of 10 MPa and 100 C are applied to the
 # left-hand side of the domain, and are allowed propigate acrosss.  The StochasticGeothermalMaterial
-# is used to provide a stochastic permeability field and the water/steam EOS routine is coupled in to 
+# is used to provide a stochastic permeability field and the water/steam EOS routine is coupled in to
 # determine pressure/temperature dependent density and viscosity
 
-#19 Oct 2013 - the material properties need to be updated.  There is a bug in the StochasticGeothermalMaterial Action 
+#19 Oct 2013 - the material properties need to be updated.  There is a bug in the StochasticGeothermalMaterial Action
 #that tried to double allocate the permeability. This example is currently using the "old" material setup
 #with diamond inheritance.  It needs to be updated.
 
@@ -183,7 +183,7 @@
     gz = 1.0 # z-component of gravity vector
     porosity = 0.2
     temp_dependent_fluid_props = false # we want to have variable density and viscosity in this problem, so we use the water/steam EOS routine
-   # water_steam_properties = water_steam_properties # coupling of WaterSteamEOS UserObject below to use for calculation of fluid props        
+   # water_steam_properties = water_steam_properties # coupling of WaterSteamEOS UserObject below to use for calculation of fluid props
   [../]
 []
 
@@ -208,11 +208,9 @@
 []
 
 
-[Output]
+[Outputs]
   file_base = PT_CONST_STOCH_2d_1_out
   output_initial = true
-  interval = 1
   exodus = true
-  print_out_info = true
+  console = true
 []
-

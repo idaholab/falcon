@@ -113,7 +113,7 @@ active = 'rock'
     gravity = 0.0
     gx = 0.0
     gy = 0.0
-    gz = 1.0 
+    gz = 1.0
   [../]
 
   [./rock]
@@ -153,12 +153,13 @@ active = 'rock'
   [../]
 []
 
-[Output]
-  linear_residuals = true
+[Outputs]
   file_base = out_variable_dens_visc2
   output_initial = true
-  interval = 1
   exodus = true
-  print_out_info = true
+  [./console]
+   type = Console
+   perf_log = true
+   linear_residuals = true
+  [../]
 []
-

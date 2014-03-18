@@ -1,10 +1,10 @@
 # This is a single phase, non-isothermal, advection-diffusion example problem on a 63mx63m square.
-# Pressure is initially 1 MPa and temperature 200 C. BCs of 10 MPa and 100 C are applied to the 
+# Pressure is initially 1 MPa and temperature 200 C. BCs of 10 MPa and 100 C are applied to the
 # left-hand side of the domain, and are allowed propigate acrosss.  The StochasticGeothermalMaterial
-# is used to provide a stochastic permeability field and the water/steam EOS routine is coupled in to 
+# is used to provide a stochastic permeability field and the water/steam EOS routine is coupled in to
 # determine pressure/temperature dependent density and viscosity
 
-#19 Oct 2013 - the material properties need to be updated.  There is a bug in the StochasticGeothermalMaterial Action 
+#19 Oct 2013 - the material properties need to be updated.  There is a bug in the StochasticGeothermalMaterial Action
 #that tried to double allocate the permeability. This example is currently using the "old" material setup
 #with diamond inheritance.  It needs to be updated.
 
@@ -44,7 +44,7 @@
   [./density_water]         # This aux variables is not necessary to run the problem, it just display the density
     order = CONSTANT
     family = MONOMIAL
-  [../]  
+  [../]
 []
 
 [Kernels]
@@ -63,11 +63,11 @@
   [./temp_convection]       # Heat convection kernel for PT (single-phase) problems
     type = TemperatureConvection
     variable = temperature
-  [../]  
+  [../]
   [./temp_time]              # Heat time derivative kernel for PT (single-phase) problems
     type = TemperatureTimeDerivative
     variable = temperature
-  [../]  
+  [../]
 []
 
 [AuxKernels]
@@ -86,7 +86,7 @@
     type = VelocityAux
     variable = velocity_y
     component = 0
-  [../]  
+  [../]
   [./density_water]         # This aux kernels below is not necessary to run the problem, it just display the desnity
     type = MaterialRealAux
     variable = density_water
@@ -96,7 +96,7 @@
     type = MaterialRealAux
     variable = viscosity_water
     property = viscosity_water
-  [../]  
+  [../]
 []
 
 [BCs]
@@ -146,36 +146,36 @@
 
   [./StochasticGeothermalMaterial]
     block = 0
-    
+
     # flag booleans to define THMC problem
     heat_transport              = true      # T
     fluid_flow                  = true      # H
     solid_mechanics             = false     # M
     chemical_reactions          = false     # C
-    
+
     # couple in main NL variables
     pressure                    = pressure
     temperature                 = temperature
-    
+
     # here is where we couple in the aux variable that stores the stochastic permeability field
     permeability = permeability
-        
+
     # material property inputs from PorousMedia (base class - parameters availible to all THMC materials)
     gravity                     = 0.0       # gravity magnitude [m/s^2]
     gx                          = 0.0       # x-component of gravity vector
     gy                          = 0.0       # y-component of gravity vector
     gz                          = 1.0       # z-component of gravity vector
     porosity                    = 0.2
-    
+
     # material property inputs from HeatTransport
     specific_heat_water         = 4186      # [J/(kg.K)]
     specific_heat_rock          = 920       # [J/(kg.K)]
     thermal_conductivity        = 2.5       # [W/(kg.K)]
-    
+
     # material property inputs from FluidFlow (must have temp_dependent_fluid_props = true and temperature coupled in to get varaible density/viscosity)
     temp_dependent_fluid_props  = true      # we want to have variable density and viscosity in this problem, so we use the water/steam EOS routine
-    water_steam_properties      = water_steam_properties    # coupling of WaterSteamEOS UserObject below to use for calculation of fluid props        
-                
+    water_steam_properties      = water_steam_properties    # coupling of WaterSteamEOS UserObject below to use for calculation of fluid props
+
   [../]
 []
 
@@ -198,11 +198,9 @@
   [../]
 []
 
-[Output]
+[Outputs]
   file_base = PT_EOS_STOCH_2d_1_out
   output_initial = true
-  interval = 1
   exodus = true
-  print_out_info = true
+  console = true
 []
-

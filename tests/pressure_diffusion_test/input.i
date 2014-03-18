@@ -62,11 +62,9 @@
   [../]
 []
 
-[Output]
+[Outputs]
   file_base = out
   output_initial = true
-  interval = 1
   exodus = true
-  print_out_info = true
+  console = true
 []
-

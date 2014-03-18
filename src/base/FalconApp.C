@@ -256,9 +256,4 @@ FalconApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
   syntax.registerActionSyntax("StochasticGeothermalMaterialAction", "Materials/StochasticGeothermalMaterial");
   syntax.registerActionSyntax("FracManGeothermalMaterialAction", "Materials/FracManGeothermalMaterial");
   syntax.registerActionSyntax("FracturesGeothermalMaterialAction", "Materials/FracturesGeothermalMaterial");
-
-  syntax.registerActionSyntax("RecoverBaseAction", "Output");
-  syntax.registerActionSyntax("SetupOutputAction", "Output");
-  syntax.registerActionSyntax("SetupOutputNameAction", "Output");
-  syntax.registerActionSyntax("SetupOverSamplingAction", "Output/OverSampling");
 }

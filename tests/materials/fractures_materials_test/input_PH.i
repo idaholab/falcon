@@ -160,12 +160,9 @@
   [../]
 []
 
-[Output]
-  linear_residuals = true
+[Outputs]
   file_base = out_PH
   output_initial = true
-  interval = 1
   exodus = true
-  print_out_info = true
+  console = true
 []
-

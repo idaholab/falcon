@@ -111,7 +111,7 @@
     gz = 1.0
     porosity = 0.1
     permeability = 1.0e-15
-    thermal_conductivity = 7.5  
+    thermal_conductivity = 7.5
   [../]
 []
 
@@ -141,11 +141,10 @@
   [../]
 []
 
-[Output]
+[Outputs]
   file_base = out
   output_initial = true
   interval = 1
   exodus = true
-  print_out_info = true
+  console = true
 []
-

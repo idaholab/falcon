@@ -236,9 +236,9 @@
   [../]
 []
 
-[Output]
+[Outputs]
   file_base = PH_EOS_STD_1D_out
   output_initial = true
   exodus = true
+  console = true
 []
-

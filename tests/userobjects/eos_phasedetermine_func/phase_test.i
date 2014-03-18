@@ -1,7 +1,7 @@
 # This test is used to verify the output of the phaseDetermine function in the
-# WaterSteamEOS UserObject.  A combination of incremented pressures and 
+# WaterSteamEOS UserObject.  A combination of incremented pressures and
 # enthalpies are inputed into the EOSPhaseDetermineFuncPPS and the phase is
-# outputted.  The results are compared to a csv file which contains IAWPS97 
+# outputted.  The results are compared to a csv file which contains IAWPS97
 # water and steam formulation data
 [Mesh]
   type = GeneratedMesh
@@ -141,10 +141,13 @@
   end_time = 1000000
 []
 
-[Output]
+[Outputs]
   output_initial = true
-  postprocessor_csv = true
+  csv = true
   exodus = false
-  perf_log = true
+  [./console]
+   type = Console
+   perf_log = true
+   linear_residuals = true
+  [../]
 []
-

@@ -128,7 +128,7 @@ active = 'rock'
     porosity = 0.3
     thermal_conductivity = 2.5
     specific_heat_water = 4186
-    specific_heat_rock = 920    
+    specific_heat_rock = 920
   [../]
 
   [./rock]
@@ -173,11 +173,13 @@ active = 'rock'
   [../]
 []
 
-[Output]
+[Outputs]
   file_base = out_press_enth2
   output_initial = true
-  interval = 1
   exodus = true
-  print_out_info = true
+  [./console]
+   type = Console
+   perf_log = true
+   linear_residuals = true
+  [../]
 []
-

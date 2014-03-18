@@ -17,7 +17,7 @@
   [../]
 []
 
-[AuxVariables]             
+[AuxVariables]
   [./viscosity_water]   # This aux variables are not necessary to run the problem, it just display the viscosity
     order = CONSTANT
     family = MONOMIAL
@@ -70,16 +70,16 @@
 [Materials]
   [./GeothermalMaterial]
     block = 0
-    
+
     # flag booleans to define THMC problem
-    heat_transport              = true      # T 
+    heat_transport              = true      # T
     fluid_flow                  = true      # H - flaged true to provide fluid props even though this is not an H problem
     solid_mechanics             = false     # M
-    chemical_reactions          = false     # C    
-    
+    chemical_reactions          = false     # C
+
     # couple in main NL variable
     temperature                 = temperature
-    
+
     # material property inputs from PorousMedia (base class - parameters availible to all THMC materials)
     gravity                     = 0.0       # gravity magnitude [m/s^2]
     gx                          = 0.0       # x-component of gravity vector
@@ -87,16 +87,16 @@
     gz                          = 1.0       # z-component of gravity vector
     porosity                    = 0.2
     permeability                = 1.0e-13   # [m^2]
-    
+
     # material property inputs from HeatTransport
     specific_heat_water         = 4186      # [J/(kg.K)]
     specific_heat_rock          = 920       # [J/(kg.K)]
-    thermal_conductivity        = 2.5       # [W/(kg.K)]    
-    
+    thermal_conductivity        = 2.5       # [W/(kg.K)]
+
     # material property inputs from FluidFlow
     temp_dependent_fluid_props  = false     # we want to have consant density and viscosity in this problem
     constant_density            = 1000      # [kg/m^2]
-    constant_viscosity          = 0.12e-3   # [Pa.s] 
+    constant_viscosity          = 0.12e-3   # [Pa.s]
 
   [../]
 []
@@ -112,11 +112,10 @@
   nl_abs_tol = 1e-6
 []
 
-[Output]
+[Outputs]
   file_base = T_CONST_STD_1D_1_out
   output_initial = true
   interval = 10
   exodus = true
-  print_out_info = true
+  console = true
 []
-

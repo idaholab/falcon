@@ -66,17 +66,17 @@
 
   [./GeothermalMaterial]
     block = 0
-    
+
     # flag booleans to define THMC problem
     heat_transport              = true      # T - flaged true to provide thermal_conductivity to temp diffusion kernel even though this is not a T problem
     fluid_flow                  = true      # H -
     solid_mechanics             = false     # M
     chemical_reactions          = false     # C
-    
+
     # couple in main NL variables
     pressure                    = pressure
     temperature                 = temperature
-        
+
     # material property inputs from PorousMedia (base class - parameters availible to all THMC materials)
     gravity                     = 0.0       # gravity magnitude [m/s^2]
     gx                          = 0.0       # x-component of gravity vector
@@ -85,16 +85,16 @@
     porosity                    = 0.2
     permeability                = 1.0e-12   # [m^2]
     #compressibility             = 1e-15
-    
+
     # material property inputs from HeatTransport
     specific_heat_water         = 4186      # [J/(kg.K)]
     specific_heat_rock          = 920       # [J/(kg.K)]
     thermal_conductivity        = 2.5       # [W/(kg.K)]
-    
+
     # material property inputs from FluidFlow (must have temp_dependent_fluid_props = true and temperature coupled in to get varaible density/viscosity
     temp_dependent_fluid_props  = true      # we want to have variable density and viscosity in this problem, so we use the water/steam EOS routine
-    water_steam_properties      = water_steam_properties    # coupling of WaterSteamEOS UserObject below to use for calculation of fluid props        
-                
+    water_steam_properties      = water_steam_properties    # coupling of WaterSteamEOS UserObject below to use for calculation of fluid props
+
   [../]
 []
 
@@ -115,10 +115,9 @@
 nl_rel_tol = 1e-6
 []
 
-[Output]
+[Outputs]
   file_base = P_EOS_STD_1d_1_out
   output_initial = true
-  interval = 1
   exodus = true
+  console = true
 []
-

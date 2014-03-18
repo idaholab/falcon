@@ -84,7 +84,7 @@
     gz = 1.0
     porosity = 0.1
     permeability = 1.0e-15
-    thermal_conductivity = 7.5  
+    thermal_conductivity = 7.5
   [../]
 []
 
@@ -110,12 +110,13 @@
   [../]
 []
 
-[Output]
-  linear_residuals = true
+[Outputs]
   file_base = out_PT_time_derivative_w_action_material
   output_initial = true
-  interval = 1
   exodus = true
-  print_out_info = true
+  [./console]
+   type = Console
+   perf_log = true
+   linear_residuals = true
+  [../]
 []
-

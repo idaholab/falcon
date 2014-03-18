@@ -438,10 +438,13 @@
   [../]
 []
 
-[Output]
-  linear_residuals = true
+[Outputs]
   file_base = PTD_CONST_STD_2D_1_out
   output_initial = false
-  interval = 1
   exodus = true
+  [./console]
+    type = Console
+    perf_log = true
+    linear_residuals = true
+  [../]
 []

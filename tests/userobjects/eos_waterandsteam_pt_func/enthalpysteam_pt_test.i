@@ -1,6 +1,6 @@
-# This test is used to verify the enthalpy_steam output of the waterAndSteamEquationOfStatePT 
-# function in the WaterSteamEOS UserObject.  A combination of incremented pressures and 
-# temperatures are inputed into the EOSWaterAndSteamPTFuncPPS and the steam enthalpy is outputted.  
+# This test is used to verify the enthalpy_steam output of the waterAndSteamEquationOfStatePT
+# function in the WaterSteamEOS UserObject.  A combination of incremented pressures and
+# temperatures are inputed into the EOSWaterAndSteamPTFuncPPS and the steam enthalpy is outputted.
 # The results are compared to a csv file which contains IAWPS97 water and steam formulation data
 [Mesh]
   type = GeneratedMesh
@@ -17,39 +17,39 @@
 [Functions]
  [./temperature_function1]
  type = ParsedFunction
- value = 100+20*t 
+ value = 100+20*t
  [../]
- 
+
  [./temperature_function2]
  type = ParsedFunction
- value = 120+20*t 
+ value = 120+20*t
  [../]
- 
+
  [./temperature_function3]
  type = ParsedFunction
- value = 140+20*t 
+ value = 140+20*t
  [../]
- 
+
  [./temperature_function4]
  type = ParsedFunction
- value = 150+20*t 
+ value = 150+20*t
  [../]
- 
+
  [./temperature_function5]
  type = ParsedFunction
- value = 160+20*t 
+ value = 160+20*t
  [../]
- 
+
  [./temperature_function6]
  type = ParsedFunction
- value = 170+20*t 
+ value = 170+20*t
  [../]
- 
+
  [./temperature_function7]
  type = ParsedFunction
- value = 180+20*t 
+ value = 180+20*t
  [../]
- 
+
  []
 
 [Kernels]
@@ -93,7 +93,7 @@
  water_phase = false
  test_density = false
  [../]
- 
+
  [./enthalpy_200KPa]
  type = EOSWaterAndSteamPTFuncPPS
  water_steam_properties = water_steam_properties
@@ -102,7 +102,7 @@
  water_phase = false
  test_density = false
  [../]
- 
+
  [./enthalpy_300KPa]
  type = EOSWaterAndSteamPTFuncPPS
  water_steam_properties = water_steam_properties
@@ -111,7 +111,7 @@
  water_phase = false
  test_density = false
  [../]
- 
+
  [./enthalpy_400KPa]
  type = EOSWaterAndSteamPTFuncPPS
  water_steam_properties = water_steam_properties
@@ -120,7 +120,7 @@
  water_phase = false
  test_density = false
  [../]
- 
+
  [./enthalpy_500KPa]
  type = EOSWaterAndSteamPTFuncPPS
  water_steam_properties = water_steam_properties
@@ -129,7 +129,7 @@
  water_phase = false
  test_density = false
  [../]
- 
+
  [./enthalpy_600KPa]
  type = EOSWaterAndSteamPTFuncPPS
  water_steam_properties = water_steam_properties
@@ -138,7 +138,7 @@
  water_phase = false
  test_density = false
  [../]
- 
+
  [./enthalpy_700KPa]
  type = EOSWaterAndSteamPTFuncPPS
  water_steam_properties = water_steam_properties
@@ -147,7 +147,7 @@
  water_phase = false
  test_density = false
  [../]
- 
+
  [./enthalpy_800KPa]
  type = EOSWaterAndSteamPTFuncPPS
  water_steam_properties = water_steam_properties
@@ -156,7 +156,7 @@
  water_phase = false
  test_density = false
  [../]
- 
+
  [./enthalpy_900KPa]
  type = EOSWaterAndSteamPTFuncPPS
  water_steam_properties = water_steam_properties
@@ -165,7 +165,7 @@
  water_phase = false
  test_density = false
  [../]
- 
+
  []
 
 [Executioner]
@@ -182,10 +182,13 @@
   end_time = 1000000
 []
 
-[Output]
+[Outputs]
   output_initial = true
-  postprocessor_csv = true
+  csv = true
   exodus = false
-  perf_log = true
+  [./console]
+   type = Console
+   perf_log = true
+   linear_residuals = true
+  [../]
 []
-

@@ -1,22 +1,22 @@
 # Uniaxial gravity diplacement test:
-# 
+#
 # This test varifies the gravity/solid mechanics kerenels
 # and stress/strain auxkernel.
-# Boundary conditions are zero displacement in the y and 
+# Boundary conditions are zero displacement in the y and
 # z directions.  Acceleration due to gravity = 10m/s2,
 # Young's modulus = 10 GPa, and density_rock = 2000 kg/m3.
-# 
+#
 # The analytic solution for the displacment at x = 10m is:
-# 
+#
 # u(x) = rho * g * h * x / E = rho * g * x^2 / E
 # = (2000) (10) (10)^2 / 1e10
 # = 0.0002 m
-# 
-# 
+#
+#
 # The analytic solution for the stress along at x = 10m is:
-# 
+#
 # S(x) = rho * g * x = (2000) (10) (10) = 2e5 Pa
-# 
+#
 # The analylic solution for the strain at x = 10m is:
 #
 # Tau(x) = u(x) / x = 0.0002 / 10 = 2e-5
@@ -237,7 +237,7 @@ active = 'GeothermalMaterial '
     poissons_ratio = 0
     gz = 0
     gx = 1
-    youngs_modulus = 1e10    
+    youngs_modulus = 1e10
   [../]
 []
 
@@ -245,10 +245,9 @@ active = 'GeothermalMaterial '
   type = Steady
 []
 
-[Output]
+[Outputs]
   file_base = out
   output_initial = true
   exodus = true
-  print_out_info = true
+  console = true
 []
-

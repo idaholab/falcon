@@ -5,8 +5,8 @@
 # This problem is suppose to show a hot-high pressure reservoir with an extraction
 # well in the center.
 
-#The source/sink is setup as extracting fluid at 1 kg/s, and to keep the energy balance you 
-#have to extract enthalpy at the background enthalpy times the fluid extraction rate.  The problem 
+#The source/sink is setup as extracting fluid at 1 kg/s, and to keep the energy balance you
+#have to extract enthalpy at the background enthalpy times the fluid extraction rate.  The problem
 #too stable as the enthaply portion essentailly has nothing to work for (no real changes).
 
 [Mesh]
@@ -186,11 +186,13 @@
   [../]
 []
 
-[Output]
-  linear_residuals = true
+[Outputs]
   file_base = PH_EOS_STD_2D_1_out
   output_initial = true
   exodus = true
-  print_out_info = true
+  [./console]
+   type = Console
+   perf_log = true
+   linear_residuals = true
+  [../]
 []
-

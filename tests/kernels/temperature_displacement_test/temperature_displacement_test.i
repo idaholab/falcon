@@ -158,11 +158,9 @@
   nl_rel_tol = 1e-12
 []
 
-[Output]
-  linear_residuals = true
+[Outputs]
   file_base = out
   output_initial = true
   exodus = true
-  print_out_info = true
+  console = true
 []
-

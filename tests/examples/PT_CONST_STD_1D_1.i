@@ -75,17 +75,17 @@
     heat_transport = true
     fluid_flow = true
     chemical_reactions = false
-    
+
     pressure = pressure
     temperature = temperature
-    
+
     temp_dependent_fluid_props = false
-    
+
     gravity = 0.0
     gx = 0.0
     gy = 0.0
     gz = 1.0
-    
+
     porosity = 0.2
     permeability = 1.0e-13
   [../]
@@ -105,11 +105,14 @@
   [../]
 []
 
-[Output]
+[Outputs]
   file_base = PT_CONST_STD_1D_1_out
   output_initial = true
   interval = 10
   exodus = true
-  print_out_info = true
+    [./console]
+   type = Console
+   perf_log = true
+   linear_residuals = true
+  [../]
 []
-

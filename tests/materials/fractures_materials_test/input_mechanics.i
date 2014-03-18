@@ -120,10 +120,13 @@
   nl_abs_tol = 1e-5
 []
 
-[Output]
-  linear_residuals = true
+[Outputs]
   file_base = out_mechanics
   output_initial = true
   exodus = true
+  [./console]
+   type = Console
+   perf_log = true
+   linear_residuals = true
+  [../]
 []
-

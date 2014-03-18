@@ -165,10 +165,9 @@
 
 []
 
-[Output]
+[Outputs]
   file_base = out_PT_variable_fluid_props
   output_initial = true
   exodus = true
-  print_out_info = true
+  console = true
 []
-

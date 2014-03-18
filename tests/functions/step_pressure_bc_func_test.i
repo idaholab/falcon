@@ -73,10 +73,12 @@
   l_tol = 1e-12
 []
 
-[Output]
+[Outputs]
   file_base = out
   output_initial = true
   exodus = true
-  perf_log = true
+  [./console]
+   type = Console
+   perf_log = true
+  [../]
 []
-

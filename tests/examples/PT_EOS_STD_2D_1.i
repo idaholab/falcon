@@ -113,18 +113,18 @@
     heat_transport = true
     fluid_flow = true
     chemical_reactions = false
-    
+
     pressure = pressure
     temperature = temperature
-    
+
     water_steam_properties = water_steam_properties
     temp_dependent_fluid_props = true
-    
+
     gravity = 0.0
     gx = 0.0
     gy = 0.0
     gz = 1.0
-    
+
     porosity = 0.5
     permeability = 1.0e-12
   [../]
@@ -150,10 +150,9 @@
   [../]
 []
 
-[Output]
+[Outputs]
   file_base = PT_EOS_STD_2D_1_out
   output_initial = true
   exodus = true
-  print_out_info = true
+  console = true
 []
-

@@ -110,11 +110,9 @@
   solve_type = 'NEWTON'
 []
 
-[Output]
+[Outputs]
   file_base = out_PT_const_fluid_props
   output_initial = true
-  interval = 1
   exodus = true
-  print_out_info = true
+  console = true
 []
-

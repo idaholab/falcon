@@ -50,7 +50,7 @@
 []
 
 [BCs]
-#----the NeumannBC value of 1 indicates a mass flux of 1 kg/s entering at the left face----# 
+#----the NeumannBC value of 1 indicates a mass flux of 1 kg/s entering at the left face----#
  [./left_p]
     type = NeumannBC
     variable = pressure
@@ -70,14 +70,14 @@
     type = Geothermal
     block = 0
     pressure = pressure
- 
+
     temp_dependent_fluid_props = false
- 
+
     gravity = 0.0
     gx = 0.0
     gy = 0.0
     gz = 1.0
- 
+
     porosity = 0.1
     permeability = 1.0e-10
   [../]
@@ -93,11 +93,9 @@
   [../]
 []
 
-[Output]
+[Outputs]
   file_base = P_EOS_STD_3d_1_out
   output_initial = true
-  interval = 1
   exodus = true
-  print_out_info = true
+  console = true
 []
-

@@ -60,16 +60,16 @@
 
   [./GeothermalMaterial]
     block = 0
-    
+
     # flag booleans to define THMC problem
-    heat_transport              = false     # T 
+    heat_transport              = false     # T
     fluid_flow                  = true      # H
     solid_mechanics             = false     # M
     chemical_reactions          = false     # C
-    
+
     # couple in main NL variable
     pressure                    = pressure
-        
+
     # material property inputs from PorousMedia (base class - parameters availible to all THMC materials)
     gravity                     = 0.0       # gravity magnitude [m/s^2]
     gx                          = 0.0       # x-component of gravity vector
@@ -77,12 +77,12 @@
     gz                          = 1.0       # z-component of gravity vector
     porosity                    = 0.5
     permeability                = 1.0e-12   # [m^2]
-    
+
     # material property inputs from FluidFlow
     temp_dependent_fluid_props  = false     # we want to have consant density and viscosity in this problem
     constant_density            = 1000      # [kg/m^2]
     constant_viscosity          = 0.12e-3   # [Pa.s]
-                
+
   [../]
 []
 
@@ -90,11 +90,9 @@
   type = Steady
 []
 
-[Output]
+[Outputs]
   file_base = P_CONST_STD_1d_1_out
   output_initial = true
-  interval = 1
   exodus = true
-  print_out_info = true
+  console = true
 []
-

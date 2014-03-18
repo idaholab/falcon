@@ -49,11 +49,13 @@
 
 []
 
-[Output]
+[Outputs]
   file_base = steady_out
   output_initial = true
-  interval = 1
   exodus = true
-  perf_log = true
+  [./console]
+   type = Console
+   perf_log = true
+   linear_residuals = true
+  [../]
 []
-

@@ -1,8 +1,8 @@
 # This test is used to verify the output of the viscosity function in the
-# WaterSteamEOS UserObject.  A combination of incremented densities and 
+# WaterSteamEOS UserObject.  A combination of incremented densities and
 # temperatures are inputed into the EOSViscosityFuncPPS and the viscosity
-# (water/steam) is outputted.  Saturated mix viscosity will be added to 
-# the test soon. The results are compared to a csv file which contains 
+# (water/steam) is outputted.  Saturated mix viscosity will be added to
+# the test soon. The results are compared to a csv file which contains
 # IAWPS97 water and steam formulation data
 
 [Mesh]
@@ -41,15 +41,15 @@
  [./temperature_function6]
  type = ParsedFunction
  value = 60+20*t
- [../] 
+ [../]
  [./temperature_function7]
  type = ParsedFunction
  value = 30+20*t
- [../] 
+ [../]
  [./temperature_function8]
  type = ParsedFunction
  value = 80+20*t
- [../]  
+ [../]
  []
 
 [Kernels]
@@ -210,7 +210,7 @@
  density_value = 0.025
  temperature_value = temperature_function7
  water_phase = false
- [../] 
+ [../]
  []
 
 [Executioner]
@@ -227,10 +227,13 @@
   end_time = 1000000
 []
 
-[Output]
+[Outputs]
   output_initial = true
-  postprocessor_csv = true
+  csv = true
   exodus = false
-  perf_log = true
+    [./console]
+   type = Console
+   perf_log = true
+   linear_residuals = true
+  [../]
 []
-
