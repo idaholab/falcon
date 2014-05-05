@@ -116,7 +116,6 @@
 #include "FracManGeothermalMaterialAction.h"
 #include "FracturesGeothermalMaterialAction.h"
 
-// Elk stuff
 #include "FluidMassEnergyBalanceApp.h"
 #include "ChemicalReactionsApp.h"
 
