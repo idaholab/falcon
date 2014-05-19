@@ -8,7 +8,8 @@
 # FRAMEWORK_DIR    - Location of the MOOSE framework
 #
 ###############################################################################
-MOOSE_DIR          ?= $(shell dirname `pwd`)/moose
+#MOOSE_DIR          ?= $(shell dirname `pwd`)/moose
+MOOSE_DIR          ?= /Users/podgrk/GitHub_Projects/moose
 HERD_TRUNK_DIR     ?= $(shell dirname `pwd`)
 FRAMEWORK_DIR      ?= $(MOOSE_DIR)/framework
 ###############################################################################

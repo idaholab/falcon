@@ -47,6 +47,9 @@ protected:
   virtual Real computeValue();
   
     std::vector<Real> _coordinate_shift;
+    Real dfn_box_x_max, dfn_box_y_max, dfn_box_z_max;
+    Real dfn_box_x_min, dfn_box_y_min, dfn_box_z_min;
+    std::vector<Real> _dfn_dimension;
     std::vector<std::string> _file_names;
     std::vector<Real> fracture_normal_x;
     std::vector<Real> fracture_normal_y;
@@ -56,10 +59,15 @@ protected:
     std::vector<Real> fracture_vertices_y;
     std::vector<Real> fracture_vertices_z;
     MooseEnum _metric_conversion;
+    std::vector<Real> _mesh_dimension;
     MooseEnum _normal_component;
     unsigned int num_vec_entries;
     MooseEnum _output_type;
     Real _tol;
+    Real wellbore_box_x_min, wellbore_box_y_min;
+    Real wellbore_box_x_max, wellbore_box_y_max;
+    std::vector<Real> _wellbore_location;
+    Real _wellbore_tol;
 
 };
 
