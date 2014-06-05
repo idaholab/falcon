@@ -319,6 +319,8 @@ void FluidFlow::computeProperties()
         Real _visc_water0;
         _dens_water0 =  _dens_water_out[qp];
         _visc_water0 =  _visc_water_out[qp];
+
+        _permeability[qp] = _input_permeability*std::exp(10.0*(_pressure[qp]-2.0e7)/4.5e7);
                     
         _tau_water[qp] = _permeability[qp] * _dens_water0 / _visc_water0;
         _darcy_mass_flux_water[qp] = -_tau_water[qp] * (_grad_p[qp] + _dens_water0 * _gravity[qp] * _gravity_vector[qp]);

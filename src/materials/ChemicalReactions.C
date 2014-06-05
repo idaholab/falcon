@@ -55,8 +55,8 @@ ChemicalReactions::ChemicalReactions(const std::string & name,
 void
 ChemicalReactions::computeProperties()
 {
-    if (!areParentPropsComputed())
-        PorousMedia::computeProperties();
+//    if (!areParentPropsComputed())
+//        PorousMedia::computeProperties();
     
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
@@ -78,17 +78,18 @@ ChemicalReactions::computeProperties()
           }
           // Update porosity
           _porosity[qp] = _initial_vf *_input_porosity/_vf;
-          
-      }
-          
-      if (_porosity[qp] < 1.0e-3)
+                if (_porosity[qp] < 1.0e-3)
           _porosity[qp]=1.0e-3;
           
       // Permeability changes calculated from porosity changes according to Carman-Kozeny relationship k=ki*(1-ni)^2 * (n/ni)^3 / (1-n)^2
-      _permeability[qp] = _input_permeability * (1.0-_input_porosity) * (1.0-_input_porosity) * std::pow(_porosity[qp]/_input_porosity,3)/(1.0-_porosity[qp])/(1.0-_porosity[qp]);
+           _permeability[qp] = _input_permeability * (1.0-_input_porosity) * (1.0-_input_porosity) * std::pow(_porosity[qp]/_input_porosity,3)/(1.0-_porosity[qp])/(1.0-_porosity[qp]);
           
       // Permeability changes calculated from porosity changes according to Power Law with an order of 5.2: k=ki* (n/ni)^5.2
       //_permeability[qp] = input_permeability * std::pow(_porosity[qp]/_input_porosity, 5.2);
+
+          
+      }
+          
           
       // The diffusivity used in the kernels (already multiplied by porosity)
       _diffusivity[qp] = _input_chem_diff*_porosity[qp];

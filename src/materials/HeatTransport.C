@@ -41,8 +41,8 @@ HeatTransport::HeatTransport(const std::string & name,
 void
 HeatTransport::computeProperties()
 {
-    if (!areParentPropsComputed())
-        PorousMedia::computeProperties();
+//    if (!areParentPropsComputed())
+//        PorousMedia::computeProperties();
     
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
