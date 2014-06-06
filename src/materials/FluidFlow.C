@@ -23,6 +23,7 @@ InputParameters validParams<FluidFlow>()
   params.addCoupledVar("enthalpy", "Use enthalpy here to calculate Darcy Flux and Pore Velocity for two-phase flow, [J]");
   params.addCoupledVar("temperature", "Use temperature to calculate Darcy Flux and Pore Velocity for single-phase flow, [K]");
   params.addParam<bool>("temp_dependent_fluid_props", true, "flag true if single-phase and fluid properties are temperature dependent, default = true");
+  params.addParam<bool>("pressure_dependent_permeability", false, "flag true if permeability is pressure dependent, default = false");
   params.addParam<Real>("constant_density", 1000, "Use to set value of constant density, [kg/m^3]");
   params.addParam<Real>("constant_viscosity", 0.12e-3, "Use to set value of constant viscosity, [Pa.s]");
   params.addParam<UserObjectName>("water_steam_properties", "EOS functions, calculates water steam properties, provide if doing two-phase or if temp_dependent_fluid_props = true");
@@ -43,6 +44,8 @@ FluidFlow::FluidFlow(const std::string & name, InputParameters parameters) :
 
     _has_temp(isCoupled("temperature")),
     _temp_dependent_fluid_props(getParam<bool>("temp_dependent_fluid_props")),
+    _pressure_dependent_permeability(getParam<bool>("pressure_dependent_permeability")),
+  
     _temperature(_has_temp ? coupledValue("temperature")  : _zero),
     _temperature_old(_has_temp && _is_transient ? coupledValueOld("temperature") : _zero),
     
@@ -319,9 +322,17 @@ void FluidFlow::computeProperties()
         Real _visc_water0;
         _dens_water0 =  _dens_water_out[qp];
         _visc_water0 =  _visc_water_out[qp];
-
+        
+//this will need to be greatly expanded and turned into a function call
+        if (_pressure_dependent_permeability == true)
+                                              {
         _permeability[qp] = _input_permeability*std::exp(10.0*(_pressure[qp]-2.0e7)/4.5e7);
-                    
+                                              }
+
+        else
+          _permeability[qp] = _input_permeability;
+
+        
         _tau_water[qp] = _permeability[qp] * _dens_water0 / _visc_water0;
         _darcy_mass_flux_water[qp] = -_tau_water[qp] * (_grad_p[qp] + _dens_water0 * _gravity[qp] * _gravity_vector[qp]);
         _darcy_mass_flux_water_pressure[qp] =  (-_tau_water[qp] * _grad_p[qp]);
