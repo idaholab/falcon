@@ -104,7 +104,11 @@ FracManFluidFlow::FracManFluidFlow(const std::string & name, InputParameters par
 
     //Equation of State Properties - Temperature/Pressure based, constant density and viscosity inputs
     _constant_density(getParam<Real>("constant_density")),
-    _constant_viscosity(getParam<Real>("constant_viscosity"))
+    _constant_viscosity(getParam<Real>("constant_viscosity")) //,
+
+   //Terms needed for strain dependent permeability calcs.  we use the direction of fluid flow to determine appropriate component of strain to use
+   // _darcy_flux_water_old(_has_strain_dependent_permeability ? &declarePropertyOld<RealGradient>("darcy_flux_water") : NULL)
+   
 { }
 
 
@@ -294,7 +298,7 @@ void FracManFluidFlow::computeProperties()
         _darcy_flux_water[qp] = _darcy_mass_flux_water[qp] / _dens_water0;    
                 
       }
-      //For when fluid properties are temperature INdependent (ie. constant).
+      //For when fluid properties are temperature Independent (ie. constant).
       //If temperature IS NOT a provided coupled variable or if _temp_dependent_fluid_props = false
       //in the material block of the input file, this loop will execute and give constant single phase
       //fluid properties.  Input params constant_density and constant_viscosity can
@@ -307,7 +311,7 @@ void FracManFluidFlow::computeProperties()
         _visc_water_out[qp] = _constant_viscosity;
         _d_dens_d_press_PT[qp] = 0.0;
         _d_dens_d_temp_PT[qp] = 0.0;
-                    
+
         Real _dens_water0;
         Real _visc_water0;
         _dens_water0 =  _dens_water_out[qp];

@@ -111,6 +111,9 @@ protected:
   Real _constant_density;
   Real _constant_viscosity;
 
+  //Terms needed for strain dependent permeability calcs.  we use the direction of fluid flow to determine appropriate component of strain to use
+  //MaterialProperty<RealGradient> * _darcy_flux_water_old;
+
 };
 
 #endif //FRACMANFLUIDFLOW_H

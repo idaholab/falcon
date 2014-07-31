@@ -20,6 +20,10 @@ InputParameters validParams<FracManSolidMechanics>()
   InputParameters params= validParams<FracManPorousMedia>();
 ////General
   //coupled variables
+  params.addCoupledVar("fracture_normal_x", "Coupled constant fracture_normal_x variable");
+  params.addCoupledVar("fracture_normal_y", "Coupled constant fracture_normal_y variable");
+  params.addCoupledVar("fracture_normal_z", "Coupled constant fracture_normal_z variable");
+  params.addCoupledVar("pressure", "Coupled non-linear pressure variable, [Pa]");
   params.addCoupledVar("temperature", "Coupled non-linear termperature variable, [K]");
   params.addCoupledVar("x_disp", "Coupled non-linear x-disp variable, [m]");
   params.addCoupledVar("y_disp", "Coupled non-linear y-disp variable, [m]");
@@ -38,9 +42,11 @@ InputParameters validParams<FracManSolidMechanics>()
   //fracture map/number inputs
   params.addRequiredParam<std::vector<int> >("fracture_numbers","The number associated with each of the fractures you would like to include from the FracMan file");
   //rock property inputs
+  params.addParam<Real>("fracture_permeability_coefficient",1,"Pressure dependent permeability coefficient");
   params.addRequiredParam<std::vector<Real> >("fracture_thermal_expansion","thermal expansion coefficient values associated with each of the fractures, [1/K]");
   params.addRequiredParam<std::vector<Real> >("fracture_youngs_modulus","youngs modulus values associated with each of the fractures, [Pa]");
   params.addRequiredParam<std::vector<Real> >("fracture_thermal_strain_ref_temp","Initial reference temperature of fractures where there is no thermal strain, [K]");
+  params.addRequiredParam<Real>("initial_fracture_pressure", "The initial pressure of the fractures");
 
   return params;
 }
@@ -49,6 +55,10 @@ FracManSolidMechanics::FracManSolidMechanics(const std::string & name,
                                InputParameters parameters)
   :FracManPorousMedia(name, parameters),
 ////Grab coupled variables
+    _fracture_normal_x(coupledValue("fracture_normal_x")),
+    _fracture_normal_y(coupledValue("fracture_normal_y")),
+    _fracture_normal_z(coupledValue("fracture_normal_z")),
+    _pressure(coupledValue("pressure")),
     _has_temp(isCoupled("temperature")),
     _temperature(_has_temp ? coupledValue("temperature")  : _zero),
     _has_x_disp(isCoupled("x_disp")),
@@ -74,9 +84,11 @@ FracManSolidMechanics::FracManSolidMechanics(const std::string & name,
 
     ////Fractures
     _fracture_number_vec(getParam<std::vector<int> >("fracture_numbers")),
+    _fracture_perm_coef(getParam<Real>("fracture_permeability_coefficient")),
     _fracture_thermal_expansion_vec(getParam<std::vector<Real> >("fracture_thermal_expansion")),
     _fracture_youngs_modulus_vec(getParam<std::vector<Real> >("fracture_youngs_modulus")),
     _fracture_t_ref_vec(getParam<std::vector<Real> >("fracture_thermal_strain_ref_temp")),
+    _initial_fracture_pressure(getParam<Real>("initial_fracture_pressure")),
 
 ////Declare material properties
     //rock material props
@@ -90,10 +102,13 @@ FracManSolidMechanics::FracManSolidMechanics(const std::string & name,
     _stress_normal_vector(declareProperty<RealVectorValue>("stress_normal_vector")),
     _stress_shear_vector (declareProperty<RealVectorValue>("stress_shear_vector")),
     _strain_normal_vector(declareProperty<RealVectorValue>("strain_normal_vector")),
-    _strain_shear_vector (declareProperty<RealVectorValue>("strain_shear_vector"))
+    _strain_shear_vector (declareProperty<RealVectorValue>("strain_shear_vector")) //,
+
+    ////Grab darcy_flux_water_old stateful material property from FracManFluidFlow to calculate strain dependennt Permeability mod
+    //_darcy_flux_water_old(_has_strain_dependent_permeability ? &getMaterialPropertyOld<RealGradient>("darcy_flux_water") : NULL)
 
 {
-    // storing the number of vetor entries into respective local variables
+    // storing the number of vector entries into respective local variables
     num_frac_vec_entries = _fracture_number_vec.size();
     num_te_vec_entries = _fracture_thermal_expansion_vec.size();
     num_ym_vec_entries = _fracture_youngs_modulus_vec.size();
@@ -105,7 +120,8 @@ FracManSolidMechanics::FracManSolidMechanics(const std::string & name,
     if (((num_ym_vec_entries > 2) && (num_ym_vec_entries < num_frac_vec_entries)) || (num_ym_vec_entries > num_frac_vec_entries))
         mooseError("You must provide either one youngs_modulus value for all fractures or a youngs_modulus value for each fracture");
     if (((num_tref_vec_entries > 2) && (num_perm_vec_entries < num_tref_vec_entries)) || (num_tref_vec_entries > num_frac_vec_entries))
-        mooseError("You must provide either one t_ref value for all fractures or a t_ref value for each fracture");}
+        mooseError("You must provide either one t_ref value for all fractures or a t_ref value for each fracture");
+}
 
 void
 FracManSolidMechanics::computeProperties()
@@ -210,5 +226,95 @@ for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
           _stress_shear_vector[qp](2) = c1 * c3 * 2.0 * _strain_shear_vector[qp](2);
         }
     }
+
+//--------------------------------------------------------------------------------------------------------------------------//    
+////calculating strain dependent permeability:
+
+    if (_has_strain_dependent_permeability)
+    {
+            for (unsigned int k = 0; k < num_frac_vec_entries; k ++)
+            {   
+            
+            
+                 //finding strain vector perpendicular to fluid flow
+                 Real fracture_strain_normal_x = std::abs(_fracture_normal_x[qp]) * _strain_normal_vector[qp](0);
+                 Real fracture_strain_normal_y = std::abs(_fracture_normal_y[qp]) * _strain_normal_vector[qp](1);
+                 Real fracture_strain_normal_z = std::abs(_fracture_normal_z[qp]) * _strain_normal_vector[qp](2);
+                 
+        
+                 //magnitude of strain perpandicular to fluid flow
+                 Real fracture_strain_normal = fracture_strain_normal_x + fracture_strain_normal_y + fracture_strain_normal_z;
+            
+                 if (_fracture_map[qp] == _fracture_number_vec[k])
+                 {
+
+                     if (num_perm_vec_entries < 2)
+                     {
+                     
+                  
+                         //calculate aperture and fracture_ratio for use in calculating permeability
+                         Real aperture = sqrt(12 * _fracture_permeability_vec[0]);
+                         Real fracture_ratio = _model_fracture_aperture_vec[0] / aperture;
+
+                         if (_t_step == 1)
+                             _permeability[qp] = ((std::pow(_model_fracture_aperture_vec[0],2)) * (std::pow((1/fracture_ratio) , 3)))/12;
+                         else
+                             _permeability[qp] = ((std::pow(_model_fracture_aperture_vec[0],2)) * (std::pow(((1/fracture_ratio) + fracture_strain_normal) , 3)))/12;
+                
+                         if (_permeability[qp] <= (0.9*(std::pow(aperture , 3) / (12 * _model_fracture_aperture_vec[0]))))
+                             _permeability[qp] = 0.9 * (std::pow(aperture , 3) / (12 * _model_fracture_aperture_vec[0]));
+                     }
+
+                     else
+                     {
+                     
+                  
+                         //calculate aperture and fracture_ratio for use in calculating permeability
+                         Real aperture = sqrt(12 * _fracture_permeability_vec[k]);
+                         Real fracture_ratio = _model_fracture_aperture_vec[k] / aperture;
+
+                         if (_t_step == 1)
+                             _permeability[qp] = ((std::pow(_model_fracture_aperture_vec[k],2)) * (std::pow((1/fracture_ratio) , 3)))/12;
+                         else
+                             _permeability[qp] = ((std::pow(_model_fracture_aperture_vec[k],2)) * (std::pow(((1/fracture_ratio) + fracture_strain_normal) , 3)))/12;
+                
+                         if (_permeability[qp] <= (0.9*(std::pow(aperture , 3) / (12 * _model_fracture_aperture_vec[k]))))
+                             _permeability[qp] = 0.9 * (std::pow(aperture , 3) / (12 * _model_fracture_aperture_vec[k]));
+                     }
+                 }
+                 else
+                     _permeability[qp] = _matrix_permeability;
+          }
+    }
+
+//----------------------------------------------------------------------------------------------------------------------------//
+////calculating pressure dependent permeability
+
+    if (_has_pressure_dependent_permeability)
+    {
+        for (unsigned int k = 0; k < num_frac_vec_entries; k ++)
+        {
+
+            if (_fracture_map[qp] == _fracture_number_vec[k])
+            {
+              if (num_perm_vec_entries < 2)
+                _permeability[qp] = _fracture_permeability_vec[0] * (std::exp((_pressure[qp] - _initial_fracture_pressure) * _fracture_perm_coef));
+
+              else
+                _permeability[qp] = _fracture_permeability_vec[k] * (std::exp((_pressure[qp] - _initial_fracture_pressure) * _fracture_perm_coef));  
+              
+            }
+            else
+                _permeability[qp] = _matrix_permeability;
+            
+        }
+    }
+    
+          
+      
+
+    
+
+    
   }
 }

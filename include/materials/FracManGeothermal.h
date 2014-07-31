@@ -20,7 +20,6 @@
 #include "FracManSolidMechanics.h"
 #include "FracManChemicalReactions.h"
 
-
 //Forward Declarations
 class FracManGeothermal;
 

@@ -175,14 +175,14 @@ FracManChemicalReactions::computeProperties()
                 // if only one value for perm/poro was provided, use these values for all fractures
                 // else if multiple values for perm/poro were provided, use these values in order for each of the fractures
                 // else if a combo of the previous two was provided,
-                if ((num_perm_vec_entries < 2) && (num_poro_vec_entries < 2))
-                    _permeability[qp] = _fracture_permeability_vec[0] * (1.0-_fracture_porosity_vec[0]) * (1.0-_fracture_porosity_vec[0]) * std::pow(_porosity[qp]/_fracture_porosity_vec[0],3)/(1.0-_porosity[qp])/(1.0-_porosity[qp]);
-                else if ((num_perm_vec_entries > 2) && (num_poro_vec_entries > 2))
-                    _permeability[qp] = _fracture_permeability_vec[k] * (1.0-_fracture_porosity_vec[k]) * (1.0-_fracture_porosity_vec[k]) * std::pow(_porosity[qp]/_fracture_porosity_vec[k],3)/(1.0-_porosity[qp])/(1.0-_porosity[qp]);
-                else if ((num_perm_vec_entries < 2) && (num_poro_vec_entries > 2))
-                    _permeability[qp] = _fracture_permeability_vec[0] * (1.0-_fracture_porosity_vec[k]) * (1.0-_fracture_porosity_vec[k]) * std::pow(_porosity[qp]/_fracture_porosity_vec[k],3)/(1.0-_porosity[qp])/(1.0-_porosity[qp]);
-                else
-                    _permeability[qp] = _fracture_permeability_vec[k] * (1.0-_fracture_porosity_vec[0]) * (1.0-_fracture_porosity_vec[0]) * std::pow(_porosity[qp]/_fracture_porosity_vec[0],3)/(1.0-_porosity[qp])/(1.0-_porosity[qp]);
+                // if ((num_perm_vec_entries < 2) && (num_poro_vec_entries < 2))
+                //    _permeability[qp] = _fracture_permeability_vec[0] * (1.0-_fracture_porosity_vec[0]) * (1.0-_fracture_porosity_vec[0]) * std::pow(_porosity[qp]/_fracture_porosity_vec[0],3)/(1.0-_porosity[qp])/(1.0-_porosity[qp]);
+                //else if ((num_perm_vec_entries > 2) && (num_poro_vec_entries > 2))
+                //    _permeability[qp] = _fracture_permeability_vec[k] * (1.0-_fracture_porosity_vec[k]) * (1.0-_fracture_porosity_vec[k]) * std::pow(_porosity[qp]/_fracture_porosity_vec[k],3)/(1.0-_porosity[qp])/(1.0-_porosity[qp]);
+                //else if ((num_perm_vec_entries < 2) && (num_poro_vec_entries > 2))
+                //    _permeability[qp] = _fracture_permeability_vec[0] * (1.0-_fracture_porosity_vec[k]) * (1.0-_fracture_porosity_vec[k]) * std::pow(_porosity[qp]/_fracture_porosity_vec[k],3)/(1.0-_porosity[qp])/(1.0-_porosity[qp]);
+                //else
+                //    _permeability[qp] = _fracture_permeability_vec[k] * (1.0-_fracture_porosity_vec[0]) * (1.0-_fracture_porosity_vec[0]) * std::pow(_porosity[qp]/_fracture_porosity_vec[0],3)/(1.0-_porosity[qp])/(1.0-_porosity[qp]);
                     
                 // The diffusivity used in the kernels (already multiplied by porosity)
                 if (num_chem_diff_vec_entries < 2)

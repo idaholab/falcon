@@ -12,35 +12,45 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#include "TimeDerivative.h"
+#ifndef FRACTIPLOCATIONAUX_H
+#define FRACTIPLOCATIONAUX_H
 
-#ifndef MASSFLUXTIMEDERIVATIVE_PT
-#define MASSFLUXTIMEDERIVATIVE_PT
+#include "AuxKernel.h"
+#include "libmesh/plane.h"
+#include "libmesh/point.h"
+#include "MooseEnum.h"
+#include <string>
 
 //Forward Declarations
-class MassFluxTimeDerivative_PT;
+class FracTipLocationAux;
 
 template<>
-InputParameters validParams<MassFluxTimeDerivative_PT>();
+InputParameters validParams<FracTipLocationAux>();
 
-class MassFluxTimeDerivative_PT : public TimeDerivative
+/** 
+ * Coupled auxiliary value
+ */
+class FracTipLocationAux : public AuxKernel
 {
 public:
 
-  MassFluxTimeDerivative_PT(const std::string & name, InputParameters parameters);
+  /**
+   * Factory constructor, takes parameters so that all
+   * derived classes can be built using the same
+   * constructor.
+   */
+  FracTipLocationAux(const std::string & name, InputParameters parameters);
 
+  virtual ~FracTipLocationAux() {}
+  
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-
-    MaterialProperty<Real> & _density_water;
-    MaterialProperty<Real> & _density_water_old;
-    MaterialProperty<Real> & _dwdp;
-    
-    bool _has_chem_reactions;
-    MaterialProperty<Real> & _porosity;
-    MaterialProperty<Real> * _porosity_old;
-    VariableValue & _u_old;  
+  virtual Real computeValue();
+  
+  VariableValue & _fracture_map;
+  std::vector<Real> _wellbore_location;
+      
+  
 
 };
-#endif //MASSFLUXTIMEDERIVATIVE_PT
+
+#endif //FRACTIPLOCATIONAUX_H

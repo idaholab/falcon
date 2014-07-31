@@ -50,25 +50,29 @@ protected:
     Real dfn_box_x_max, dfn_box_y_max, dfn_box_z_max;
     Real dfn_box_x_min, dfn_box_y_min, dfn_box_z_min;
     std::vector<Real> _dfn_dimension;
+    std::vector<Real> _dfn_tol;
     std::vector<std::string> _file_names;
     std::vector<Real> fracture_normal_x;
     std::vector<Real> fracture_normal_y;
     std::vector<Real> fracture_normal_z;
     std::vector<int> _fracture_number_vec;
+    bool _fracture_rewrite;
     std::vector<Real> fracture_vertices_x;
     std::vector<Real> fracture_vertices_y;
     std::vector<Real> fracture_vertices_z;
     MooseEnum _metric_conversion;
     std::vector<Real> _mesh_dimension;
+    unsigned int _nstages;
     MooseEnum _normal_component;
     unsigned int num_vec_entries;
     MooseEnum _output_type;
-    Real _tol;
+    std::vector<Real> _refine_schedule;
+    std::vector<Real> _fracture_tol;
     Real wellbore_box_x_min, wellbore_box_y_min;
     Real wellbore_box_x_max, wellbore_box_y_max;
     std::vector<Real> _wellbore_location;
-    Real _wellbore_tol;
+    std::vector<Real> _wellbore_tol;
 
 };
 
-#endif //FACMANMAPAUX_H
+#endif //FRACMANMAPAUX_H

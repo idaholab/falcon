@@ -35,6 +35,10 @@ public:
 protected:
   virtual void computeProperties();
 ////Grab coupled variables
+  VariableValue & _fracture_normal_x;
+  VariableValue & _fracture_normal_y;
+  VariableValue & _fracture_normal_z;
+  VariableValue & _pressure;
   bool _has_temp;
   VariableValue  & _temperature;
   bool _has_x_disp;
@@ -58,9 +62,12 @@ protected:
   Real _matrix_t_ref;
   //Fractures
   std::vector<int> _fracture_number_vec;
+  Real _fracture_perm_coef;
   std::vector<Real> _fracture_thermal_expansion_vec;
   std::vector<Real> _fracture_youngs_modulus_vec;
   std::vector<Real> _fracture_t_ref_vec;
+  Real _initial_fracture_pressure;
+  
     
 ////Storing the number of vetor entries into respective local variables
   unsigned int num_frac_vec_entries;
@@ -81,6 +88,9 @@ protected:
   MaterialProperty<RealVectorValue> & _stress_shear_vector;
   MaterialProperty<RealVectorValue> & _strain_normal_vector;
   MaterialProperty<RealVectorValue> & _strain_shear_vector;
+
+////Grab darcy_flux_water_old stateful material property from FracManFluidFlow
+  MaterialProperty<RealGradient> * _darcy_flux_water_old;
 
 ////Local variables declared
   Real E;

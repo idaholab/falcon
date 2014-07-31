@@ -52,12 +52,19 @@
 #include "WaterMassFluxElevation_PT.h"
 #include "PressureTimeDerivative.h"
 
+//////////////////////////////////////////////////////////////
+//     Miscellaneous                                        //
+//////////////////////////////////////////////////////////////
+#include "InjectionSourceSink.h"
+
+
 //auxkernels
 #include "CoupledTemperatureAux.h"         // T as functon of (P,H) -two phase formulation
 #include "DarcyFluxAux.h"
 #include "VelocityAux.h"
 #include "StressStrainDamageComputeAux.h"
 #include "FracManMapAux.h"
+#include "FracTipLocationAux.h"
 #include "StochasticFieldAux.h"
 
 //BCs
@@ -67,6 +74,9 @@
 #include "OutFlowBC_PH.h"
 #include "StepDirichletBC.h"
 #include "StepPressureBCFunc.h"
+
+//functions
+#include "WellFunction.h"
 
 //ICs
 #include "LinearDisEnthalpyIC.h"
@@ -182,6 +192,9 @@ FalconApp::registerObjects(Factory & factory)
   registerKernel(WaterMassFluxPressure_PT);
   registerKernel(WaterMassFluxElevation_PT);
 
+  //miscellaneous kernels
+  registerKernel(InjectionSourceSink);
+
   //auxkernels
   registerAux(CoupledTemperatureAux);
   registerAux(DarcyFluxAux);
@@ -189,6 +202,8 @@ FalconApp::registerObjects(Factory & factory)
   registerAux(StressStrainDamageComputeAux);
   registerAux(StochasticFieldAux);
   registerAux(FracManMapAux);
+  registerAux(FracTipLocationAux);
+  
 
   //BCs
   registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
@@ -197,6 +212,9 @@ FalconApp::registerObjects(Factory & factory)
   registerBoundaryCondition(OutFlowBC_PH);
   registerBoundaryCondition(StepDirichletBC);
   registerBoundaryCondition(StepPressureBCFunc);
+
+  //functions
+  registerFunction(WellFunction);
 
   // ICs
   registerInitialCondition(LinearDisEnthalpyIC);
