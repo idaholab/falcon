@@ -22,6 +22,8 @@ InputParameters validParams<FluidFlow>()
   params.addCoupledVar("pressure", "Use pressure here to calculate Darcy Flux and Pore Velocity, [Pa]");
   params.addCoupledVar("enthalpy", "Use enthalpy here to calculate Darcy Flux and Pore Velocity for two-phase flow, [J]");
   params.addCoupledVar("temperature", "Use temperature to calculate Darcy Flux and Pore Velocity for single-phase flow, [K]");
+  //params.addCoupledVar("temperature", "Use temperature to calculate Darcy Flux and Pore Velocity for single-phase flow, [K]");
+
   params.addParam<bool>("temp_dependent_fluid_props", true, "flag true if single-phase and fluid properties are temperature dependent, default = true");
   params.addParam<bool>("pressure_dependent_permeability", false, "flag true if permeability is pressure dependent, default = false");
   params.addParam<Real>("constant_density", 1000, "Use to set value of constant density, [kg/m^3]");
@@ -130,7 +132,22 @@ void FluidFlow::computeProperties()
     Real d_dens_d_press, d_temp_d_press;
     Real d_enth_water_d_enth, d_enth_steam_d_enth;
     Real d_dens_d_enth, d_temp_d_enth, d_sat_fraction_d_enth;
+    
+//this will need to be greatly expanded and turned into a function call
+        if (_pressure_dependent_permeability == true)
+        {
+          int _num = 1;
+          Real _initial_pressure = 2.0e7;
+          Real _c = 10;
+          Real _total_stress = 45.0e6;
+          
+          _permeability[qp] = FluidFlow::computePressurePermeability(_num,  _input_permeability, _pressure[qp], _initial_pressure, _c, _total_stress);
+                                                
+          //_permeability[qp] = _input_permeability*std::exp(10.0*(_pressure[qp]-2.0e7)/4.5e7);
+        }
 
+        else
+          _permeability[qp] = _input_permeability;
     //TWO PHASE PROBLEMS:
     //pressure-enthalpy based
     //If enthalpy IS a provided coupled variable in material property block
@@ -323,14 +340,7 @@ void FluidFlow::computeProperties()
         _dens_water0 =  _dens_water_out[qp];
         _visc_water0 =  _visc_water_out[qp];
         
-//this will need to be greatly expanded and turned into a function call
-        if (_pressure_dependent_permeability == true)
-                                              {
-        _permeability[qp] = _input_permeability*std::exp(10.0*(_pressure[qp]-2.0e7)/4.5e7);
-                                              }
 
-        else
-          _permeability[qp] = _input_permeability;
 
         
         _tau_water[qp] = _permeability[qp] * _dens_water0 / _visc_water0;
@@ -343,7 +353,18 @@ void FluidFlow::computeProperties()
             
   }
 }
-    
+
+
+Real FluidFlow::computePressurePermeability(int _num,  Real _input_permeability, Real _pressure, Real _initial_pressure, Real _c, Real _total_stress)
+{
+  Real _perm;
+  _perm = _input_permeability*std::exp(_c*(_pressure-_initial_pressure)/_total_stress);
+  return _perm;
+  
+}
+
+
+
 void FluidFlow::compute2PhProperties0(Real _per, Real  _Sw, Real _Denw, Real _Dens, Real _visw, Real _viss, Real& _watertau, Real  &_steamtau)
 {
   Real _krw=1.0, _krs=0.0;

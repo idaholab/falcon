@@ -40,12 +40,18 @@ Real
 MassFluxTimeDerivative_PT_comp::computeQpResidual()
 {
 //    return (((_porosity[_qp]*_density_water[_qp])-((*_porosity_old)[_qp]*_density_water_old[_qp]))/_dt) * _test[_i][_qp];
-  return _porosity[_qp]*_density_water[_qp]*_compressibility[_qp]*(_u[_qp] - _u_old[_qp])/_dt * _test[_i][_qp];
+// 2014.07.31 RKP.  IN reviewing the compressibility formulation, the link below is wrong.  See the notes regarding compressibility
+// the density and porosity terms get rolled into the "coompressibility factor", which is named "_compressibility" below
+// Also, this "_compressibility" is an isothermal compressibility factor, additional terms will be need for non-isothermal conditions
+// 
+//  return _porosity[_qp]*_density_water[_qp]*_compressibility[_qp]*(_u[_qp] - _u_old[_qp])/_dt * _test[_i][_qp];
+  
+  return _compressibility[_qp]*(_u[_qp] - _u_old[_qp])/_dt * _test[_i][_qp];
 }
 
 Real
 MassFluxTimeDerivative_PT_comp::computeQpJacobian()
 {
 //    return (_porosity[_qp]*_dwdp[_qp]*_phi[_j][_qp])*_test[_i][_qp]/_dt;
-  return _porosity[_qp]*_density_water[_qp]*_compressibility[_qp] * _phi[_j][_qp]/_dt * _test[_i][_qp];
+  return _compressibility[_qp] * _phi[_j][_qp]/_dt * _test[_i][_qp];
 }

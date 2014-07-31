@@ -37,7 +37,8 @@ public:
 protected:
   virtual void computeProperties();
   virtual void compute2PhProperties0(Real _per, Real _Sw, Real _Denw, Real _Dens, Real _visw, Real _viss, Real &_watertau, Real  &_steamtau);
-
+  Real computePressurePermeability(int _num,  Real _input_permeability, Real _pressure, Real _initial_pressure, Real _c, Real _total_stess);
+  
   const WaterSteamEOS * _water_steam_properties;
     
   bool _has_pressure;
