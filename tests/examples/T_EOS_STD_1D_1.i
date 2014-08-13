@@ -33,7 +33,7 @@
     order = CONSTANT
     family = MONOMIAL
   [../]
-  [./viscosity_water]# This aux variables are not necessary to run the problem, it just display the viscosity
+  [./viscosity_water] # This aux variables are not necessary to run the problem, it just display the viscosity
     order = CONSTANT
     family = MONOMIAL
   [../]
@@ -76,7 +76,7 @@
     variable = density_water
     property = density_water
   [../]
-  [./viscosity_water]# This aux variables are not necessary to run the problem, it just display the density
+  [./viscosity_water] # This aux variables are not necessary to run the problem, it just display the density
     type = MaterialRealAux
     variable = viscosity_water
     property = viscosity_water
