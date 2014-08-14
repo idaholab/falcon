@@ -1,7 +1,7 @@
 #ifndef WELLDIRAC_H
 #define WELLDIRAC_H
 
-#include "Dirackernel.h"
+#include "DiracKernel.h"
 #include "Function.h"
 #include "WaterSteamEOS.h"
 #include "WellUserObject.h"

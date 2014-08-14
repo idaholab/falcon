@@ -261,6 +261,7 @@
   /Users/taylrm/projects/trunk/moose/framework/include/transfers/TransferWarehouse.h \
   /Users/taylrm/projects/trunk/moose/framework/include/userobject/UserObjectWarehouse.h \
   /Users/taylrm/projects/trunk/moose/framework/include/userobject/UserObject.h \
+  /Users/taylrm/projects/trunk/moose/framework/include/base/FunctionInterface.h \
   /Users/taylrm/projects/trunk/moose/framework/include/mesh/MooseMesh.h \
   /Users/taylrm/projects/trunk/moose/framework/include/mesh/BndNode.h \
   /Users/taylrm/projects/trunk/moose/framework/include/mesh/BndElement.h \
@@ -803,6 +804,8 @@
 /Users/taylrm/projects/trunk/moose/framework/include/userobject/UserObjectWarehouse.h:
 
 /Users/taylrm/projects/trunk/moose/framework/include/userobject/UserObject.h:
+
+/Users/taylrm/projects/trunk/moose/framework/include/base/FunctionInterface.h:
 
 /Users/taylrm/projects/trunk/moose/framework/include/mesh/MooseMesh.h:
 

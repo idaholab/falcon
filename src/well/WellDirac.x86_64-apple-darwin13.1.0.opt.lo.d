@@ -1,7 +1,7 @@
 /Users/taylrm/projects/trunk/falcon/src/well/WellDirac.x86_64-apple-darwin13.1.0.opt.lo: \
   /Users/taylrm/projects/trunk/falcon/src/well/WellDirac.C \
   /Users/taylrm/projects/trunk/falcon/include/well/WellDirac.h \
-  /Users/taylrm/projects/trunk/moose/framework/include/dirackernels/Dirackernel.h \
+  /Users/taylrm/projects/trunk/moose/framework/include/dirackernels/DiracKernel.h \
   /Users/taylrm/projects/trunk/moose/framework/include/dirackernels/DiracKernelInfo.h \
   /Users/taylrm/projects/trunk/moose/framework/include/base/Moose.h \
   /Users/taylrm/projects/trunk/moose/scripts/../libmesh/installed/include/libmesh/perf_log.h \
@@ -300,7 +300,7 @@
 
 /Users/taylrm/projects/trunk/falcon/include/well/WellDirac.h:
 
-/Users/taylrm/projects/trunk/moose/framework/include/dirackernels/Dirackernel.h:
+/Users/taylrm/projects/trunk/moose/framework/include/dirackernels/DiracKernel.h:
 
 /Users/taylrm/projects/trunk/moose/framework/include/dirackernels/DiracKernelInfo.h:
 
