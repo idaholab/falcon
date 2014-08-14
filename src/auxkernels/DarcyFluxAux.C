@@ -19,7 +19,7 @@ InputParameters validParams<DarcyFluxAux>()
 {
      InputParameters params = validParams<AuxKernel>();
      params.addParam<int>("component",0,"component of the pressure vector");
-     MooseEnum fluid_phase("steam, water", "water");
+     MooseEnum fluid_phase("steam water", "water");
      params.addParam<MooseEnum>("phase", fluid_phase, "Sets the phase of interest (water, steam)");
      return params;
 }

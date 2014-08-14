@@ -19,7 +19,7 @@ InputParameters validParams<VelocityAux>()
 {
      InputParameters params = validParams<AuxKernel>();
      params.addParam<int>("component",0,"Direction/component of the velocity vector (0=x, 1=y, 2=z)");
-     MooseEnum fluid_phase("steam, water", "water");
+     MooseEnum fluid_phase("steam water", "water");
      params.addParam<MooseEnum>("phase", fluid_phase, "Sets the phase of interest (water, steam)");
      return params;
 }

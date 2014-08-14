@@ -19,9 +19,9 @@ InputParameters validParams<FracManMapAux>()
 {
     InputParameters params = validParams<AuxKernel>();
 
-    MooseEnum metric_conversion_code("no,yes");
-    MooseEnum normal_component_code("x,y,z");
-    MooseEnum output_type_code("fracture_map,fracture_normal,fracture_tip,wellbore,debug");
+    MooseEnum metric_conversion_code("no yes");
+    MooseEnum normal_component_code("x y z");
+    MooseEnum output_type_code("fracture_map fracture_normal fracture_tip wellbore debug");
     
     params.addRequiredParam<std::vector<Real> >("coordinate_shift", "Enter the x, y, and z elements of the coordinate shift (ft)");
     params.addRequiredParam<std::vector<Real> >("dfn_dimension", "Enter the x, y, and z dimensions of the DFN (m)");
