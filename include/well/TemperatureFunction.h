@@ -1,25 +1,23 @@
-#ifndef WELLFUNCTION_H
-#define WELLFUNCTION_H
+#ifndef TEMPERATUREFUNCTION_H
+#define TEMPERATUREFUNCTION_H
 
 #include "Function.h"
 
-class WellFunction;
+class TemperatureFunction;
 
 template<>
-InputParameters validParams<WellFunction>();
+InputParameters validParams<TemperatureFunction>();
 
-class WellFunction:public Function
+class TemperatureFunction:public Function
 {
  public:
-    WellFunction(const std::string & name, InputParameters parameters);
+    TemperatureFunction(const std::string & name, InputParameters parameters);
 
     virtual Real value(Real t, const Point & p);
 
  protected:
-    //Real _surface_fluid_temperature;
     Real _surface_earth_temperature;
-    //Real _mass_flow_rate;
-    Real _fluid_density;
+    Real _surface_fluid_density;
     Real _fluid_heat_capacity;
     Real _thermal_conductivity_earth;
     Real _thermal_conductivity_casing;
@@ -35,7 +33,6 @@ class WellFunction:public Function
     std::vector<Real> _schedule;
     std::vector<Real> mass_flow_rate;
     std::vector<Real> surface_fluid_temperature;
-    
 };
 
-#endif //WELLFUNCTION_H
+#endif //TEMPERATUREFUNCTION_H

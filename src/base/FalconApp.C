@@ -126,6 +126,12 @@
 #include "FluidMassEnergyBalanceApp.h"
 #include "ChemicalReactionsApp.h"
 
+//Well
+#include "WellUserObject.h"
+#include "WellDirac.h"
+#include "TemperatureFunction.h"
+#include "PressureFunction.h"
+#include "ThermalGradientEarthFunction.h"
 
 template<>
 InputParameters validParams<FalconApp>()
@@ -251,7 +257,14 @@ FalconApp::registerObjects(Factory & factory)
   registerPostprocessor(EOSWaterAndSteamPTFuncPPS);
   registerPostprocessor(EOSPhaseDetermineFuncPPS);
   registerPostprocessor(EOSViscosityFuncPPS);
-}
+
+  //Well
+  registerUserObject(WellUserObject);
+  registerDiracKernel(WellDirac);
+  registerFunction(TemperatureFunction);
+  registerFunction(PressureFunction);
+  registerFunction(ThermalGradientEarthFunction);
+ }
 
 
 
