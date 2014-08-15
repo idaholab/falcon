@@ -164,11 +164,13 @@ WellDirac::computeQpResidual()
 
   else if (_return_parameter == 3 )
     {
+      //RKP: 2014.08.15 this needs to be edited to scale the temp by the heat capacity, and also the mass flux:
       return -_test[_i][_qp]*T;
     }
 
   else if ( _return_parameter == 4 )
     {
+      //look at this as well, dirac needs a flux, so we'll need to calculate the flux from the delta P
       return -_test[_i][_qp]*P;
     }
   else
