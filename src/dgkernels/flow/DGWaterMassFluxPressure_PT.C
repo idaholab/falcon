@@ -12,6 +12,9 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
+//! Author:  Yidong Xia (Yidong.Xia@inl.gov)
+//! Created: 08/18/2014
+
 #include "Material.h"
 #include "DGWaterMassFluxPressure_PT.h"
 

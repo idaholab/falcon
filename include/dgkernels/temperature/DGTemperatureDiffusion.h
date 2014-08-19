@@ -13,31 +13,30 @@
 /****************************************************************/
 
 //! Author:  Yidong Xia (Yidong.Xia@inl.gov)
-//! Created: 08/18/2014
+//! Created: 08/19/2014
 
-#ifndef DGWATERMASSFLUXPRESSURE_PT
-#define DGWATERMASSFLUXPRESSURE_PT
+#ifndef DGTEMPERATUREDIFFUSION
+#define DGTEMPERATUREDIFFUSION
 
 #include "DGDiffusion.h"
 #include "Material.h"
 
-//Forward Declarations
-class DGWaterMassFluxPressure_PT;
+class DGTemperatureDiffusion;
 
 template<>
-InputParameters validParams<DGWaterMassFluxPressure_PT>();
+InputParameters validParams<DGTemperatureDiffusion>();
 
-class DGWaterMassFluxPressure_PT : public DGDiffusion
+class DGTemperatureDiffusion : public DGDiffusion
 {
 public:
 
-  DGWaterMassFluxPressure_PT(const std::string & name, InputParameters parameters);
+  DGTemperatureDiffusion(const std::string & name, InputParameters parameters);
     
 protected:
   virtual Real computeQpResidual(Moose::DGResidualType type);
-
   virtual Real computeQpJacobian(Moose::DGJacobianType type);
 
-  MaterialProperty<Real> & _tau_water;
+  MaterialProperty<Real> &_thermal_conductivity;
+  
 };
-#endif //DGWATERMASSFLUXPRESSURE
+#endif //DGTEMPERATUREDIFFUSION

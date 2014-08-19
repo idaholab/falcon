@@ -13,31 +13,36 @@
 /****************************************************************/
 
 //! Author:  Yidong Xia (Yidong.Xia@inl.gov)
-//! Created: 08/18/2014
+//! Created: 08/19/2014
 
-#ifndef DGWATERMASSFLUXPRESSURE_PT
-#define DGWATERMASSFLUXPRESSURE_PT
-
-#include "DGDiffusion.h"
 #include "Material.h"
-
-//Forward Declarations
-class DGWaterMassFluxPressure_PT;
+#include "DGTemperatureDiffusion.h"
 
 template<>
-InputParameters validParams<DGWaterMassFluxPressure_PT>();
-
-class DGWaterMassFluxPressure_PT : public DGDiffusion
+InputParameters validParams<DGTemperatureDiffusion>()
 {
-public:
+  InputParameters params = validParams<DGDiffusion>();
+  return params;
+}
 
-  DGWaterMassFluxPressure_PT(const std::string & name, InputParameters parameters);
-    
-protected:
-  virtual Real computeQpResidual(Moose::DGResidualType type);
+DGTemperatureDiffusion::DGTemperatureDiffusion(const std::string & name, 
+                                             InputParameters parameters)
+  :DGDiffusion(name, parameters),
+   _thermal_conductivity(getMaterialProperty<Real>("thermal_conductivity"))
+{}
 
-  virtual Real computeQpJacobian(Moose::DGJacobianType type);
+Real
+DGTemperatureDiffusion::computeQpResidual(Moose::DGResidualType type)
+{
+  return _thermal_conductivity[_qp]*DGDiffusion::computeQpResidual(type);
 
-  MaterialProperty<Real> & _tau_water;
-};
-#endif //DGWATERMASSFLUXPRESSURE
+}
+
+Real
+DGTemperatureDiffusion::computeQpJacobian(Moose::DGJacobianType type)
+{
+  return _thermal_conductivity[_qp]*DGDiffusion::computeQpJacobian(type);
+}
+
+
+
