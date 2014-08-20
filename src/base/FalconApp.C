@@ -18,7 +18,7 @@
 #include "ActionFactory.h"
 #include "Syntax.h"
 
-//kernels
+// Kernels
 ///////////////////////////////////////////////////////////////
 //      solid mechanics                                      //
 ///////////////////////////////////////////////////////////////
@@ -45,22 +45,29 @@
 #include "TemperatureTimeDerivativeSolid.h"
 #include "TemperatureDiffusion.h"
 #include "TemperatureConvection.h"
-#include "DGTemperatureDiffusion.h"
 
 #include "MassFluxTimeDerivative_PT.h"
 #include "MassFluxTimeDerivative_PT_comp.h"
 #include "WaterMassFluxPressure_PT.h"
 #include "WaterMassFluxElevation_PT.h"
 #include "PressureTimeDerivative.h"
-#include "DGWaterMassFluxPressure_PT.h"
 
 //////////////////////////////////////////////////////////////
 //     Miscellaneous                                        //
 //////////////////////////////////////////////////////////////
 #include "InjectionSourceSink.h"
 
+//////////////////////////////////////////////////////////////
+//     Generic convection                                   //
+//////////////////////////////////////////////////////////////
+#include "Convection.h"
 
-//auxkernels
+// DGKernels
+#include "DGConvection.h" // Generic DG convection kernel
+#include "DGTemperatureDiffusion.h"
+#include "DGWaterMassFluxPressure_PT.h"
+
+// AuxKernels
 #include "CoupledTemperatureAux.h"         // T as functon of (P,H) -two phase formulation
 #include "DarcyFluxAux.h"
 #include "VelocityAux.h"
@@ -69,7 +76,7 @@
 #include "FracTipLocationAux.h"
 #include "StochasticFieldAux.h"
 
-//BCs
+// BCs
 #include "PressureNeumannBC2.h"
 #include "GravityNeumannBC.h"
 #include "OutFlowBC.h"
@@ -77,10 +84,10 @@
 #include "StepDirichletBC.h"
 #include "StepPressureBCFunc.h"
 
-//ICs
+// ICs
 #include "LinearDisEnthalpyIC.h"
 
-//materials
+// Materials
 #include "Constant.h"
 #include "PorousMedia.h"
 #include "FluidFlow.h"
@@ -111,15 +118,15 @@
 #include "FracManChemicalReactions.h"
 #include "FracManGeothermal.h"
 
-//userobjects
+// UserObjects
 #include "WaterSteamEOS.h"
 
-//postprocessors
+// PostProcessors
 #include "EOSWaterAndSteamPTFuncPPS.h"
 #include "EOSPhaseDetermineFuncPPS.h"
 #include "EOSViscosityFuncPPS.h"
 
-//actions
+// Actions
 #include "GeothermalMaterialAction.h"
 #include "StochasticGeothermalMaterialAction.h"
 #include "FracManGeothermalMaterialAction.h"
@@ -185,16 +192,22 @@ FalconApp::registerObjects(Factory & factory)
   registerKernel(TemperatureTimeDerivativeSolid);
   registerKernel(TemperatureDiffusion);
   registerKernel(TemperatureConvection);
-  registerKernel(DGTemperatureDiffusion);
   //fluid-mass flow-single phase formulation
   registerKernel(MassFluxTimeDerivative_PT);
   registerKernel(MassFluxTimeDerivative_PT_comp);
   registerKernel(WaterMassFluxPressure_PT);
   registerKernel(WaterMassFluxElevation_PT);
-  registerKernel(DGWaterMassFluxPressure_PT);
 
   //miscellaneous kernels
   registerKernel(InjectionSourceSink);
+
+  //generic convection kernels
+  registerKernel(Convection);
+
+  //dgkernels
+  registerKernel(DGConvection);
+  registerKernel(DGTemperatureDiffusion);
+  registerKernel(DGWaterMassFluxPressure_PT);
 
   //auxkernels
   registerAux(CoupledTemperatureAux);
@@ -204,7 +217,6 @@ FalconApp::registerObjects(Factory & factory)
   registerAux(StochasticFieldAux);
   registerAux(FracManMapAux);
   registerAux(FracTipLocationAux);
-  
 
   //BCs
   registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
