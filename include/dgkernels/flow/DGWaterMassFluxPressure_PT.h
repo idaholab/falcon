@@ -12,9 +12,12 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
+<<<<<<< HEAD
 //! Author:  Yidong Xia (Yidong.Xia@inl.gov)
 //! Created: 08/18/2014
 
+=======
+>>>>>>> Added DG kernel: DGWaterMassFluxPressure_PT
 #ifndef DGWATERMASSFLUXPRESSURE_PT
 #define DGWATERMASSFLUXPRESSURE_PT
 
