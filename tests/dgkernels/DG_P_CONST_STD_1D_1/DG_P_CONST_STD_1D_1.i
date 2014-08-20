@@ -1,3 +1,11 @@
+#### Author : Yidong Xia (Yidong.Xia@inl.gov)
+#### Created: 08/19/2014
+#### Description:
+#### This test case is designed to validate and verify
+#### the DGWaterMassFluxPressure_PT kernel.
+#### The overall settings are similar to
+#### /falcon/tests/examples/P_CONST_STD_1D_1.i
+
 [Mesh]
   type =  GeneratedMesh
   dim  =  3

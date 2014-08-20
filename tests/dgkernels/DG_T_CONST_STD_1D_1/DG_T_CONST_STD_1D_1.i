@@ -1,9 +1,10 @@
-# This is a simple single-phase, non-isothermal, 
-# heat diffusion problem on a 100mx10x1m column
-# Temperature is initially 200 C.  
-# A BC of 100 C is applied to the left-hand side of the column
-# The standard GeothermalMaterial is used, 
-# with constant values of density/viscosity.
+#### Author : Yidong Xia (Yidong.Xia@inl.gov)
+#### Created: 08/19/2014
+#### Description:
+#### This test case is designed to validate and verify
+#### the DGTemperatureDiffusion kernel.
+#### The overall settings are similar to
+#### /falcon/tests/examples/T_CONST_STD_1D_1.i
 
 [Mesh]
   type = GeneratedMesh

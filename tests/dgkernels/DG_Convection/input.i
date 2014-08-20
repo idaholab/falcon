@@ -1,8 +1,8 @@
 #### Author : Yidong Xia (Yidong.Xia@inl.gov)
 #### Created: 08/20/2014
 #### Description: 
-#### This test case demonstrates the capability of 
-#### the DGConvection kernel for simulating 
+#### This test case is designed to validate and verify 
+#### the DGConvection kernel by performing a simulation of  
 #### a transient scalar linear convection for a step function.
 #### You will observe the non-physical oscillations 
 #### (over- and under-shoots) at the vicinity of discontinuities.
