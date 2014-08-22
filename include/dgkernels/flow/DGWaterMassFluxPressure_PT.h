@@ -15,8 +15,8 @@
 //! Author:  Yidong Xia (Yidong.Xia@inl.gov)
 //! Created: 08/18/2014
 
-#ifndef DGWATERMASSFLUXPRESSURE_PT
-#define DGWATERMASSFLUXPRESSURE_PT
+#ifndef DGWATERMASSFLUXPRESSURE_PT_H
+#define DGWATERMASSFLUXPRESSURE_PT_H
 
 #include "DGDiffusion.h"
 #include "Material.h"
@@ -40,4 +40,4 @@ protected:
 
   MaterialProperty<Real> & _tau_water;
 };
-#endif //DGWATERMASSFLUXPRESSURE
+#endif //DGWATERMASSFLUXPRESSURE_PT_H

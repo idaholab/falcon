@@ -64,6 +64,7 @@
 
 // DGKernels
 #include "DGConvection.h" // Generic DG convection kernel
+#include "DGTemperatureConvection.h"
 #include "DGTemperatureDiffusion.h"
 #include "DGWaterMassFluxPressure_PT.h"
 
@@ -77,6 +78,7 @@
 #include "StochasticFieldAux.h"
 
 // BCs
+#include "DGFunctionConvectionBC.h"
 #include "PressureNeumannBC2.h"
 #include "GravityNeumannBC.h"
 #include "OutFlowBC.h"
@@ -206,6 +208,7 @@ FalconApp::registerObjects(Factory & factory)
 
   //dgkernels
   registerKernel(DGConvection);
+  registerKernel(DGTemperatureConvection);
   registerKernel(DGTemperatureDiffusion);
   registerKernel(DGWaterMassFluxPressure_PT);
 
@@ -220,6 +223,7 @@ FalconApp::registerObjects(Factory & factory)
 
   //BCs
   registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
+  registerBoundaryCondition(DGFunctionConvectionBC);
   registerBoundaryCondition(GravityNeumannBC);
   registerBoundaryCondition(OutFlowBC);
   registerBoundaryCondition(OutFlowBC_PH);

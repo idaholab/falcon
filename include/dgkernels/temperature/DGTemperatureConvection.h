@@ -13,32 +13,38 @@
 /****************************************************************/
 
 //! Author:  Yidong Xia (Yidong.Xia@inl.gov)
-//! Created: 08/19/2014
+//! Created: 08/22/2014
 
-#ifndef DGTEMPERATUREDIFFUSION_H
-#define DGTEMPERATUREDIFFUSION_H
+#ifndef DGTEMPERATURECONVECTION_H
+#define DGTEMPERATURECONVECTION_H
 
-#include "DGDiffusion.h"
+#include "DGKernel.h"
 #include "Material.h"
 
 //Forward Declarations
-class DGTemperatureDiffusion;
+class DGTemperatureConvection;
 
 template<>
-InputParameters validParams<DGTemperatureDiffusion>();
+InputParameters validParams<DGTemperatureConvection>();
 
-class DGTemperatureDiffusion : public DGDiffusion
+class DGTemperatureConvection : public DGKernel
 {
   public:
 
-    DGTemperatureDiffusion(const std::string & name,
-                           InputParameters parameters);
-    
+    DGTemperatureConvection(const std::string & name,
+                            InputParameters parameters);
+
   protected:
 
     virtual Real computeQpResidual(Moose::DGResidualType type);
     virtual Real computeQpJacobian(Moose::DGJacobianType type);
 
-    MaterialProperty<Real> &_thermal_conductivity;
+    MaterialProperty<Real> & _specific_heat_water;
+    MaterialProperty<RealGradient> & _darcy_mass_flux_water;
+
+    /**
+     * A scaling factor for spectral radius
+     */
+    Real _alpha;
 };
-#endif //DGTEMPERATUREDIFFUSION_H
+#endif //DGTEMPERATURECONVECTION_H

@@ -47,11 +47,11 @@ DGConvection::computeQpResidual(Moose::DGResidualType type)
   Real vdonr = _velocity*_normals[_qp];
 
   //Scaled spectral radius
-  Real specr = _alpha*std::max(std::abs(vdonl), std::abs(vdonr));
+  Real sradi = _alpha*std::max(std::abs(vdonl), std::abs(vdonr));
 
   //Local Lax-Friedrichlet (LLF) scheme
   Real flux = 0.5*( vdonl*_u[_qp] + vdonr*_u_neighbor[_qp] 
-                    - specr*(_u_neighbor[_qp]-_u[_qp]) );
+                    - sradi*(_u_neighbor[_qp]-_u[_qp]) );
 
   Real r = 0.0;
 
@@ -82,26 +82,26 @@ DGConvection::computeQpJacobian(Moose::DGJacobianType type)
   Real vdonr = _velocity*_normals[_qp];
 
   //Scaled spectral radius
-  Real specr = _alpha*std::max(std::abs(vdonl), std::abs(vdonr));
+  Real sradi = _alpha*std::max(std::abs(vdonl), std::abs(vdonr));
 
   Real fj= 0.0; 
   Real r = 0.0;
 
   switch (type) {
     case Moose::ElementElement:
-      fj = 0.5*( vdonl*_phi[_j][_qp] + specr*_phi[_j][_qp] );
+      fj = 0.5*( vdonl*_phi[_j][_qp] + sradi*_phi[_j][_qp] );
       r += fj * _test[_i][_qp];
       break;
     case Moose::ElementNeighbor:
-      fj = 0.5*( vdonr*_phi_neighbor[_j][_qp] - specr*_phi_neighbor[_j][_qp] );
+      fj = 0.5*( vdonr*_phi_neighbor[_j][_qp] - sradi*_phi_neighbor[_j][_qp] );
       r += fj * _test[_i][_qp];
       break;
     case Moose::NeighborElement:
-      fj = 0.5*( vdonl*_phi[_j][_qp] + specr*_phi[_j][_qp] );
+      fj = 0.5*( vdonl*_phi[_j][_qp] + sradi*_phi[_j][_qp] );
       r -= fj * _test_neighbor[_i][_qp];
       break;
     case Moose::NeighborNeighbor:
-      fj = 0.5*( vdonr*_phi_neighbor[_j][_qp] - specr*_phi_neighbor[_j][_qp] );
+      fj = 0.5*( vdonr*_phi_neighbor[_j][_qp] - sradi*_phi_neighbor[_j][_qp] );
       r -= fj * _test_neighbor[_i][_qp];
       break;
   }

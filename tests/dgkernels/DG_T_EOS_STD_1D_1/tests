@@ -1,0 +1,7 @@
+[Tests]
+  [./test]
+    type = 'Exodiff'
+    input = 'DG_T_EOS_STD_1D_1.i'
+    exodiff = 'DG_T_EOS_STD_1D_1_out.e'
+  [../]
+[]

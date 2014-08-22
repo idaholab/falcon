@@ -30,15 +30,20 @@ InputParameters validParams<DGConvection>();
 class DGConvection : public DGKernel
 {
   public:
-    DGConvection(const std::string & name, InputParameters parameters);
+
+    DGConvection(const std::string & name,
+                 InputParameters parameters);
 
   protected:
+
     virtual Real computeQpResidual(Moose::DGResidualType type);
     virtual Real computeQpJacobian(Moose::DGJacobianType type);
+
     /**
      * A scaling factor for spectral radius
      */
     Real _alpha;
+
     /**
      * Constant convection velocity vector
      */
