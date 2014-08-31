@@ -13,39 +13,31 @@
 /****************************************************************/
 
 //! Author:  Yidong Xia (Yidong.Xia@inl.gov)
-//! Created: 08/22/2014
+//! Created: 08/25/2014
 
-#ifndef DGFUNCTIONCONVECTIONBC_H
-#define DGFUNCTIONCONVECTIONBC_H
+#ifndef COEFDIFFUSION_H
+#define COEFDIFFUSION_H
 
-#include "IntegratedBC.h"
-#include "Material.h"
+#include "Kernel.h"
 
 //Forward Declarations
-class DGFunctionConvectionBC;
+class CoefDiffusion;
 
 template<>
-InputParameters validParams<DGFunctionConvectionBC>();
+InputParameters validParams<CoefDiffusion>();
 
-class DGFunctionConvectionBC : public IntegratedBC
+class CoefDiffusion : public Kernel
 {
-  public:
+public:
 
-    DGFunctionConvectionBC(const std::string & name, InputParameters parameters);
+  CoefDiffusion(const std::string & name, InputParameters parameters);
 
-    virtual ~DGFunctionConvectionBC() {}
+protected:
+  virtual Real computeQpResidual();
 
-  protected:
+  virtual Real computeQpJacobian();
 
-    virtual Real computeQpResidual();
-    virtual Real computeQpJacobian();
-
-    MaterialProperty<Real> & _specific_heat_water;
-    MaterialProperty<RealGradient> & _darcy_mass_flux_water;
-
-  private:
-
-    Function & _func;
+private:
+  Real _coef;
 };
-
-#endif //DGFUNCTIONCONVECTIONBC_H
+#endif // COEFDIFFUSION_H

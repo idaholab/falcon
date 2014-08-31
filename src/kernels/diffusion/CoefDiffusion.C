@@ -13,39 +13,31 @@
 /****************************************************************/
 
 //! Author:  Yidong Xia (Yidong.Xia@inl.gov)
-//! Created: 08/22/2014
+//! Created: 08/25/2014
 
-#ifndef DGFUNCTIONCONVECTIONBC_H
-#define DGFUNCTIONCONVECTIONBC_H
-
-#include "IntegratedBC.h"
-#include "Material.h"
-
-//Forward Declarations
-class DGFunctionConvectionBC;
+#include "CoefDiffusion.h"
 
 template<>
-InputParameters validParams<DGFunctionConvectionBC>();
-
-class DGFunctionConvectionBC : public IntegratedBC
+InputParameters validParams<CoefDiffusion>()
 {
-  public:
+  InputParameters params = validParams<Kernel>();
+  params.set<Real>("coef")=0.0;
+  return params;
+}
 
-    DGFunctionConvectionBC(const std::string & name, InputParameters parameters);
+CoefDiffusion::CoefDiffusion(const std::string & name, InputParameters parameters)
+  :Kernel(name, parameters),
+   _coef(getParam<Real>("coef"))
+{}
 
-    virtual ~DGFunctionConvectionBC() {}
+Real
+CoefDiffusion::computeQpResidual()
+{
+  return _coef*_grad_test[_i][_qp]*_grad_u[_qp];
+}
 
-  protected:
-
-    virtual Real computeQpResidual();
-    virtual Real computeQpJacobian();
-
-    MaterialProperty<Real> & _specific_heat_water;
-    MaterialProperty<RealGradient> & _darcy_mass_flux_water;
-
-  private:
-
-    Function & _func;
-};
-
-#endif //DGFUNCTIONCONVECTIONBC_H
+Real
+CoefDiffusion::computeQpJacobian()
+{
+  return _coef*_grad_test[_i][_qp]*_grad_phi[_j][_qp];
+}

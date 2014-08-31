@@ -3,5 +3,6 @@
     type = 'Exodiff'
     input = 'temperature_displacement_test.i'
     exodiff = 'out.e'
+    skip = 'Needs revision for parallel mode'
   [../]
 []

@@ -13,27 +13,28 @@
 /****************************************************************/
 
 //! Author:  Yidong Xia (Yidong.Xia@inl.gov)
-//! Created: 08/22/2014
+//! Created: 08/27/2014
 
-#ifndef DGFUNCTIONCONVECTIONBC_H
-#define DGFUNCTIONCONVECTIONBC_H
+#ifndef DGTEMPERATURECONVECTIONOUTFLOWBC_H
+#define DGTEMPERATURECONVECTIONOUTFLOWBC_H
 
 #include "IntegratedBC.h"
 #include "Material.h"
 
 //Forward Declarations
-class DGFunctionConvectionBC;
+class DGTemperatureConvectionOutflowBC;
 
 template<>
-InputParameters validParams<DGFunctionConvectionBC>();
+InputParameters validParams<DGTemperatureConvectionOutflowBC>();
 
-class DGFunctionConvectionBC : public IntegratedBC
+class DGTemperatureConvectionOutflowBC : public IntegratedBC
 {
   public:
 
-    DGFunctionConvectionBC(const std::string & name, InputParameters parameters);
+    DGTemperatureConvectionOutflowBC(const std::string & name,
+                                  InputParameters parameters);
 
-    virtual ~DGFunctionConvectionBC() {}
+    virtual ~DGTemperatureConvectionOutflowBC() {}
 
   protected:
 
@@ -42,10 +43,6 @@ class DGFunctionConvectionBC : public IntegratedBC
 
     MaterialProperty<Real> & _specific_heat_water;
     MaterialProperty<RealGradient> & _darcy_mass_flux_water;
-
-  private:
-
-    Function & _func;
 };
 
-#endif //DGFUNCTIONCONVECTIONBC_H
+#endif //DGTEMPERATURECONVECTIONOUTFLOWBC_H

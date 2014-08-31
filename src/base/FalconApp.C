@@ -58,6 +58,11 @@
 #include "InjectionSourceSink.h"
 
 //////////////////////////////////////////////////////////////
+//     Generic diffusion                                    //
+//////////////////////////////////////////////////////////////
+#include "CoefDiffusion.h"
+
+//////////////////////////////////////////////////////////////
 //     Generic convection                                   //
 //////////////////////////////////////////////////////////////
 #include "Convection.h"
@@ -78,7 +83,10 @@
 #include "StochasticFieldAux.h"
 
 // BCs
+#include "DGConvectionInflowBC.h"
+#include "DGConvectionOutflowBC.h"
 #include "DGFunctionConvectionBC.h"
+#include "DGTemperatureConvectionOutflowBC.h"
 #include "PressureNeumannBC2.h"
 #include "GravityNeumannBC.h"
 #include "OutFlowBC.h"
@@ -203,6 +211,9 @@ FalconApp::registerObjects(Factory & factory)
   //miscellaneous kernels
   registerKernel(InjectionSourceSink);
 
+  //generic diffusion kernels
+  registerKernel(CoefDiffusion);
+
   //generic convection kernels
   registerKernel(Convection);
 
@@ -223,7 +234,10 @@ FalconApp::registerObjects(Factory & factory)
 
   //BCs
   registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
+  registerBoundaryCondition(DGConvectionInflowBC);
+  registerBoundaryCondition(DGConvectionOutflowBC);
   registerBoundaryCondition(DGFunctionConvectionBC);
+  registerBoundaryCondition(DGTemperatureConvectionOutflowBC);
   registerBoundaryCondition(GravityNeumannBC);
   registerBoundaryCondition(OutFlowBC);
   registerBoundaryCondition(OutFlowBC_PH);

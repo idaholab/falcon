@@ -1,48 +1,39 @@
-#### Author : Yidong Xia (Yidong.Xia@inl.gov)
-#### Created: 08/20/2014
-#### Description: 
-#### This test case is designed to validate and verify 
-#### the DGConvection kernel by performing a simulation of  
-#### a transient scalar linear convection for a step function.
-#### You will observe the non-physical oscillations 
-#### (over- and under-shoots) at the vicinity of discontinuities.
-#### Nevertheless, the wave propagation is stable
-#### without any special treatment for stabilization.
+#### Author: Yidong Xia (Yidong.Xia@inl.gov)
+#### Date: 08/27/2014
+#### Description:
+#### this test case checks the following kernels
+#### DGConvection DGConvectionInflowBC DGConvectionOutflowBC
 
 [Mesh]
   type = GeneratedMesh
   dim  = 3
   nx   = 100
-  xmin = 0.0
-  xmax = 1.0
-  ymin = 0.0
-  ymax = 0.1
-  zmin = 0.0
-  zmax = 0.1
+  xmin = 0
+  xmax = 100
 []
 
 [Outputs]
   file_base      = out
   output_initial = true
-  interval       = 1 # 1 | 10
+  interval       = 1 # default 10
   exodus         = true
 []
 
 [Executioner]
   type       = Transient
   solve_type = 'PJFNK'
-  num_steps  = 10 # 10 | 3000
-  dt         = 0.0002
+  num_steps  = 5 # default 1000
+  dt         = 400
   nl_rel_tol = 1e-4
 []
 
 [Variables]
-  [./u]
-    order = FIRST # FIRST | SECOND
+  [./temperature]
+    order = FIRST
     family = L2_LAGRANGE # L2_LAGRANGE | MONOMIAL
     [./InitialCondition]
       type = ConstantIC
-      value = 0.0
+      value = 463.15
     [../]
   [../]
 []
@@ -50,34 +41,35 @@
 [Kernels]
   [./tran]
     type = TimeDerivative
-    variable = u
+    variable = temperature
   [../]
   [./conv]
     type = Convection
-    variable = u
-    velocity = '1.0 0.0 0.0'
+    variable = temperature
+    velocity = '1e-4 0 0'
   [../]
 []
 
 [DGKernels]
   [./dgconv]
     type = DGConvection
-    variable = u
-    velocity = '1.0 0.0 0.0'
+    variable = temperature
+    velocity = '1e-4 0 0'
   [../]
 []
 
 [BCs]
   [./left]
-    type = NeumannBC
-    variable = u
+    type = DGConvectionInflowBC
+    variable = temperature
     boundary = 'left'
-    value = 1.0
+    value = 373.15
+    velocity = '1e-4 0 0'
   [../]
   [./right]
-    type = NeumannBC
-    variable = u
+    type = DGConvectionOutflowBC
+    variable = temperature
     boundary = 'right'
-    value = 0.0
+    velocity = '1e-4 0 0'
   [../]
 []
