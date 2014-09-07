@@ -81,6 +81,7 @@
 #include "FracManMapAux.h"
 #include "FracTipLocationAux.h"
 #include "StochasticFieldAux.h"
+#include "VariableGradientAux.h"
 
 // BCs
 #include "DGConvectionInflowBC.h"
@@ -231,6 +232,7 @@ FalconApp::registerObjects(Factory & factory)
   registerAux(StochasticFieldAux);
   registerAux(FracManMapAux);
   registerAux(FracTipLocationAux);
+  registerAux(VariableGradientAux);
 
   //BCs
   registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
