@@ -67,6 +67,11 @@
 //////////////////////////////////////////////////////////////
 #include "Convection.h"
 
+//////////////////////////////////////////////////////////////
+//     SUPG                                                 //
+//////////////////////////////////////////////////////////////
+#include "SUPGOneD.h"
+
 // DGKernels
 #include "DGConvection.h" // Generic DG convection kernel
 #include "DGTemperatureConvection.h"
@@ -217,6 +222,9 @@ FalconApp::registerObjects(Factory & factory)
 
   //generic convection kernels
   registerKernel(Convection);
+
+  //SUPG kernels
+  registerKernel(SUPGOneD);
 
   //dgkernels
   registerKernel(DGConvection);
