@@ -12,13 +12,13 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-//! Author:  Yidong Xia (Yidong.Xia@inl.gov)
-//! Created: 08/19/2014
+//! Authors: Yidong Xia (Yidong.Xia@inl.gov)
+//! Created: 08/18/2014
 
 #ifndef DGTEMPERATUREDIFFUSION_H
 #define DGTEMPERATUREDIFFUSION_H
 
-#include "DGDiffusion.h"
+#include "DGKernel.h"
 #include "Material.h"
 
 //Forward Declarations
@@ -27,18 +27,31 @@ class DGTemperatureDiffusion;
 template<>
 InputParameters validParams<DGTemperatureDiffusion>();
 
-class DGTemperatureDiffusion : public DGDiffusion
+class DGTemperatureDiffusion : public DGKernel
 {
   public:
 
-    DGTemperatureDiffusion(const std::string & name,
-                           InputParameters parameters);
+    DGTemperatureDiffusion(const std::string & name, InputParameters parameters);
     
   protected:
 
     virtual Real computeQpResidual(Moose::DGResidualType type);
     virtual Real computeQpJacobian(Moose::DGJacobianType type);
 
-    MaterialProperty<Real> &_thermal_conductivity;
+    MaterialProperty<Real> & _diff;
+    MaterialProperty<Real> & _diff_neighbor;
+
+  private:
+  
+    /*
+     * Penalty parameter
+    */
+    Real _epsilon;
+
+    /*
+     * Stability parameter
+    */
+    Real _sigma;
 };
+
 #endif //DGTEMPERATUREDIFFUSION_H
