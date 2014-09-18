@@ -91,7 +91,7 @@
 // BCs
 #include "DGConvectionInflowBC.h"
 #include "DGConvectionOutflowBC.h"
-#include "DGFunctionConvectionBC.h"
+#include "DGFunctionTemperatureConvectionInflowBC.h"
 #include "DGFunctionMaterialDiffusionBC.h"
 #include "DGTemperatureConvectionOutflowBC.h"
 #include "PressureNeumannBC2.h"
@@ -247,7 +247,7 @@ FalconApp::registerObjects(Factory & factory)
   registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
   registerBoundaryCondition(DGConvectionInflowBC);
   registerBoundaryCondition(DGConvectionOutflowBC);
-  registerBoundaryCondition(DGFunctionConvectionBC);
+  registerBoundaryCondition(DGFunctionTemperatureConvectionInflowBC);
   registerBoundaryCondition(DGFunctionMaterialDiffusionBC);
   registerBoundaryCondition(DGTemperatureConvectionOutflowBC);
   registerBoundaryCondition(GravityNeumannBC);

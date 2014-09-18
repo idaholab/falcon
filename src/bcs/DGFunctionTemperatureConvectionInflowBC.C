@@ -15,22 +15,18 @@
 //! Author:  Yidong Xia (Yidong.Xia@inl.gov)
 //! Created: 08/22/2014
 
-#include <cmath>
-#include "libmesh/numeric_vector.h"
-#include "Material.h"
-#include "Function.h"
-#include "DGFunctionConvectionBC.h"
+#include "DGFunctionTemperatureConvectionInflowBC.h"
 
 template<>
-InputParameters validParams<DGFunctionConvectionBC>()
+InputParameters validParams<DGFunctionTemperatureConvectionInflowBC>()
 {
   InputParameters params = validParams<IntegratedBC>();
-  params.addRequiredParam<FunctionName>("function", "The forcing function");
+  params.addRequiredParam<FunctionName>("function", "The function for inflow value");
 
   return params;
 }
 
-DGFunctionConvectionBC::DGFunctionConvectionBC(const std::string & name, 
+DGFunctionTemperatureConvectionInflowBC::DGFunctionTemperatureConvectionInflowBC(const std::string & name, 
                                              InputParameters parameters) :
   IntegratedBC(name, parameters),
   _specific_heat_water(getMaterialProperty<Real>("specific_heat_water")),
@@ -39,7 +35,7 @@ DGFunctionConvectionBC::DGFunctionConvectionBC(const std::string & name,
 {}
 
 Real
-DGFunctionConvectionBC::computeQpResidual()
+DGFunctionTemperatureConvectionInflowBC::computeQpResidual()
 {
   //Specified value on the boundary
   Real fn = _func.value(_t, _q_point[_qp]);
@@ -50,7 +46,7 @@ DGFunctionConvectionBC::computeQpResidual()
 }
 
 Real
-DGFunctionConvectionBC::computeQpJacobian()
+DGFunctionTemperatureConvectionInflowBC::computeQpJacobian()
 {
   //No Jacobian
   return 0.0;
