@@ -19,7 +19,7 @@
 #define DGFUNCTIONWATERMASSFLUXPTBC_H
 
 #include "Material.h"
-#include "DGFunctionDiffusionDirichletBC.h"
+#include "IntegratedBC.h"
 
 //Forward Declarations
 class DGFunctionWaterMassFluxPTBC;
@@ -27,7 +27,7 @@ class DGFunctionWaterMassFluxPTBC;
 template<>
 InputParameters validParams<DGFunctionWaterMassFluxPTBC>();
 
-class DGFunctionWaterMassFluxPTBC : public DGFunctionDiffusionDirichletBC
+class DGFunctionWaterMassFluxPTBC : public IntegratedBC
 {
   public:
 
@@ -41,6 +41,23 @@ class DGFunctionWaterMassFluxPTBC : public DGFunctionDiffusionDirichletBC
     virtual Real computeQpJacobian();
 
     MaterialProperty<Real> & _tau_water;
+
+  private:
+    
+    /*
+     * Functional value of variable at boundary
+    */
+    Function & _func;
+
+    /*
+     * Penalty parameter
+    */
+    Real _epsilon;
+
+    /*
+     * Stability parameter
+    */
+    Real _sigma;
 };
 
 #endif //DGFUNCTIONWATERMASSFLUXPTBC_H

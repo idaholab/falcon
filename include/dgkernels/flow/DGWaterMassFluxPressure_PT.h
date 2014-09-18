@@ -12,13 +12,13 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-//! Author:  Yidong Xia (Yidong.Xia@inl.gov)
+//! Authors: Yidong Xia (Yidong.Xia@inl.gov)
 //! Created: 08/18/2014
 
 #ifndef DGWATERMASSFLUXPRESSURE_PT_H
 #define DGWATERMASSFLUXPRESSURE_PT_H
 
-#include "DGDiffusion.h"
+#include "DGKernel.h"
 #include "Material.h"
 
 //Forward Declarations
@@ -27,17 +27,40 @@ class DGWaterMassFluxPressure_PT;
 template<>
 InputParameters validParams<DGWaterMassFluxPressure_PT>();
 
-class DGWaterMassFluxPressure_PT : public DGDiffusion
+class DGWaterMassFluxPressure_PT : public DGKernel
 {
-public:
+  public:
 
-  DGWaterMassFluxPressure_PT(const std::string & name, InputParameters parameters);
+    DGWaterMassFluxPressure_PT(const std::string & name, InputParameters parameters);
     
-protected:
-  virtual Real computeQpResidual(Moose::DGResidualType type);
+  protected:
 
-  virtual Real computeQpJacobian(Moose::DGJacobianType type);
+    virtual Real computeQpResidual(Moose::DGResidualType type);
+    virtual Real computeQpJacobian(Moose::DGJacobianType type);
 
-  MaterialProperty<Real> & _tau_water;
+    /*
+     * Tau of water in this element
+     *
+    */
+    MaterialProperty<Real> & _tau_water;
+
+    /*
+     * Tau of water in the neighboring element
+     *
+    */
+    MaterialProperty<Real> & _tau_water_neighbor;
+
+  private:
+  
+    /*
+     * Penalty parameter
+    */
+    Real _epsilon;
+
+    /*
+     * Stability parameter
+    */
+    Real _sigma;
 };
+
 #endif //DGWATERMASSFLUXPRESSURE_PT_H

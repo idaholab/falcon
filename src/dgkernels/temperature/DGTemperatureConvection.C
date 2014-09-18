@@ -31,6 +31,7 @@ DGTemperatureConvection::DGTemperatureConvection(const std::string & name,
   DGKernel(name, parameters),
   _specific_heat_water(getMaterialProperty<Real>("specific_heat_water")),
   _darcy_mass_flux_water(getMaterialProperty<RealGradient>("darcy_mass_flux_water")),
+  _darcy_mass_flux_water_neighbor(getNeighborMaterialProperty<RealGradient>("darcy_mass_flux_water")),
   _alpha(getParam<Real>("alpha"))
 {}
 
@@ -38,10 +39,8 @@ Real
 DGTemperatureConvection::computeQpResidual(Moose::DGResidualType type)
 {
   //Normal darcy mass fluxes on the left and right
-  //(assume the fluxes are the same on the left and right?)
-  //(if not, then is there _darcy_mass_flux_water_neighbor ?)
-  Real fdonl = _darcy_mass_flux_water[_qp] * _normals[_qp];
-  Real fdonr = _darcy_mass_flux_water[_qp] * _normals[_qp];
+  Real fdonl = _darcy_mass_flux_water[_qp]          * _normals[_qp];
+  Real fdonr = _darcy_mass_flux_water_neighbor[_qp] * _normals[_qp];
 
   //Scaled spectral radius
   Real sradi = _alpha*std::max(std::abs(fdonl), std::abs(fdonr));
@@ -67,10 +66,8 @@ Real
 DGTemperatureConvection::computeQpJacobian(Moose::DGJacobianType type)
 {
   //Normal darcy mass fluxes on the left and right
-  //(assume the fluxes are the same on the left and right?)
-  //(if not, then is there _darcy_mass_flux_water_neighbor ?)
-  Real fdonl = _darcy_mass_flux_water[_qp] * _normals[_qp];
-  Real fdonr = _darcy_mass_flux_water[_qp] * _normals[_qp];
+  Real fdonl = _darcy_mass_flux_water[_qp]          * _normals[_qp];
+  Real fdonr = _darcy_mass_flux_water_neighbor[_qp] * _normals[_qp];
 
   //Scaled spectral radius
   Real sradi = _alpha*std::max(std::abs(fdonl), std::abs(fdonr));

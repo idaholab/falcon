@@ -41,6 +41,7 @@ class DGTemperatureConvection : public DGKernel
 
     MaterialProperty<Real> & _specific_heat_water;
     MaterialProperty<RealGradient> & _darcy_mass_flux_water;
+    MaterialProperty<RealGradient> & _darcy_mass_flux_water_neighbor;
 
     /**
      * A scaling factor for spectral radius

@@ -20,25 +20,47 @@
 template<>
 InputParameters validParams<DGFunctionWaterMassFluxPTBC>()
 {
-  InputParameters params = validParams<DGFunctionDiffusionDirichletBC>();
+  InputParameters params = validParams<IntegratedBC>();
+  params.addRequiredParam<FunctionName>("function", "The function for boundary value.");
+  params.addParam<Real>("epsilon", 1.0, "Penalty parameter in IP-DG");
+  params.addParam<Real>("sigma", 2.0, "Stability parameter in IP-DG");
 
   return params;
 }
 
 DGFunctionWaterMassFluxPTBC::DGFunctionWaterMassFluxPTBC(const std::string & name, 
-                                             InputParameters parameters) :
-  DGFunctionDiffusionDirichletBC(name, parameters),
-   _tau_water(getMaterialProperty<Real>("tau_water"))
+                                                     InputParameters parameters) :
+  IntegratedBC(name, parameters),
+  _tau_water(getMaterialProperty<Real>("tau_water")),
+  _func(getFunction("function")),
+  _epsilon(getParam<Real>("epsilon")),
+  _sigma(getParam<Real>("sigma"))
 {}
 
 Real
 DGFunctionWaterMassFluxPTBC::computeQpResidual()
 {
-  return _tau_water[_qp]*DGFunctionDiffusionDirichletBC::computeQpResidual();
+  const unsigned int elem_b_order = static_cast<unsigned int> (_var.getOrder());
+  const double h_elem = _current_elem->volume()/_current_side_elem->volume() * 1./std::pow(elem_b_order, 2.);
+
+  Real fn = _func.value(_t, _q_point[_qp]);
+
+  return _tau_water[_qp] *
+         ( - _grad_u[_qp] * _normals[_qp] * _test[_i][_qp]
+           + _epsilon * (_u[_qp] - fn) * _grad_test[_i][_qp] * _normals[_qp]
+           + _sigma/h_elem * (_u[_qp] - fn) * _test[_i][_qp] 
+         );
 }
 
 Real
 DGFunctionWaterMassFluxPTBC::computeQpJacobian()
 {
-  return _tau_water[_qp]*DGFunctionDiffusionDirichletBC::computeQpJacobian();
+  const unsigned int elem_b_order = static_cast<unsigned int> (_var.getOrder());
+  const double h_elem = _current_elem->volume()/_current_side_elem->volume() * 1./std::pow(elem_b_order, 2.);
+
+  return _tau_water[_qp] *
+         ( - _grad_phi[_j][_qp] * _normals[_qp] * _test[_i][_qp]
+           + _epsilon * _phi[_j][_qp] * _grad_test[_i][_qp] * _normals[_qp]
+           + _sigma/h_elem * _phi[_j][_qp] * _test[_i][_qp]
+         );
 }
