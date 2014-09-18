@@ -38,17 +38,8 @@ class DGWaterMassFluxPressure_PT : public DGKernel
     virtual Real computeQpResidual(Moose::DGResidualType type);
     virtual Real computeQpJacobian(Moose::DGJacobianType type);
 
-    /*
-     * Tau of water in this element
-     *
-    */
-    MaterialProperty<Real> & _tau_water;
-
-    /*
-     * Tau of water in the neighboring element
-     *
-    */
-    MaterialProperty<Real> & _tau_water_neighbor;
+    MaterialProperty<Real> & _diff;
+    MaterialProperty<Real> & _diff_neighbor;
 
   private:
   

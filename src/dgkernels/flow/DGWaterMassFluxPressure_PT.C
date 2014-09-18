@@ -29,8 +29,8 @@ InputParameters validParams<DGWaterMassFluxPressure_PT>()
 DGWaterMassFluxPressure_PT::DGWaterMassFluxPressure_PT(const std::string & name,
                                                    InputParameters parameters) :
   DGKernel(name, parameters),
-  _tau_water(getMaterialProperty<Real>("tau_water")),
-  _tau_water_neighbor(getNeighborMaterialProperty<Real>("tau_water")),
+  _diff(getMaterialProperty<Real>("tau_water")),
+  _diff_neighbor(getNeighborMaterialProperty<Real>("tau_water")),
   _epsilon(getParam<Real>("epsilon")),
   _sigma(getParam<Real>("sigma"))
 {}
@@ -45,15 +45,15 @@ DGWaterMassFluxPressure_PT::computeQpResidual(Moose::DGResidualType type)
   switch (type)
   {
   case Moose::Element:
-    r = - 0.5 * (_tau_water[_qp]*_grad_u[_qp] + _tau_water_neighbor[_qp]*_grad_u_neighbor[_qp]) * _normals[_qp] * _test[_i][_qp]
-        + _epsilon * 0.5 * (_tau_water[_qp]*_u[_qp] - _tau_water_neighbor[_qp]*_u_neighbor[_qp]) * _grad_test[_i][_qp] * _normals[_qp]
-        + _sigma / h_elem * (_tau_water[_qp]*_u[_qp] - _tau_water_neighbor[_qp]*_u_neighbor[_qp]) * _test[_i][_qp];
+    r = - 0.5 * (_diff[_qp]*_grad_u[_qp] + _diff_neighbor[_qp]*_grad_u_neighbor[_qp]) * _normals[_qp] * _test[_i][_qp]
+        + _epsilon * 0.5 * (_diff[_qp]*_u[_qp] - _diff_neighbor[_qp]*_u_neighbor[_qp]) * _grad_test[_i][_qp] * _normals[_qp]
+        + _sigma / h_elem * (_diff[_qp]*_u[_qp] - _diff_neighbor[_qp]*_u_neighbor[_qp]) * _test[_i][_qp];
     break;
 
   case Moose::Neighbor:
-    r = + 0.5 * (_tau_water[_qp]*_grad_u[_qp] + _tau_water_neighbor[_qp]*_grad_u_neighbor[_qp]) * _normals[_qp] * _test_neighbor[_i][_qp]
-        + _epsilon * 0.5 * (_tau_water[_qp]*_u[_qp] - _tau_water_neighbor[_qp]*_u_neighbor[_qp]) * _grad_test_neighbor[_i][_qp] * _normals[_qp]
-        - _sigma / h_elem * (_tau_water[_qp]*_u[_qp] - _tau_water_neighbor[_qp]*_u_neighbor[_qp]) * _test_neighbor[_i][_qp];
+    r = + 0.5 * (_diff[_qp]*_grad_u[_qp] + _diff_neighbor[_qp]*_grad_u_neighbor[_qp]) * _normals[_qp] * _test_neighbor[_i][_qp]
+        + _epsilon * 0.5 * (_diff[_qp]*_u[_qp] - _diff_neighbor[_qp]*_u_neighbor[_qp]) * _grad_test_neighbor[_i][_qp] * _normals[_qp]
+        - _sigma / h_elem * (_diff[_qp]*_u[_qp] - _diff_neighbor[_qp]*_u_neighbor[_qp]) * _test_neighbor[_i][_qp];
     break;
   }
   return r;
@@ -69,27 +69,27 @@ DGWaterMassFluxPressure_PT::computeQpJacobian(Moose::DGJacobianType type)
   switch (type)
   {
   case Moose::ElementElement:
-    r = - 0.5 * _tau_water[_qp] * _grad_phi[_j][_qp] * _normals[_qp] * _test[_i][_qp]
-        + _epsilon * 0.5 * _tau_water[_qp] * _phi[_j][_qp] * _grad_test[_i][_qp] * _normals[_qp]
-        + _sigma / h_elem * _tau_water[_qp] * _phi[_j][_qp] * _test[_i][_qp];
+    r = - 0.5 * _diff[_qp] * _grad_phi[_j][_qp] * _normals[_qp] * _test[_i][_qp]
+        + _epsilon * 0.5 * _diff[_qp] * _phi[_j][_qp] * _grad_test[_i][_qp] * _normals[_qp]
+        + _sigma / h_elem * _diff[_qp] * _phi[_j][_qp] * _test[_i][_qp];
     break;
 
   case Moose::ElementNeighbor:
-    r = - 0.5 * _tau_water_neighbor[_qp] * _grad_test[_j][_qp] * _normals[_qp] * _test_neighbor[_i][_qp]
-        - _epsilon * 0.5 * _tau_water_neighbor[_qp] * _phi_neighbor[_j][_qp] * _grad_test[_i][_qp] * _normals[_qp]
-        - _sigma / h_elem * _test[_j][_qp] * _tau_water[_qp] * _test_neighbor[_i][_qp];
+    r = - 0.5 * _diff_neighbor[_qp] * _grad_test[_j][_qp] * _normals[_qp] * _test_neighbor[_i][_qp]
+        - _epsilon * 0.5 * _diff_neighbor[_qp] * _phi_neighbor[_j][_qp] * _grad_test[_i][_qp] * _normals[_qp]
+        - _sigma / h_elem * _test[_j][_qp] * _diff[_qp] * _test_neighbor[_i][_qp];
     break;
 
   case Moose::NeighborElement:
-    r = + 0.5 * _tau_water[_qp] * _grad_phi[_j][_qp] * _normals[_qp] * _test_neighbor[_i][_qp]
-        + _epsilon * 0.5 * _tau_water[_qp] * _phi[_j][_qp] * _grad_test_neighbor[_i][_qp] * _normals[_qp]
-        - _sigma / h_elem * _tau_water[_qp] * _phi[_j][_qp] * _test_neighbor[_i][_qp];
+    r = + 0.5 * _diff[_qp] * _grad_phi[_j][_qp] * _normals[_qp] * _test_neighbor[_i][_qp]
+        + _epsilon * 0.5 * _diff[_qp] * _phi[_j][_qp] * _grad_test_neighbor[_i][_qp] * _normals[_qp]
+        - _sigma / h_elem * _diff[_qp] * _phi[_j][_qp] * _test_neighbor[_i][_qp];
     break;
 
   case Moose::NeighborNeighbor:
-    r = + 0.5 * _tau_water_neighbor[_qp] * _grad_phi_neighbor[_j][_qp] * _normals[_qp] * _test_neighbor[_i][_qp]
-        - _epsilon * 0.5 * _tau_water_neighbor[_qp] * _phi_neighbor[_j][_qp] * _grad_test_neighbor[_i][_qp] * _normals[_qp]
-        + _sigma / h_elem * _tau_water_neighbor[_qp] * _phi_neighbor[_j][_qp] * _test_neighbor[_i][_qp];
+    r = + 0.5 * _diff_neighbor[_qp] * _grad_phi_neighbor[_j][_qp] * _normals[_qp] * _test_neighbor[_i][_qp]
+        - _epsilon * 0.5 * _diff_neighbor[_qp] * _phi_neighbor[_j][_qp] * _grad_test_neighbor[_i][_qp] * _normals[_qp]
+        + _sigma / h_elem * _diff_neighbor[_qp] * _phi_neighbor[_j][_qp] * _test_neighbor[_i][_qp];
     break;
   }
   return r;
