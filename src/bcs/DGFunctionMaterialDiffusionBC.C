@@ -15,12 +15,13 @@
 //! Authors: Yidong Xia (Yidong.Xia@inl.gov)
 //! Created: 09/16/2014
 
-#include "DGFunctionWaterMassFluxPTBC.h"
+#include "DGFunctionMaterialDiffusionBC.h"
 
 template<>
-InputParameters validParams<DGFunctionWaterMassFluxPTBC>()
+InputParameters validParams<DGFunctionMaterialDiffusionBC>()
 {
   InputParameters params = validParams<IntegratedBC>();
+  params.addRequiredParam<std::string>("prop_name", "Property name");
   params.addRequiredParam<FunctionName>("function", "The function for boundary value.");
   params.addParam<Real>("epsilon", 1.0, "Penalty parameter in IP-DG");
   params.addParam<Real>("sigma", 2.0, "Stability parameter in IP-DG");
@@ -28,24 +29,25 @@ InputParameters validParams<DGFunctionWaterMassFluxPTBC>()
   return params;
 }
 
-DGFunctionWaterMassFluxPTBC::DGFunctionWaterMassFluxPTBC(const std::string & name, 
+DGFunctionMaterialDiffusionBC::DGFunctionMaterialDiffusionBC(const std::string & name, 
                                                      InputParameters parameters) :
   IntegratedBC(name, parameters),
-  _tau_water(getMaterialProperty<Real>("tau_water")),
+  _prop_name(getParam<std::string>("prop_name")),
+  _diff(getMaterialProperty<Real>(_prop_name)),
   _func(getFunction("function")),
   _epsilon(getParam<Real>("epsilon")),
   _sigma(getParam<Real>("sigma"))
 {}
 
 Real
-DGFunctionWaterMassFluxPTBC::computeQpResidual()
+DGFunctionMaterialDiffusionBC::computeQpResidual()
 {
   const unsigned int elem_b_order = static_cast<unsigned int> (_var.getOrder());
   const double h_elem = _current_elem->volume()/_current_side_elem->volume() * 1./std::pow(elem_b_order, 2.);
 
   Real fn = _func.value(_t, _q_point[_qp]);
 
-  return _tau_water[_qp] *
+  return _diff[_qp] *
          ( - _grad_u[_qp] * _normals[_qp] * _test[_i][_qp]
            + _epsilon * (_u[_qp] - fn) * _grad_test[_i][_qp] * _normals[_qp]
            + _sigma/h_elem * (_u[_qp] - fn) * _test[_i][_qp] 
@@ -53,12 +55,12 @@ DGFunctionWaterMassFluxPTBC::computeQpResidual()
 }
 
 Real
-DGFunctionWaterMassFluxPTBC::computeQpJacobian()
+DGFunctionMaterialDiffusionBC::computeQpJacobian()
 {
   const unsigned int elem_b_order = static_cast<unsigned int> (_var.getOrder());
   const double h_elem = _current_elem->volume()/_current_side_elem->volume() * 1./std::pow(elem_b_order, 2.);
 
-  return _tau_water[_qp] *
+  return _diff[_qp] *
          ( - _grad_phi[_j][_qp] * _normals[_qp] * _test[_i][_qp]
            + _epsilon * _phi[_j][_qp] * _grad_test[_i][_qp] * _normals[_qp]
            + _sigma/h_elem * _phi[_j][_qp] * _test[_i][_qp]

@@ -75,9 +75,8 @@
 
 // DGKernels
 #include "DGConvection.h" // Generic DG convection kernel
+#include "DGMaterialDiffusion.h"
 #include "DGTemperatureConvection.h"
-#include "DGTemperatureDiffusion.h"
-#include "DGWaterMassFluxPressure_PT.h"
 
 // AuxKernels
 #include "CoupledTemperatureAux.h"         // T as functon of (P,H) -two phase formulation
@@ -93,8 +92,7 @@
 #include "DGConvectionInflowBC.h"
 #include "DGConvectionOutflowBC.h"
 #include "DGFunctionConvectionBC.h"
-#include "DGFunctionWaterMassFluxPTBC.h"
-#include "DGFunctionTemperatureDiffusionBC.h"
+#include "DGFunctionMaterialDiffusionBC.h"
 #include "DGTemperatureConvectionOutflowBC.h"
 #include "PressureNeumannBC2.h"
 #include "GravityNeumannBC.h"
@@ -232,9 +230,8 @@ FalconApp::registerObjects(Factory & factory)
 
   //dgkernels
   registerKernel(DGConvection);
+  registerKernel(DGMaterialDiffusion);
   registerKernel(DGTemperatureConvection);
-  registerKernel(DGTemperatureDiffusion);
-  registerKernel(DGWaterMassFluxPressure_PT);
 
   //auxkernels
   registerAux(CoupledTemperatureAux);
@@ -251,8 +248,7 @@ FalconApp::registerObjects(Factory & factory)
   registerBoundaryCondition(DGConvectionInflowBC);
   registerBoundaryCondition(DGConvectionOutflowBC);
   registerBoundaryCondition(DGFunctionConvectionBC);
-  registerBoundaryCondition(DGFunctionWaterMassFluxPTBC);
-  registerBoundaryCondition(DGFunctionTemperatureDiffusionBC);
+  registerBoundaryCondition(DGFunctionMaterialDiffusionBC);
   registerBoundaryCondition(DGTemperatureConvectionOutflowBC);
   registerBoundaryCondition(GravityNeumannBC);
   registerBoundaryCondition(OutFlowBC);

@@ -13,30 +13,32 @@
 /****************************************************************/
 
 //! Author:  Yidong Xia (Yidong.Xia@inl.gov)
-//! Created: 08/18/2014
+//! Created: 09/18/2014
 
-#include "DGTemperatureDiffusion.h"
+#include "DGMaterialDiffusion.h"
 
 template<>
-InputParameters validParams<DGTemperatureDiffusion>()
+InputParameters validParams<DGMaterialDiffusion>()
 {
   InputParameters params = validParams<DGKernel>();
+  params.addRequiredParam<std::string>("prop_name", "Property name");
   params.addParam<Real>("epsilon", 1.0, "epsilon: = -1 SIPG; = 1 NIPG; = 0 IIPG. Default = 1.0");
   params.addParam<Real>("sigma", 2.0, "sigma: stability parameter. Default = 2.0");
   return params;
 }
 
-DGTemperatureDiffusion::DGTemperatureDiffusion(const std::string & name,
+DGMaterialDiffusion::DGMaterialDiffusion(const std::string & name,
                                                    InputParameters parameters) :
   DGKernel(name, parameters),
-  _diff(getMaterialProperty<Real>("thermal_conductivity")),
-  _diff_neighbor(getNeighborMaterialProperty<Real>("thermal_conductivity")),
+  _prop_name(getParam<std::string>("prop_name")),
+  _diff(getMaterialProperty<Real>(_prop_name)),
+  _diff_neighbor(getNeighborMaterialProperty<Real>(_prop_name)),
   _epsilon(getParam<Real>("epsilon")),
   _sigma(getParam<Real>("sigma"))
 {}
 
 Real
-DGTemperatureDiffusion::computeQpResidual(Moose::DGResidualType type)
+DGMaterialDiffusion::computeQpResidual(Moose::DGResidualType type)
 {
   const unsigned int elem_b_order = static_cast<unsigned int> (_var.getOrder());
   const double h_elem = _current_elem->volume()/_current_side_elem->volume() * 1./std::pow(elem_b_order, 2.);
@@ -60,7 +62,7 @@ DGTemperatureDiffusion::computeQpResidual(Moose::DGResidualType type)
 }
 
 Real
-DGTemperatureDiffusion::computeQpJacobian(Moose::DGJacobianType type)
+DGMaterialDiffusion::computeQpJacobian(Moose::DGJacobianType type)
 {
   const unsigned int elem_b_order = static_cast<unsigned int> (_var.getOrder());
   const double h_elem = _current_elem->volume()/_current_side_elem->volume() * 1./std::pow(elem_b_order, 2.);

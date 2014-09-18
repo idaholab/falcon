@@ -15,33 +15,32 @@
 //! Authors: Yidong Xia (Yidong.Xia@inl.gov)
 //! Created: 08/18/2014
 
-#ifndef DGWATERMASSFLUXPRESSURE_PT_H
-#define DGWATERMASSFLUXPRESSURE_PT_H
+#ifndef DGMATERIALDIFFUSION_H
+#define DGMATERIALDIFFUSION_H
 
 #include "DGKernel.h"
 #include "Material.h"
 
 //Forward Declarations
-class DGWaterMassFluxPressure_PT;
+class DGMaterialDiffusion;
 
 template<>
-InputParameters validParams<DGWaterMassFluxPressure_PT>();
+InputParameters validParams<DGMaterialDiffusion>();
 
-class DGWaterMassFluxPressure_PT : public DGKernel
+class DGMaterialDiffusion : public DGKernel
 {
   public:
 
-    DGWaterMassFluxPressure_PT(const std::string & name, InputParameters parameters);
+    DGMaterialDiffusion(const std::string & name, InputParameters parameters);
     
   protected:
 
     virtual Real computeQpResidual(Moose::DGResidualType type);
     virtual Real computeQpJacobian(Moose::DGJacobianType type);
 
+    std::string _prop_name;
     MaterialProperty<Real> & _diff;
     MaterialProperty<Real> & _diff_neighbor;
-
-  private:
   
     /*
      * Penalty parameter
@@ -54,4 +53,4 @@ class DGWaterMassFluxPressure_PT : public DGKernel
     Real _sigma;
 };
 
-#endif //DGWATERMASSFLUXPRESSURE_PT_H
+#endif //DGMATERIALDIFFUSION_H

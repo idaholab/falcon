@@ -13,39 +13,38 @@
 /****************************************************************/
 
 //! Authors: Yidong Xia (Yidong.Xia@inl.gov)
-//! Created: 09/16/2014
+//! Created: 09/18/2014
 
-#ifndef DGFUNCTIONWATERMASSFLUXPTBC_H
-#define DGFUNCTIONWATERMASSFLUXPTBC_H
+#ifndef DGFUNCTIONMATERIALDIFFUSIONBC_H
+#define DGFUNCTIONMATERIALDIFFUSIONBC_H
 
 #include "Material.h"
 #include "IntegratedBC.h"
 
 //Forward Declarations
-class DGFunctionWaterMassFluxPTBC;
+class DGFunctionMaterialDiffusionBC;
 
 template<>
-InputParameters validParams<DGFunctionWaterMassFluxPTBC>();
+InputParameters validParams<DGFunctionMaterialDiffusionBC>();
 
-class DGFunctionWaterMassFluxPTBC : public IntegratedBC
+class DGFunctionMaterialDiffusionBC : public IntegratedBC
 {
   public:
 
-    DGFunctionWaterMassFluxPTBC(const std::string & name, InputParameters parameters);
+    DGFunctionMaterialDiffusionBC(const std::string & name, InputParameters parameters);
 
-    virtual ~DGFunctionWaterMassFluxPTBC() {}
+    virtual ~DGFunctionMaterialDiffusionBC() {}
 
   protected:
 
     virtual Real computeQpResidual();
     virtual Real computeQpJacobian();
 
-    MaterialProperty<Real> & _tau_water;
-
-  private:
+    std::string _prop_name;
+    MaterialProperty<Real> & _diff;
     
     /*
-     * Functional value of variable at boundary
+     * Function for variable at boundary
     */
     Function & _func;
 
@@ -60,4 +59,4 @@ class DGFunctionWaterMassFluxPTBC : public IntegratedBC
     Real _sigma;
 };
 
-#endif //DGFUNCTIONWATERMASSFLUXPTBC_H
+#endif //DGFUNCTIONMATERIALDIFFUSIONBC_H

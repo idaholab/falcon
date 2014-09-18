@@ -1,54 +1,34 @@
-#### Author : Yidong Xia (Yidong.Xia@inl.gov)
-#### Created: 08/19/2014
-#### Description:
-#### This test case is designed to validate and verify
-#### the DGTemperatureDiffusion kernel.
-#### The overall settings are similar to
-#### /falcon/tests/examples/T_CONST_STD_1D_1.i
+#### Authors: Yidong Xia (Yidong.Xia@inl.gov)
+#### Created: 09/16/2014
 
 [Mesh]
   type = GeneratedMesh
   dim  = 3
-  nx   = 100
-  xmax = 10.0
+  nx   = 10
+  xmax = 100.0
 []
 
 [Outputs]
-  file_base = DG_T_CONST_STD_1D_1_out
+  file_base = out
   output_initial = true
-  interval = 10
   exodus = true
   console = true
 []
 
 [Executioner]
-  type = Transient
-  num_steps = 50
-  dt = 10000.0
-
-  #Preconditioned JFNK (default)
-  solve_type = 'PJFNK'
-
-  nl_abs_tol = 1e-6
+  type = Steady
 []
 
 [Variables]
-  [./temperature] # Main temperature variable declared
+  #### Main temperature variable declared
+  [./temperature]
     order = FIRST
-    family = L2_LAGRANGE # L2_LAGRANGE | MONOMIAL
-    [./InitialCondition]
-      type = ConstantIC
-      value = 473.15 # [K]
-    [../]
+    family = L2_LAGRANGE
+    initial_condition = 460 #[K]
   [../]
 []
 
 [Kernels]
-  #### Heat time derivative kernel for PT (single-phase) problems
-  [./t_td] 
-    type = TemperatureTimeDerivative
-    variable = temperature
-  [../]
   #### Heat diffusion kernel for PT (single-phase) problems
   [./t_d] 
     type = TemperatureDiffusion
@@ -58,41 +38,38 @@
 
 [DGKernels]
   #### Heat diffusion kernel for PT (single-phase) problems
-  [./t_dgd] 
-    type = DGTemperatureDiffusion
+  [./t_diff] 
+    type = DGMaterialDiffusion
     variable = temperature
-    epsilon = 1.0
-    sigma = 2.0
+    prop_name = thermal_conductivity
   [../]
 []
 
 [Functions]
-  [./bc_left]
+  [./fn_t_left]
     type = ParsedFunction
-    value = 373.15
+    value = 370
   [../]
-  [./bc_right]
+  [./fn_t_right]
     type = ParsedFunction
-    value = 473.15
+    value = 460
   [../]
 []
 
 [BCs]
   [./left_t]
-    type = DGFunctionDiffusionDirichletBC
-    variable = temperature
-    boundary = left
-    function = bc_left
-    epsilon = 1.0
-    sigma = 2.0
+    type      = DGFunctionMaterialDiffusionBC
+    boundary  = left
+    variable  = temperature
+    prop_name = thermal_conductivity
+    function  = fn_t_left
   [../]
   [./right_t]
-    type = DGFunctionDiffusionDirichletBC
-    variable = temperature
-    boundary = right
-    function = bc_right
-    epsilon = 1.0
-    sigma = 2.0
+    type      = DGFunctionMaterialDiffusionBC
+    boundary  = right
+    variable  = temperature
+    prop_name = thermal_conductivity
+    function  = fn_t_right
   [../]
 []
 

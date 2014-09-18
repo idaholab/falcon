@@ -1,7 +1,7 @@
 [Tests]
   [./test]
-    type = 'Exodiff'
-    input = 'DG_T_CONST_STD_1D_1.i'
-    exodiff = 'DG_T_CONST_STD_1D_1_out.e'
+    type    = 'Exodiff'
+    input   = 'input.i'
+    exodiff = 'out.e'
   [../]
 []
