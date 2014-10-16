@@ -77,9 +77,9 @@ DGMaterialDiffusion::computeQpJacobian(Moose::DGJacobianType type)
     break;
 
   case Moose::ElementNeighbor:
-    r = - 0.5 * _diff_neighbor[_qp] * _grad_test[_j][_qp] * _normals[_qp] * _test_neighbor[_i][_qp]
+    r = - 0.5 * _diff_neighbor[_qp] * _grad_phi_neighbor[_j][_qp] * _normals[_qp] * _test_neighbor[_i][_qp]
         - _epsilon * 0.5 * _diff_neighbor[_qp] * _phi_neighbor[_j][_qp] * _grad_test[_i][_qp] * _normals[_qp]
-        - _sigma / h_elem * _test[_j][_qp] * _diff[_qp] * _test_neighbor[_i][_qp];
+        - _sigma / h_elem * _diff_neighbor[_qp] * _phi_neighbor[_i][_qp] * _test[_j][_qp];
     break;
 
   case Moose::NeighborElement:

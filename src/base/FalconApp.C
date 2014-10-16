@@ -67,6 +67,7 @@
 //     Generic convection                                   //
 //////////////////////////////////////////////////////////////
 #include "Convection.h"
+#include "CoupledConvection.h"
 
 //////////////////////////////////////////////////////////////
 //     SUPG                                                 //
@@ -74,7 +75,8 @@
 #include "SUPGOneD.h"
 
 // DGKernels
-#include "DGConvection.h" // Generic DG convection kernel
+#include "DGConvection.h"
+#include "DGCoupledConvection.h"
 #include "DGMaterialDiffusion.h"
 #include "DGTemperatureConvection.h"
 
@@ -91,6 +93,8 @@
 // BCs
 #include "DGConvectionInflowBC.h"
 #include "DGConvectionOutflowBC.h"
+#include "DGCoupledConvectionInflowBC.h"
+#include "DGCoupledConvectionOutflowBC.h"
 #include "DGFunctionTemperatureConvectionInflowBC.h"
 #include "DGFunctionMaterialDiffusionBC.h"
 #include "DGTemperatureConvectionOutflowBC.h"
@@ -224,12 +228,14 @@ FalconApp::registerObjects(Factory & factory)
 
   //generic convection kernels
   registerKernel(Convection);
+  registerKernel(CoupledConvection);
 
   //SUPG kernels
   registerKernel(SUPGOneD);
 
   //dgkernels
   registerKernel(DGConvection);
+  registerKernel(DGCoupledConvection);
   registerKernel(DGMaterialDiffusion);
   registerKernel(DGTemperatureConvection);
 
@@ -247,6 +253,8 @@ FalconApp::registerObjects(Factory & factory)
   registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
   registerBoundaryCondition(DGConvectionInflowBC);
   registerBoundaryCondition(DGConvectionOutflowBC);
+  registerBoundaryCondition(DGCoupledConvectionInflowBC);
+  registerBoundaryCondition(DGCoupledConvectionOutflowBC);
   registerBoundaryCondition(DGFunctionTemperatureConvectionInflowBC);
   registerBoundaryCondition(DGFunctionMaterialDiffusionBC);
   registerBoundaryCondition(DGTemperatureConvectionOutflowBC);
