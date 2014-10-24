@@ -13,7 +13,7 @@
 /****************************************************************/
 
 #ifndef FRACMANGEOTHERMAL_H
-#define FRACNMANGEOTHERMAL_H
+#define FRACMANGEOTHERMAL_H
 
 #include "FracManFluidFlow.h"
 #include "FracManHeatTransport.h"
