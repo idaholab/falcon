@@ -14,29 +14,29 @@
 
 //***************************************************************
 /*!
-  \file    include/bcs/StressBC.h
+  \file    include/bcs/PressureBC.h
   \author  Yidong Xia 
   \date    October 2014
-  \brief   Specify external stress
+  \brief   Specify external pressure
  */
 //***************************************************************
 
-#ifndef STRESSBC_H
-#define STRESSBC_H
+#ifndef PRESSUREBC_H
+#define PRESSUREBC_H
 
 #include "IntegratedBC.h"
 
 //Forward Declarations
-class StressBC;
+class PressureBC;
 
 template<>
-InputParameters validParams<StressBC>();
+InputParameters validParams<PressureBC>();
 
-class StressBC : public IntegratedBC
+class PressureBC : public IntegratedBC
 {
   public:
   
-    StressBC(const std::string & name, InputParameters parameters);
+    PressureBC(const std::string & name, InputParameters parameters);
   
   protected:
 
@@ -46,7 +46,7 @@ class StressBC : public IntegratedBC
     */
     unsigned int _component;
 
-   /*! Stress
+   /*! Pressure
     */
     Real _pressure;
 
@@ -55,4 +55,4 @@ class StressBC : public IntegratedBC
     Real _alpha;
 };
 
-#endif //STRESSBC_H
+#endif //PRESSUREBC_H

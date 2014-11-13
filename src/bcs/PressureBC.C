@@ -14,50 +14,44 @@
 
 //******************************************************************************
 /*!
-  \file    src/bcs/StressBC.C
+  \file    src/bcs/PressureBC.C
   \author  Yidong Xia 
   \date    October 2014
-  \brief   Specify external stress
+  \brief   Specify external pressure
  */
 //******************************************************************************
 
-#include "StressBC.h"
+#include "PressureBC.h"
 
 template<>
-InputParameters validParams<StressBC>()
+InputParameters validParams<PressureBC>()
 {
   InputParameters params = validParams<IntegratedBC>();
   params.addRequiredParam<unsigned int>("component", "Component");
-  params.addRequiredParam<Real>("pressure", "Specify stress");
+  params.addRequiredParam<Real>("pressure", "Specify pressure");
   params.addParam<Real>("alpha", 1.0, "Biot effective stress coefficient. Default = 1.0");
 
   return params;
 }
 
-StressBC::StressBC(const std::string & name, InputParameters parameters) :
+PressureBC::PressureBC(const std::string & name, InputParameters parameters) :
   IntegratedBC(name, parameters),
   _component(getParam<unsigned int>("component")),
   _pressure(getParam<Real>("pressure")),
   _alpha(getParam<Real>("alpha"))
 /*******************************************************************************
-Routine: StressBC - constructor
+Routine: PressureBC - constructor
 Authors: Yidong Xia
 *******************************************************************************/
 {}
 
 Real
-StressBC::computeQpResidual()
+PressureBC::computeQpResidual()
 /*******************************************************************************
 Routine: computeQpResidual
 Authors: Yidong Xia
 *******************************************************************************/
 {
-    if(_component == 0)
-      return -_alpha * _pressure * _normals[_qp](0);
-    else if(_component == 1)
-      return -_alpha * _pressure * _normals[_qp](1);
-    else if(_component == 2)
-      return -_alpha * _pressure * _normals[_qp](2);
-    else
-      mooseError("Unknown stress component");
+  if(_component > 2) mooseError("Unknown pressure component");
+  return _alpha * _pressure * _normals[_qp](_component) * _test[_i][_qp];
 }
