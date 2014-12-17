@@ -14,34 +14,26 @@
 
 //******************************************************************************
 /*!
-  \file    src/bcs/PressureBC.C
+  \file    src/bcs/PressurePressureOutFlowBC.C
   \author  Yidong Xia 
   \date    October 2014
-  \brief   Specify external pressure
+  \brief   Pressure outflow B.C. in mass balance
  */
 //******************************************************************************
 
-#include "PressureBC.h"
+#include "PressureOutFlowBC.h"
 
 template<>
-InputParameters validParams<PressureBC>()
+InputParameters validParams<PressureOutFlowBC>()
 {
   InputParameters params = validParams<IntegratedBC>();
-  params.addRequiredParam<unsigned int>("component", "Component");
-  params.addParam<Real>("alpha", 1.0, "Biot effective stress coefficient. Default = 1.0");
-  params.addParam<Real>("pressure", 0.0, "User-input pressure");
-  params.addCoupledVar("coupled", "Coupled pressure");
-
   return params;
 }
 
-PressureBC::PressureBC(const std::string & name, InputParameters parameters) :
+PressureOutFlowBC::PressureOutFlowBC(const std::string & name,
+                                   InputParameters parameters) :
   IntegratedBC(name, parameters),
-  _component(getParam<unsigned int>("component")),
-  _alpha(getParam<Real>("alpha")),
-  _pressure(getParam<Real>("pressure")),
-  _has_coupled_var(isCoupled("coupled")),
-  _coupled(_has_coupled_var ? coupledValue("coupled") : _zero)
+  _tau_water(getMaterialProperty<Real>("tau_water"))
 /*******************************************************************************
 Routine: PressureBC - constructor
 Authors: Yidong Xia
@@ -49,14 +41,24 @@ Authors: Yidong Xia
 {}
 
 Real
-PressureBC::computeQpResidual()
+PressureOutFlowBC::computeQpResidual()
 /*******************************************************************************
 Routine: computeQpResidual
 Authors: Yidong Xia
 *******************************************************************************/
 {
-  if(_component > 2) mooseError("Unknown pressure component");
-  Real _p = _pressure;
-  if(_has_coupled_var) _p = _coupled[_qp];
-  return _alpha * _p * _normals[_qp](_component) * _test[_i][_qp];
+  // Should have a negative sign, but that is wrong in computing!
+  return _tau_water[_qp]*_grad_u[_qp]*_normals[_qp]*_test[_i][_qp];
+}
+
+
+Real
+PressureOutFlowBC::computeQpJacobian()
+/*******************************************************************************
+Routine: computeQpJacobian
+Authors: Yidong Xia
+*******************************************************************************/
+{
+  // Should have a negative sign, but that is wrong in computing!
+  return _tau_water[_qp]*_grad_phi[_j][_qp]*_normals[_qp]*_test[_i][_qp];
 }

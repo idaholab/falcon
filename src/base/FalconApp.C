@@ -105,6 +105,7 @@
 #include "StepDirichletBC.h"
 #include "StepPressureBCFunc.h"
 #include "PressureBC.h"
+#include "PressureOutFlowBC.h"
 
 // ICs
 #include "LinearDisEnthalpyIC.h"
@@ -265,6 +266,7 @@ FalconApp::registerObjects(Factory & factory)
   registerBoundaryCondition(StepDirichletBC);
   registerBoundaryCondition(StepPressureBCFunc);
   registerBoundaryCondition(PressureBC);
+  registerBoundaryCondition(PressureOutFlowBC);
 
   // ICs
   registerInitialCondition(LinearDisEnthalpyIC);

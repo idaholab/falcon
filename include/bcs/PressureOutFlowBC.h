@@ -12,55 +12,42 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-//***************************************************************
+//******************************************************************************
 /*!
-  \file    include/bcs/PressureBC.h
+  \file    include/bcs/PressurePressureOutFlowBC.h
   \author  Yidong Xia 
   \date    October 2014
-  \brief   Specify external pressure
+  \brief   Pressure outflow B.C. in mass balance
  */
-//***************************************************************
+//******************************************************************************
 
-#ifndef PRESSUREBC_H
-#define PRESSUREBC_H
+#ifndef PRESSUREOUTFLOWBC_H
+#define PRESSUREOUTFLOWBC_H
 
 #include "IntegratedBC.h"
+#include "Material.h"
+#include "libmesh/vector_value.h"
 
 //Forward Declarations
-class PressureBC;
+class PressureOutFlowBC;
 
 template<>
-InputParameters validParams<PressureBC>();
+InputParameters validParams<PressureOutFlowBC>();
 
-class PressureBC : public IntegratedBC
+class PressureOutFlowBC : public IntegratedBC
 {
   public:
   
-    PressureBC(const std::string & name, InputParameters parameters);
+    PressureOutFlowBC(const std::string & name, InputParameters parameters);
+    
+    virtual ~PressureOutFlowBC(){}
   
   protected:
 
     virtual Real computeQpResidual();
+    virtual Real computeQpJacobian();
 
-   /*! direction
-    */
-    unsigned int _component;
-
-   /*! Biot effective stress coefficient
-    */
-    Real _alpha;
-
-   /*! Pressure
-    */
-    Real _pressure;
-
-   /*! A switch to tell if coupled pressure is needed
-    */
-    bool _has_coupled_var;
-
-   /*! Coupled pressure
-    */
-    VariableValue & _coupled;
+    MaterialProperty<Real> & _tau_water;
 };
 
-#endif //PRESSUREBC_H
+#endif
