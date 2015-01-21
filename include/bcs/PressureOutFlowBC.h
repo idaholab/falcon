@@ -15,7 +15,7 @@
 //******************************************************************************
 /*!
   \file    include/bcs/PressurePressureOutFlowBC.h
-  \author  Yidong Xia 
+  \author  Yidong Xia
   \date    October 2014
   \brief   Pressure outflow B.C. in mass balance
  */
@@ -37,11 +37,11 @@ InputParameters validParams<PressureOutFlowBC>();
 class PressureOutFlowBC : public IntegratedBC
 {
   public:
-  
+
     PressureOutFlowBC(const std::string & name, InputParameters parameters);
-    
+
     virtual ~PressureOutFlowBC(){}
-  
+
   protected:
 
     virtual Real computeQpResidual();

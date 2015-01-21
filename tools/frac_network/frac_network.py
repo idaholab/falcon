@@ -10,7 +10,7 @@ import cubit
 
 def build_fracture_network():
   filename = "foo.e"
-  
+
 
   cubit.init([''])
   cubit.cmd('## Cubit Version 11.0')
@@ -18,7 +18,7 @@ def build_fracture_network():
   cubit.cmd('## -information = On')
   cubit.cmd('reset')
   cubit.cmd('create brick x 361 y 181 z 1')
-  
+
   myVol = cubit.get_last_id('volume')
   print "Last Vol: " + str(myVol)
 
@@ -26,7 +26,7 @@ def build_fracture_network():
   cubit.cmd('block 1 volume 1')
 
   cubit.cmd('export genesis "' + filename + '" dimension 3 overwrite')
-  
+
 
 # This function swaps the Y/Z coordinates if the pellet stack is extruded along the Y axis instead of the Z axis
 def point(xyz):

@@ -29,7 +29,7 @@ class WaterMassFluxPressure_PT : public Diffusion
 public:
 
   WaterMassFluxPressure_PT(const std::string & name, InputParameters parameters);
-    
+
 protected:
   virtual Real computeQpResidual();
 

@@ -24,7 +24,7 @@ class DarcyFluxAux;
 template<>
 InputParameters validParams<DarcyFluxAux>();
 
-/** 
+/**
  * Coupled auxiliary value
  */
 class DarcyFluxAux : public AuxKernel
@@ -39,7 +39,7 @@ public:
   DarcyFluxAux(const std::string & name, InputParameters parameters);
 
   virtual ~DarcyFluxAux() {}
-  
+
 protected:
   virtual Real computeValue();
 

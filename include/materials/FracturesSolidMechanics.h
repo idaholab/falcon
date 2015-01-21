@@ -60,7 +60,7 @@ protected:
   Real _fracture_thermal_expansion;
   Real _fracture_youngs_modulus;
   Real _fracture_t_ref;
-  
+
 ///Declare material properties
   //rock material props
   MaterialProperty<Real> & _thermal_strain;
@@ -74,7 +74,7 @@ protected:
   MaterialProperty<RealVectorValue> & _stress_shear_vector;
   MaterialProperty<RealVectorValue> & _strain_normal_vector;
   MaterialProperty<RealVectorValue> & _strain_shear_vector;
-    
+
 ////Grab darcy_flux_water_old stateful material property from FracturesFluidFlow
   MaterialProperty<RealGradient> * _darcy_flux_water_old;
 

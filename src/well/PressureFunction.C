@@ -38,32 +38,32 @@ PressureFunction::value(Real /*t*/, const Point & p)
   Real _well_head_pressure;
 
   if (_nstages > 1)
+  {
+    for (unsigned int i=0; i < _nstages; i++)
     {
-      for (unsigned int i=0; i < _nstages; i++)
-        {
-          if(_t >= _schedule[i] and _t < _schedule[i+1])
-            {
-              _mass_flow_rate = mass_flow_rate[i];
-	      _well_head_pressure = well_head_pressure[i];
-             
-              break;
+      if(_t >= _schedule[i] and _t < _schedule[i+1])
+      {
+        _mass_flow_rate = mass_flow_rate[i];
+        _well_head_pressure = well_head_pressure[i];
 
-            }
-        }
+        break;
 
-      if (_t >= _schedule[_nstages - 1])
-	{
-	  _mass_flow_rate = mass_flow_rate[_nstages -1];
-	  _well_head_pressure = well_head_pressure[_nstages -1];
-	}
-
-
-      else if ( _t <= _schedule[0] )
-	{
-	  _mass_flow_rate = mass_flow_rate[0];
-	  _well_head_pressure = well_head_pressure[0];
-	}
+      }
     }
+
+    if (_t >= _schedule[_nstages - 1])
+    {
+      _mass_flow_rate = mass_flow_rate[_nstages -1];
+      _well_head_pressure = well_head_pressure[_nstages -1];
+    }
+
+
+    else if ( _t <= _schedule[0] )
+    {
+      _mass_flow_rate = mass_flow_rate[0];
+      _well_head_pressure = well_head_pressure[0];
+    }
+  }
 
   //calculate diameter of wellbore
   double diameter = 2 * _well_radius;
@@ -84,10 +84,10 @@ PressureFunction::value(Real /*t*/, const Point & p)
     {
       f = 0.001375*(1+std::pow((20000*(_surface_roughness/diameter)+1000000/Re),1/3.));
     }
-  else 
+  else
     {
       f = 16 / Re;
-    } 
+    }
 
   //calculate friction
   double F = 4*f* (( _depth_return_pressure ) / diameter) * ((velocity*velocity) / 2);

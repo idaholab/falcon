@@ -36,11 +36,11 @@ protected:
     MaterialProperty<Real> & _density_water;
     MaterialProperty<Real> & _density_water_old;
     MaterialProperty<Real> & _dwdp;
-    
+
     bool _has_chem_reactions;
     MaterialProperty<Real> & _porosity;
     MaterialProperty<Real> * _porosity_old;
-    VariableValue & _u_old;  
+    VariableValue & _u_old;
 
 };
 #endif //MASSFLUXTIMEDERIVATIVE_PT

@@ -45,7 +45,7 @@ Real SUPGOneD::computeQpResidual()
 
   const double hsize = _current_elem->volume();
 
-  // Magnitude of the local convective velocity 
+  // Magnitude of the local convective velocity
   Real vmod = std::sqrt( _velocity(0) * _velocity(0) +
                          _velocity(1) * _velocity(1) +
                          _velocity(2) * _velocity(2) );
@@ -72,9 +72,9 @@ Real SUPGOneD::computeQpResidual()
       case 0:
         if(grad_u_mod > 1.0e-7) {
           Real tau2 = tau1;
-          term2 = tau2 * 
-                  _velocity * _grad_u[_qp] / grad_u_mod2 * 
-                  _grad_u[_qp] * _grad_test[_i][_qp] * 
+          term2 = tau2 *
+                  _velocity * _grad_u[_qp] / grad_u_mod2 *
+                  _grad_u[_qp] * _grad_test[_i][_qp] *
                   strong_residual;
 
         }
@@ -85,11 +85,11 @@ Real SUPGOneD::computeQpResidual()
         term2 = delta * _grad_u[_qp] * _grad_test[_i][_qp];
         break;
       default:
-        std::cout<<"Invalid parameter: "<<"_method = "<<_method<<std::endl;
+        _console<<"Invalid parameter: "<<"_method = "<<_method<<std::endl;
         exit(0);
     }
   }
- 
+
   return term1 + term2;
 }
 
@@ -99,7 +99,7 @@ Real SUPGOneD::computeQpJacobian()
 
   const double hsize = _current_elem->volume();
 
-  // Magnitude of the local convective velocity 
+  // Magnitude of the local convective velocity
   Real vmod = std::sqrt( _velocity(0) * _velocity(0) +
                          _velocity(1) * _velocity(1) +
                          _velocity(2) * _velocity(2) );

@@ -47,7 +47,7 @@ StepPressureBCFunc::value(Real t, const Point & p)
   {
    return _p1-_p2*t;
   }
-  
+
   else if (t<=_t2)
   {
     return _p1-_p2*_t1-_p3*(t-_t1);
@@ -60,6 +60,6 @@ StepPressureBCFunc::value(Real t, const Point & p)
   {
     return _p1-_p2*_t1-_p3*(_t2-_t1)-_p4*(_t3-_t2);
   }
-  
+
 }
-  
+

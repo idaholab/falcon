@@ -32,7 +32,7 @@ class StochasticChemicalReactions : virtual public StochasticPorousMedia
 public:
   StochasticChemicalReactions(const std::string & name,
               InputParameters parameters);
-  
+
 protected:
 //  virtual void initQpStatefulProperties();
   virtual void computeProperties();
@@ -47,10 +47,10 @@ protected:
   bool _has_permeability;
   VariableValue & _input_permeability;
   Real _input_porosity;
-    
+
 ////Declare material properties
   MaterialProperty<Real> & _diffusivity;
-  
+
 };
 
 

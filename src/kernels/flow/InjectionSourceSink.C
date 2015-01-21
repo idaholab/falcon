@@ -68,7 +68,7 @@ Real InjectionSourceSink::computeQpResidual()
   _nstages = _schedule.size();
 
   Real injection_rate = 0.0;
-  
+
 
   if (_nstages > 1)
   {
@@ -78,25 +78,25 @@ Real InjectionSourceSink::computeQpResidual()
       {
         injection_rate = _value[i];
         break;
-        
+
       }
-      
+
     }
 
     if (_t >= _schedule[_nstages - 1])
     {
       injection_rate = _value[_nstages -1];
-      
+
     }
-    
+
   }
 
   else
   {
     injection_rate = _value[0];
-    
+
   }
-  
+
 
 //  Moose::out << "_E=" <<xmax<<" "<<ymax<<" "<<zmax<<"\n";
 //  Moose::out << "_e=" <<xmin<<" "<<ymin<<" "<<zmin<<"\n";

@@ -32,7 +32,7 @@ class FracturesPorousMedia : public Material
 public:
   FracturesPorousMedia(const std::string & name,
               InputParameters parameters);
-  
+
 protected:
   virtual void initQpStatefulProperties();
   virtual void computeProperties();
@@ -41,13 +41,13 @@ protected:
   Real _matrix_permeability;
   Real _matrix_porosity;
   Real _matrix_density;
-  
+
   ////Gravity
   Real _input_gravity;
   Real _gx;
   Real _gy;
   Real _gz;
-        
+
   ////Fractures
   //fracture map inputs
   bool _has_fractures;
@@ -58,7 +58,7 @@ protected:
   Real _fracture_permeability;
   Real _fracture_porosity;
   Real _fracture_density;
-  
+
 ////Delcare material properties
   //rock material props
   MaterialProperty<Real> & _permeability;
@@ -73,9 +73,9 @@ protected:
   MaterialProperty<RealVectorValue> & _gravity_vector;
 
   void setPropsComputed(bool value) { _already_computed = value; }
-  
+
   bool areParentPropsComputed() const { return _already_computed; }
-  
+
 private:
 
   /**

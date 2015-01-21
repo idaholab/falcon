@@ -32,7 +32,7 @@ class StochasticHeatTransport : virtual public StochasticPorousMedia
 public:
   StochasticHeatTransport(const std::string & name,
                 InputParameters parameters);
-  
+
 protected:
   virtual void computeProperties();
 ////Grab user input parameters

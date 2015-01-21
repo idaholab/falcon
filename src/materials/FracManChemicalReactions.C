@@ -23,7 +23,7 @@ InputParameters validParams<FracManChemicalReactions>()
   params.addParam<std::vector<Real> >("matrix_mineral", std::vector<Real>(1, 16.65), "Initial mineral concentration in matrix, [mol/L] solution");
   params.addParam<std::vector<Real> >("matrix_molecular_weight", std::vector<Real>(1, 100.08), "The molecular weight of mineral in the matrix, [g/mol]");
   params.addParam<std::vector<Real> >("matrix_mineral_density", std::vector<Real>(1, 2.5), "The density of mineral in the matrix, [g/cm^3]");
-    
+
   ////Fractures
   params.addRequiredParam<std::vector<int> >("fracture_numbers","The number associated with each of the fractures you would like to include from the FracMan file");
   params.addParam<std::vector<Real> >("fracture_diffusivity", std::vector<Real>(1, 1.0e-8), "The chemical diffusivity of the fractures, [m^2/s]");
@@ -31,7 +31,7 @@ InputParameters validParams<FracManChemicalReactions>()
   params.addParam<std::vector<Real> >("fracture_molecular_weight", std::vector<Real>(1, 100.08), "The molecular weight of mineral in fractures, [g/mol]");
   params.addParam<std::vector<Real> >("fracture_mineral_density", std::vector<Real>(1, 2.5), "The density of mineral in fractures, [g/cm^3]");
   params.addCoupledVar("v", "caco3");
-  
+
   return params;
 }
 
@@ -64,16 +64,16 @@ FracManChemicalReactions::FracManChemicalReactions(const std::string & name,
     // we want either one value of diffusivity to assign to all fractures or an individual value to assign to each fracture
     if (((num_chem_diff_vec_entries > 2) && (num_chem_diff_vec_entries < num_frac_vec_entries)) || (num_chem_diff_vec_entries > num_frac_vec_entries))
         mooseError("You must provide either one diffusivity value for all fractures or a diffusivity value for each fracture");
-    
+
     //resize and fill in _vals with number of provided chem species
     int n = coupledComponents("v");
     _vals.resize(n);
     for (unsigned int i=0; i<_vals.size(); ++i)
         _vals[i] = &coupledValue("v", i);
-    
+
     //number of species provided
     num_vals = _vals.size();
-    
+
     // we want either one value per species of mineral/molecular_weight/mineral_density to assign to all fractures or an individual value per species to assign to each fracture
     if (((num_mineral_vec_entries > 2*num_vals) && (num_mineral_vec_entries < num_frac_vec_entries*num_vals)) || (num_mineral_vec_entries > num_frac_vec_entries*num_vals))
         mooseError("You must provide either one mineral value per species for all fractures or a mineral value per species for each fracture");
@@ -81,7 +81,7 @@ FracManChemicalReactions::FracManChemicalReactions(const std::string & name,
         mooseError("You must provide either one molecular weight value per species for all fractures or a molecular weight value per species for each fracture");
     if (((num_min_dens_vec_entries > 2*num_vals) && (num_min_dens_vec_entries < num_frac_vec_entries*num_vals)) || (num_min_dens_vec_entries > num_frac_vec_entries*num_vals))
         mooseError("You must provide either one mineral density value per species for all fractures or a mineral density value per species for each fracture");
-    
+
     // to make life easier, we ask that the number of mineral/molecular_weight/mineral_density values provided are the same
     if ((num_mineral_vec_entries != num_mol_weight_vec_entries) || (num_mineral_vec_entries != num_min_dens_vec_entries) || (num_mol_weight_vec_entries != num_min_dens_vec_entries))
         mooseError("Please provide the same number of fracture mineral/molecular_weight/mineral_density values, thanks!");
@@ -92,20 +92,20 @@ FracManChemicalReactions::computeProperties()
 {
     if (!areParentPropsComputed())
         FracManPorousMedia::computeProperties();
-    
+
     for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
     {
         //material property assignment for matrix
         if (_fracture_map[qp] == 0)
         {
             _diffusivity[qp]          = _matrix_chem_diff;
-            
+
             // if dissolution or precipitation is taking place, we need to adjust permeability and porosity accordingly
             if (_vals.size())
             {
                 Real _initial_vf = 1.0;
                 Real _vf = 1.0;
-                    
+
                 for (unsigned int i=0; i<_vals.size(); ++i)
                 {
                     _initial_vf += 1.0e-3*_matrix_mineral[i]*_matrix_molecular_weight[i]/_matrix_mineral_density[i];
@@ -116,10 +116,10 @@ FracManChemicalReactions::computeProperties()
             //Update porosity
             if (_porosity[qp] < 1.0e-3)
                 _porosity[qp]=1.0e-3;
-            
+
             // Permeability changes calculated from porosity changes according to Carman-Kozeny relationship k=ki*(1-ni)^2 * (n/ni)^3 / (1-n)^2
             _permeability[qp] = _matrix_permeability * (1.0-_matrix_porosity) * (1.0-_matrix_porosity) * std::pow(_porosity[qp]/_matrix_porosity,3)/(1.0-_porosity[qp])/(1.0-_porosity[qp]);
-                
+
             // The diffusivity used in the kernels (already multiplied by porosity)
             _diffusivity[qp] = _matrix_chem_diff*_porosity[qp];
         }
@@ -134,13 +134,13 @@ FracManChemicalReactions::computeProperties()
                     _diffusivity[qp]      = _fracture_chem_diff_vec[0];
                 else
                     _diffusivity[qp]      = _fracture_chem_diff_vec[k];
-                
+
                 // if dissolution or precipitation is taking place, we need to adjust permeability and porosity accordingly
                 if (_vals.size())
                 {
                     Real _initial_vf = 1.0;
                     Real _vf = 1.0;
-                        
+
                     // do this loop for each of the species provided
                     for (unsigned int i=0; i<_vals.size(); ++i)
                     {
@@ -167,10 +167,10 @@ FracManChemicalReactions::computeProperties()
                     else
                         _porosity[qp] = _initial_vf *_fracture_porosity_vec[k]/_vf;
                 }
-                    
+
                 if (_porosity[qp] < 1.0e-3)
                     _porosity[qp] = 1.0e-3;
-                    
+
                 // Permeability changes calculated from porosity changes according to Carman-Kozeny relationship k=ki*(1-ni)^2 * (n/ni)^3 / (1-n)^2
                 // if only one value for perm/poro was provided, use these values for all fractures
                 // else if multiple values for perm/poro were provided, use these values in order for each of the fractures
@@ -183,7 +183,7 @@ FracManChemicalReactions::computeProperties()
                 //    _permeability[qp] = _fracture_permeability_vec[0] * (1.0-_fracture_porosity_vec[k]) * (1.0-_fracture_porosity_vec[k]) * std::pow(_porosity[qp]/_fracture_porosity_vec[k],3)/(1.0-_porosity[qp])/(1.0-_porosity[qp]);
                 //else
                 //    _permeability[qp] = _fracture_permeability_vec[k] * (1.0-_fracture_porosity_vec[0]) * (1.0-_fracture_porosity_vec[0]) * std::pow(_porosity[qp]/_fracture_porosity_vec[0],3)/(1.0-_porosity[qp])/(1.0-_porosity[qp]);
-                    
+
                 // The diffusivity used in the kernels (already multiplied by porosity)
                 if (num_chem_diff_vec_entries < 2)
                     _diffusivity[qp] = _fracture_chem_diff_vec[0] * _porosity[qp];

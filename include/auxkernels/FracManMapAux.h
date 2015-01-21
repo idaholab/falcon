@@ -27,7 +27,7 @@ class FracManMapAux;
 template<>
 InputParameters validParams<FracManMapAux>();
 
-/** 
+/**
  * Coupled auxiliary value
  */
 class FracManMapAux : public AuxKernel
@@ -42,10 +42,10 @@ public:
   FracManMapAux(const std::string & name, InputParameters parameters);
 
   virtual ~FracManMapAux() {}
-  
+
 protected:
   virtual Real computeValue();
-  
+
     std::vector<Real> _coordinate_shift;
     Real dfn_box_x_max, dfn_box_y_max, dfn_box_z_max;
     Real dfn_box_x_min, dfn_box_y_min, dfn_box_z_min;

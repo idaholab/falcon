@@ -46,15 +46,15 @@ CoupledTemperatureAux::computeValue()
     if (_t_step == 1)
     {
           _water_steam_properties.waterAndSteamEquationOfStatePropertiesPH (_enthalpy[_qp], _pressure[_qp], _input_temperature, _dummy_var[0] , _temperature, _dummy_var[1], _dummy_var[2], _dummy_var[3], _dummy_var[4], _dummy_var[5], _dummy_var[6], _dummy_var[7], _dummy_var[8], _dummy_var[9], _dummy_var[10], _dummy_var[11]);
-    
+
     return _temperature;
-    
+
      }
-    
+
     else
     {
        _water_steam_properties.waterAndSteamEquationOfStatePropertiesPH (_enthalpy[_qp], _pressure[_qp], _u_old[_qp], _dummy_var[0] , _temperature, _dummy_var[1], _dummy_var[2], _dummy_var[3], _dummy_var[4], _dummy_var[5], _dummy_var[6], _dummy_var[7], _dummy_var[8], _dummy_var[9], _dummy_var[10], _dummy_var[11]);
-    
+
        return _temperature;
       }
 }

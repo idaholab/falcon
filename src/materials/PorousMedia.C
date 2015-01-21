@@ -22,17 +22,17 @@ InputParameters validParams<PorousMedia>()
   //rock property inputs
   params.addParam<Real>("permeability",1.0e-12, "intrinsic permeability in [m^2]");
   params.addParam<Real>("porosity", 0.3, "rock porosity");
-  params.addParam<Real>("compressibility", 1.0e-5, "total compressibility of the researvoir");  
+  params.addParam<Real>("compressibility", 1.0e-5, "total compressibility of the researvoir");
   params.addParam<Real>("density_rock", 2.50e3, "rock density, [kg/m^3]");
   //gravity inputs
   params.addParam<Real>("gravity",9.80665,"gravity acceleration constant, [m/s^2]");
   params.addParam<Real>("gx",0.0,"x component of the gravity pressure vector");
   params.addParam<Real>("gy",0.0,"y component of the gravity pressure vector");
   params.addParam<Real>("gz",1.0,"z component of the gravity pressure vector");
-    
+
   //flag if chemical reactions are present.  determines whether porosity_old is called
   params.addParam<bool>("has_chem_reactions", false, "add discription");
-    
+
   return params;
 }
 
@@ -85,9 +85,9 @@ PorousMedia::computeProperties()
     _porosity[qp]           = _input_porosity;
     _compressibility[qp]    = _input_compressibility;
     _density_rock[qp]       = _input_density_rock;
-      
-    //gravity    
-    _gravity_vector[qp](0) = _gx; 
+
+    //gravity
+    _gravity_vector[qp](0) = _gx;
     _gravity_vector[qp](1) = _gy;
     _gravity_vector[qp](2) = _gz;
     _gravity[qp]           = _input_gravity;

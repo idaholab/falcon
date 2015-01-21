@@ -37,7 +37,7 @@ SolidMechXFalcon::SolidMechXFalcon(const std::string & name, InputParameters par
 Real
 SolidMechXFalcon::computeQpResidual()
   {
-/*    
+/*
     recomputeConstants();
 
     _strain(0,0) = _grad_u[_qp](0); //s_xx
@@ -59,9 +59,9 @@ SolidMechXFalcon::computeQpResidual()
       _stress(1) = _stress_shear_vector[_qp](0); //tau_xy
     if( 3 == _mesh_dimension)
       _stress(2) = _stress_shear_vector[_qp](1); //tau_xz
-    
+
     Real value = (_stress*_grad_test[_i][_qp]);
-    
+
     return value;
   }
 
@@ -80,7 +80,7 @@ Real
 SolidMechXFalcon::computeQpOffDiagJacobian(unsigned int jvar)
   {
     recomputeConstants();
-    
+
     RealGradient value = 0;
 
     if(jvar == _y_var)

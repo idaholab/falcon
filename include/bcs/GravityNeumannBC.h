@@ -37,7 +37,7 @@ public:
    * constructor.
    */
   GravityNeumannBC(const std::string & name, InputParameters parameters);
-  
+
 virtual ~GravityNeumannBC() {}
 
 protected:
@@ -49,7 +49,7 @@ protected:
   MaterialProperty<Real> & _viscosity_water;
   MaterialProperty<Real> & _gravity;
   MaterialProperty<RealVectorValue> & _gravity_vector;
-  
+
 private:
 };
 

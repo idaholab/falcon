@@ -26,7 +26,7 @@ InputParameters validParams<DGTemperatureConvectionOutflowBC>()
   return params;
 }
 
-DGTemperatureConvectionOutflowBC::DGTemperatureConvectionOutflowBC(const std::string & name, 
+DGTemperatureConvectionOutflowBC::DGTemperatureConvectionOutflowBC(const std::string & name,
                                              InputParameters parameters) :
   IntegratedBC(name, parameters),
   _specific_heat_water(getMaterialProperty<Real>("specific_heat_water")),
@@ -36,15 +36,15 @@ DGTemperatureConvectionOutflowBC::DGTemperatureConvectionOutflowBC(const std::st
 Real
 DGTemperatureConvectionOutflowBC::computeQpResidual()
 {
-  return  _specific_heat_water[_qp] * 
-          _darcy_mass_flux_water[_qp] * _normals[_qp] * 
+  return  _specific_heat_water[_qp] *
+          _darcy_mass_flux_water[_qp] * _normals[_qp] *
           _u[_qp] * _test[_i][_qp];
 }
 
 Real
 DGTemperatureConvectionOutflowBC::computeQpJacobian()
 {
-  return  _specific_heat_water[_qp] * 
-          _darcy_mass_flux_water[_qp] * _normals[_qp] * 
+  return  _specific_heat_water[_qp] *
+          _darcy_mass_flux_water[_qp] * _normals[_qp] *
           _phi[_j][_qp] * _test[_i][_qp];
 }

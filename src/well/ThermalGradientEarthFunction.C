@@ -18,6 +18,6 @@ ThermalGradientEarthFunction::ThermalGradientEarthFunction(const std::string & n
 Real
 ThermalGradientEarthFunction::value(Real /*t*/, const Point & p)
 {
-  std::cout << "returned earth temp: " << _surface_earth_temperature + _reservoir_thermal_gradient * p(0) << std::endl;
+  _console << "returned earth temp: " << _surface_earth_temperature + _reservoir_thermal_gradient * p(0) << std::endl;
   return _surface_earth_temperature + _reservoir_thermal_gradient * p(0);
 }

@@ -46,7 +46,7 @@ protected:
     bool _has_z_disp;
     VariableGradient & _grad_z_disp;
     VariableGradient & _grad_z_disp_old;
-    
+
 ////Grab user input parameters
     Real _input_thermal_expansion;
     Real _input_youngs_modulus;
@@ -54,7 +54,7 @@ protected:
     Real _input_biot_coeff;
     Real _input_biot_modulus;
     Real _input_t_ref;
-    
+
 ////Declare material properties
     //rock material props
     MaterialProperty<Real> & _thermal_strain;
@@ -68,7 +68,7 @@ protected:
     MaterialProperty<RealVectorValue> & _stress_shear_vector;
     MaterialProperty<RealVectorValue> & _strain_normal_vector;
     MaterialProperty<RealVectorValue> & _strain_shear_vector;
-    
+
 ////Local varaibles declared
     Real E;
     Real nu;

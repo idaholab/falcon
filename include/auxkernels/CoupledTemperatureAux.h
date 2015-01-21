@@ -25,31 +25,31 @@ class CoupledTemperatureAux;
 template<>
 InputParameters validParams<CoupledTemperatureAux>();
 
-/** 
+/**
  * Coupled auxiliary value
  */
 class CoupledTemperatureAux : public AuxKernel
 {
 public:
-    
+
     /**
      * Factory constructor, takes parameters so that all derived classes can be built using the same
      * constructor.
      */
     CoupledTemperatureAux(const std::string & name, InputParameters parameters);
-    
+
     virtual ~CoupledTemperatureAux() {};
-    
+
 protected:
     virtual Real computeValue();
-    
+
     const WaterSteamEOS & _water_steam_properties;
     VariableValue & _pressure;
     VariableValue & _enthalpy;
     Real _input_temperature;
   // Real _temp_guess;
-  
-                     
+
+
 };
 
 #endif //COUPLEDDDENSITYDTAUX_H

@@ -28,12 +28,12 @@ InputParameters validParams<FracturesSolidMechanics>()
   params.addParam<Real>("poissons_ratio",0.2,"dimensionless");
   params.addParam<Real>("biot_coeff",1.0,"dimensionless");
   params.addParam<Real>("biot_modulus",2.5e10,"dimensionless");
-    
+
 ////Matrix
   params.addParam<Real>("matrix_thermal_expansion",1.0e-6,"thermal expansion coefficient of matrix, [1/K]");
   params.addParam<Real>("matrix_youngs_modulus",1.50e10,"youngs modulus of matrix, [Pa]");
   params.addParam<Real>("matrix_thermal_strain_ref_temp",293.15,"Initial reference temperature of matrix where there is no thermal strain, [K]");
-    
+
 ////Fractures
   params.addParam<Real>("fracture_thermal_expansion",1.0e-6,"thermal expansion coefficient of fractures, [1/K]");
   params.addParam<Real>("fracture_youngs_modulus",1.50e10,"youngs modulus of fractures, [Pa]");
@@ -110,7 +110,7 @@ FracturesSolidMechanics::computeProperties()
         {
             _youngs_modulus[qp] = _fracture_youngs_modulus;
             _alpha[qp] = _fracture_thermal_expansion;
-          
+
             if(_has_temp)
                 _thermal_strain[qp] = _fracture_thermal_expansion * (_temperature[qp] - _fracture_t_ref);
             else
@@ -121,13 +121,13 @@ FracturesSolidMechanics::computeProperties()
         {
             _youngs_modulus[qp] = _matrix_youngs_modulus;
             _alpha[qp] = _matrix_thermal_expansion;
-          
+
             if(_has_temp)
                 _thermal_strain[qp] = _matrix_thermal_expansion * (_temperature[qp] - _matrix_t_ref);
             else
                 _thermal_strain[qp] = 0.0;
         }
-     
+
         //general material property assignment
         _poissons_ratio[qp]   = _input_poissons_ratio;
         _biot_coeff[qp]       = _input_biot_coeff;
@@ -135,7 +135,7 @@ FracturesSolidMechanics::computeProperties()
 
 //----------------------------------------------------------------------------------------------------------------------------//
 ////calculating/assigning stress/strain material properties:
-        
+
         if (_has_x_disp && _has_y_disp)
         {
             E  = _youngs_modulus[qp];
@@ -143,14 +143,14 @@ FracturesSolidMechanics::computeProperties()
             c1 = E * (1.0 - nu) / (1.0 + nu) / (1.0 - 2.0 * nu);
             c2 = nu / (1.0 - nu);
             c3 = 0.5 * (1.0 - 2.0 * nu) / (1.0 - nu);
-            
+
             //start with strain_normal (s_xx and s_yy)
             _strain_normal_vector[qp](0) = _grad_x_disp[qp](0);
             _strain_normal_vector[qp](1) = _grad_y_disp[qp](1);
             //if 3D problem, strain_normal in z_direction (s_zz)
             if (_has_z_disp)
                 _strain_normal_vector[qp](2) = _grad_z_disp[qp](2);
-            
+
             //next strain_shear (s_xy)
             _strain_shear_vector[qp](0) = 0.5 * (_grad_x_disp[qp](1) + _grad_y_disp[qp](0));
             //if 3D problem, strain_shear in z_directions (s_xz and s_yz)
@@ -159,14 +159,14 @@ FracturesSolidMechanics::computeProperties()
                 _strain_shear_vector[qp](1) = 0.5 * (_grad_x_disp[qp](2) + _grad_z_disp[qp](0));
                 _strain_shear_vector[qp](2) = 0.5 * (_grad_y_disp[qp](2) + _grad_z_disp[qp](1));
             }
-            
+
             //now stress_normal (tau_xx and tau_yy)
             _stress_normal_vector[qp](0) = c1 * _strain_normal_vector[qp](0) + c1 * c2 * _strain_normal_vector[qp](1) + c1 * c2 * _strain_normal_vector[qp](2);
             _stress_normal_vector[qp](1) = c1 * c2 * _strain_normal_vector[qp](0) + c1 * _strain_normal_vector[qp](1) + c1 * c2 * _strain_normal_vector[qp](2);
             //if 3D problem, stress_normal in z-direction (tau_zz)
             if (_has_z_disp)
                 _stress_normal_vector[qp](2) = c1 * c2 * _strain_normal_vector[qp](0) + c1 * c2 * _strain_normal_vector[qp](1) + c1 * _strain_normal_vector[qp](2);
-            
+
             //then stress_shear (tau_xy)
             _stress_shear_vector[qp](0) = c1 * c3 * 2.0 * _strain_shear_vector[qp](0);
             //if 3D problem, stress_shear in z_directions (tau_xz and tau_yz)
@@ -176,45 +176,45 @@ FracturesSolidMechanics::computeProperties()
                 _stress_shear_vector[qp](2) = c1 * c3 * 2.0 * _strain_shear_vector[qp](2);
             }
         }
-        
+
 //----------------------------------------------------------------------------------------------------------------------------//
 ////calculating strain dependent permeability:
-        
+
         if (_has_strain_dependent_permeability)
         {
             //////Determining magnitude of aperture change (ie. strain perpandicular to fracture surface)/
-            
+
             //determining direction of fluid flow (which is parallel with fracture direction)
             Real vx = (*_darcy_flux_water_old)[qp](0);
             Real vy = (*_darcy_flux_water_old)[qp](1);
-            
+
             //finding vector perpendicular to fluid flow
             Real ux = std::abs((1/sqrt(vx*vx + vy*vy))*vy);
             Real uy = std::abs((1/sqrt(vx*vx + vy*vy))*vx);
-            
+
             //finding strain vector perpendicular to fluid flow
             Real fracture_strain_normal_x = ux * _strain_normal_vector[qp](0);
             Real fracture_strain_normal_y = uy * _strain_normal_vector[qp](1);
-            
+
             //magnitude of strain perpandicular to fluid flow
             Real fracture_strain_normal = fracture_strain_normal_x + fracture_strain_normal_y;
-            
+
             Real aperture = sqrt(12 * _fracture_permeability);
             Real fracture_ratio = _model_fracture_aperture / aperture;
-            
+
             if (_fractures[qp] == _fracture_num)
             {
                 if (_t_step == 1)
                     _permeability[qp] = ((std::pow(_model_fracture_aperture,2)) * (std::pow((1/fracture_ratio) , 3)))/12;
                 else
                     _permeability[qp] = ((std::pow(_model_fracture_aperture,2)) * (std::pow(((1/fracture_ratio) + fracture_strain_normal) , 3)))/12;
-                
+
                 if (_permeability[qp] <= (0.9*(std::pow(aperture , 3) / (12 * _model_fracture_aperture))))
                     _permeability[qp] = 0.9 * (std::pow(aperture , 3) / (12 * _model_fracture_aperture));
             }
             else
                 _permeability[qp] = _matrix_permeability;
         }
-        
+
     }
 }

@@ -30,14 +30,14 @@ class StepDirichletBC : public NodalBC
 public:
 
   StepDirichletBC(const std::string & name, InputParameters parameters);
-  
+
 protected:
   virtual Real computeQpResidual();
 
 private:
   Real _size;
   std::vector<Real> _time;
-  std::vector<Real> _value;  
+  std::vector<Real> _value;
 };
- 
+
 #endif

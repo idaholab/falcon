@@ -38,9 +38,9 @@ Real
 SolidMechTempCoupleZFalcon::computeQpOffDiagJacobian(unsigned int jvar)
 {
   recomputeCouplingConstants();
-        
+
   if(jvar == _temp_var)
     return -(_c1*(1+2*_c2)*_grad_test[_i][_qp](2)*_alpha[_qp]*_phi[_j][_qp]);
-    
+
   return 0.0;
 }

@@ -37,13 +37,13 @@ public:
    * constructor.
    */
   HuyakornBC(const std::string & name, InputParameters parameters);
-  
+
 virtual ~HuyakornBC() {}
 
 protected:
   virtual Real computeQpResidual();
-  
-  VariableGradient & _grad_p;  
+
+  VariableGradient & _grad_p;
   MaterialProperty<Real> &_lamda;
   MaterialProperty<Real> &_km;
   MaterialProperty<Real> &_dT_dP;

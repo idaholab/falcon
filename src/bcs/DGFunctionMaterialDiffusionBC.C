@@ -29,7 +29,7 @@ InputParameters validParams<DGFunctionMaterialDiffusionBC>()
   return params;
 }
 
-DGFunctionMaterialDiffusionBC::DGFunctionMaterialDiffusionBC(const std::string & name, 
+DGFunctionMaterialDiffusionBC::DGFunctionMaterialDiffusionBC(const std::string & name,
                                                      InputParameters parameters) :
   IntegratedBC(name, parameters),
   _prop_name(getParam<std::string>("prop_name")),
@@ -50,7 +50,7 @@ DGFunctionMaterialDiffusionBC::computeQpResidual()
   return _diff[_qp] *
          ( - _grad_u[_qp] * _normals[_qp] * _test[_i][_qp]
            + _epsilon * (_u[_qp] - fn) * _grad_test[_i][_qp] * _normals[_qp]
-           + _sigma/h_elem * (_u[_qp] - fn) * _test[_i][_qp] 
+           + _sigma/h_elem * (_u[_qp] - fn) * _test[_i][_qp]
          );
 }
 

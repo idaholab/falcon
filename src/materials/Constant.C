@@ -20,7 +20,7 @@ InputParameters validParams<Constant>()
   InputParameters params = validParams<Material>();
   //coupled variables
   params.addCoupledVar("temperature", "Coupled non-linear termperature variable, [K]");
-    
+
   //rock property inputs
   params.addParam<Real>("thermal_conductivity", 1.0, "thermal conductivity coefficient, [W/(m.K)]");
   params.addParam<Real>("thermal_expansion", 1.0, "thermal expansion coefficient, [1/K]");
@@ -49,7 +49,7 @@ Constant::Constant(const std::string & name,
      _my_density(getParam<Real>("density")),
      _my_youngs_modulus(getParam<Real>("youngs_modulus")),
      _my_poissons_ratio(getParam<Real>("poissons_ratio")),
-     _my_biot_coeff(getParam<Real>("biot_coeff")),     
+     _my_biot_coeff(getParam<Real>("biot_coeff")),
      _my_t_ref(getParam<Real>("thermal_strain_ref_temp")),
 
 ////Declare material properties
@@ -73,7 +73,7 @@ Constant::computeProperties()
     _density_rock[qp] = _my_density;
     _thermal_conductivity[qp] = _my_thermal_conductivity;
     _specific_heat[qp] = _my_specific_heat;
-    _biot_coeff[qp] = _my_biot_coeff;    
+    _biot_coeff[qp] = _my_biot_coeff;
 
     if(_has_temp)
       _thermal_strain[qp] = _my_thermal_expansion*(_temp[qp] - _my_t_ref);
@@ -81,7 +81,7 @@ Constant::computeProperties()
       _thermal_strain[qp] = 0;
 
     _alpha[qp] = _my_thermal_expansion;
-    
+
     _youngs_modulus[qp]  = _my_youngs_modulus;
     _poissons_ratio[qp] = _my_poissons_ratio;
   }

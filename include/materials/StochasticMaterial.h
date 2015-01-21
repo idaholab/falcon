@@ -25,10 +25,10 @@ private:
   Real _input_diffusivity;
   Real _input_initial_porosity;
   Real _input_initial_Ss;
-  Real _input_rho_w;  
+  Real _input_rho_w;
   Real _input_mu_w;
   Real _input_gravity;
-  
+
   bool _has_cond;
   VariableValue & _init_cond;
   bool _has_aptr;
@@ -37,7 +37,7 @@ private:
   std::vector<Real> _molecular_weight;
   std::vector<Real> _mineral_density;
   std::vector<Real> _input_initial_mineral;
-  
+
 
   MaterialProperty<Real> & _diffusivity;
   MaterialProperty<Real> & _Ss;

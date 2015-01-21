@@ -23,7 +23,7 @@ InputParameters validParams<SolidMechanics>()
   params.addCoupledVar("x_disp", "Coupled non-linear x-disp variable, [m]");
   params.addCoupledVar("y_disp", "Coupled non-linear y-disp variable, [m]");
   params.addCoupledVar("z_disp", "Coupled non-linear z-disp variable, [m]");
-    
+
   //rock property inputs
   params.addParam<Real>("poissons_ratio",0.2,"dimensionless");
   params.addParam<Real>("biot_coeff",1.0,"dimensionless");
@@ -81,12 +81,12 @@ SolidMechanics::computeProperties()
 {
 //    if (!areParentPropsComputed())
 //        PorousMedia::computeProperties();
-    
+
     for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
     {
         //----------------------------------------------------------------------------------------------------------------------------//
         ////calculating/assigning rock material properties:
-        
+
         //material property assignment for matrix
         _youngs_modulus[qp] = _input_youngs_modulus;
         _alpha[qp]            = _input_thermal_expansion;
@@ -98,26 +98,25 @@ SolidMechanics::computeProperties()
             _thermal_strain[qp] = _input_thermal_expansion*(_temperature[qp] - _input_t_ref);
         else
             _thermal_strain[qp] = 0.0;
-        
+
         //----------------------------------------------------------------------------------------------------------------------------//
         ////calculating/assigning stress/strain material properties:
-                
+
         if (_has_x_disp && _has_y_disp)
         {
             E  = _youngs_modulus[qp];
             nu = _poissons_ratio[qp];
-            //std::cout << E << std::endl;
             c1 = E * (1.0 - nu) / (1.0 + nu) / (1.0 - 2.0 * nu);
             c2 = nu / (1.0 - nu);
             c3 = 0.5 * (1.0 - 2.0 * nu) / (1.0 - nu);
-            
+
             //start with strain_normal (s_xx and s_yy)
             _strain_normal_vector[qp](0) = _grad_x_disp[qp](0);
             _strain_normal_vector[qp](1) = _grad_y_disp[qp](1);
             //if 3D problem, strain_normal in z_direction (s_zz)
             if (_has_z_disp)
                 _strain_normal_vector[qp](2) = _grad_z_disp[qp](2);
-            
+
             //next strain_shear (s_xy)
             _strain_shear_vector[qp](0) = 0.5 * (_grad_x_disp[qp](1) + _grad_y_disp[qp](0));
             //if 3D problem, strain_shear in z_directions (s_xz and s_yz)
@@ -126,14 +125,14 @@ SolidMechanics::computeProperties()
                 _strain_shear_vector[qp](1) = 0.5 * (_grad_x_disp[qp](2) + _grad_z_disp[qp](0));
                 _strain_shear_vector[qp](2) = 0.5 * (_grad_y_disp[qp](2) + _grad_z_disp[qp](1));
             }
-            
+
             //now stress_normal (tau_xx and tau_yy)
             _stress_normal_vector[qp](0) = c1 * _strain_normal_vector[qp](0) + c1 * c2 * _strain_normal_vector[qp](1) + c1 * c2 * _strain_normal_vector[qp](2);
             _stress_normal_vector[qp](1) = c1 * c2 * _strain_normal_vector[qp](0) + c1 * _strain_normal_vector[qp](1) + c1 * c2 * _strain_normal_vector[qp](2);
             //if 3D problem, stress_normal in z-direction (tau_zz)
             if (_has_z_disp)
                 _stress_normal_vector[qp](2) = c1 * c2 * _strain_normal_vector[qp](0) + c1 * c2 * _strain_normal_vector[qp](1) + c1 * _strain_normal_vector[qp](2);
-            
+
             //then stress_shear (tau_xy)
             _stress_shear_vector[qp](0) = c1 * c3 * 2.0 * _strain_shear_vector[qp](0);
             //if 3D problem, stress_shear in z_directions (tau_xz and tau_yz)

@@ -35,7 +35,7 @@ TemperatureSUPG::TemperatureSUPG(const std::string & name, InputParameters param
   _density_water_old(getMaterialProperty<Real>("time_old_density_water")),
   _has_chem_reactions(getParam<bool>("has_chem_reactions")),
   _porosity(getMaterialProperty<Real>("porosity")),
-  _porosity_old(_has_chem_reactions ? &getMaterialPropertyOld<Real>("porosity") 
+  _porosity_old(_has_chem_reactions ? &getMaterialPropertyOld<Real>("porosity")
                                     : &getMaterialProperty<Real>("porosity")),
   _specific_heat_water(getMaterialProperty<Real>("specific_heat_water")),
   _specific_heat_rock(getMaterialProperty<Real>("specific_heat_rock")),
@@ -55,7 +55,7 @@ Real TemperatureSUPG::computeQpResidual()
   // ====================================================
 
   // Part a. time derivative
-  Real sres1=(((_porosity[_qp]*_density_water[_qp]*_specific_heat_water[_qp]) 
+  Real sres1=(((_porosity[_qp]*_density_water[_qp]*_specific_heat_water[_qp])
               + ((1.0-_porosity[_qp])*_density_rock[_qp]*_specific_heat_rock[_qp]))*_u[_qp]
              - (((*_porosity_old)[_qp]*_density_water_old[_qp]*_specific_heat_water[_qp])
                 + ((1.0-(*_porosity_old)[_qp])*_density_rock[_qp]*_specific_heat_rock[_qp]))*_u_old[_qp])
@@ -71,11 +71,11 @@ Real TemperatureSUPG::computeQpResidual()
   // 2. Compute the SUPG stabilization parameter: tau1
   // =================================================
 
-  // Compute the SUPG  h size (a temporary version) 
+  // Compute the SUPG  h size (a temporary version)
   const double hsupg = _current_elem->hmin();
 
-  // Magnitude of the convective velocity 
-  Real vmod = _specific_heat_water[_qp] * 
+  // Magnitude of the convective velocity
+  Real vmod = _specific_heat_water[_qp] *
               std::sqrt( _darcy_mass_flux_water[_qp](0) * _darcy_mass_flux_water[_qp](0) +
                          _darcy_mass_flux_water[_qp](1) * _darcy_mass_flux_water[_qp](1) +
                          _darcy_mass_flux_water[_qp](2) * _darcy_mass_flux_water[_qp](2) );
@@ -86,8 +86,8 @@ Real TemperatureSUPG::computeQpResidual()
   // 3. Compute the SUPG stabilization term: term_supg
   // =================================================
 
-  Real term_supg = _alpha * tau1 * 
-                   _specific_heat_water[_qp] * _darcy_mass_flux_water[_qp] * _grad_test[_i][_qp] * 
+  Real term_supg = _alpha * tau1 *
+                   _specific_heat_water[_qp] * _darcy_mass_flux_water[_qp] * _grad_test[_i][_qp] *
                    strong_residual;
 
   return term_supg;
@@ -100,7 +100,7 @@ Real TemperatureSUPG::computeQpJacobian()
   // ====================================================
 
   // Part a. time derivative
-  Real sres1=((_porosity[_qp]*_density_water[_qp]*_specific_heat_water[_qp]) 
+  Real sres1=((_porosity[_qp]*_density_water[_qp]*_specific_heat_water[_qp])
               + ((1.0-_porosity[_qp])*_density_rock[_qp]*_specific_heat_rock[_qp]))*_phi[_j][_qp]
             /_dt;
 
@@ -114,11 +114,11 @@ Real TemperatureSUPG::computeQpJacobian()
   // 2. Compute the SUPG stabilization parameter: tau1
   // =================================================
 
-  // Compute the SUPG  h size (a temporary version) 
+  // Compute the SUPG  h size (a temporary version)
   const double hsupg = _current_elem->hmin();
 
-  // Magnitude of the convective velocity 
-  Real vmod = _specific_heat_water[_qp] * 
+  // Magnitude of the convective velocity
+  Real vmod = _specific_heat_water[_qp] *
               std::sqrt( _darcy_mass_flux_water[_qp](0) * _darcy_mass_flux_water[_qp](0) +
                          _darcy_mass_flux_water[_qp](1) * _darcy_mass_flux_water[_qp](1) +
                          _darcy_mass_flux_water[_qp](2) * _darcy_mass_flux_water[_qp](2) );
@@ -129,8 +129,8 @@ Real TemperatureSUPG::computeQpJacobian()
   // 3. Compute the SUPG stabilization term: term_supg
   // =================================================
 
-  Real term_supg = _alpha * tau1 * 
-                   _specific_heat_water[_qp] * _darcy_mass_flux_water[_qp] * _grad_test[_i][_qp] * 
+  Real term_supg = _alpha * tau1 *
+                   _specific_heat_water[_qp] * _darcy_mass_flux_water[_qp] * _grad_test[_i][_qp] *
                    strong_residual;
 
   return term_supg;

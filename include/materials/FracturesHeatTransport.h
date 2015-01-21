@@ -32,7 +32,7 @@ class FracturesHeatTransport : virtual public FracturesPorousMedia
 public:
   FracturesHeatTransport(const std::string & name,
                 InputParameters parameters);
-  
+
 protected:
   virtual void computeProperties();
 ////Grab user input parameters

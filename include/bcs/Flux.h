@@ -28,13 +28,13 @@ class Flux : public IntegratedBC
 public:
 
   Flux(const std::string & name, InputParameters parameters);
-  
+
   virtual ~Flux(){}
 
 protected:
   virtual Real computeQpResidual(){return 0;}
   virtual Real computeQpIntegral();
-  
+
 private:
   Real _coefficient;
 };

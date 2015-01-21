@@ -33,9 +33,9 @@ void
 SolidMechTempCoupleFalcon::recomputeCouplingConstants()
 {
   recomputeConstants();
-  
+
   _c4 = _E/(1.-_nu);
-  
+
   if( 3 == _mesh_dimension )
-    _c4 = _E/(1.-2.*_nu);    
+    _c4 = _E/(1.-2.*_nu);
 }

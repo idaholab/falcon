@@ -32,15 +32,15 @@ class Constant : public Material
 public:
   Constant(const std::string & name,
            InputParameters parameters);
-  
+
 protected:
   virtual void computeProperties();
-  
+
 private:
 ////Grab coupled variables
   bool _has_temp;
   VariableValue & _temp;
-    
+
 ////Grab user input parameters
   Real _my_thermal_conductivity;
   Real _my_thermal_expansion;
@@ -48,9 +48,9 @@ private:
   Real _my_density;
   Real _my_youngs_modulus;
   Real _my_poissons_ratio;
-  Real _my_biot_coeff;  
+  Real _my_biot_coeff;
   Real _my_t_ref;
-    
+
 ////Declare material properties
   MaterialProperty<Real> & _thermal_conductivity;
   MaterialProperty<Real> & _thermal_strain;

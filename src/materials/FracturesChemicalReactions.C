@@ -24,7 +24,7 @@ InputParameters validParams<FracturesChemicalReactions>()
   params.addParam<std::vector<Real> >("matrix_mineral", std::vector<Real>(1, 16.65), "Initial mineral concentration in matrix, [mol/L] solution");
   params.addParam<std::vector<Real> >("matrix_molecular_weight", std::vector<Real>(1, 100.08), "The molecular weight of mineral in the matrix, [g/mol]");
   params.addParam<std::vector<Real> >("matrix_mineral_density", std::vector<Real>(1, 2.5), "The density of mineral in the matrix, [g/cm^3]");
-    
+
 ////Fractures
   //chem reaction coupled variables and parameters
   params.addParam<Real>("fracture_diffusivity", 1.0e-8, "the chemical diffusivity of the fractures, [m^2/s]");
@@ -32,7 +32,7 @@ InputParameters validParams<FracturesChemicalReactions>()
   params.addParam<std::vector<Real> >("fracture_molecular_weight", std::vector<Real>(1, 100.08), "The molecular weight of mineral in fractures, [g/mol]");
   params.addParam<std::vector<Real> >("fracture_mineral_density", std::vector<Real>(1, 2.5), "The density of mineral in fractures, [g/cm^3]");
   params.addCoupledVar("v", "caco3");
-    
+
   return params;
 }
 
@@ -81,13 +81,13 @@ FracturesChemicalReactions::computeProperties()
   {
       //material property assignment for fractures
       if (_fractures[qp] == _fracture_num)
-      {          
+      {
           // if dissolution or precipitation is taking place, we need to adjust permeability and porosity accordingly
           if (_vals.size())
           {
               Real _initial_vf = 1.0;
               Real _vf = 1.0;
-              
+
               for (unsigned int i=0; i<_vals.size(); ++i)
               {
                   _initial_vf += 1.0e-3*_fracture_mineral[i]*_fracture_molecular_weight[i]/_fracture_mineral_density[i];
@@ -98,7 +98,7 @@ FracturesChemicalReactions::computeProperties()
           // Update porosity
           if (_porosity[qp] < 1.0e-3)
               _porosity[qp]=1.0e-3;
-          
+
           // Permeability changes calculated from porosity changes according to Carman-Kozeny relationship k=ki*(1-ni)^2 * (n/ni)^3 / (1-n)^2
           Real aperture = sqrt(12 * (_fracture_permeability * (1.0-_fracture_porosity) * (1.0-_fracture_porosity) * std::pow(_porosity[qp]/_fracture_porosity,3)/(1.0-_porosity[qp])/(1.0-_porosity[qp])));
           Real fracture_ratio = _model_fracture_aperture / aperture;
@@ -109,13 +109,13 @@ FracturesChemicalReactions::computeProperties()
       }
       //material property assignment for matrix
       else
-      {          
+      {
           // if dissolution or precipitation is taking place, we need to adjust permeability and porosity accordingly
           if (_vals.size())
           {
               Real _initial_vf = 1.0;
               Real _vf = 1.0;
-                  
+
               for (unsigned int i=0; i<_vals.size(); ++i)
               {
                   _initial_vf += 1.0e-3*_matrix_mineral[i]*_matrix_molecular_weight[i]/_matrix_mineral_density[i];
@@ -126,10 +126,10 @@ FracturesChemicalReactions::computeProperties()
           // Update porosity
           if (_porosity[qp] < 1.0e-3)
               _porosity[qp]=1.0e-3;
-          
+
           // Permeability changes calculated from porosity changes according to Carman-Kozeny relationship k=ki*(1-ni)^2 * (n/ni)^3 / (1-n)^2
           _permeability[qp] = _matrix_permeability * (1.0-_matrix_porosity) * (1.0-_matrix_porosity) * std::pow(_porosity[qp]/_matrix_porosity,3)/(1.0-_porosity[qp])/(1.0-_porosity[qp]);
-          
+
           // The diffusivity used in the kernels (already multiplied by porosity)
           _diffusivity[qp] = _matrix_chem_diff*_porosity[qp];
       }

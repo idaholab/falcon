@@ -47,7 +47,7 @@ DGTemperatureConvection::computeQpResidual(Moose::DGResidualType type)
 
   //Local Lax-Friedrichlet (LLF) scheme
   Real flux = 0.5 * _specific_heat_water[_qp] *
-              ( fdonl*_u[_qp] + fdonr*_u_neighbor[_qp] 
+              ( fdonl*_u[_qp] + fdonr*_u_neighbor[_qp]
                 - sradi*(_u_neighbor[_qp]-_u[_qp]) );
 
   Real r = 0.0;
@@ -76,25 +76,25 @@ DGTemperatureConvection::computeQpJacobian(Moose::DGJacobianType type)
   switch (type) {
     case Moose::ElementElement:
       r += 0.5 * _specific_heat_water[_qp]   *
-                    (  fdonl*_phi[_j][_qp] 
+                    (  fdonl*_phi[_j][_qp]
                      + sradi*_phi[_j][_qp] ) *
                             _test[_i][_qp];
       break;
     case Moose::ElementNeighbor:
       r += 0.5 * _specific_heat_water[_qp]   *
-           (  fdonr*_phi_neighbor[_j][_qp] 
+           (  fdonr*_phi_neighbor[_j][_qp]
             - sradi*_phi_neighbor[_j][_qp] ) *
                             _test[_i][_qp];
       break;
     case Moose::NeighborElement:
       r -= 0.5 * _specific_heat_water[_qp]   *
-                    (  fdonl*_phi[_j][_qp] 
-                     + sradi*_phi[_j][_qp] ) * 
+                    (  fdonl*_phi[_j][_qp]
+                     + sradi*_phi[_j][_qp] ) *
                    _test_neighbor[_i][_qp];
       break;
     case Moose::NeighborNeighbor:
       r -= 0.5 * _specific_heat_water[_qp]   *
-           (  fdonr*_phi_neighbor[_j][_qp] 
+           (  fdonr*_phi_neighbor[_j][_qp]
             - sradi*_phi_neighbor[_j][_qp] ) *
                    _test_neighbor[_i][_qp];
       break;

@@ -26,7 +26,7 @@ InputParameters validParams<TemperatureTimeDerivativeSolid>()
 TemperatureTimeDerivativeSolid::TemperatureTimeDerivativeSolid(const std::string & name,
                                                      InputParameters parameters)
   :TimeDerivative(name, parameters),
-   
+
    _porosity(coupledValue("porosity")),
    _porosity_old(coupledValueOld("porosity")),
 
@@ -39,9 +39,9 @@ TemperatureTimeDerivativeSolid::TemperatureTimeDerivativeSolid(const std::string
 Real
 TemperatureTimeDerivativeSolid::computeQpResidual()
 {
-  
+
   //REAL dphirho_dt = ((_porosity[_qp]*_density_water[_qp])-(_porosity_old[_qp]*_density_water_old[_qp]))/_dt;
-  
+
   return
     (_density_rock[_qp]*_specific_heat_rock[_qp])
     *

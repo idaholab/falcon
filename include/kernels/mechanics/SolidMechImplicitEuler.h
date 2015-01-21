@@ -38,7 +38,7 @@ protected:
 
   VariableValue & _u_old;
   VariableValue & _u_older;
-  
+
 private:
   MaterialProperty<Real> & _density;
 };

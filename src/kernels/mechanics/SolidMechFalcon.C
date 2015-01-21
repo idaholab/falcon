@@ -35,17 +35,15 @@ SolidMechFalcon::recomputeConstants()
 {
 //  _E = _E_prop[_qp]*(1.0 - _damage_coeff[_qp]);
   _E = _E_prop[_qp];
-//  std::cout << "_E=" << _E <<"\n";  
   _nu = _nu_prop[_qp];
-//  std::cout << "_E=" << _nu <<"\n";  
-  
+
   _c1 = _E*(1.-_nu)/(1.+_nu)/(1.-2.*_nu);
   _c2 = _nu/(1.-_nu);
   _c3 = .5*(1.-2.*_nu)/(1.-_nu);
 
   if (LIBMESH_DIM == 3)
   {
-    
+
   _B11=TensorValue<Number>(1., 0., 0.,
                            0., _c3, 0.,
                            0., 0., _c3);
@@ -80,7 +78,7 @@ SolidMechFalcon::recomputeConstants()
                            0., _c3, 0.,
                            0., 0., 1.);
   }
-  
+
   else if (LIBMESH_DIM == 2)
   {
 
@@ -89,7 +87,7 @@ SolidMechFalcon::recomputeConstants()
 
     _B12=TensorValue<Number>(0., _c2,
                            _c3 , 0.0);
-    
+
 
     _B21=TensorValue<Number>(0., _c3,
                            _c2 ,  0.);
@@ -98,5 +96,5 @@ SolidMechFalcon::recomputeConstants()
                              0., 1.);
 
   }
-  
+
 }

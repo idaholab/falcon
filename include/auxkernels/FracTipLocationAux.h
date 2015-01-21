@@ -27,7 +27,7 @@ class FracTipLocationAux;
 template<>
 InputParameters validParams<FracTipLocationAux>();
 
-/** 
+/**
  * Coupled auxiliary value
  */
 class FracTipLocationAux : public AuxKernel
@@ -42,14 +42,14 @@ public:
   FracTipLocationAux(const std::string & name, InputParameters parameters);
 
   virtual ~FracTipLocationAux() {}
-  
+
 protected:
   virtual Real computeValue();
-  
+
   VariableValue & _fracture_map;
   std::vector<Real> _wellbore_location;
-      
-  
+
+
 
 };
 

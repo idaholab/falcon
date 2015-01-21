@@ -12,7 +12,7 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-/** 
+/**
  * Authors: Yidong Xia (Yidong.Xia@inl.gov)
  * Created: 09/24/2014
  */
@@ -28,7 +28,7 @@ InputParameters validParams<DGCoupledConvectionInflowBC>()
   return params;
 }
 
-DGCoupledConvectionInflowBC::DGCoupledConvectionInflowBC(const std::string & name, 
+DGCoupledConvectionInflowBC::DGCoupledConvectionInflowBC(const std::string & name,
                                InputParameters parameters) :
   IntegratedBC(name, parameters),
   _value(getParam<Real>("value")),

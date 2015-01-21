@@ -37,7 +37,7 @@ PressureNeumannBC2::PressureNeumannBC2(const std::string & name, InputParameters
 {
   if(_component < 0)
   {
-    std::cout<<"Must select a component for PressureNeumannBC2"<<std::endl;
+    _console<<"Must select a component for PressureNeumannBC2"<<std::endl;
     libmesh_error();
   }
 }

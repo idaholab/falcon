@@ -29,7 +29,7 @@ InputParameters validParams<FracturesPorousMedia>()
   params.addParam<Real>("gx",0.0,"x component of the gravity pressure vector");
   params.addParam<Real>("gy",0.0,"y component of the gravity pressure vector");
   params.addParam<Real>("gz",1.0,"z component of the gravity pressure vector");
-    
+
 ////Fractures
   //fracture map/number inputs
   params.addRequiredCoupledVar("fractures", "coupled aux variable that maps where the fracture are");
@@ -40,10 +40,10 @@ InputParameters validParams<FracturesPorousMedia>()
   params.addParam<Real>("fracture_porosity", 0.3, "rock porosity of fractures");
   params.addParam<Real>("fracture_density", 2500, "rock density of fractures (kg/m^3)");
   params.addParam<bool>("has_strain_dependent_permeability",false,"switch for displacement dependent permeability changes");
-    
+
   //flag if chemical reactions are present.  determines whether porosity_old is called
   params.addParam<bool>("has_chem_reactions", false, "add discription");
-    
+
   return params;
 }
 
@@ -111,26 +111,26 @@ FracturesPorousMedia::computeProperties()
       {
           Real aperture = sqrt(12 * _fracture_permeability);
           Real fracture_ratio = _model_fracture_aperture / aperture;
-          
+
           if (_has_strain_dependent_permeability && (_t_step > 1))
           {
               _permeability[qp] = (*_permeability_old)[qp];
           }
           else
               _permeability[qp] = ((std::pow(_model_fracture_aperture,2)) * (std::pow((1/fracture_ratio) , 3)))/12;
-          
+
           _porosity[qp]             = _fracture_porosity;
           _density_rock[qp]         = _fracture_density;
-          
+
       }
       //material property assignment for anything else will get lumped in with the matrix
       else
       {
           _permeability[qp]         = _matrix_permeability;
           _porosity[qp]             = _matrix_porosity;
-          _density_rock[qp]         = _matrix_density;          
+          _density_rock[qp]         = _matrix_density;
       }
-  
+
       _gravity_vector[qp](0) = _gx;
       _gravity_vector[qp](1) = _gy;
       _gravity_vector[qp](2) = _gz;

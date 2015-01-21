@@ -46,7 +46,7 @@ protected:
   bool _has_z_disp;
   VariableGradient & _grad_z_disp;
   VariableGradient & _grad_z_disp_old;
-    
+
 ////Grab user input parameters
   Real _input_thermal_expansion;
   Real _input_youngs_modulus;

@@ -32,7 +32,7 @@ class FracManChemicalReactions : virtual public FracManPorousMedia
 public:
   FracManChemicalReactions(const std::string & name,
               InputParameters parameters);
-  
+
 protected:
 //  virtual void initQpStatefulProperties();
   virtual void computeProperties();
@@ -48,10 +48,10 @@ protected:
   std::vector<Real> _fracture_mineral_vec;
   std::vector<Real> _fracture_molecular_weight_vec;
   std::vector<Real> _fracture_mineral_density_vec;
-    
+
 ////Variables
   std::vector<VariableValue *> _vals;
-    
+
 ////Storing the number of vector entries into respective local variables
   unsigned int num_frac_vec_entries;
   unsigned int num_chem_diff_vec_entries;
@@ -59,10 +59,10 @@ protected:
   unsigned int num_mol_weight_vec_entries;
   unsigned int num_min_dens_vec_entries;
   unsigned int num_vals;
-    
+
 ////Declare material properties
   MaterialProperty<Real> & _diffusivity;
-  
+
 };
 
 

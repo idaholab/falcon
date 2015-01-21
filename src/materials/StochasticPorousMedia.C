@@ -28,10 +28,10 @@ InputParameters validParams<StochasticPorousMedia>()
   params.addParam<Real>("gx",0.0,"x component of the gravity pressure vector");
   params.addParam<Real>("gy",0.0,"y component of the gravity pressure vector");
   params.addParam<Real>("gz",1.0,"z component of the gravity pressure vector");
-    
+
   //flag if chemical reactions are present.  determines whether porosity_old is called
   params.addParam<bool>("has_chem_reactions", false, "add discription");
-    
+
   return params;
 }
 
@@ -75,16 +75,16 @@ StochasticPorousMedia::initQpStatefulProperties()
 
 void
 StochasticPorousMedia::computeProperties()
-{	
+{
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
-	//porous media
+    //porous media
     _permeability[qp]         = _init_permeability[qp];
     _porosity[qp]             = _input_porosity;
     _density_rock[qp]         = _input_density_rock;
-      
-    //gravity    
-    _gravity_vector[qp](0) = _gx; 
+
+    //gravity
+    _gravity_vector[qp](0) = _gx;
     _gravity_vector[qp](1) = _gy;
     _gravity_vector[qp](2) = _gz;
     _gravity[qp]           = _input_gravity;

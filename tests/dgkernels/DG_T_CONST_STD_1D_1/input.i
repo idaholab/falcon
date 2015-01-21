@@ -30,7 +30,7 @@
 
 [Kernels]
   #### Heat diffusion kernel for PT (single-phase) problems
-  [./t_d] 
+  [./t_d]
     type = TemperatureDiffusion
     variable = temperature
   [../]
@@ -38,7 +38,7 @@
 
 [DGKernels]
   #### Heat diffusion kernel for PT (single-phase) problems
-  [./t_diff] 
+  [./t_diff]
     type = DGMaterialDiffusion
     variable = temperature
     prop_name = thermal_conductivity

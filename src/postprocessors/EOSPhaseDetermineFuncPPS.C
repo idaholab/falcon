@@ -51,18 +51,18 @@ EOSPhaseDetermineFuncPPS::getValue()
 
     //this postprocessor is used to test the phaseDetermine function in the WaterSteamEOS UserObject
     //incremented values of pressre and enthalpy are inputed and either the phase, saturation temperature, saturation enthalpy (water/steam),
-    //or saturation enthalpy (water/steam) is outputted depending on what boolean is flag as 'true' (see above).  
+    //or saturation enthalpy (water/steam) is outputted depending on what boolean is flag as 'true' (see above).
     //Currently only the phase output is being tested, the rest is to follow.
     //Within the EOSPhaseDetermineFunc_test, the output of this postprocessor is compared to a csv file containing IAWPS97 data for verification
 
     Real _phase, _temp_sat;
     Real _enth_water_sat, _enth_steam_sat;
     Real _dens_water_sat, _dens_steam_sat;
-    
+
     _water_steam_properties.phaseDetermine (_enthalpy, _pressure.value(_t,Point(0,0,0)), _phase, _temp_sat, _enth_water_sat, _enth_steam_sat, _dens_water_sat, _dens_steam_sat);
-    
+
     if (_test_phase == true)
-    {   
+    {
         return _phase;
     }
     else if(_test_saturation_temp == true)
@@ -87,8 +87,8 @@ EOSPhaseDetermineFuncPPS::getValue()
     }
     else
     {
-        std::cout << "You have not specified an output perameter to test" << std::endl;
+        _console << "You have not specified an output perameter to test" << std::endl;
         return 0;
     }
-    
+
 }

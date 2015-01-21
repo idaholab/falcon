@@ -19,7 +19,7 @@ InputParameters validParams<OutFlowBC_PH>()
 {
     InputParameters params = validParams<IntegratedBC>();
     params.addCoupledVar("pressure", "Non-linear pressure variable, [Pa]");
-    params.addCoupledVar("temperature", "Non-linear temperature variable, [K]");    
+    params.addCoupledVar("temperature", "Non-linear temperature variable, [K]");
     return params;
 }
 
@@ -27,7 +27,7 @@ OutFlowBC_PH::OutFlowBC_PH(const std::string & name, InputParameters parameters)
 :IntegratedBC(name, parameters),
 
 _grad_p(coupledGradient("pressure")),
-_p_var(coupled("pressure")), 
+_p_var(coupled("pressure")),
 _grad_T(coupledGradient("temperature")),
 
 _dTdH(getMaterialProperty<Real>("dTdH_P")),
@@ -54,12 +54,12 @@ Real
 OutFlowBC_PH::computeQpResidual()
 {
     //    RealGradient _Darcy_vel = -_cond*_grad_p[_qp];
-    
+
     Real _aa = _test[_i][_qp]*
     ( _thermal_conductivity[_qp] *(_grad_T[_qp]*_normals[_qp])
      - _darcy_mass_flux_water[_qp] * _enthalpy_water[_qp] *_normals[_qp]
      - _darcy_mass_flux_steam[_qp] * _enthalpy_steam[_qp] *_normals[_qp]);
-    
+
     return -_aa;
 }
 
@@ -72,8 +72,8 @@ OutFlowBC_PH::computeQpJacobian()
              +_Dtau_waterDH[_qp]*_phi[_j][_qp]*_grad_p[_qp]*_enthalpy_water[_qp]*_normals[_qp]
              -_darcy_mass_flux_water[_qp]*_denthalpy_waterdH_P[_qp]*_phi[_j][_qp]*_normals[_qp]
              +_Dtau_steamDH[_qp]*_phi[_j][_qp]*_grad_p[_qp]*_enthalpy_steam[_qp]*_normals[_qp]
-             -_darcy_mass_flux_steam[_qp]*_denthalpy_steamdH_P[_qp]*_phi[_j][_qp]*_normals[_qp]);    
-    
+             -_darcy_mass_flux_steam[_qp]*_denthalpy_steamdH_P[_qp]*_phi[_j][_qp]*_normals[_qp]);
+
     return -_aa;
 }
 
@@ -87,16 +87,16 @@ Real OutFlowBC_PH::computeQpOffDiagJacobian(unsigned int jvar)
               -_darcy_mass_flux_water[_qp]*_denthalpy_waterdP_H[_qp]*_phi[_j][_qp]*_normals[_qp]
               +(_Dtau_steamDP[_qp]*_phi[_j][_qp]*_grad_p[_qp]+_tau_steam[_qp]*_grad_phi[_j][_qp])*_enthalpy_steam[_qp]*_normals[_qp]
               -_darcy_mass_flux_steam[_qp]*_denthalpy_steamdP_H[_qp]*_phi[_j][_qp]*_normals[_qp] );
-    
-      
+
+
     return -_bb;
-    
+
  }
  else
  {
    return 0.0;
  }
-  
+
 }
 
-  
+

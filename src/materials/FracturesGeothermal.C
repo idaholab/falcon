@@ -22,7 +22,7 @@ InputParameters validParams<FracturesGeothermal>()
   params += validParams<FracturesHeatTransport>();
   params += validParams<FracturesSolidMechanics>();
   params += validParams<FracturesChemicalReactions>();
-    
+
   return params;
 }
 
@@ -47,7 +47,7 @@ FracturesGeothermal::computeProperties()
   FracturesHeatTransport::computeProperties();
   FracturesSolidMechanics::computeProperties();
   FracturesChemicalReactions::computeProperties();
-    
+
   // Now reset this parameter
   setPropsComputed(false);
 }
