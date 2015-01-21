@@ -280,7 +280,7 @@ void FluidFlow::computeProperties()
 
         _dens_water_out[qp] = _dens_water_PT;
 
-		if (_is_transient)
+        if (_is_transient)
         {
             //Obtaining value for density_old when given parameters are temperature and pressure (no enthalpy)
             _water_steam_properties->waterEquationOfStatePT (_pressure_old[qp], _temperature_old[qp], _var, _time_old_dens_water_PT);
@@ -455,6 +455,3 @@ void FluidFlow::compute2PhProperties0(Real _per, Real  _Sw, Real _Denw, Real _De
   _steamtau = _per* _Dens / _viss * _krs;
 
 }
-
-
-
