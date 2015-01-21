@@ -85,7 +85,7 @@ Real SUPGOneD::computeQpResidual()
         term2 = delta * _grad_u[_qp] * _grad_test[_i][_qp];
         break;
       default:
-        std::cout<<"Invalid parameter: "<<"_method = "<<_method<<std::endl;
+        _console<<"Invalid parameter: "<<"_method = "<<_method<<std::endl;
         exit(0);
     }
   }

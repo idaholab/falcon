@@ -87,7 +87,7 @@ EOSPhaseDetermineFuncPPS::getValue()
     }
     else
     {
-        std::cout << "You have not specified an output perameter to test" << std::endl;
+        _console << "You have not specified an output perameter to test" << std::endl;
         return 0;
     }
 

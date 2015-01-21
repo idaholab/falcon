@@ -35,9 +35,7 @@ SolidMechFalcon::recomputeConstants()
 {
 //  _E = _E_prop[_qp]*(1.0 - _damage_coeff[_qp]);
   _E = _E_prop[_qp];
-//  std::cout << "_E=" << _E <<"\n";
   _nu = _nu_prop[_qp];
-//  std::cout << "_E=" << _nu <<"\n";
 
   _c1 = _E*(1.-_nu)/(1.+_nu)/(1.-2.*_nu);
   _c2 = _nu/(1.-_nu);

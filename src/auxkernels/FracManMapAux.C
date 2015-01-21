@@ -459,7 +459,6 @@ FracManMapAux::computeValue()
                         _frac_man_normal_x = fracture_normal_x[m];
                         _frac_man_normal_y = fracture_normal_y[m];
                         _frac_man_normal_z = fracture_normal_z[m];
-                        //std::cout << "true" << std::endl;
 
                         //Determine if the element contains the fracture tip
 

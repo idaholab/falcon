@@ -99,7 +99,6 @@ Real WellUserObject::WellBottomTemperature ( Real _well_depth, Real _surface_ear
         {
 	  q = U*(_temperature_earth - T_aea[nRow - 1][0]);
         }
-      // std::cout << "q: " << q << std::endl;
       for(int nCol = 0; nCol < _num_points_r; nCol++)
         {
 
@@ -161,4 +160,3 @@ Real WellUserObject::WellBottomPressure (Real _well_depth, Real _surface_fluid_d
   P = _well_head_pressure + _surface_fluid_density*_gravity*_return_depth_T_P - _surface_fluid_density*F;
   return P;
 }
-
