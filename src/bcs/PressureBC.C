@@ -15,7 +15,7 @@
 //******************************************************************************
 /*!
   \file    src/bcs/PressureBC.C
-  \author  Yidong Xia 
+  \author  Yidong Xia
   \date    October 2014
   \brief   Specify external pressure
  */

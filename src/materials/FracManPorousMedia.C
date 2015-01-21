@@ -24,8 +24,8 @@ InputParameters validParams<FracManPorousMedia>()
   params.addParam<Real>("matrix_porosity", 0.3, "rock porosity of matrix");
   params.addParam<Real>("matrix_density", 2.50e3, "rock density of matrix (kg/m^3)");
   params.addParam<Real>("matrix_compressibility", 1e-10, "compressibility of the matrix [1/Pa]");
-  
-    
+
+
 ////Gravity
   params.addParam<Real>("gravity",9.80665,"gravity acceleration constant, [m/s^2]");
   params.addParam<Real>("gx",0.0,"x component of the gravity pressure vector");
@@ -92,7 +92,7 @@ FracManPorousMedia::FracManPorousMedia(const std::string & name,
     _gravity_vector(declareProperty<RealVectorValue>("gravity_vector")),
 
     _already_computed(false)
-{ 
+{
 
     // storing the number of vector entries into respective local variables
     num_frac_vec_entries        = _fracture_number_vec.size();
@@ -101,8 +101,8 @@ FracManPorousMedia::FracManPorousMedia(const std::string & name,
     num_poro_vec_entries        = _fracture_porosity_vec.size();
     num_dens_vec_entries        = _fracture_density_vec.size();
     num_comp_vec_entries        = _fracture_compressibility_vec.size();
-    
-        
+
+
     // we want either one value of perm/poro/density/diffusivity to assign to all fractures or an individual value to assign to each fracture
     if (((num_aper_vec_entries > 2) && (num_aper_vec_entries < num_frac_vec_entries)) || (num_aper_vec_entries > num_frac_vec_entries))
         mooseError("You must provide either one aperture value for all fractures or an aperture value for each fracture");
@@ -114,7 +114,7 @@ FracManPorousMedia::FracManPorousMedia(const std::string & name,
         mooseError("You must provide either one rock_density value for all fractures or a rock_density value for each fracture");
     if (((num_comp_vec_entries > 2) && (num_comp_vec_entries < num_frac_vec_entries)) || (num_comp_vec_entries > num_frac_vec_entries))
         mooseError("You must provide either one compressibility for all fractures or a compressibility for all fractures");
-    
+
 }
 
 void
@@ -131,7 +131,7 @@ FracManPorousMedia::computeProperties()
           _density_rock[qp]         = _matrix_density;
           _compressibility[qp]      = _matrix_compressibility;
       }
-      
+
       //material property assignment for each of the fractures
       for (unsigned int k = 0; k < num_frac_vec_entries; k++)
       {
@@ -142,7 +142,7 @@ FracManPorousMedia::computeProperties()
               //Else cycle through each fracture and assign values in order provided
               if (num_perm_vec_entries < 2)
               {
-                
+
                   Real aperture = sqrt(12 * _fracture_permeability_vec[0]);
                   Real fracture_ratio = _model_fracture_aperture_vec[0]/aperture;
 
@@ -153,10 +153,10 @@ FracManPorousMedia::computeProperties()
                   // else
                     //_permeability[qp] = ((std::pow(_model_fracture_aperture_vec[0],2)) * (std::pow((1/fracture_ratio) , 3)))/12;
                     //_permeability[qp] = _fracture_permeability_vec[0];
-                  
-                  
+
+
               }
-              
+
               else
               {
                   Real aperture = sqrt(12 * _fracture_permeability_vec[k]);
@@ -169,16 +169,16 @@ FracManPorousMedia::computeProperties()
                   // else
                     // _permeability[qp] = ((std::pow(_model_fracture_aperture_vec[k],2)) * (std::pow((1/fracture_ratio) , 3)))/12;
                     // _permeability[qp] = _fracture_permeability_vec[k];
-                  
-                
-                  
+
+
+
               }
-              
+
               if (num_poro_vec_entries < 2)
                   _porosity[qp]         = _fracture_porosity_vec[0];
               else
                   _porosity[qp]         = _fracture_porosity_vec[k];
-              
+
               if (num_dens_vec_entries < 2)
                   _density_rock[qp]     = _fracture_density_vec[0];
               else
@@ -188,15 +188,15 @@ FracManPorousMedia::computeProperties()
                  _compressibility[qp]   = _fracture_compressibility_vec[0];
               else
                  _compressibility[qp]    = _fracture_compressibility_vec[k];
-              
+
           }
       }
 
-    //  gravity    
-    _gravity_vector[qp](0) = _gx; 
+    //  gravity
+    _gravity_vector[qp](0) = _gx;
     _gravity_vector[qp](1) = _gy;
     _gravity_vector[qp](2) = _gz;
     _gravity[qp]           = _input_gravity;
   }
-  
+
 }

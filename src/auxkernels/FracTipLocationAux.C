@@ -22,7 +22,7 @@ InputParameters validParams<FracTipLocationAux>()
     // parms.addRequiredParam<std::vector<Real> >("dfn_
     params.addRequiredCoupledVar("fracture_map", "AuxVariable that maps out the fracture network");
     params.addRequiredParam<std::vector<Real> >("wellbore_location", "Enter the x, y coordinates of the wellbore (m), note that the wellbore is assumed to be vertical");
-    
+
 
    return params;
 }
@@ -77,13 +77,13 @@ FracTipLocationAux::computeValue()
     //If the the element contains a fracture (fracture_map > 0) then assign the value obtained from the distance formula
     if (_fracture_map[_qp] == 0)
     {
-      
+
         return 0;
     }
-    
+
     else if (_fracture_map[_qp] > 0)
     {
-      
+
         return distance;
     }
 
@@ -92,6 +92,6 @@ FracTipLocationAux::computeValue()
         mooseError("Encounterd a fracture_map ID less than zero");
         return 0;
     }
-    
+
 }
 

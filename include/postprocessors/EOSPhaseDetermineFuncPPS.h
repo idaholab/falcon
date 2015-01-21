@@ -21,10 +21,10 @@ public:
 
 protected:
   const WaterSteamEOS & _water_steam_properties;
-    
+
     Real _enthalpy;
     Function & _pressure;
-    
+
     bool _test_phase;
     bool _test_saturation_temp;
     bool _test_saturation_enthalpy_water;

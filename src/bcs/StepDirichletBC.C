@@ -13,7 +13,7 @@
 /****************************************************************/
 
 #include "StepDirichletBC.h"
- 
+
 template<>
 InputParameters validParams<StepDirichletBC>()
 {
@@ -45,8 +45,8 @@ StepDirichletBC::computeQpResidual()
           u = _value[i];
           break;
         }
-        
+
       }
-  
+
   return _u[_qp]- u;
 }

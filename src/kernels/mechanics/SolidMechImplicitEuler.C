@@ -19,7 +19,7 @@ InputParameters validParams<SolidMechImplicitEuler>()
 {
   //InputParameters params = validParams<SecondDerivativeImplicitEuler>();
   InputParameters params = validParams<TimeKernel>();
- 
+
   return params;
 }
 
@@ -36,7 +36,7 @@ SolidMechImplicitEuler::computeQpResidual()
 {
   //return _density[_qp]*SecondDerivativeImplicitEuler::computeQpResidual();
   return _density[_qp]*_test[_i][_qp]*((_u[_qp]-2*_u_old[_qp]+_u_older[_qp])/(_dt*_dt));
-  
+
 }
 
 Real
@@ -44,6 +44,6 @@ SolidMechImplicitEuler::computeQpJacobian()
 {
 //  return _density[_qp]*SecondDerivativeImplicitEuler::computeQpJacobian();
   return _density[_qp]*_test[_i][_qp]*(_phi[_j][_qp]/(_dt*_dt));
-  
+
 }
-  
+

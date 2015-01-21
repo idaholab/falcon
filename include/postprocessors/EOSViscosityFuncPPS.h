@@ -21,10 +21,10 @@ public:
 
 protected:
   const WaterSteamEOS & _water_steam_properties;
-    
+
     Real _density;
     Function & _temperature;
-    
+
     bool _water_phase;
 };
 

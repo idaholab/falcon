@@ -22,10 +22,10 @@ InputParameters validParams<FracManMapAux>()
     MooseEnum metric_conversion_code("no yes");
     MooseEnum normal_component_code("x y z");
     MooseEnum output_type_code("fracture_map fracture_normal fracture_tip wellbore debug");
-    
+
     params.addRequiredParam<std::vector<Real> >("coordinate_shift", "Enter the x, y, and z elements of the coordinate shift (ft)");
     params.addRequiredParam<std::vector<Real> >("dfn_dimension", "Enter the x, y, and z dimensions of the DFN (m)");
-    params.addParam<std::vector<Real> >("dfn_tolerance",std::vector<Real>(1), "DFN tolerance used to calulate fracture tips");  
+    params.addParam<std::vector<Real> >("dfn_tolerance",std::vector<Real>(1), "DFN tolerance used to calulate fracture tips");
     params.addRequiredParam<std::vector<std::string> >("file_names", "List the FracMan files to be loaded");
     params.addRequiredParam<std::vector<int> >("fracture_numbers","List the ID number of the fractures to be included in the simulation");
     params.addParam<bool>("fracture_rewrite", false, "Set to true if you want the fractures to be rewritten every iteration");
@@ -45,15 +45,15 @@ FracManMapAux::FracManMapAux(const std::string & name, InputParameters parameter
   :AuxKernel(name, parameters),
 _coordinate_shift(getParam<std::vector<Real> >("coordinate_shift")),
 _dfn_dimension(getParam<std::vector<Real> >("dfn_dimension")),
-_dfn_tol(getParam<std::vector<Real> >("dfn_tolerance")),   
+_dfn_tol(getParam<std::vector<Real> >("dfn_tolerance")),
 _file_names(getParam<std::vector<std::string> > ("file_names")),
 _fracture_number_vec(getParam<std::vector<int> >("fracture_numbers")),
-_fracture_rewrite(getParam<bool>("fracture_rewrite")),   
-_metric_conversion(getParam<MooseEnum>("metric_conversion")), 
-_mesh_dimension(getParam<std::vector<Real> >("mesh_dimensions")),  
-_normal_component(getParam<MooseEnum>("normal_component")),   
+_fracture_rewrite(getParam<bool>("fracture_rewrite")),
+_metric_conversion(getParam<MooseEnum>("metric_conversion")),
+_mesh_dimension(getParam<std::vector<Real> >("mesh_dimensions")),
+_normal_component(getParam<MooseEnum>("normal_component")),
 _output_type(getParam<MooseEnum>("output_type")),
-_refine_schedule(getParam<std::vector<Real> >("refine_schedule")),   
+_refine_schedule(getParam<std::vector<Real> >("refine_schedule")),
 _fracture_tol(getParam<std::vector<Real> >("fracture_tolerance")),
 _wellbore_location(getParam<std::vector<Real> >("wellbore_location")),
 _wellbore_tol(getParam<std::vector<Real> >("wellbore_tolerance"))
@@ -197,14 +197,14 @@ _wellbore_tol(getParam<std::vector<Real> >("wellbore_tolerance"))
 		  fracture_vertices_y[vertice_index] = ((y + _coordinate_shift[1]) * (1 - (0.6952 * _metric_conversion)) + dfn_shift_y);
 		  fracture_vertices_z[vertice_index] = ((z + _coordinate_shift[2]) * (1 - (0.6952 * _metric_conversion)) + dfn_shift_z);
                   vertice_index = vertice_index + 1;
-                  
+
                 }
 
                 //Read and discard the remaning vertices of the fracture
                 for (unsigned int l = 3; l < number_of_vertices_in_fracture; l++)
                 {
                   fracman_file >> extra >> x >> y >> z;
-                  
+
                 }
 
                 //Read and store the fracture plane normal values
@@ -215,11 +215,11 @@ _wellbore_tol(getParam<std::vector<Real> >("wellbore_tolerance"))
                 fracture_normal_z[normal_index] = nz;
                 normal_index = normal_index + 1;
             }
-            
-        
+
+
         }
 
-        
+
 
         //Check if the file has tessfractures and if so begin the process of extracting their vertices
         if (number_of_tessfractures[i] > 0)
@@ -255,14 +255,14 @@ _wellbore_tol(getParam<std::vector<Real> >("wellbore_tolerance"))
 		  fracture_vertices_y[vertice_index] = ((y + _coordinate_shift[1]) * (1 - (0.6952 * _metric_conversion)) + dfn_shift_y);
 		  fracture_vertices_z[vertice_index] = ((z + _coordinate_shift[2]) * (1 - (0.6952 * _metric_conversion)) + dfn_shift_z);
                   vertice_index = vertice_index + 1;
-                  
+
                 }
 
                 //Read and discard the remaning vertices of the tessfracture
                 for (unsigned int l = 3; l < number_of_vertices_in_fracture; l++)
                 {
                   fracman_file >> extra >> x >> y >> z;
-                  
+
                 }
 
                 //Tessfractures do not have fracture plane normal values so the last line will be discarded
@@ -296,13 +296,13 @@ _wellbore_tol(getParam<std::vector<Real> >("wellbore_tolerance"))
                 fracture_normal_y[normal_index] = tessfrac_normal.operator()(1);
                 fracture_normal_z[normal_index] = tessfrac_normal.operator()(2);
                 normal_index = normal_index + 1;
-                
+
             }
         }
-        
+
         fracman_file.close();
     }
-  
+
 }
 
 Real
@@ -334,7 +334,7 @@ FracManMapAux::computeValue()
     else
     {
          _frac_man_map = 0;
-      
+
     }
 
     //Determine which fracture tolerance and wellbore tolerance to use based on user defined schedule
@@ -351,7 +351,7 @@ FracManMapAux::computeValue()
                  w_tolerance = _wellbore_tol[a];
                  break;
              }
-            
+
            }
 
            if (_t >= _refine_schedule[_nstages - 1])
@@ -360,7 +360,7 @@ FracManMapAux::computeValue()
                d_tolerance = _dfn_tol[_nstages - 1];
                w_tolerance = _wellbore_tol[_nstages - 1];
            }
-            
+
         }
 
         else
@@ -392,19 +392,19 @@ FracManMapAux::computeValue()
 
      dfn_box_z_min_tol_min = dfn_box_z_min - d_tolerance;
      dfn_box_z_min_tol_max = dfn_box_z_min + d_tolerance;
-     
-        
-    
-    
+
+
+
+
     //Assign fracture codes to elements containing fractures
     for (unsigned int k = 0; k < num_vec_entries; k++)
     {
         int j = _fracture_number_vec[k];
         int i = 0;
         int m = j - 1;
-        
-    
-       
+
+
+
         //{
 
         //Create points for each vertice so that a plane can be calculated
@@ -413,13 +413,13 @@ FracManMapAux::computeValue()
         yp = fracture_vertices_y [i];
         zp = fracture_vertices_z [i];
         Point p0(xp,yp,zp);
-        
+
         i = (2*j) + (j-2);
         xp = fracture_vertices_x [i];
         yp = fracture_vertices_y [i];
         zp = fracture_vertices_z [i];
         Point p1(xp,yp,zp);
-        
+
         i = (3*j) - 1;
         xp = fracture_vertices_x [i];
         yp = fracture_vertices_y [i];
@@ -428,19 +428,19 @@ FracManMapAux::computeValue()
 
         //Create the plane and check if the current element contains the fracture
         frac.create_from_three_points(p0,p1,p2);
-        
+
         Point current_point(_current_elem->centroid());
 
 	//Expand x, y, and z coordinates that make up curent_point to determine if the current point resides in the dfn box
         current_point_x = current_point.operator()(0);
         current_point_y = current_point.operator()(1);
         current_point_z = current_point.operator()(2);
-            
+
         Point point_closest = frac.closest_point(current_point);
 
         bool test = point_closest.absolute_fuzzy_equals(current_point, f_tolerance);
 
-        //If the element contains the fracture test if the element resides withing the dfn box    
+        //If the element contains the fracture test if the element resides withing the dfn box
         if (test == true)
         {
 	    //If the element resides within the x dimensions of the dfn box test if the element resides within the y dimensions of the dfn box
@@ -454,7 +454,7 @@ FracManMapAux::computeValue()
                     {
                         //Assign fracture code to element
                         _frac_man_map = j;
-            
+
                         //Assign fracture normal components to element
                         _frac_man_normal_x = fracture_normal_x[m];
                         _frac_man_normal_y = fracture_normal_y[m];
@@ -468,7 +468,7 @@ FracManMapAux::computeValue()
                         {
                              frac_man_tip = j;
                         }
-                        
+
                         else if (current_point_x >= dfn_box_x_min_tol_min && current_point_x <= dfn_box_x_min_tol_max)
                         {
                               frac_man_tip = j;
@@ -511,17 +511,17 @@ FracManMapAux::computeValue()
 
         wellbore_box_x_min = _wellbore_location[0] - (w_tolerance/2);
         wellbore_box_y_min = _wellbore_location[1] - (w_tolerance/2);
-    
-        
+
+
         //Test if the elemetn is within the x coordinates of the wellbore
         if (current_point_x >= wellbore_box_x_min && current_point_x <= wellbore_box_x_max)
 	{
 	    //Test if the elemtn is within the y coordinates of the wellbore
 	    if (current_point_y >= wellbore_box_y_min && current_point_y <= wellbore_box_y_max)
 	    {
-	        _wellbore = 1;  
+	        _wellbore = 1;
 	    }
-        }    
+        }
 
     //Run through a series of logic statements to output the required information based on user input
     if (_output_type == 0)
@@ -541,19 +541,19 @@ FracManMapAux::computeValue()
         else if (_normal_component == 2)
         {
           return _frac_man_normal_z;
-          
+
         }
         else
         {
           mooseError("component is out of bounds.  Must be either x, y, z");
         }
-        
+
     }
     else if (_output_type == 2)
     {
       return frac_man_tip;
     }
-    
+
     else if (_output_type == 3)
     {
         return _wellbore;
@@ -562,11 +562,11 @@ FracManMapAux::computeValue()
     {
       return _nstages;
     }
-    
+
     else
     {
         mooseError("output type is out of bounds. Must be either fracture_map, fracture_normal, fracture_tip, or wellbore.");
     }
-    
-    
+
+
 }

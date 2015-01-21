@@ -51,12 +51,12 @@ protected:
   const unsigned int _mesh_dimension;
 
   std::string  _quantity_string;
-   
+
   int _component;
-    
+
   VectorValue<Number> _stress;
   VectorValue<Number> _strain;
-    
+
   MaterialProperty<RealVectorValue> & _stress_normal_vector;
   MaterialProperty<RealVectorValue> & _stress_shear_vector;
   MaterialProperty<RealVectorValue> & _strain_normal_vector;

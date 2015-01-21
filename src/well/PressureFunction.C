@@ -45,7 +45,7 @@ PressureFunction::value(Real /*t*/, const Point & p)
             {
               _mass_flow_rate = mass_flow_rate[i];
 	      _well_head_pressure = well_head_pressure[i];
-             
+
               break;
 
             }
@@ -84,10 +84,10 @@ PressureFunction::value(Real /*t*/, const Point & p)
     {
       f = 0.001375*(1+std::pow((20000*(_surface_roughness/diameter)+1000000/Re),1/3.));
     }
-  else 
+  else
     {
       f = 16 / Re;
-    } 
+    }
 
   //calculate friction
   double F = 4*f* (( _depth_return_pressure ) / diameter) * ((velocity*velocity) / 2);

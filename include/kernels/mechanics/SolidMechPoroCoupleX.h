@@ -29,11 +29,11 @@ class SolidMechPoroCoupleX : public SolidMechPoroCouple
 public:
 
   SolidMechPoroCoupleX(const std::string & name, InputParameters parameters);
-  
+
 protected:
   virtual Real computeQpResidual();
 
   virtual Real computeQpOffDiagJacobian(unsigned int jvar);
 
 };
-#endif //SOLIDMECHPOROCOUPLEX 
+#endif //SOLIDMECHPOROCOUPLEX

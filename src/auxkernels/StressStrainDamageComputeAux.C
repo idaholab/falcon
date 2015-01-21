@@ -42,7 +42,7 @@ StressStrainDamageComputeAux::computeValue()
 {
     std::transform(_quantity_string.begin(), _quantity_string.end(),
                    _quantity_string.begin(), ::tolower);
-    
+
     if ( _quantity_string == "stress")
     {
         //stress_normal (tau_xx and tau_yy)
@@ -51,7 +51,7 @@ StressStrainDamageComputeAux::computeValue()
         //if 3D problem, stress_normal in z-direction (tau_zz)
         if (_mesh_dimension == 3)
             _stress(2) = _stress_normal_vector[_qp](2); //tau_zz
-        
+
         //stress_shear (tau_xy)
         _stress(3) = _stress_shear_vector[_qp](0);
         //if 3D problem, stress_shear in z_directions (tau_xz and tau_yz)
@@ -71,7 +71,7 @@ StressStrainDamageComputeAux::computeValue()
         //if 3D problem, strain_normal in z_direction (s_zz)
         if (_mesh_dimension == 3)
             _strain(2) = _strain_normal_vector[_qp](2);
-        
+
         //strain_shear (s_xy)
         _strain(3) = _strain_shear_vector[_qp](0);
         //if 3D problem, strain_shear in z_directions (s_xz and s_yz)

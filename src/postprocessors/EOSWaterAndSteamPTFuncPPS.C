@@ -43,7 +43,7 @@ EOSWaterAndSteamPTFuncPPS::getValue()
     //this postprocessor is used to test the waterEquationOfStatePT function in the WaterSteamEOS UserObject
     //incremented values of pressre and temperature are inputed and either density (water/steam) or enthalpy (water/steam) is outputted
     //within the EOSWaterAndSteamPTFunc_test, the output of this postprocessor is compared to a csv file containing IAWPS97 data for verification
-    
+
     //first loop is used to test density water output
     if (_test_density == true)
     {
@@ -51,9 +51,9 @@ EOSWaterAndSteamPTFuncPPS::getValue()
         {
             Real _dummy_var;
             Real _density_water;
-    
+
             _water_steam_properties.waterEquationOfStatePT (_pressure, _temperature.value(_t,Point(0,0,0)), _dummy_var, _density_water);
-    
+
             return _density_water;
         }
         //second loop to test density steam output
@@ -61,10 +61,10 @@ EOSWaterAndSteamPTFuncPPS::getValue()
         {
             Real _dummy_var;
             Real _density_steam;
-        
+
             _water_steam_properties.steamEquationOfStatePT (_pressure, _temperature.value(_t,Point(0,0,0)), _dummy_var, _density_steam);
-        
-            return _density_steam;    
+
+            return _density_steam;
         }
     }
     //third loop to test enthalpy water output
@@ -74,9 +74,9 @@ EOSWaterAndSteamPTFuncPPS::getValue()
         {
             Real _dummy_var;
             Real _enthalpy_water;
-            
+
             _water_steam_properties.waterEquationOfStatePT (_pressure, _temperature.value(_t,Point(0,0,0)), _enthalpy_water, _dummy_var);
-            
+
             return (_enthalpy_water / 1000);
         }
         //fourth loop to test enthalpy steam output
@@ -84,10 +84,10 @@ EOSWaterAndSteamPTFuncPPS::getValue()
         {
             Real _dummy_var;
             Real _enthalpy_steam;
-            
+
             _water_steam_properties.steamEquationOfStatePT (_pressure, _temperature.value(_t,Point(0,0,0)), _enthalpy_steam, _dummy_var);
-            
-            return (_enthalpy_steam / 1000); 
+
+            return (_enthalpy_steam / 1000);
         }
     }
 }

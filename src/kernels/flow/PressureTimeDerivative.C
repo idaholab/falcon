@@ -66,14 +66,14 @@ PressureTimeDerivative::computeQpResidual()
 
 Real
 PressureTimeDerivative::computeQpJacobian()
-{ 
+{
   if (_rigid_rock)
   {
-    Real tmp1 = (_porosity[_qp]*_compressibility[_qp]*_phi[_j][_qp])*_test[_i][_qp]/_dt;  
+    Real tmp1 = (_porosity[_qp]*_compressibility[_qp]*_phi[_j][_qp])*_test[_i][_qp]/_dt;
     return tmp1;
   }
-  
+
   Real tmp1 = 1.0e3/_biot_modulus[_qp]*_phi[_j][_qp]/_dt * _test[_i][_qp];
   return tmp1;
-  
+
 }

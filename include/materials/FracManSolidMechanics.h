@@ -67,14 +67,14 @@ protected:
   std::vector<Real> _fracture_youngs_modulus_vec;
   std::vector<Real> _fracture_t_ref_vec;
   Real _initial_fracture_pressure;
-  
-    
+
+
 ////Storing the number of vetor entries into respective local variables
   unsigned int num_frac_vec_entries;
   unsigned int num_te_vec_entries;
   unsigned int num_ym_vec_entries;
   unsigned int num_tref_vec_entries;
-    
+
 ////Declare material properties
   //rock material props
   MaterialProperty<Real> & _thermal_strain;

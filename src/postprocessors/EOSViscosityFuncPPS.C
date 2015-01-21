@@ -42,22 +42,22 @@ EOSViscosityFuncPPS::getValue()
     //incremented values of density and temperature are inputed and viscosity (water/steam) is outputted.
     //saturated mixture viscosity testing will follow soon.
     //within the EOSViscosityFunc_test, the output of this postprocessor is compared to a csv file containing IAWPS97 data for verification
-    
-    
+
+
     if (_water_phase == true)
     {
         Real _viscosity_water;
-    
+
         _water_steam_properties.viscosity (_density, _temperature.value(_t,Point(0,0,0)), _viscosity_water);
-    
+
         return _viscosity_water;
     }
     else
     {
         Real _viscosity_steam;
-        
+
         _water_steam_properties.viscosity (_density, _temperature.value(_t,Point(0,0,0)), _viscosity_steam);
-        
-        return _viscosity_steam;    
+
+        return _viscosity_steam;
     }
 }

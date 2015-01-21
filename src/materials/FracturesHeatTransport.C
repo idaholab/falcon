@@ -25,7 +25,7 @@ InputParameters validParams<FracturesHeatTransport>()
     params.addParam<Real>("matrix_thermal_conductivity", 2.5, "thermal conductivity of matrix rock, [W/(m.K)]");
   ////Fractures
     params.addParam<Real>("fracture_thermal_conductivity", 2.5, "thermal conductivity of fractures, [W/(m.K)]");
-  
+
   return params;
 }
 
@@ -53,7 +53,7 @@ FracturesHeatTransport::computeProperties()
 {
   if (!areParentPropsComputed())
     FracturesPorousMedia::computeProperties();
-  
+
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
       _specific_heat_rock[qp]  = _input_specific_heat_rock;

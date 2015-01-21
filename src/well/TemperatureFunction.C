@@ -20,7 +20,7 @@ InputParameters validParams<TemperatureFunction>()
     params.addParam<Real>("temp_return_depth", 1800, "depth to calculate temperature [m]");
     params.addParam<std::vector<Real> >("schedule", std::vector<Real>(0.0), "The times each injection stage starts");
     params.addParam<std::vector<Real> >("mass_flow_rate", std::vector<Real>(0.0), "The injection range at each stage");
-    params.addParam<std::vector<Real> >("surface_fluid_temperature", std::vector<Real>(0.0), "The temperature of the injection at each stage"); 
+    params.addParam<std::vector<Real> >("surface_fluid_temperature", std::vector<Real>(0.0), "The temperature of the injection at each stage");
     return params;
 }
 
@@ -40,10 +40,10 @@ TemperatureFunction::TemperatureFunction(const std::string & name, InputParamete
     _reservoir_thickness(getParam<Real>("reservoir_thickness")),
     _reservoir_thermal_gradient(getParam<Real>("reservoir_thermal_gradient")),
     _temp_return_depth(getParam<Real>("temp_return_depth")),
-    _schedule(getParam<std::vector<Real> >("schedule")), 
-    mass_flow_rate(getParam<std::vector<Real> >("mass_flow_rate")), 
+    _schedule(getParam<std::vector<Real> >("schedule")),
+    mass_flow_rate(getParam<std::vector<Real> >("mass_flow_rate")),
     surface_fluid_temperature(getParam<std::vector<Real> >("surface_fluid_temperature"))
-  
+
 {}
 
 Real
@@ -74,13 +74,13 @@ TemperatureFunction::value(Real /*t*/, const Point & p)
 	      _surface_fluid_temperature = surface_fluid_temperature[_nstages -1];
 	    }
 
-    
+
       else if ( _t <= _schedule[0] )
            {
               _mass_flow_rate = mass_flow_rate[0];
               _surface_fluid_temperature = surface_fluid_temperature[0];
            }
-    }   
+    }
 
     //Calculate the maximum velocity from the mass flow rate
     double _velocity_max = ( _mass_flow_rate / _surface_fluid_density ) / ( libMesh::pi*_well_radius*_well_radius );
@@ -148,7 +148,7 @@ TemperatureFunction::value(Real /*t*/, const Point & p)
     Real T_aea[_num_points_z][_num_points_r];
     Real T_edge[_num_points_z];
     Real q;
-   
+
     //Calculate q and T
     for(int nRow = 0; nRow < _num_points_z; nRow++)
     {
@@ -163,7 +163,7 @@ TemperatureFunction::value(Real /*t*/, const Point & p)
 	  }
         else
 	  {
-            q = U*(_temperature_earth - T_aea[nRow - 1][0]);   
+            q = U*(_temperature_earth - T_aea[nRow - 1][0]);
           }
 
         for(int nCol = 0; nCol < _num_points_r; nCol++)
@@ -176,7 +176,7 @@ TemperatureFunction::value(Real /*t*/, const Point & p)
 	       if( nCol == _num_points_r-1 )
 		{
 		  T_edge[nRow] = T_aea[nRow][nCol];
-       		} 
+       		}
 	     }
 	  else
 	    {
@@ -188,6 +188,6 @@ TemperatureFunction::value(Real /*t*/, const Point & p)
 	    }
 	}
     }
-   
+
     return T_edge[_point_return_depth-1];
 }

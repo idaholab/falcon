@@ -24,7 +24,7 @@
   [./pressure]
     order = FIRST
     family = L2_LAGRANGE
-    initial_condition = 10e6 #[Pa] 
+    initial_condition = 10e6 #[Pa]
   [../]
 []
 

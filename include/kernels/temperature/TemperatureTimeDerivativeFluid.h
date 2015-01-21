@@ -35,14 +35,14 @@ protected:
 
     MaterialProperty<Real> & _density_water;
     MaterialProperty<Real> & _density_water_old;
-  
+
     VariableValue  & _porosity;
     VariableValue  & _porosity_old;
 
     MaterialProperty<Real> & _specific_heat_water;
 //  MaterialProperty<Real> & _specific_heat_rock;
 //  MaterialProperty<Real> & _density_rock;
-  
-    VariableValue & _u_old;  
+
+    VariableValue & _u_old;
 };
 #endif //TEMPERATURETIMEDERIVATIVEFLUID

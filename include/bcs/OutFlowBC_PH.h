@@ -34,26 +34,26 @@ InputParameters validParams<OutFlowBC_PH>();
 class OutFlowBC_PH : public IntegratedBC
 {
 public:
-    
+
     /**
      * Factory constructor, takes parameters so that all derived classes can be built using the same
      * constructor.
      */
     OutFlowBC_PH(const std::string & name, InputParameters parameters);
-    
+
     virtual ~OutFlowBC_PH(){}
-    
+
 protected:
     virtual Real computeQpResidual();
     virtual Real computeQpJacobian();
     virtual Real computeQpOffDiagJacobian(unsigned int jvar);
-  
-    
+
+
 private:
     /**
      * Vector to dot with the normal.
      */
-    
+
     VariableGradient & _grad_p;
     unsigned int _p_var;
     VariableGradient & _grad_T;
@@ -66,7 +66,7 @@ private:
     MaterialProperty<Real> &_denthalpy_steamdH_P;
     MaterialProperty<Real> &_denthalpy_waterdP_H;
     MaterialProperty<Real> &_denthalpy_steamdP_H;
-    
+
     MaterialProperty<Real> & _Dtau_waterDP;
     MaterialProperty<Real> & _Dtau_waterDH;
     MaterialProperty<Real> & _Dtau_steamDP;
@@ -76,9 +76,9 @@ private:
     MaterialProperty<RealGradient> & _darcy_mass_flux_water;
     MaterialProperty<RealGradient> & _darcy_mass_flux_steam;
     MaterialProperty<Real> & _thermal_conductivity;
-    
+
     //  std::vector<RealGradient> & _grad_p;
-    
+
 };
 
 #endif //NEUMANNBC_H

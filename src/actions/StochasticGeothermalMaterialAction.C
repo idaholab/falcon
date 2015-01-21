@@ -75,13 +75,13 @@ StochasticGeothermalMaterialAction::act()
     // ht_params = all parameters needed for StochasticHeatTransport material
     // ff_params = all parameters needed for StochasticFluidFlow material
     // cr_params = all parameters needed for StochasticChemicalReactions material
-    
+
     //get input parameters from base class StochasticPorousMedia
     InputParameters shared_params = _factory.getValidParams("StochasticPorousMedia");
     //get block #/name that we want to assign this material action to and add it to the shared_params
     std::vector<SubdomainName> block = getParam<std::vector<SubdomainName> >("block");
     shared_params.set<std::vector<SubdomainName> >("block") = block;
-    
+
     //check which NL variables are coupled and add them to shared_params if valid
     if (_pars.isParamValid("x_disp"))
     {
@@ -118,7 +118,7 @@ StochasticGeothermalMaterialAction::act()
         std::vector<NonlinearVariableName> chem_vars = getParam<std::vector<NonlinearVariableName> >("v");
         shared_params.set<std::vector<NonlinearVariableName> >("v") = chem_vars;
     }
-    
+
     //get base class (StochasticPorousMedia) paramerters from input
 
     std::vector<AuxVariableName> permeability = getParam<std::vector<AuxVariableName> >("permeability");
@@ -128,7 +128,7 @@ StochasticGeothermalMaterialAction::act()
     Real gx = getParam<Real>("gx");
     Real gy = getParam<Real>("gy");
     Real gz = getParam<Real>("gz");
-    
+
     //add these base class paramerters to shared_params, since all dependent classes need these parameters
     shared_params.set<std::vector<AuxVariableName> >("permeability") = permeability;
     shared_params.set<Real>("porosity") = porosity;
@@ -138,24 +138,24 @@ StochasticGeothermalMaterialAction::act()
     shared_params.set<Real>("gy") = gy;
     shared_params.set<Real>("gz") = gz;
     shared_params.set<bool>("has_chem_reactions") = _has_chem_react;
-    
+
     // based upon user input for this action, we will appropriately add materials (and their respective parameters)
     // for a customizable mix-and-match THMC material
-    
+
     // hydro problems: _has_fluid_flow = true
     // thermo problems: _has_heat_tran = true
     // mechanical problems: _has_solid_mech = true
     // chemical problems: _has_chem_react = true
-    
+
     if (_has_chem_react)
         addChemicalReactionsMaterial(shared_params);
-    
+
     if (_has_fluid_flow)
         addFluidFlowMaterial(shared_params);
-    
+
     if (_has_heat_tran)
         addHeatTransportMaterial(shared_params);
-    
+
     if (_has_solid_mech)
         addSolidMechanicsMaterial(shared_params);
 }
@@ -165,10 +165,10 @@ StochasticGeothermalMaterialAction::addSolidMechanicsMaterial(InputParameters sh
 {
     //get input parameters from StochasticSolidMechanics material
     InputParameters sm_params = _factory.getValidParams("StochasticSolidMechanics");
-    
+
     //add shared_params from above
     sm_params += shared_params;
-    
+
     //get StochasticSolidMechancis paramerters from input file
     Real poissons_ratio = getParam<Real>("poissons_ratio");
     Real biot_coeff = getParam<Real>("biot_coeff");
@@ -176,7 +176,7 @@ StochasticGeothermalMaterialAction::addSolidMechanicsMaterial(InputParameters sh
     Real thermal_expansion = getParam<Real>("thermal_expansion");
     Real youngs_modulus = getParam<Real>("youngs_modulus");
     Real thermal_strain_ref_temp = getParam<Real>("thermal_strain_ref_temp");
-    
+
     //add these paramerters to sm_params
     sm_params.set<Real>("poissons_ratio") = poissons_ratio;
     sm_params.set<Real>("biot_coeff") = biot_coeff;
@@ -184,7 +184,7 @@ StochasticGeothermalMaterialAction::addSolidMechanicsMaterial(InputParameters sh
     sm_params.set<Real>("thermal_expansion") = thermal_expansion;
     sm_params.set<Real>("youngs_modulus") = youngs_modulus;
     sm_params.set<Real>("thermal_strain_ref_temp") = thermal_strain_ref_temp;
-    
+
     //add StocahsticSolidMechanics material using sm_params
     _problem->addMaterial("StochasticSolidMechanics", "stochastic_solid_mechanics", sm_params);
 }
@@ -194,20 +194,20 @@ StochasticGeothermalMaterialAction::addHeatTransportMaterial(InputParameters sha
 {
     //get input parameters from StochasticHeatTransport material
     InputParameters ht_params = _factory.getValidParams("StochasticHeatTransport");
-    
+
     //add shared_params from above
     ht_params += shared_params;
-    
+
     //get StochasticHeatTransport paramerters from input file
     Real specific_heat_rock = getParam<Real>("specific_heat_rock");
     Real specific_heat_water = getParam<Real>("specific_heat_water");
     Real thermal_conductivity = getParam<Real>("thermal_conductivity");
-    
+
     //add these paramerters to ht_params
     ht_params.set<Real>("specific_heat_rock") = specific_heat_rock;
     ht_params.set<Real>("specific_heat_water") = specific_heat_water;
     ht_params.set<Real>("thermal_conductivity") = thermal_conductivity;
-    
+
     //add StochasticHeatTransport material using ht_params
     _problem->addMaterial("StochasticHeatTransport", "stochastic_heat_transport", ht_params);
 }
@@ -217,14 +217,14 @@ StochasticGeothermalMaterialAction::addFluidFlowMaterial(InputParameters shared_
 {
     //get input parameters from StochasticFliudFlow material
     InputParameters ff_params = _factory.getValidParams("StochasticFluidFlow");
-    
+
     //add shared_params from above
     ff_params += shared_params;
-    
+
     //get StochasticFluidFlow paramerters from input file and add these paramerters to ff_params
     bool temp_dependent_fluid_props = getParam<bool>("temp_dependent_fluid_props");
     ff_params.set<bool>("temp_dependent_fluid_props") = temp_dependent_fluid_props;
-    
+
     //if temp_dependent_fluid_props = true, then we need to also grab the UserObject that
     //calculates our water/steam EOS
     if (temp_dependent_fluid_props == true)
@@ -250,22 +250,22 @@ StochasticGeothermalMaterialAction::addChemicalReactionsMaterial(InputParameters
 {
     //get input parameters from StochasticChemicalReactions material
     InputParameters cr_params = _factory.getValidParams("StochasticChemicalReactions");
-    
+
     //add shared_params from above
     cr_params += shared_params;
-    
+
     //get StochasticChemicalReactions paramerters from input file
     Real diffusivity = getParam<Real>("diffusivity");
     std::vector<Real> mineral = getParam<std::vector<Real> >("mineral");
     std::vector<Real> molecular_weight = getParam<std::vector<Real> >("molecular_weight");
     std::vector<Real> mineral_density = getParam<std::vector<Real> >("mineral_density");
-    
+
     //add these paramerters to cr_params
     cr_params.set<Real>("diffusivity") = diffusivity;
     cr_params.set<std::vector<Real> >("mineral") = mineral;
     cr_params.set<std::vector<Real> >("molecular_weight") = molecular_weight;
     cr_params.set<std::vector<Real> >("mineral_density") = mineral_density;
-    
+
     //add StochasticChemicalReactions material using cr_params
     _problem->addMaterial("StochasticChemicalReactions", "stochastic_chemical_reactions", cr_params);
 }

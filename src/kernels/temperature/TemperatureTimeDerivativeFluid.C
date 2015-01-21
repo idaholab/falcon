@@ -29,7 +29,7 @@ TemperatureTimeDerivativeFluid::TemperatureTimeDerivativeFluid(const std::string
 
    _density_water(getMaterialProperty<Real>("density_water")),
    _density_water_old(getMaterialProperty<Real>("time_old_density")),
-   
+
    _porosity(coupledValue("porosity")),
    _porosity_old(coupledValueOld("porosity")),
 
@@ -42,9 +42,9 @@ TemperatureTimeDerivativeFluid::TemperatureTimeDerivativeFluid(const std::string
 Real
 TemperatureTimeDerivativeFluid::computeQpResidual()
 {
-  
+
   //REAL dphirho_dt = ((_porosity[_qp]*_density_water[_qp])-(_porosity_old[_qp]*_density_water_old[_qp]))/_dt;
-  
+
   return
     _specific_heat_water[_qp]
     *
@@ -56,7 +56,7 @@ TemperatureTimeDerivativeFluid::computeQpResidual()
 Real
 TemperatureTimeDerivativeFluid::computeQpJacobian()
 
-//need to verify this is the correct Jacobian, RKP 4/19/11  
+//need to verify this is the correct Jacobian, RKP 4/19/11
 {
   return _specific_heat_water[_qp]*_porosity[_qp] *_density_water[_qp] *(1/_dt) *_phi[_j][_qp];
 }

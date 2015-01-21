@@ -32,9 +32,9 @@ class SolidMechPoroCouple : public SolidMechFalcon
 public:
 
   SolidMechPoroCouple(const std::string & name, InputParameters parameters);
-  
+
   void recomputeCouplingConstants();
-  
+
 protected:
   unsigned int _pressure_var;
   MaterialProperty<Real> & _biot_coeff;
@@ -42,6 +42,6 @@ protected:
   VariableValue  & _pressure_val;
 
 };
- 
+
 
 #endif //SOLIDMECHPOROCOUPLE_H

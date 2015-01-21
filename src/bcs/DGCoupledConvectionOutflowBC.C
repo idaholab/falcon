@@ -12,7 +12,7 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-/** 
+/**
  * Authors: Yidong Xia (Yidong.Xia@inl.gov)
  * Created: 09/24/2014
  */
@@ -27,7 +27,7 @@ InputParameters validParams<DGCoupledConvectionOutflowBC>()
   return params;
 }
 
-DGCoupledConvectionOutflowBC::DGCoupledConvectionOutflowBC(const std::string & name, 
+DGCoupledConvectionOutflowBC::DGCoupledConvectionOutflowBC(const std::string & name,
                                InputParameters parameters) :
   IntegratedBC(name, parameters),
   _grad_coupled(coupledGradient("coupled"))

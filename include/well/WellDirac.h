@@ -42,11 +42,11 @@ class WellDirac : public DiracKernel
   std::vector<Real> surface_fluid_temperature;
   std::vector<Real> well_head_pressure;
   Real _gravity;
-  int _return_parameter;    
+  int _return_parameter;
   Real _surface_roughness;
 };
 
-#endif //WELLDIRAC_H                                                                                                                                                
+#endif //WELLDIRAC_H
 
 
 

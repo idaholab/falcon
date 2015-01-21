@@ -29,7 +29,7 @@ MassFluxTimeDerivative_PT::MassFluxTimeDerivative_PT(const std::string & name, I
    _density_water_old(getMaterialProperty<Real>("time_old_density_water")),
    _dwdp(getMaterialProperty<Real>("dwdp")),
 
-   
+
    _has_chem_reactions(getParam<bool>("has_chem_reactions")),
    _porosity(getMaterialProperty<Real>("porosity")),
    _porosity_old(_has_chem_reactions ? &getMaterialPropertyOld<Real>("porosity") : &getMaterialProperty<Real>("porosity")),

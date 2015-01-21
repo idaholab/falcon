@@ -36,7 +36,7 @@ Real _p3;
 Real _p4;
 Real _t1;
 Real _t2;
-Real _t3;  
+Real _t3;
 };
 
 #endif //StepPressureBCFunc

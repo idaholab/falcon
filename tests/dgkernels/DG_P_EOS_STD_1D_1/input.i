@@ -39,17 +39,17 @@
 
 [Kernels]
   #### Pressure time derivative kernel for PT (single-phase) problems
-  [./p_td] 
+  [./p_td]
     type = MassFluxTimeDerivative_PT
     variable = pressure
   [../]
   #### Mass diffusion kernel for PT (single-phase) problems
-  [./p_wmfp] 
+  [./p_wmfp]
     type = WaterMassFluxPressure_PT
     variable = pressure
   [../]
   #### Heat diffusion kernel for PT (single-phase) problems
-  [./t_d] 
+  [./t_d]
     type = TemperatureDiffusion
     variable = temperature
   [../]
@@ -63,7 +63,7 @@
     prop_name = tau_water
   [../]
   #### Heat diffusion kernel for PT (single-phase) problems
-  [./t_diff] 
+  [./t_diff]
     type = DGMaterialDiffusion
     variable = temperature
     prop_name = thermal_conductivity

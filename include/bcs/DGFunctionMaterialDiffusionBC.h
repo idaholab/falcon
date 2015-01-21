@@ -42,7 +42,7 @@ class DGFunctionMaterialDiffusionBC : public IntegratedBC
 
     std::string _prop_name;
     MaterialProperty<Real> & _diff;
-    
+
     /*
      * Function for variable at boundary
     */

@@ -26,7 +26,7 @@ InputParameters validParams<DGConvectionOutflowBC>()
   return params;
 }
 
-DGConvectionOutflowBC::DGConvectionOutflowBC(const std::string & name, 
+DGConvectionOutflowBC::DGConvectionOutflowBC(const std::string & name,
                                InputParameters parameters) :
   IntegratedBC(name, parameters),
   _velocity(getParam<RealVectorValue>("velocity"))

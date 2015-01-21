@@ -27,7 +27,7 @@ class VariableGradientAux;
 template<>
 InputParameters validParams<VariableGradientAux>();
 
-/** 
+/**
  * Coupled auxiliary value
  */
 class VariableGradientAux : public AuxKernel
@@ -42,7 +42,7 @@ class VariableGradientAux : public AuxKernel
     VariableGradientAux(const std::string & name, InputParameters parameters);
 
     virtual ~VariableGradientAux() {}
-  
+
   protected:
     virtual Real computeValue();
 

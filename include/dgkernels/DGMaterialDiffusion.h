@@ -32,7 +32,7 @@ class DGMaterialDiffusion : public DGKernel
   public:
 
     DGMaterialDiffusion(const std::string & name, InputParameters parameters);
-    
+
   protected:
 
     virtual Real computeQpResidual(Moose::DGResidualType type);
@@ -41,7 +41,7 @@ class DGMaterialDiffusion : public DGKernel
     std::string _prop_name;
     MaterialProperty<Real> & _diff;
     MaterialProperty<Real> & _diff_neighbor;
-  
+
     /*
      * Penalty parameter
     */

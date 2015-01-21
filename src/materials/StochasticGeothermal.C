@@ -40,7 +40,7 @@ StochasticGeothermal::computeProperties()
   StochasticPorousMedia::computeProperties();
   //Set already computed to true as we compute the intermediate classes' properties
   setPropsComputed(true);
-  
+
   StochasticFluidFlow::computeProperties();
   StochasticHeatTransport::computeProperties();
   StochasticSolidMechanics::computeProperties();

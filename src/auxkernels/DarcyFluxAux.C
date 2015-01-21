@@ -44,6 +44,6 @@ DarcyFluxAux::computeValue()
   {
     return _darcy_flux_water[_qp](_i);
   }
-  
+
 }
 

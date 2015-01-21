@@ -32,10 +32,10 @@ class FracManHeatTransport : virtual public FracManPorousMedia
 public:
   FracManHeatTransport(const std::string & name,
                 InputParameters parameters);
-  
+
 protected:
   virtual void computeProperties();
-    
+
 ////Grab user input parameters
   //General
   Real _input_specific_heat_rock;
@@ -45,7 +45,7 @@ protected:
   //Fractures
   std::vector<Real> _fracture_thermal_conductivity_vec;
   std::vector<int> _fracture_number_vec;
-  
+
 ////Storing the number of vector entries into respective local variables
   unsigned int num_frac_vec_entries;
   unsigned int num_therm_cond_vec_entries;

@@ -34,9 +34,9 @@ class SolidMechFalcon : public Kernel
 public:
 
   SolidMechFalcon(const std::string & name, InputParameters parameters);
-  
+
   void recomputeConstants();
-  
+
 protected:
   Real _E;
   Real _nu;
@@ -65,6 +65,6 @@ protected:
   MaterialProperty<RealVectorValue> & _stress_normal_vector;
   MaterialProperty<RealVectorValue> & _stress_shear_vector;
 };
- 
+
 
 #endif //SOLIDMECHFALCON_H

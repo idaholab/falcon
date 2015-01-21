@@ -27,7 +27,7 @@ InputParameters validParams<FracManHeatTransport>()
   params.addRequiredParam<std::vector<int> >("fracture_numbers","The number associated with each of the fractures you would like to include from the FracMan file");
   params.addRequiredParam<std::vector<Real> >("fracture_thermal_conductivities","thermal conductivity values associated with each of the fractures, [W/(m.K)]");
 
-    
+
   return params;
 }
 
@@ -53,7 +53,7 @@ FracManHeatTransport::FracManHeatTransport(const std::string & name,
     // storing the number of vector entries into respective local variables
     num_frac_vec_entries        = _fracture_number_vec.size();
     num_therm_cond_vec_entries  = _fracture_thermal_conductivity_vec.size();
-    
+
     // we want either one value of thermal_conductivity to assign to all fractures or an individual value to assign to each fracture
     if (((num_therm_cond_vec_entries > 2) && (num_therm_cond_vec_entries < num_frac_vec_entries)) || (num_therm_cond_vec_entries > num_frac_vec_entries))
         mooseError("You must provide either one thermal conductivity value for all fractures or a thermal conductivity value for each fracture");
@@ -64,7 +64,7 @@ FracManHeatTransport::computeProperties()
 {
   if (!areParentPropsComputed())
     FracManPorousMedia::computeProperties();
-  
+
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
       //material property assignment for matrix
@@ -85,7 +85,7 @@ FracManHeatTransport::computeProperties()
                   _thermal_conductivity[qp] = _fracture_thermal_conductivity_vec[k];
           }
       }
-      
+
     _specific_heat_rock[qp]  = _input_specific_heat_rock;
     _specific_heat_water[qp] = _input_specific_heat_water;
   }

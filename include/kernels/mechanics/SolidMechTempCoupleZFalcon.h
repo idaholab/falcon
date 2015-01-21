@@ -29,12 +29,12 @@ class SolidMechTempCoupleZFalcon : public SolidMechTempCoupleFalcon
 public:
 
   SolidMechTempCoupleZFalcon(const std::string & name, InputParameters parameters);
-  
+
 protected:
   virtual Real computeQpResidual();
-  
+
   virtual Real computeQpOffDiagJacobian(unsigned int jvar);
-  
+
 };
- 
+
 #endif //SOLIDMECHTEMPCOUPLEZFALCON

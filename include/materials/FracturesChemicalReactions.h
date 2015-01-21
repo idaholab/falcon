@@ -32,7 +32,7 @@ class FracturesChemicalReactions : virtual public FracturesPorousMedia
 public:
   FracturesChemicalReactions(const std::string & name,
               InputParameters parameters);
-  
+
 protected:
   virtual void computeProperties();
 ////Grab user input parameters
@@ -45,7 +45,7 @@ protected:
   std::vector<Real> _matrix_mineral;
   std::vector<Real> _matrix_molecular_weight;
   std::vector<Real> _matrix_mineral_density;
-    
+
   ////Fractures
   //fracture map inputs
   Real _fracture_num;
@@ -59,7 +59,7 @@ protected:
   std::vector<Real> _fracture_molecular_weight;
   std::vector<Real> _fracture_mineral_density;
   std::vector<VariableValue *> _vals;
-  
+
 ////Delcare material properties
   MaterialProperty<Real> & _diffusivity;
 };

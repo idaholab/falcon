@@ -38,10 +38,10 @@ SolidMechPoroCoupleZ::computeQpOffDiagJacobian(unsigned int jvar)
 {
   if(jvar == _pressure_var)
   {
-    
+
     return _test[_i][_qp]*_biot_coeff[_qp]*_grad_phi[_j][_qp](2);
   }
-  
+
   return 0.0;
-  
+
 }

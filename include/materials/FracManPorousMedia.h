@@ -32,7 +32,7 @@ class FracManPorousMedia : public Material
 public:
   FracManPorousMedia(const std::string & name,
               InputParameters parameters);
-  
+
 protected:
   virtual void computeProperties();
 ////Grab user input parameters
@@ -47,7 +47,7 @@ protected:
   Real _gx;
   Real _gy;
   Real _gz;
-    
+
   ////Fractures
   //fracture map inputs
   VariableValue & _fracture_map;
@@ -76,15 +76,15 @@ protected:
   MaterialProperty<Real> & _porosity;
   MaterialProperty<Real> & _density_rock;
   MaterialProperty<Real> & _compressibility;
-  
+
   //gravity material props
   MaterialProperty<Real> & _gravity;
   MaterialProperty<RealVectorValue> & _gravity_vector;
 
   void setPropsComputed(bool value) { _already_computed = value; }
-  
+
   bool areParentPropsComputed() const { return _already_computed; }
-  
+
 private:
 
   /**

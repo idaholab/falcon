@@ -15,7 +15,7 @@
 //***************************************************************
 /*!
   \file    include/bcs/PressureBC.h
-  \author  Yidong Xia 
+  \author  Yidong Xia
   \date    October 2014
   \brief   Specify external pressure
  */
@@ -35,9 +35,9 @@ InputParameters validParams<PressureBC>();
 class PressureBC : public IntegratedBC
 {
   public:
-  
+
     PressureBC(const std::string & name, InputParameters parameters);
-  
+
   protected:
 
     virtual Real computeQpResidual();

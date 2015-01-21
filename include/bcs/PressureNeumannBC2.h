@@ -39,9 +39,9 @@ protected:
    * This is here because materials don't yet work on boundaries!
    */
   Real pressure();
-  
+
   virtual Real computeQpResidual();
-  
+
   unsigned int _pe_var;
   VariableValue & _pe;
 

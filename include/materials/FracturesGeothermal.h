@@ -38,6 +38,6 @@ public:
 
 protected:
   virtual void computeProperties();
-    
+
 };
 #endif //FRACTURESGEOTHERMAL_H

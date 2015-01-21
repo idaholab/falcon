@@ -17,14 +17,14 @@ InputParameters validParams<StochasticMaterial>()
 
   params.addCoupledVar("conductivity", "hydraulic conductivity, m/s");
   params.addCoupledVar("aperture", "The aperture size, m");
-  
+
   return params;
 }
 
 StochasticMaterial::StochasticMaterial(const std::string & name,
                                  InputParameters parameters)
   :Material(name, parameters),
-   
+
    // Get a parameter value for the diffusivity
    _input_diffusivity(getParam<Real>("diffusivity")),
    _input_initial_porosity(getParam<Real>("init_porosity")),
@@ -40,7 +40,7 @@ StochasticMaterial::StochasticMaterial(const std::string & name,
 
    _molecular_weight(getParam<std::vector<Real> >("molecular_weight")),
    _mineral_density(getParam<std::vector<Real> >("density")),
-   _input_initial_mineral(getParam<std::vector<Real> >("mineral")),   
+   _input_initial_mineral(getParam<std::vector<Real> >("mineral")),
 
    // Declare that this material is going to have a Real valued property named "diffusivity" that Kernels can use.
    _diffusivity(declareProperty<Real>("diffusivity")),
@@ -80,8 +80,8 @@ StochasticMaterial::computeProperties()
     _frac_stor[qp] = _Ss[qp] * _aptr[qp];
     _frac_trnsm[qp] = -_rho_w[qp]*_gravity[qp]*std::pow(_aptr[qp],3)/_mu_w[qp]/12;
     _frac_cond[qp] = -_rho_w[qp]*_gravity[qp]*_aptr[qp]*_aptr[qp]/_mu_w[qp]/12;
-    
-    if (_vals.size()) 
+
+    if (_vals.size())
     {
       Real _initial_vf = 1.0;
       Real _vf = 1.0;
@@ -91,17 +91,17 @@ StochasticMaterial::computeProperties()
         _initial_vf += 1.0e-3*_input_initial_mineral[i]*_molecular_weight[i]/_mineral_density[i];
 
         _vf += 1.0e-3*(*_vals[i])[qp]*_molecular_weight[i]/_mineral_density[i];
-        
+
       }
 
       _porosity[qp] = _initial_vf *_input_initial_porosity/_vf;
     }
 
-    
+
     if (_porosity[qp]<=1.0e-3)
       _porosity[qp]=1.0e-3;
-    
+
     _diffusivity[qp] = _input_diffusivity*_porosity[qp];
-    
+
   }
 }

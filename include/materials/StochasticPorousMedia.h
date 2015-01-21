@@ -32,7 +32,7 @@ class StochasticPorousMedia : public Material
 public:
   StochasticPorousMedia(const std::string & name,
                         InputParameters parameters);
-  
+
 protected:
   virtual void initQpStatefulProperties();
   virtual void computeProperties();
@@ -47,7 +47,7 @@ protected:
   Real _gx;
   Real _gy;
   Real _gz;
-    
+
   bool _has_chem_reactions;
 
 ////Declare material properties
@@ -61,9 +61,9 @@ protected:
   MaterialProperty<RealVectorValue> & _gravity_vector;
 
   void setPropsComputed(bool value) { _already_computed = value; }
-  
+
   bool areParentPropsComputed() const { return _already_computed; }
-  
+
 private:
 
   /**

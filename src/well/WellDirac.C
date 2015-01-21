@@ -1,5 +1,5 @@
 //This dirac kernel takes all common well parameters as input and calculates the mass flow rate and enthalpy out of the bottom of the cased portion into
-//the fractured portion of the well. 
+//the fractured portion of the well.
 #include "WellDirac.h"
 
 template<>
@@ -85,7 +85,7 @@ WellDirac::computeQpResidual()
   int _size_temp_array = surface_fluid_temperature.size();
   int _size_mass_flow_array = mass_flow_rate.size();
   int _size_well_head_pressure_array = well_head_pressure.size();
-  
+
   Real _mass_flow_rate;
   Real _surface_fluid_temperature;
   Real _well_head_pressure;
@@ -118,7 +118,7 @@ WellDirac::computeQpResidual()
 	}
     }
 
-  //calculate area of wellbore                                                                                                                                  
+  //calculate area of wellbore
   Real _area_well_bore = libMesh::pi*_well_radius*_well_radius;
 
   //Calculate surface fluid density
@@ -138,13 +138,13 @@ WellDirac::computeQpResidual()
 
   if (_return_parameter == 1 )
     {
-      //Get density                                                                                                                                       
+      //Get density
       Real _dummy_var;
       Real _fluid_density;
 
       _water_steam_properties.waterEquationOfStatePT ( P, T, _dummy_var, _fluid_density);
 
-      //Calculate mass flow rate from new density              
+      //Calculate mass flow rate from new density
       Real _velocity = ( _mass_flow_rate / _surface_fluid_density ) / ( libMesh::pi*_well_radius*_well_radius );
       Real _new_mass_flow_rate;
       _new_mass_flow_rate = _fluid_density*_area_well_bore*_velocity;
@@ -153,7 +153,7 @@ WellDirac::computeQpResidual()
     }
   else if (_return_parameter == 2 )
     {
-      //Get enthalpy                                                                                                                                        
+      //Get enthalpy
       Real _dummy_var;
       Real _fluid_enthalpy;
       _water_steam_properties.waterEquationOfStatePT ( P, T, _fluid_enthalpy, _dummy_var);
@@ -180,25 +180,25 @@ WellDirac::computeQpResidual()
 }
 
 
-  
-  
-  
 
-  
-  
-  
 
-  
 
-  
 
-  
-  
 
-  
 
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

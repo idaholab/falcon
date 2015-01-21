@@ -15,7 +15,7 @@
 //******************************************************************************
 /*!
   \file    src/bcs/PressurePressureOutFlowBC.C
-  \author  Yidong Xia 
+  \author  Yidong Xia
   \date    October 2014
   \brief   Pressure outflow B.C. in mass balance
  */

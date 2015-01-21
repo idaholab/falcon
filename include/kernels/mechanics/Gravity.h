@@ -34,10 +34,10 @@ class Gravity : public Kernel
 public:
 
   Gravity(const std::string & name, InputParameters parameters);
-  
+
 protected:
   virtual Real computeQpResidual();
-  
+
   virtual Real computeQpJacobian();
   int _component;
   MaterialProperty<Real> & _density;
@@ -45,6 +45,6 @@ protected:
   MaterialProperty<RealVectorValue> & _gravity_vector;
 
 };
- 
+
 
 #endif //GRAVITY_H
