@@ -155,7 +155,32 @@
 #include "FracManGeothermalMaterialAction.h"
 #include "FracturesGeothermalMaterialAction.h"
 
-#include "FluidMassEnergyBalanceApp.h"
+////////////////////////////////////////////////////////////////
+///      Souce and Sink, volume avagerged                     //
+////////////////////////////////////////////////////////////////
+#include "SourceSink.h"
+#include "EnergyExtraction.h"
+
+#include "EnthalpyTimeDerivative.h"
+#include "EnthalpyImplicitEuler.h"
+#include "EnthalpyDiffusion.h"
+#include "EnthalpyConvectionWater.h"
+#include "EnthalpyConvectionSteam.h"
+
+///////////////////////////////////////////////////////////////
+////    Single phase isothermal formulation: pressure        //
+///////////////////////////////////////////////////////////////
+#include "FluidFluxPressure.h"
+
+//////////////////////////////////////////////////////////////
+//       Two phase formulation: pressure & enthalpy         //
+//////////////////////////////////////////////////////////////
+#include "MassFluxTimeDerivative.h"
+#include "WaterMassFluxPressure.h"
+#include "SteamMassFluxPressure.h"
+#include "WaterMassFluxElevation.h"
+
+
 #include "ChemicalReactionsApp.h"
 
 
@@ -172,12 +197,10 @@ FalconApp::FalconApp(const std::string & name, InputParameters parameters) :
   srand(processor_id());
 
   Moose::registerObjects(_factory);
-  FluidMassEnergyBalanceApp::registerObjects(_factory);
   ChemicalReactionsApp::registerObjects(_factory);
   FalconApp::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
-  FluidMassEnergyBalanceApp::associateSyntax(_syntax, _action_factory);
   ChemicalReactionsApp::associateSyntax(_syntax, _action_factory);
   FalconApp::associateSyntax(_syntax, _action_factory);
 }
@@ -309,6 +332,29 @@ FalconApp::registerObjects(Factory & factory)
   registerPostprocessor(EOSWaterAndSteamPTFuncPPS);
   registerPostprocessor(EOSPhaseDetermineFuncPPS);
   registerPostprocessor(EOSViscosityFuncPPS);
+
+  /**
+   *fluid mass energy balance objects
+   */
+  //energy
+  registerKernel(EnthalpyImplicitEuler);
+  registerKernel(EnthalpyTimeDerivative);
+  registerKernel(EnthalpyDiffusion);
+  registerKernel(EnthalpyConvectionWater);
+  registerKernel(EnthalpyConvectionSteam);
+
+  //source sink
+  registerKernel(SourceSink);
+  registerKernel(EnergyExtraction);
+
+  //fluid-mass flow-two phase formulation
+  registerKernel(MassFluxTimeDerivative);
+  registerKernel(WaterMassFluxPressure);
+  registerKernel(WaterMassFluxElevation);
+  registerKernel(SteamMassFluxPressure);
+
+  //isothermal flow for pressure field
+  registerKernel(FluidFluxPressure);
 }
 
 

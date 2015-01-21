@@ -20,7 +20,6 @@ include $(FRAMEWORK_DIR)/build.mk
 include $(FRAMEWORK_DIR)/moose.mk
 
 ################################## MODULES ####################################
-FLUID_MASS_ENERGY_BALANCE := yes
 CHEMICAL_REACTIONS        := yes
 include           $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
