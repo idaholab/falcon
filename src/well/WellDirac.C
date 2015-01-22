@@ -33,16 +33,16 @@ InputParameters validParams<WellDirac>()
 }
 
 WellDirac::WellDirac(const std::string & name, InputParameters parameters) :
-    DiracKernel(name, parameters),
-    _water_steam_properties(getUserObject<WaterSteamEOS>("water_steam_properties")),
-    _temperature_pressure(getUserObject<WellUserObject>("temperature_pressure")),
-    _point_param(getParam<std::vector<Real> >("point")),
-    _schedule(getParam<std::vector<Real> >("schedule")),
-    mass_flow_rate(getParam<std::vector<Real> >("mass_flow_rate")),
-    _well_radius(getParam<Real>("well_radius")),
-    _surface_earth_temperature(getParam<Real>("surface_earth_temperature")),
-    _fluid_heat_capacity(getParam<Real>("fluid_heat_capacity")),
-    _thermal_conductivity_earth(getParam<Real>("thermal_conductivity_earth")),
+  DiracKernel(name, parameters),
+  _water_steam_properties(getUserObject<WaterSteamEOS>("water_steam_properties")),
+  _temperature_pressure(getUserObject<WellUserObject>("temperature_pressure")),
+  _point_param(getParam<std::vector<Real> >("point")),
+  _schedule(getParam<std::vector<Real> >("schedule")),
+  mass_flow_rate(getParam<std::vector<Real> >("mass_flow_rate")),
+  _well_radius(getParam<Real>("well_radius")),
+  _surface_earth_temperature(getParam<Real>("surface_earth_temperature")),
+  _fluid_heat_capacity(getParam<Real>("fluid_heat_capacity")),
+  _thermal_conductivity_earth(getParam<Real>("thermal_conductivity_earth")),
   _thermal_conductivity_casing(getParam<Real>("thermal_conductivity_casing")),
   _thermal_conductivity_cement(getParam<Real>("thermal_conductivity_cement")),
   _thermal_conductivity_water(getParam<Real>("thermal_conductivity_water")),
@@ -62,14 +62,14 @@ WellDirac::WellDirac(const std::string & name, InputParameters parameters) :
   _p(0) = _point_param[0];
 
   if (_point_param.size() > 1)
-  {
-    _p(1) = _point_param[1];
-
-    if (_point_param.size() > 2)
     {
-      _p(2) = _point_param[2];
+      _p(1) = _point_param[1];
+
+      if (_point_param.size() > 2)
+        {
+          _p(2) = _point_param[2];
+        }
     }
-  }
 }
 
 void
@@ -91,32 +91,32 @@ WellDirac::computeQpResidual()
   Real _well_head_pressure;
 
   if (_nstages > 1)
-  {
-    for (unsigned int i=0; i < _nstages; i++)
     {
-      if(_t >= _schedule[i] and _t < _schedule[i+1])
-      {
-        _mass_flow_rate = mass_flow_rate[i];
-        _surface_fluid_temperature = surface_fluid_temperature[i];
-        _well_head_pressure = well_head_pressure[i];
-        break;
-      }
-    }
+      for (unsigned int i=0; i < _nstages; i++)
+	{
+	  if(_t >= _schedule[i] and _t < _schedule[i+1])
+	    {
+	      _mass_flow_rate = mass_flow_rate[i];
+	      _surface_fluid_temperature = surface_fluid_temperature[i];
+	      _well_head_pressure = well_head_pressure[i];
+	      break;
+	    }
+	}
 
-    if (_t >= _schedule[_nstages - 1])
-    {
-      _mass_flow_rate = mass_flow_rate[_nstages -1];
-      _surface_fluid_temperature = surface_fluid_temperature[_nstages -1];
-      _well_head_pressure = well_head_pressure[ _nstages-1];
-    }
+      if (_t >= _schedule[_nstages - 1])
+	{
+	  _mass_flow_rate = mass_flow_rate[_nstages -1];
+	  _surface_fluid_temperature = surface_fluid_temperature[_nstages -1];
+	  _well_head_pressure = well_head_pressure[ _nstages-1];
+	}
 
-    else if ( _t <= _schedule[0] )
-    {
-      _mass_flow_rate = mass_flow_rate[0];
-      _surface_fluid_temperature = surface_fluid_temperature[0];
-      _well_head_pressure = well_head_pressure[0];
+      else if ( _t <= _schedule[0] )
+	{
+	  _mass_flow_rate = mass_flow_rate[0];
+	  _surface_fluid_temperature = surface_fluid_temperature[0];
+	  _well_head_pressure = well_head_pressure[0];
+	}
     }
-  }
 
   //calculate area of wellbore
   Real _area_well_bore = libMesh::pi*_well_radius*_well_radius;
@@ -137,44 +137,83 @@ WellDirac::computeQpResidual()
   _temperature_pressure.WellBottomPressure( _well_depth, _surface_fluid_density, _well_radius, _return_depth_T_P, _mass_flow_rate, _surface_fluid_viscosity, _well_head_pressure, _gravity, _surface_roughness, P );
 
   if (_return_parameter == 1 )
-  {
-    //Get density
-    Real _dummy_var;
-    Real _fluid_density;
+    {
+      //Get density
+      Real _dummy_var;
+      Real _fluid_density;
 
-    _water_steam_properties.waterEquationOfStatePT ( P, T, _dummy_var, _fluid_density);
+      _water_steam_properties.waterEquationOfStatePT ( P, T, _dummy_var, _fluid_density);
 
-    //Calculate mass flow rate from new density
-    Real _velocity = ( _mass_flow_rate / _surface_fluid_density ) / ( libMesh::pi*_well_radius*_well_radius );
-    Real _new_mass_flow_rate;
-    _new_mass_flow_rate = _fluid_density*_area_well_bore*_velocity;
+      //Calculate mass flow rate from new density
+      Real _velocity = ( _mass_flow_rate / _surface_fluid_density ) / ( libMesh::pi*_well_radius*_well_radius );
+      Real _new_mass_flow_rate;
+      _new_mass_flow_rate = _fluid_density*_area_well_bore*_velocity;
 
-    return -_test[_i][_qp]*_new_mass_flow_rate;
-  }
+      return -_test[_i][_qp]*_new_mass_flow_rate;
+    }
   else if (_return_parameter == 2 )
-  {
-    //Get enthalpy
-    Real _dummy_var;
-    Real _fluid_enthalpy;
-    _water_steam_properties.waterEquationOfStatePT ( P, T, _fluid_enthalpy, _dummy_var);
-    Real enthalpy_water = (_fluid_enthalpy / 1000);
+    {
+      //Get enthalpy
+      Real _dummy_var;
+      Real _fluid_enthalpy;
+      _water_steam_properties.waterEquationOfStatePT ( P, T, _fluid_enthalpy, _dummy_var);
+      Real enthalpy_water = (_fluid_enthalpy / 1000);
 
-    return -_test[_i][_qp]*_fluid_enthalpy;
-  }
+      return -_test[_i][_qp]*_fluid_enthalpy;
+    }
 
   else if (_return_parameter == 3 )
-  {
-    //RKP: 2014.08.15 this needs to be edited to scale the temp by the heat capacity, and also the mass flux:
-    return -_test[_i][_qp]*T;
-  }
+    {
+      //RKP: 2014.08.15 this needs to be edited to scale the temp by the heat capacity, and also the mass flux:
+      return -_test[_i][_qp]*T;
+    }
 
   else if ( _return_parameter == 4 )
-  {
-    //look at this as well, dirac needs a flux, so we'll need to calculate the flux from the delta P
-    return -_test[_i][_qp]*P;
-  }
+    {
+      //look at this as well, dirac needs a flux, so we'll need to calculate the flux from the delta P
+      return -_test[_i][_qp]*P;
+    }
   else
-  {
-    return 0;
-  }
+    {
+      return 0;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

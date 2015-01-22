@@ -78,7 +78,7 @@ StochasticPorousMedia::computeProperties()
 {
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
-    //porous media
+	//porous media
     _permeability[qp]         = _init_permeability[qp];
     _porosity[qp]             = _input_porosity;
     _density_rock[qp]         = _input_density_rock;

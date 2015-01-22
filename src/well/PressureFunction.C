@@ -17,16 +17,16 @@ InputParameters validParams<PressureFunction>()
 }
 
 PressureFunction::PressureFunction(const std::string & name, InputParameters parameters):
-    Function(name, parameters),
-    _well_radius(getParam<Real>("well_radius")),
-    _schedule(getParam<std::vector<Real> >("schedule")),
-    mass_flow_rate(getParam<std::vector<Real> >("mass_flow_rate")),
-    _surface_fluid_density(getParam<Real>("_surface_fluid_density")),
-    _fluid_viscosity(getParam<Real>("fluid_viscosity")),
-    _depth_return_pressure(getParam<Real>("depth_return_pressure")),
-    well_head_pressure(getParam<std::vector<Real> >("well_head_pressure")),
-    _gravity(getParam<Real>("gravity")),
-    _surface_roughness(getParam<Real>("surface_roughness"))
+  Function(name, parameters),
+  _well_radius(getParam<Real>("well_radius")),
+  _schedule(getParam<std::vector<Real> >("schedule")),
+  mass_flow_rate(getParam<std::vector<Real> >("mass_flow_rate")),
+  _surface_fluid_density(getParam<Real>("_surface_fluid_density")),
+  _fluid_viscosity(getParam<Real>("fluid_viscosity")),
+  _depth_return_pressure(getParam<Real>("depth_return_pressure")),
+  well_head_pressure(getParam<std::vector<Real> >("well_head_pressure")),
+  _gravity(getParam<Real>("gravity")),
+  _surface_roughness(getParam<Real>("surface_roughness"))
 {}
 
 Real
@@ -38,32 +38,32 @@ PressureFunction::value(Real /*t*/, const Point & p)
   Real _well_head_pressure;
 
   if (_nstages > 1)
-  {
-    for (unsigned int i=0; i < _nstages; i++)
     {
-      if(_t >= _schedule[i] and _t < _schedule[i+1])
-      {
-        _mass_flow_rate = mass_flow_rate[i];
-        _well_head_pressure = well_head_pressure[i];
+      for (unsigned int i=0; i < _nstages; i++)
+        {
+          if(_t >= _schedule[i] and _t < _schedule[i+1])
+            {
+              _mass_flow_rate = mass_flow_rate[i];
+	      _well_head_pressure = well_head_pressure[i];
 
-        break;
+              break;
 
-      }
+            }
+        }
+
+      if (_t >= _schedule[_nstages - 1])
+	{
+	  _mass_flow_rate = mass_flow_rate[_nstages -1];
+	  _well_head_pressure = well_head_pressure[_nstages -1];
+	}
+
+
+      else if ( _t <= _schedule[0] )
+	{
+	  _mass_flow_rate = mass_flow_rate[0];
+	  _well_head_pressure = well_head_pressure[0];
+	}
     }
-
-    if (_t >= _schedule[_nstages - 1])
-    {
-      _mass_flow_rate = mass_flow_rate[_nstages -1];
-      _well_head_pressure = well_head_pressure[_nstages -1];
-    }
-
-
-    else if ( _t <= _schedule[0] )
-    {
-      _mass_flow_rate = mass_flow_rate[0];
-      _well_head_pressure = well_head_pressure[0];
-    }
-  }
 
   //calculate diameter of wellbore
   double diameter = 2 * _well_radius;
@@ -77,17 +77,17 @@ PressureFunction::value(Real /*t*/, const Point & p)
 
   //calculate the friction factor
   if (Re == 0)
-  {
-    f = 0;
-  }
+    {
+      f = 0;
+    }
   else if (Re >= 4000)
-  {
-    f = 0.001375*(1+std::pow((20000*(_surface_roughness/diameter)+1000000/Re),1/3.));
-  }
+    {
+      f = 0.001375*(1+std::pow((20000*(_surface_roughness/diameter)+1000000/Re),1/3.));
+    }
   else
-  {
-    f = 16 / Re;
-  }
+    {
+      f = 16 / Re;
+    }
 
   //calculate friction
   double F = 4*f* (( _depth_return_pressure ) / diameter) * ((velocity*velocity) / 2);
