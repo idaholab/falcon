@@ -13,10 +13,10 @@
 []
 
 [Outputs]
-  file_base      = out
+  file_base = out
   output_initial = true
-  interval       = 1 # default 10
-  exodus         = true
+  interval = 1 # default 10
+  exodus = true
 []
 
 [Executioner]
