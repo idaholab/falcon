@@ -205,7 +205,7 @@ FalconApp::FalconApp(const std::string & name, InputParameters parameters) :
   FalconApp::associateSyntax(_syntax, _action_factory);
 }
 
-
+extern "C" void FalconApp__registerApps() { FalconApp::registerApps(); }
 void
 FalconApp::registerApps()
 {
