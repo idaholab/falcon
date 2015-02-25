@@ -19,7 +19,7 @@ InputParameters validParams<Constant>()
 {
   InputParameters params = validParams<Material>();
   //coupled variables
-  params.addCoupledVar("temperature", "Coupled non-linear termperature variable, [K]");
+  params.addCoupledVar("temp", "Coupled non-linear termperature variable, [K]");
 
   //rock property inputs
   params.addParam<Real>("thermal_conductivity", 1.0, "thermal conductivity coefficient, [W/(m.K)]");
