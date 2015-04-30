@@ -182,6 +182,7 @@
 
 
 #include "ChemicalReactionsApp.h"
+#include "PhaseFieldApp.h"
 
 
 template<>
@@ -198,10 +199,12 @@ FalconApp::FalconApp(const std::string & name, InputParameters parameters) :
 
   Moose::registerObjects(_factory);
   ChemicalReactionsApp::registerObjects(_factory);
+  PhaseFieldApp::registerObjects(_factory);
   FalconApp::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
   ChemicalReactionsApp::associateSyntax(_syntax, _action_factory);
+  PhaseFieldApp::associateSyntax(_syntax, _action_factory);
   FalconApp::associateSyntax(_syntax, _action_factory);
 }
 
