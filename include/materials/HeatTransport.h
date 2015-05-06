@@ -35,6 +35,10 @@ public:
 
 protected:
   virtual void computeProperties();
+
+  bool _has_variable_thermal_conductivity;
+  VariableValue & _variable_thermal_conductivity;
+
 ////Grab user input parameters
   Real _input_specific_heat_rock;
   Real _input_thermal_conductivity;
