@@ -18,6 +18,7 @@ template<>
 InputParameters validParams<HeatTransport>()
 {
   InputParameters params = validParams<PorousMedia>();
+  params.addCoupledVar("variable_thermal_conductivity", "Variable thermal conductivity from Image Reader");
   params.addParam<Real>("specific_heat_rock",0.92e3,  "specific heat of the rock, [J/(kg.K)]");
   params.addParam<Real>("thermal_conductivity",2.5,"thermal thermal_conductivity, [W/(m.K)]");
   params.addParam<Real>("specific_heat_water",4.186e3,"specific heat of water, [J/(kg.K)]");
@@ -27,6 +28,10 @@ InputParameters validParams<HeatTransport>()
 HeatTransport::HeatTransport(const std::string & name,
                              InputParameters parameters)
   :PorousMedia(name, parameters),
+
+     _has_variable_thermal_conductivity(isCoupled("variable_thermal_conductivity")),
+     _variable_thermal_conductivity(_has_variable_thermal_conductivity ? coupledValue("variable_thermal_conductivity") : _zero),
+
 ////Grab user input parameters
      _input_specific_heat_rock(getParam<Real>("specific_heat_rock")),
      _input_thermal_conductivity(getParam<Real>("thermal_conductivity")),
@@ -44,10 +49,16 @@ HeatTransport::computeProperties()
 //    if (!areParentPropsComputed())
 //        PorousMedia::computeProperties();
 
+    if (_has_variable_thermal_conductivity)
+      for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
+        _thermal_conductivity[qp] = _variable_thermal_conductivity[qp]/255.0; // for 8-bit image
+    else
+      for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
+        _thermal_conductivity[qp] = _input_thermal_conductivity;
+
   for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
   {
     _specific_heat_rock[qp]  = _input_specific_heat_rock;
-    _thermal_conductivity[qp] = _input_thermal_conductivity;
     _specific_heat_water[qp] = _input_specific_heat_water;
   }
 }
