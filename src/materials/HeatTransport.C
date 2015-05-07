@@ -51,7 +51,7 @@ HeatTransport::computeProperties()
 
     if (_has_variable_thermal_conductivity)
       for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
-        _thermal_conductivity[qp] = _variable_thermal_conductivity[qp]/255.0; // for 8-bit image
+        _thermal_conductivity[qp] = _variable_thermal_conductivity[qp];
     else
       for(unsigned int qp=0; qp<_qrule->n_points(); qp++)
         _thermal_conductivity[qp] = _input_thermal_conductivity;
