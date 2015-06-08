@@ -69,12 +69,6 @@ PorousMedia::PorousMedia(const std::string & name,
 
 { }
 
-/*void
-StochasticPorousMedia::initQpStatefulProperties()
-{
-    _porosity[_qp] = _input_porosity;
-}*/
-
 void
 PorousMedia::computeProperties()
 {

@@ -41,8 +41,6 @@
 //      Single phase formulation: pressure & temperature     //
 ///////////////////////////////////////////////////////////////
 #include "TemperatureTimeDerivative.h"
-#include "TemperatureTimeDerivativeFluid.h"
-#include "TemperatureTimeDerivativeSolid.h"
 #include "TemperatureDiffusion.h"
 #include "TemperatureConvection.h"
 #include "TemperatureSUPG.h"
@@ -85,8 +83,6 @@
 #include "DarcyFluxAux.h"
 #include "VelocityAux.h"
 #include "FracManMapAux.h"
-#include "FracTipLocationAux.h"
-#include "StochasticFieldAux.h"
 #include "VariableGradientAux.h"
 
 // BCs
@@ -100,7 +96,6 @@
 #include "PressureNeumannBC2.h"
 #include "GravityNeumannBC.h"
 #include "OutFlowBC.h"
-#include "OutFlowBC_PH.h"
 #include "StepDirichletBC.h"
 #include "StepPressureBCFunc.h"
 #include "PressureBC.h"
@@ -124,13 +119,6 @@
 #include "FracturesChemicalReactions.h"
 #include "FracturesGeothermal.h"
 
-#include "StochasticMaterial.h"
-#include "StochasticPorousMedia.h"
-#include "StochasticFluidFlow.h"
-#include "StochasticHeatTransport.h"
-#include "StochasticSolidMechanics.h"
-#include "StochasticChemicalReactions.h"
-#include "StochasticGeothermal.h"
 
 #include "FracManPorousMedia.h"
 #include "FracManFluidFlow.h"
@@ -143,9 +131,6 @@
 #include "WaterSteamEOS.h"
 
 // PostProcessors
-#include "EOSWaterAndSteamPTFuncPPS.h"
-#include "EOSPhaseDetermineFuncPPS.h"
-#include "EOSViscosityFuncPPS.h"
 
 // Actions
 
@@ -219,8 +204,6 @@ FalconApp::registerObjects(Factory & factory)
   registerKernel(PressureTimeDerivative);
   //heat transport-PT formulation, single phase only
   registerKernel(TemperatureTimeDerivative);
-  registerKernel(TemperatureTimeDerivativeFluid);
-  registerKernel(TemperatureTimeDerivativeSolid);
   registerKernel(TemperatureDiffusion);
   registerKernel(TemperatureConvection);
   registerKernel(TemperatureSUPG);
@@ -253,9 +236,7 @@ FalconApp::registerObjects(Factory & factory)
   registerAux(CoupledTemperatureAux);
   registerAux(DarcyFluxAux);
   registerAux(VelocityAux);
-  registerAux(StochasticFieldAux);
   registerAux(FracManMapAux);
-  registerAux(FracTipLocationAux);
   registerAux(VariableGradientAux);
 
   //BCs
@@ -269,7 +250,6 @@ FalconApp::registerObjects(Factory & factory)
   registerBoundaryCondition(DGTemperatureConvectionOutflowBC);
   registerBoundaryCondition(GravityNeumannBC);
   registerBoundaryCondition(OutFlowBC);
-  registerBoundaryCondition(OutFlowBC_PH);
   registerBoundaryCondition(StepDirichletBC);
   registerBoundaryCondition(StepPressureBCFunc);
   registerBoundaryCondition(PressureBC);
@@ -293,13 +273,6 @@ FalconApp::registerObjects(Factory & factory)
   registerMaterial(FracturesChemicalReactions);
   registerMaterial(FracturesGeothermal);
 
-  registerMaterial(StochasticMaterial);
-  registerMaterial(StochasticPorousMedia);
-  registerMaterial(StochasticFluidFlow);
-  registerMaterial(StochasticHeatTransport);
-  registerMaterial(StochasticSolidMechanics);
-  registerMaterial(StochasticChemicalReactions);
-  registerMaterial(StochasticGeothermal);
 
   registerMaterial(FracManPorousMedia);
   registerMaterial(FracManFluidFlow);
@@ -312,9 +285,6 @@ FalconApp::registerObjects(Factory & factory)
   registerUserObject(WaterSteamEOS);
 
   //postprocessors
-  registerPostprocessor(EOSWaterAndSteamPTFuncPPS);
-  registerPostprocessor(EOSPhaseDetermineFuncPPS);
-  registerPostprocessor(EOSViscosityFuncPPS);
 
   /**
    *fluid mass energy balance objects
