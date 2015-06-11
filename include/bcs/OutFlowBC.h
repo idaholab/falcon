@@ -51,9 +51,9 @@ private:
   /**
    * Vector to dot with the normal.
    */
-  MaterialProperty<Real> &_thermal_conductivity;
-  MaterialProperty<Real> & _specific_heat_water;
-  MaterialProperty<RealGradient> & _darcy_mass_flux_water;
+  const MaterialProperty<Real> &_thermal_conductivity;
+  const MaterialProperty<Real> & _specific_heat_water;
+  const MaterialProperty<RealGradient> & _darcy_mass_flux_water;
 
 //  std::vector<RealGradient> & _grad_p;
 

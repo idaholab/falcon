@@ -40,8 +40,8 @@ protected:
 
   unsigned int _temp_var;
 
-  MaterialProperty<Real> & _thermal_strain;
-  MaterialProperty<Real> & _alpha;
+  const MaterialProperty<Real> & _thermal_strain;
+  const MaterialProperty<Real> & _alpha;
 
   Real _c4;
 };

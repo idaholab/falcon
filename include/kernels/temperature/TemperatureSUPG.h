@@ -37,16 +37,16 @@ class TemperatureSUPG : public Kernel
     virtual Real computeQpResidual();
     virtual Real computeQpJacobian();
 
-    MaterialProperty<Real> & _density_water;
-    MaterialProperty<Real> & _density_water_old;
+    const MaterialProperty<Real> & _density_water;
+    const MaterialProperty<Real> & _density_water_old;
     bool _has_chem_reactions;
-    MaterialProperty<Real> & _porosity;
-    MaterialProperty<Real> * _porosity_old;
-    MaterialProperty<Real> & _specific_heat_water;
-    MaterialProperty<Real> & _specific_heat_rock;
-    MaterialProperty<Real> & _density_rock;
-    MaterialProperty<RealGradient> & _darcy_mass_flux_water;
-    MaterialProperty<Real> &_thermal_conductivity;
+    const MaterialProperty<Real> & _porosity;
+    const MaterialProperty<Real> * _porosity_old;
+    const MaterialProperty<Real> & _specific_heat_water;
+    const MaterialProperty<Real> & _specific_heat_rock;
+    const MaterialProperty<Real> & _density_rock;
+    const MaterialProperty<RealGradient> & _darcy_mass_flux_water;
+    const MaterialProperty<Real> &_thermal_conductivity;
     VariableValue & _u_old;
 
     /**

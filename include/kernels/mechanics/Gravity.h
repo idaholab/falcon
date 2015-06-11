@@ -40,9 +40,9 @@ protected:
 
   virtual Real computeQpJacobian();
   int _component;
-  MaterialProperty<Real> & _density;
-  MaterialProperty<Real> & _gravity;
-  MaterialProperty<RealVectorValue> & _gravity_vector;
+  const MaterialProperty<Real> & _density;
+  const MaterialProperty<Real> & _gravity;
+  const MaterialProperty<RealVectorValue> & _gravity_vector;
 
 };
 

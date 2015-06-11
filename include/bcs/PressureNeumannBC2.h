@@ -56,7 +56,7 @@ protected:
 
   int _component;
 
-  MaterialProperty<Real> & _gamma;
+  const MaterialProperty<Real> & _gamma;
 };
 
 #endif //PRESSURENEUMANNBC2_H

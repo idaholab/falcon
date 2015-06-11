@@ -40,6 +40,6 @@ protected:
   VariableValue & _u_older;
 
 private:
-  MaterialProperty<Real> & _density;
+  const MaterialProperty<Real> & _density;
 };
 #endif //SOLIDMECHIMPLICITEULER_H

@@ -41,7 +41,7 @@ class DGFunctionMaterialDiffusionBC : public IntegratedBC
     virtual Real computeQpJacobian();
 
     std::string _prop_name;
-    MaterialProperty<Real> & _diff;
+    const MaterialProperty<Real> & _diff;
 
     /*
      * Function for variable at boundary

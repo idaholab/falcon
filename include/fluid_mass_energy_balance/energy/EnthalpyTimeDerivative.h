@@ -36,23 +36,23 @@ protected:
   virtual Real computeQpJacobian();
   virtual Real computeQpOffDiagJacobian(unsigned int jvar);
 
-  MaterialProperty<Real> & _density;
-  MaterialProperty<Real> & _time_old_density;
+  const MaterialProperty<Real> & _density;
+  const MaterialProperty<Real> & _time_old_density;
 
-  MaterialProperty<Real> & _temperature;
-  MaterialProperty<Real> & _time_old_temperature;
+  const MaterialProperty<Real> & _temperature;
+  const MaterialProperty<Real> & _time_old_temperature;
 
-  MaterialProperty<Real> & _dTdH_P;
-  MaterialProperty<Real> & _dTdP_H;
-  MaterialProperty<Real> & _ddensitydH_P;
-  MaterialProperty<Real> & _ddensitydp_H;
+  const MaterialProperty<Real> & _dTdH_P;
+  const MaterialProperty<Real> & _dTdP_H;
+  const MaterialProperty<Real> & _ddensitydH_P;
+  const MaterialProperty<Real> & _ddensitydp_H;
 
   unsigned int _p_var;
 
   //  VariableValue  & _porosity_old;
-  MaterialProperty<Real> & _porosity;
-  MaterialProperty<Real> & _specific_heat_rock;
-  MaterialProperty<Real> & _density_rock;
+  const MaterialProperty<Real> & _porosity;
+  const MaterialProperty<Real> & _specific_heat_rock;
+  const MaterialProperty<Real> & _density_rock;
 
   VariableValue & _u_old;
 };
