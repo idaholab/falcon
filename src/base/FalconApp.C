@@ -68,7 +68,6 @@ AuxKernels
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #include "DarcyFluxAux.h"
 #include "VelocityAux.h"
-#include "FracManMapAux.h"
 #include "VariableGradientAux.h"
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -97,21 +96,6 @@ Materials
 #include "ChemicalReactions.h"
 #include "Geothermal.h"
 #include "GeoProcPT.h"
-
-#include "FracturesPorousMedia.h"
-#include "FracturesFluidFlow.h"
-#include "FracturesHeatTransport.h"
-#include "FracturesSolidMechanics.h"
-#include "FracturesChemicalReactions.h"
-#include "FracturesGeothermal.h"
-
-
-#include "FracManPorousMedia.h"
-#include "FracManFluidFlow.h"
-#include "FracManHeatTransport.h"
-#include "FracManSolidMechanics.h"
-#include "FracManChemicalReactions.h"
-#include "FracManGeothermal.h"
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 UserObjects
@@ -223,7 +207,6 @@ FalconApp::registerObjects(Factory & factory)
   // ==========
   registerAux(DarcyFluxAux);
   registerAux(VelocityAux);
-  registerAux(FracManMapAux);
   registerAux(VariableGradientAux);
 
   // ===
@@ -252,21 +235,6 @@ FalconApp::registerObjects(Factory & factory)
   registerMaterial(ChemicalReactions);
   registerMaterial(Geothermal);
   registerMaterial(GeoProcPT);
-
-  registerMaterial(FracturesPorousMedia);
-  registerMaterial(FracturesFluidFlow);
-  registerMaterial(FracturesHeatTransport);
-  registerMaterial(FracturesSolidMechanics);
-  registerMaterial(FracturesChemicalReactions);
-  registerMaterial(FracturesGeothermal);
-
-
-  registerMaterial(FracManPorousMedia);
-  registerMaterial(FracManFluidFlow);
-  registerMaterial(FracManHeatTransport);
-  registerMaterial(FracManSolidMechanics);
-  registerMaterial(FracManChemicalReactions);
-  registerMaterial(FracManGeothermal);
 
   // ===========
   // UserObjects
