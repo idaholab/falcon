@@ -59,11 +59,6 @@ Kernels
 
 #include "InjectionSourceSink.h"
 
-#include "CoefDiffusion.h"
-
-#include "Convection.h"
-#include "CoupledConvection.h"
-
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 DGKernels
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -218,13 +213,6 @@ FalconApp::registerObjects(Factory & factory)
 
   //miscellaneous kernels
   registerKernel(InjectionSourceSink);
-
-  //generic diffusion kernels
-  registerKernel(CoefDiffusion);
-
-  //generic convection kernels
-  registerKernel(Convection);
-  registerKernel(CoupledConvection);
 
   // =========
   // DGKernels
