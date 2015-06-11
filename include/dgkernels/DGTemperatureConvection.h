@@ -39,9 +39,9 @@ class DGTemperatureConvection : public DGKernel
     virtual Real computeQpResidual(Moose::DGResidualType type);
     virtual Real computeQpJacobian(Moose::DGJacobianType type);
 
-    MaterialProperty<Real> & _specific_heat_water;
-    MaterialProperty<RealGradient> & _darcy_mass_flux_water;
-    MaterialProperty<RealGradient> & _darcy_mass_flux_water_neighbor;
+    const MaterialProperty<Real> & _specific_heat_water;
+    const MaterialProperty<RealGradient> & _darcy_mass_flux_water;
+    const MaterialProperty<RealGradient> & _darcy_mass_flux_water_neighbor;
 
     /**
      * A scaling factor for spectral radius

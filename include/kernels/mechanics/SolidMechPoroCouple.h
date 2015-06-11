@@ -37,7 +37,7 @@ public:
 
 protected:
   unsigned int _pressure_var;
-  MaterialProperty<Real> & _biot_coeff;
+  const MaterialProperty<Real> & _biot_coeff;
   VariableGradient & _grad_pressure;
   VariableValue  & _pressure_val;
 

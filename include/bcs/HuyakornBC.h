@@ -44,9 +44,9 @@ protected:
   virtual Real computeQpResidual();
 
   VariableGradient & _grad_p;
-  MaterialProperty<Real> &_lamda;
-  MaterialProperty<Real> &_km;
-  MaterialProperty<Real> &_dT_dP;
+  const MaterialProperty<Real> &_lamda;
+  const MaterialProperty<Real> &_km;
+  const MaterialProperty<Real> &_dT_dP;
 private:
   Real _value;
 };

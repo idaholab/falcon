@@ -44,10 +44,10 @@ protected:
   VariableGradient & _grad_z_disp_old;
   bool _rigid_rock;
 
-  MaterialProperty<Real> & _porosity;
-  MaterialProperty<Real> & _compressibility;
-  MaterialProperty<Real> & _biot_coeff;
-  MaterialProperty<Real> & _biot_modulus;
+  const MaterialProperty<Real> & _porosity;
+  const MaterialProperty<Real> & _compressibility;
+  const MaterialProperty<Real> & _biot_coeff;
+  const MaterialProperty<Real> & _biot_modulus;
 //  VariableValue  & _porosity;
 //  VariableValue  & _porosity_old;
   VariableValue & _u_old;

@@ -41,8 +41,8 @@ class DGFunctionTemperatureConvectionInflowBC : public IntegratedBC
     virtual Real computeQpResidual();
     virtual Real computeQpJacobian();
 
-    MaterialProperty<Real> & _specific_heat_water;
-    MaterialProperty<RealGradient> & _darcy_mass_flux_water;
+    const MaterialProperty<Real> & _specific_heat_water;
+    const MaterialProperty<RealGradient> & _darcy_mass_flux_water;
 
     Function & _func;
 };

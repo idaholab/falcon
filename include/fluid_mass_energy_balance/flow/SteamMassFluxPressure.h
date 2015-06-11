@@ -37,9 +37,9 @@ protected:
 
   unsigned int _h_var;
   VariableGradient & _grad_p;
-  MaterialProperty<Real> & _Dtau_steamDP;
-  MaterialProperty<Real> & _Dtau_steamDH;
-  MaterialProperty<Real> &_tau_steam;
-  MaterialProperty<RealGradient> & _darcy_mass_flux_steam;
+  const MaterialProperty<Real> & _Dtau_steamDP;
+  const MaterialProperty<Real> & _Dtau_steamDH;
+  const MaterialProperty<Real> &_tau_steam;
+  const MaterialProperty<RealGradient> & _darcy_mass_flux_steam;
 };
 #endif //STEAMMASSFLUXPRESSURE

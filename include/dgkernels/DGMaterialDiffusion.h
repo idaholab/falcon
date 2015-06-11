@@ -39,8 +39,8 @@ class DGMaterialDiffusion : public DGKernel
     virtual Real computeQpJacobian(Moose::DGJacobianType type);
 
     std::string _prop_name;
-    MaterialProperty<Real> & _diff;
-    MaterialProperty<Real> & _diff_neighbor;
+    const MaterialProperty<Real> & _diff;
+    const MaterialProperty<Real> & _diff_neighbor;
 
     /*
      * Penalty parameter

@@ -37,9 +37,9 @@ protected:
 
   unsigned int _h_var;
   VariableGradient & _grad_p;
-  MaterialProperty<Real> & _Dtau_waterDP;
-  MaterialProperty<Real> & _Dtau_waterDH;
-  MaterialProperty<Real> & _tau_water;
-  MaterialProperty<RealGradient> &   _darcy_mass_flux_water;
+  const MaterialProperty<Real> & _Dtau_waterDP;
+  const MaterialProperty<Real> & _Dtau_waterDH;
+  const MaterialProperty<Real> & _tau_water;
+  const MaterialProperty<RealGradient> &   _darcy_mass_flux_water;
 };
 #endif //WATERMASSFLUXPRESSURE

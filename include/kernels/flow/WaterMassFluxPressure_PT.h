@@ -35,6 +35,6 @@ protected:
 
   virtual Real computeQpJacobian();
 
-  MaterialProperty<Real> & _tau_water;
+  const MaterialProperty<Real> & _tau_water;
 };
 #endif //WATERMASSFLUXPRESSURE
