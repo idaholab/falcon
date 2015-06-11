@@ -36,9 +36,9 @@ protected:
 
     VariableGradient & _grad_T;
     unsigned int _p_var;
-    MaterialProperty<Real> &_thermal_conductivity;
-      MaterialProperty<Real> &_dTdP_H;
-    MaterialProperty<Real> &_dTdH_P;
+    const MaterialProperty<Real> &_thermal_conductivity;
+    const MaterialProperty<Real> &_dTdP_H;
+    const MaterialProperty<Real> &_dTdH_P;
 
 };
 #endif //ENTHALPYDIFFUSION

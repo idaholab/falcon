@@ -43,8 +43,8 @@ public:
 protected:
   virtual Real computeValue();
 
-  MaterialProperty<RealGradient> & _darcy_flux_water;
-  MaterialProperty<RealGradient> & _darcy_flux_steam;
+  const MaterialProperty<RealGradient> & _darcy_flux_water;
+  const MaterialProperty<RealGradient> & _darcy_flux_steam;
   MooseEnum _phase;
   int _i;
 

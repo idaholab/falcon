@@ -33,14 +33,14 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
 
-    MaterialProperty<Real> & _density_water;
-    MaterialProperty<Real> & _density_water_old;
-    MaterialProperty<Real> & _dwdp;
+    const MaterialProperty<Real> & _density_water;
+    const MaterialProperty<Real> & _density_water_old;
+    const MaterialProperty<Real> & _dwdp;
 
     bool _has_chem_reactions;
-    MaterialProperty<Real> & _porosity;
-    MaterialProperty<Real> & _compressibility;
-    MaterialProperty<Real> * _porosity_old;
+    const MaterialProperty<Real> & _porosity;
+    const MaterialProperty<Real> & _compressibility;
+    const MaterialProperty<Real> * _porosity_old;
   VariableValue & _u_old;
 
 };

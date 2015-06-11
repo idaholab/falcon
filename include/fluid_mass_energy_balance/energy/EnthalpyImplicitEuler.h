@@ -37,11 +37,11 @@ protected:
   VariableValue & _temperature;
   VariableValue & _temperature_old;
 
-  MaterialProperty<Real> & _density;
-  MaterialProperty<Real> & _density_old;
+  const MaterialProperty<Real> & _density;
+  const MaterialProperty<Real> & _density_old;
 
-  MaterialProperty<Real> & _porosity;
-  MaterialProperty<Real> & _density_rock;
+  const MaterialProperty<Real> & _porosity;
+  const MaterialProperty<Real> & _density_rock;
 
   VariableValue & _u_old;
 };

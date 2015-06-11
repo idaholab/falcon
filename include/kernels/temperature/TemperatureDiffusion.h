@@ -33,7 +33,7 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
 
-  MaterialProperty<Real> &_thermal_conductivity;
+  const MaterialProperty<Real> &_thermal_conductivity;
 
 };
 #endif //TEMPERATUREDIFFUSION

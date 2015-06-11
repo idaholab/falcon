@@ -35,13 +35,13 @@ protected:
   virtual Real computeQpJacobian();
   virtual Real computeQpOffDiagJacobian(unsigned int jvar);
 
-    MaterialProperty<Real> & _Dtau_steamDH;
-    MaterialProperty<Real> & _Dtau_steamDP;
-    MaterialProperty<RealGradient> & _darcy_mass_flux_steam;
-    MaterialProperty<Real> & _tau_steam;
-    MaterialProperty<Real> &_enthalpy_steam;
-    MaterialProperty<Real> &_denthalpy_steamdH_P;
-    MaterialProperty<Real> &_denthalpy_steamdP_H;
+    const MaterialProperty<Real> & _Dtau_steamDH;
+    const MaterialProperty<Real> & _Dtau_steamDP;
+    const MaterialProperty<RealGradient> & _darcy_mass_flux_steam;
+    const MaterialProperty<Real> & _tau_steam;
+    const MaterialProperty<Real> &_enthalpy_steam;
+    const MaterialProperty<Real> &_denthalpy_steamdH_P;
+    const MaterialProperty<Real> &_denthalpy_steamdP_H;
 
     unsigned int  _p_var;
     VariableGradient & _grad_p;

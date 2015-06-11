@@ -58,24 +58,24 @@ private:
     unsigned int _p_var;
     VariableGradient & _grad_T;
 
-    MaterialProperty<Real> & _dTdH;
-    MaterialProperty<Real> & _dTdP;
-    MaterialProperty<Real> & _enthalpy_water;
-    MaterialProperty<Real> & _enthalpy_steam;
-    MaterialProperty<Real> &_denthalpy_waterdH_P;
-    MaterialProperty<Real> &_denthalpy_steamdH_P;
-    MaterialProperty<Real> &_denthalpy_waterdP_H;
-    MaterialProperty<Real> &_denthalpy_steamdP_H;
+    const MaterialProperty<Real> & _dTdH;
+    const MaterialProperty<Real> & _dTdP;
+    const MaterialProperty<Real> & _enthalpy_water;
+    const MaterialProperty<Real> & _enthalpy_steam;
+    const MaterialProperty<Real> &_denthalpy_waterdH_P;
+    const MaterialProperty<Real> &_denthalpy_steamdH_P;
+    const MaterialProperty<Real> &_denthalpy_waterdP_H;
+    const MaterialProperty<Real> &_denthalpy_steamdP_H;
 
-    MaterialProperty<Real> & _Dtau_waterDP;
-    MaterialProperty<Real> & _Dtau_waterDH;
-    MaterialProperty<Real> & _Dtau_steamDP;
-    MaterialProperty<Real> & _Dtau_steamDH;
-    MaterialProperty<Real> & _tau_water;
-    MaterialProperty<Real> & _tau_steam;
-    MaterialProperty<RealGradient> & _darcy_mass_flux_water;
-    MaterialProperty<RealGradient> & _darcy_mass_flux_steam;
-    MaterialProperty<Real> & _thermal_conductivity;
+    const MaterialProperty<Real> & _Dtau_waterDP;
+    const MaterialProperty<Real> & _Dtau_waterDH;
+    const MaterialProperty<Real> & _Dtau_steamDP;
+    const MaterialProperty<Real> & _Dtau_steamDH;
+    const MaterialProperty<Real> & _tau_water;
+    const MaterialProperty<Real> & _tau_steam;
+    const MaterialProperty<RealGradient> & _darcy_mass_flux_water;
+    const MaterialProperty<RealGradient> & _darcy_mass_flux_steam;
+    const MaterialProperty<Real> & _thermal_conductivity;
 
     //  std::vector<RealGradient> & _grad_p;
 

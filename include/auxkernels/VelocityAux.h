@@ -43,9 +43,9 @@ public:
 protected:
   virtual Real computeValue();
 
-  MaterialProperty<RealGradient> & _darcy_flux_water;
-  MaterialProperty<RealGradient> & _darcy_flux_steam;
-  MaterialProperty<Real> & _porosity;
+  const MaterialProperty<RealGradient> & _darcy_flux_water;
+  const MaterialProperty<RealGradient> & _darcy_flux_steam;
+  const MaterialProperty<Real> & _porosity;
   std::string _phase;
   int _i;
 

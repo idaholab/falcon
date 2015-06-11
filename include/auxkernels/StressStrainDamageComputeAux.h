@@ -57,10 +57,10 @@ protected:
   VectorValue<Number> _stress;
   VectorValue<Number> _strain;
 
-  MaterialProperty<RealVectorValue> & _stress_normal_vector;
-  MaterialProperty<RealVectorValue> & _stress_shear_vector;
-  MaterialProperty<RealVectorValue> & _strain_normal_vector;
-  MaterialProperty<RealVectorValue> & _strain_shear_vector;
+  const MaterialProperty<RealVectorValue> & _stress_normal_vector;
+  const MaterialProperty<RealVectorValue> & _stress_shear_vector;
+  const MaterialProperty<RealVectorValue> & _strain_normal_vector;
+  const MaterialProperty<RealVectorValue> & _strain_shear_vector;
 
 };
 
