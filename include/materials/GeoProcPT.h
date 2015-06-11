@@ -26,20 +26,29 @@ InputParameters validParams<GeoProcPT>();
 class GeoProcPT : public Material
 {
   public:
+
     GeoProcPT(const std::string & name, InputParameters parameters);
 
   protected:
+
     virtual void computeProperties();
+    virtual void computeQpProperties();
+
+    // ===============
+    // local functions
+    // ===============
+    Real computeTempBasedWaterDens(Real temp);
+    Real computeTempBasedWaterVisc(Real temp);
+    Real computeTempBasedWaterPartialDensOverPartialTemp(Real temp);
 
     // ========================================================
     // flags to indicate the involvement of terms and equations
     // ========================================================
     bool _has_pres; // flag for pressure-based mass balance equation
     bool _has_temp; // flag for temperature-based energy balance equation
-    bool _has_chem; // flag for chemical reaction terms
 
-    bool _temp_dependent_weos; // falg for temperature-based EOS
-    bool _pres_dependent_perm; // flag for pressure-based permeability
+    bool _temp_dep_weos; // falg for temperature-based EOS
+    bool _pres_dep_perm; // flag for pressure-based permeability
 
     // =====================
     // user-input parameters
@@ -54,27 +63,21 @@ class GeoProcPT : public Material
     Real _iwsph; // user-input water specific heat
     Real _ithco; // user-input thermal conductivity of the reservoir
     Real _igfor; // user-input gravity amplitude
-    Real _igfox; // user-input x-component of gravity directional vector
-    Real _igfoy; // user-input y-component of gravity directional vector
-    Real _igfoz; // user-input z-component of gravity directional vector
+
+    RealGradient _igvec; // user-input gravity unit directional vector
+    RealGradient _igrdp; // user-input pressure gradient
 
     // ========================
     // main nonlinear variables
     // ========================
-    VariableValue & _wpres; // water pressure
-    VariableValue & _wtemp; // water temperature
+    VariableValue & _pres; // water pressure
+    VariableValue & _temp; // water temperature
 
-    VariableValue & _wpres_old; // water pressure at previous timestep
-    VariableValue & _wtemp_old; // water temperature at previous timestep
+    VariableGradient & _grad_pres; // gradient of water pressure
 
-    // =======================================
-    // main nonliear variable gradient vectors
-    // =======================================
-    VariableGradient & _wgradp; // water pressure gradient
-
-    // ==============================
-    // material properties on the fly
-    // ==============================
+    // ===================
+    // material properties
+    // ===================
     MaterialProperty<Real> & _perm; // rock permeability
     MaterialProperty<Real> & _poro; // rock porosity
     MaterialProperty<Real> & _rrho; // rock density
@@ -84,21 +87,17 @@ class GeoProcPT : public Material
     MaterialProperty<Real> & _wvis; // water viscosity
     MaterialProperty<Real> & _wtau; // water tau
     MaterialProperty<Real> & _wsph; // water specific heat
-    MaterialProperty<Real> & _thco; // porous media thermal conductivity
+    MaterialProperty<Real> & _thco; // thermal conductivity of the reservoir
     MaterialProperty<Real> & _gfor; // gravity magnitude
+    MaterialProperty<Real> & _drot; // water partial rho over partial temperature
 
-    MaterialProperty<Real> & _wDtauDpres; // water partial tau over partial pressure
-    MaterialProperty<Real> & _wDrhoDtemp; // water partial rho over partial temperature
-    MaterialProperty<Real> & _wDrhoDpres; // water partial rho over partial pressure
+    MaterialProperty<RealGradient> & _guvec; // gravity unit directional vector
+    MaterialProperty<RealGradient> & _cgrdp; // constant pressure gradient
+    MaterialProperty<RealGradient> & _wdmfp; // water Darcy mass flux due to pressure
+    MaterialProperty<RealGradient> & _wdmfe; // water Darcy mass flux due to elevation
+    MaterialProperty<RealGradient> & _wdmfx; // water Darcy mass flux
+    MaterialProperty<RealGradient> & _wdflx; // water Darcy flux
 
-    MaterialProperty<Real> * _poro_old;   // rock porosity at previous timestep
-
-    MaterialProperty<RealGradient> & _wdflux;   // water Darcy flux
-    MaterialProperty<RealGradient> & _wdmflux;  // water Darcy mass flux
-    MaterialProperty<RealGradient> & _wdmfluxp; // water Darcy mass flux due to pressure
-    MaterialProperty<RealGradient> & _wdmfluxe; // water Darcy mass flux due to elevation
-
-    MaterialProperty<RealVectorValue> & _gvec; // gravity directional unit vector
 };
 
 #endif //GEOPROCPT_H

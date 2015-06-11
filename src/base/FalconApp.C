@@ -12,16 +12,22 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Baseline dependencies (do NOT touch)
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #include "Moose.h"
 #include "FalconApp.h"
 #include "AppFactory.h"
 #include "ActionFactory.h"
 #include "Syntax.h"
 
-// Kernels
-///////////////////////////////////////////////////////////////
-//      solid mechanics                                      //
-///////////////////////////////////////////////////////////////
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Kernels
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+// ===============
+// solid mechanics
+// ===============
 #include "SolidMechXFalcon.h"
 #include "SolidMechYFalcon.h"
 #include "SolidMechZFalcon.h"
@@ -37,9 +43,9 @@
 #include "SolidMechPoroCoupleZ.h"
 #include "Gravity.h"
 
-///////////////////////////////////////////////////////////////
-//      Single phase formulation: pressure & temperature     //
-///////////////////////////////////////////////////////////////
+// ================================================
+// single phase formulation: pressure & temperature
+// ================================================
 #include "TemperatureTimeDerivative.h"
 #include "TemperatureDiffusion.h"
 #include "TemperatureConvection.h"
@@ -51,48 +57,28 @@
 #include "WaterMassFluxElevation_PT.h"
 #include "PressureTimeDerivative.h"
 
-//////////////////////////////////////////////////////////////
-//     Miscellaneous                                        //
-//////////////////////////////////////////////////////////////
 #include "InjectionSourceSink.h"
 
-//////////////////////////////////////////////////////////////
-//     Generic diffusion                                    //
-//////////////////////////////////////////////////////////////
 #include "CoefDiffusion.h"
 
-//////////////////////////////////////////////////////////////
-//     Generic convection                                   //
-//////////////////////////////////////////////////////////////
 #include "Convection.h"
 #include "CoupledConvection.h"
 
-//////////////////////////////////////////////////////////////
-//     SUPG                                                 //
-//////////////////////////////////////////////////////////////
-#include "SUPGOneD.h"
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DGKernels
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-// DGKernels
-#include "DGConvection.h"
-#include "DGCoupledConvection.h"
-#include "DGMaterialDiffusion.h"
-#include "DGTemperatureConvection.h"
-
-// AuxKernels
-#include "CoupledTemperatureAux.h"         // T as functon of (P,H) -two phase formulation
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+AuxKernels
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #include "DarcyFluxAux.h"
 #include "VelocityAux.h"
 #include "FracManMapAux.h"
 #include "VariableGradientAux.h"
 
-// BCs
-#include "DGConvectionInflowBC.h"
-#include "DGConvectionOutflowBC.h"
-#include "DGCoupledConvectionInflowBC.h"
-#include "DGCoupledConvectionOutflowBC.h"
-#include "DGFunctionTemperatureConvectionInflowBC.h"
-#include "DGFunctionMaterialDiffusionBC.h"
-#include "DGTemperatureConvectionOutflowBC.h"
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BCs
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #include "PressureNeumannBC2.h"
 #include "GravityNeumannBC.h"
 #include "OutFlowBC.h"
@@ -101,9 +87,13 @@
 #include "PressureBC.h"
 #include "PressureOutFlowBC.h"
 
-// ICs
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ICs
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-// Materials
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Materials
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #include "Constant.h"
 #include "PorousMedia.h"
 #include "FluidFlow.h"
@@ -111,6 +101,7 @@
 #include "SolidMechanics.h"
 #include "ChemicalReactions.h"
 #include "Geothermal.h"
+#include "GeoProcPT.h"
 
 #include "FracturesPorousMedia.h"
 #include "FracturesFluidFlow.h"
@@ -127,31 +118,29 @@
 #include "FracManChemicalReactions.h"
 #include "FracManGeothermal.h"
 
-// UserObjects
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UserObjects
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #include "WaterSteamEOS.h"
 
-// PostProcessors
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+PostProcessors
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-// Actions
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Actions
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-////////////////////////////////////////////////////////////////
-///      Souce and Sink, volume avagerged                     //
-////////////////////////////////////////////////////////////////
-
-
-///////////////////////////////////////////////////////////////
-////    Single phase isothermal formulation: pressure        //
-///////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////
-//       Two phase formulation: pressure & enthalpy         //
-//////////////////////////////////////////////////////////////
-
-
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+MOOSE physics modules
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #include "ChemicalReactionsApp.h"
 #include "PhaseFieldApp.h"
 
 
+/*******************************************************************************
+Input template (do NOT touch)
+*******************************************************************************/
 template<>
 InputParameters validParams<FalconApp>()
 {
@@ -159,6 +148,10 @@ InputParameters validParams<FalconApp>()
   return params;
 }
 
+
+/*******************************************************************************
+Routine: FalconApp -- constructor
+*******************************************************************************/
 FalconApp::FalconApp(const std::string & name, InputParameters parameters) :
     MooseApp(name, parameters)
 {
@@ -175,6 +168,10 @@ FalconApp::FalconApp(const std::string & name, InputParameters parameters) :
   FalconApp::associateSyntax(_syntax, _action_factory);
 }
 
+
+/*******************************************************************************
+Routine: registerApps (no NOT touch)
+*******************************************************************************/
 extern "C" void FalconApp__registerApps() { FalconApp::registerApps(); }
 void
 FalconApp::registerApps()
@@ -182,10 +179,16 @@ FalconApp::registerApps()
   registerApp(FalconApp);
 }
 
+
+/*******************************************************************************
+Routine: registerObjects
+*******************************************************************************/
 void
 FalconApp::registerObjects(Factory & factory)
 {
-  //mechanics
+  // ===============
+  // solid mechanics
+  // ===============
   registerNamedKernel(SolidMechXFalcon, "SolidMechXFalcon");
   registerNamedKernel(SolidMechYFalcon, "SolidMechYFalcon");
   registerNamedKernel(SolidMechZFalcon, "SolidMechZFalcon");
@@ -223,31 +226,22 @@ FalconApp::registerObjects(Factory & factory)
   registerKernel(Convection);
   registerKernel(CoupledConvection);
 
-  //SUPG kernels
-  registerKernel(SUPGOneD);
+  // =========
+  // DGKernels
+  // =========
 
-  //dgkernels
-  registerKernel(DGConvection);
-  registerKernel(DGCoupledConvection);
-  registerKernel(DGMaterialDiffusion);
-  registerKernel(DGTemperatureConvection);
-
-  //auxkernels
-  registerAux(CoupledTemperatureAux);
+  // ==========
+  // AuxKernels
+  // ==========
   registerAux(DarcyFluxAux);
   registerAux(VelocityAux);
   registerAux(FracManMapAux);
   registerAux(VariableGradientAux);
 
-  //BCs
+  // ===
+  // BCs
+  // ===
   registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
-  registerBoundaryCondition(DGConvectionInflowBC);
-  registerBoundaryCondition(DGConvectionOutflowBC);
-  registerBoundaryCondition(DGCoupledConvectionInflowBC);
-  registerBoundaryCondition(DGCoupledConvectionOutflowBC);
-  registerBoundaryCondition(DGFunctionTemperatureConvectionInflowBC);
-  registerBoundaryCondition(DGFunctionMaterialDiffusionBC);
-  registerBoundaryCondition(DGTemperatureConvectionOutflowBC);
   registerBoundaryCondition(GravityNeumannBC);
   registerBoundaryCondition(OutFlowBC);
   registerBoundaryCondition(StepDirichletBC);
@@ -255,9 +249,13 @@ FalconApp::registerObjects(Factory & factory)
   registerBoundaryCondition(PressureBC);
   registerBoundaryCondition(PressureOutFlowBC);
 
+  // ===
   // ICs
+  // ===
 
-  //materials
+  // =========
+  // Materials
+  // =========
   registerMaterial(Constant);
   registerMaterial(PorousMedia);
   registerMaterial(FluidFlow);
@@ -265,6 +263,7 @@ FalconApp::registerObjects(Factory & factory)
   registerMaterial(SolidMechanics);
   registerMaterial(ChemicalReactions);
   registerMaterial(Geothermal);
+  registerMaterial(GeoProcPT);
 
   registerMaterial(FracturesPorousMedia);
   registerMaterial(FracturesFluidFlow);
@@ -281,26 +280,21 @@ FalconApp::registerObjects(Factory & factory)
   registerMaterial(FracManChemicalReactions);
   registerMaterial(FracManGeothermal);
 
-  //userobjects
+  // ===========
+  // UserObjects
+  // ===========
   registerUserObject(WaterSteamEOS);
 
-  //postprocessors
+  // ==============
+  // PostProcessors
+  // ==============
 
-  /**
-   *fluid mass energy balance objects
-   */
-  //energy
-
-  //source sink
-
-  //fluid-mass flow-two phase formulation
-
-  //isothermal flow for pressure field
 }
 
 
-
+/*******************************************************************************
+Routine: registerApps
+*******************************************************************************/
 void
 FalconApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
-{
-}
+{}
