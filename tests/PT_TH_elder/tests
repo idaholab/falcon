@@ -1,0 +1,16 @@
+[Tests]
+  [./PT_TH_elder_wseos]
+    type     = 'Exodiff'
+    input    = 'step2_wseos.i'
+    exodiff  = 'out2_wseos.e'
+    abs_zero = 1.0e-07
+    rel_err  = 1.0e-04
+  [../]
+  [./PT_TH_elder_comp]
+    type     = 'Exodiff'
+    input    = 'step2_comp.i'
+    exodiff  = 'out2_comp.e'
+    abs_zero = 1.0e-07
+    rel_err  = 1.0e-04
+  [../]
+[]

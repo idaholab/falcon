@@ -1,7 +1,0 @@
-[Tests]
-  [./test]
-    type = 'Exodiff'
-    input = 'pressure_displacement_test.i'
-    exodiff = 'out.e'
-  [../]
-[]

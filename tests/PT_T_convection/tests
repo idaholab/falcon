@@ -1,0 +1,16 @@
+[Tests]
+  [./PT_T_convection]
+    type     = 'Exodiff'
+    input    = 'inp1.i'
+    exodiff  = 'out1.e'
+    abs_zero = 1.0e-07
+    rel_err  = 1.0e-04
+  [../]
+  [./PT_T_convection_SUPG]
+    type     = 'Exodiff'
+    input    = 'inp2.i'
+    exodiff  = 'out2.e'
+    abs_zero = 1.0e-07
+    rel_err  = 1.0e-04
+  [../]
+[]

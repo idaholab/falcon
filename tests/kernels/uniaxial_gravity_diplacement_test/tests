@@ -1,9 +1,0 @@
-[Tests]
-  [./test]
-    type = 'Exodiff'
-    input = 'uniaxial_gravity_displacement_test.i'
-    exodiff = 'out.e'
-    abs_zero = 1e-09
-    skip = 'fixing'
-  [../]
-[]

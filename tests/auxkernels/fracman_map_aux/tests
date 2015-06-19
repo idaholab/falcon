@@ -1,8 +1,0 @@
-[Tests]
-  [./test]
-    type = 'Exodiff'
-    input = 'test_input.i'
-    exodiff = 'test_out.e'
-    skip = 'fixing'
-  [../]
-[]
