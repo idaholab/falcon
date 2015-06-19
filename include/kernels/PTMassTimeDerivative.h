@@ -12,31 +12,30 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#include "Material.h"
-#include "WaterMassFluxPressure_PT.h"
+#include "TimeDerivative.h"
+
+#ifndef PTMASSTIMEDERIVATIVE_H
+#define PTMASSTIMEDERIVATIVE_H
+
+//Forward Declarations
+class PTMassTimeDerivative;
 
 template<>
-InputParameters validParams<WaterMassFluxPressure_PT>()
+InputParameters validParams<PTMassTimeDerivative>();
+
+class PTMassTimeDerivative : public TimeDerivative
 {
-  InputParameters params = validParams<Diffusion>();
-  return params;
-}
+  public:
 
-WaterMassFluxPressure_PT::WaterMassFluxPressure_PT(const std::string & name,
-                                             InputParameters parameters)
-  :Diffusion(name, parameters),
-   _tau_water(getMaterialProperty<Real>("tau_water"))
-{}
+    PTMassTimeDerivative(const std::string & name, InputParameters parameters);
 
-Real
-WaterMassFluxPressure_PT::computeQpResidual()
-{
- return _tau_water[_qp]*Diffusion::computeQpResidual();
-}
+  protected:
 
-Real
-WaterMassFluxPressure_PT::computeQpJacobian()
-{
-  return _tau_water[_qp]*Diffusion::computeQpJacobian();
-}
+    virtual Real computeQpResidual();
+    virtual Real computeQpJacobian();
 
+    MaterialProperty<Real> & _poro;
+    MaterialProperty<Real> & _wrho;
+    MaterialProperty<Real> & _drop;
+};
+#endif //PTMASSTIMEDERIVATIVE_H

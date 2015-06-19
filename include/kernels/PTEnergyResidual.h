@@ -12,38 +12,44 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#include "TimeDerivative.h"
+#ifndef PTENERGYRESIDUAL_H
+#define PTENERGYRESIDUAL_H
 
-#ifndef TEMPERATURETIMEDERIVATIVE
-#define TEMPERATURETIMEDERIVATIVE
+#include "Kernel.h"
+#include "Material.h"
 
-//Forward Declarations
-class TemperatureTimeDerivative;
+class PTEnergyResidual;
 
 template<>
-InputParameters validParams<TemperatureTimeDerivative>();
+InputParameters validParams<PTEnergyResidual>();
 
-class TemperatureTimeDerivative : public TimeDerivative
+class PTEnergyResidual : public Kernel
 {
-public:
+  public:
 
-  TemperatureTimeDerivative(const std::string & name, InputParameters parameters);
+    PTEnergyResidual(const std::string & name, InputParameters parameters);
 
-protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
+  protected:
 
-    MaterialProperty<Real> & _density_water;
-    MaterialProperty<Real> & _density_water_old;
+    virtual Real computeQpResidual();
+    virtual Real computeQpJacobian();
 
-    bool _has_chem_reactions;
-    MaterialProperty<Real> & _porosity;
-    MaterialProperty<Real> * _porosity_old;
+    bool _has_coupled_pres;
 
-    MaterialProperty<Real> & _specific_heat_water;
-    MaterialProperty<Real> & _specific_heat_rock;
-    MaterialProperty<Real> & _density_rock;
+    MaterialProperty<unsigned int> & _stab;
 
-    VariableValue & _u_old;
+    MaterialProperty<Real> & _thco;
+    MaterialProperty<Real> & _wsph;
+    MaterialProperty<Real> & _epor;
+    MaterialProperty<Real> & _tau1;
+    MaterialProperty<RealGradient> & _wdmfx;
+    MaterialProperty<RealGradient> & _evelo;
+
+  private:
+
+    unsigned int _pres_var;
+
+    Real r;
+    Real sres;
 };
-#endif //TEMPERATURETIMEDERIVATIVE
+#endif //PTENERGYRESIDUAL_H

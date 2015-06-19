@@ -12,32 +12,28 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef WATERMASSFLUXELEVATION_PT
-#define WATERMASSFLUXELEVATION_PT
+#ifndef PTFLUIDVELOCITYAUX_H
+#define PTFLUIDVELOCITYAUX_H
 
-#include "Kernel.h"
-#include "Material.h"
+#include "PTDarcyFluxAux.h"
 
-//Forward Declarations
-class WaterMassFluxElevation_PT;
+class PTFluidVelocityAux;
 
 template<>
-InputParameters validParams<WaterMassFluxElevation_PT>();
+InputParameters validParams<PTFluidVelocityAux>();
 
-class WaterMassFluxElevation_PT : public Kernel
+class PTFluidVelocityAux : public PTDarcyFluxAux
 {
-public:
+  public:
 
-  WaterMassFluxElevation_PT(const std::string & name, InputParameters parameters);
+    PTFluidVelocityAux(const std::string & name, InputParameters parameters);
 
-protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
+    virtual ~PTFluidVelocityAux() {}
 
-    MaterialProperty<Real> & _density_water;
-    MaterialProperty<Real> & _tau_water;
-    MaterialProperty<Real> & _gravity;
-    MaterialProperty<RealVectorValue> & _gravity_vector;
+  protected:
 
+    virtual Real computeValue();
+
+    MaterialProperty<Real> & _poro;
 };
-#endif //WATERMASSFLUXELEVATION
+#endif //PTFLUIDVELOCITYAUX_H

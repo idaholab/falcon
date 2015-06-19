@@ -12,31 +12,43 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef GEOTHERMAL_H
-#define GEOTHERMAL_H
+#ifndef PTMASSRESIDUAL_H
+#define PTMASSRESIDUAL_H
 
-#include "FluidFlow.h"
-#include "HeatTransport.h"
-#include "SolidMechanics.h"
-#include "ChemicalReactions.h"
+#include "Kernel.h"
+#include "Material.h"
 
-
-//Forward Declarations
-class Geothermal;
+class PTMassResidual;
 
 template<>
-InputParameters validParams<Geothermal>();
+InputParameters validParams<PTMassResidual>();
 
-/**
- * Simple material with Geothermal properties.
- */
-class Geothermal : public FluidFlow, public HeatTransport, public SolidMechanics, public ChemicalReactions
+class PTMassResidual : public Kernel
 {
-public:
-  Geothermal(const std::string & name,
-             InputParameters parameters);
+  public:
 
-protected:
-  virtual void computeProperties();
+    PTMassResidual(const std::string & name,
+                          InputParameters parameters);
+
+  protected:
+
+    virtual Real computeQpResidual();
+    virtual Real computeQpJacobian();
+    virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+
+    bool _has_coupled_temp;
+
+    MaterialProperty<Real> & _wrho;
+    MaterialProperty<Real> & _wtau;
+    MaterialProperty<Real> & _gfor;
+    MaterialProperty<Real> & _drot;
+
+    MaterialProperty<RealGradient> & _guvec;
+    MaterialProperty<RealGradient> & _wdmfx;
+
+  private:
+
+    unsigned int _temp_var;
 };
-#endif //GEOTHERMAL_H
+
+#endif //PTMASSRESIDUAL_H

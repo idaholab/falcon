@@ -12,22 +12,22 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef GEOPROCPT_H
-#define GEOPROCPT_H
+#ifndef PTGEOTHERMAL_H
+#define PTGEOTHERMAL_H
 
 #include "Material.h"
 
 //Forward Declarations
-class GeoProcPT;
+class PTGeothermal;
 
 template<>
-InputParameters validParams<GeoProcPT>();
+InputParameters validParams<PTGeothermal>();
 
-class GeoProcPT : public Material
+class PTGeothermal : public Material
 {
   public:
 
-    GeoProcPT(const std::string & name, InputParameters parameters);
+    PTGeothermal(const std::string & name, InputParameters parameters);
 
   protected:
 
@@ -37,9 +37,39 @@ class GeoProcPT : public Material
     // ===============
     // local functions
     // ===============
+
+    /* The following solely temperature-based water property functions
+       are only valid if we assume a constant total compressibility.
+       Thus instead we use the water-steam Equation of State, and
+       pressure-temperature based formulation for the liquid-only situation
+    */
     Real computeTempBasedWaterDens(Real temp);
     Real computeTempBasedWaterVisc(Real temp);
     Real computeTempBasedWaterPartialDensOverPartialTemp(Real temp);
+
+    /*! Compute water enthalpy and density in P-T based single-phase flow
+     *  @param[in]  inp          [0] pressure; [1] temperature
+     *  @param[in]  inpd         2x2 identity matrix
+     *  @param[out] out          [0] density;  [1] enthalpy
+     *  @param[out] outd         2x2 Jacobian matrix
+     *  @param[in]  nbdirs       Number of directions in differentiation
+     */
+    void computeWaterEquationOfStatePT_dv(Real inp[2], Real inpd[2][2],
+                                          Real out[2], Real outd[2][2],
+                                          int nbdirs);
+
+    /*! Compute water viscosity in P-T based single-phase flow
+     *  @param[in]  dens         water density
+     *  @param[in]  temp         water temperature
+     *  @param[out] visc         water viscosity
+     */
+    void computeViscosity(Real dens, Real temp, Real& visc);
+
+    // ================
+    // MOOSE enumerator
+    // ================
+    MooseEnum _istat; // user-input option for fluid propery formulation
+    MooseEnum _istab; // user-input option for stabilization
 
     // ========================================================
     // flags to indicate the involvement of terms and equations
@@ -47,7 +77,6 @@ class GeoProcPT : public Material
     bool _has_pres; // flag for pressure-based mass balance equation
     bool _has_temp; // flag for temperature-based energy balance equation
 
-    bool _temp_dep_weos; // falg for temperature-based EOS
     bool _pres_dep_perm; // flag for pressure-based permeability
 
     // =====================
@@ -70,14 +99,18 @@ class GeoProcPT : public Material
     // ========================
     // main nonlinear variables
     // ========================
-    VariableValue & _pres; // water pressure
-    VariableValue & _temp; // water temperature
+    VariableValue & _pres; // pressure
+    VariableValue & _temp; // temperature
 
-    VariableGradient & _grad_pres; // gradient of water pressure
+    VariableGradient & _grad_pres; // pressure gradient
+    VariableGradient & _grad_temp; // temperature gradient
 
     // ===================
     // material properties
     // ===================
+    MaterialProperty<unsigned int> & _stat; // fluid property formulation
+    MaterialProperty<unsigned int> & _stab; // stabilization options
+
     MaterialProperty<Real> & _perm; // rock permeability
     MaterialProperty<Real> & _poro; // rock porosity
     MaterialProperty<Real> & _rrho; // rock density
@@ -89,15 +122,18 @@ class GeoProcPT : public Material
     MaterialProperty<Real> & _wsph; // water specific heat
     MaterialProperty<Real> & _thco; // thermal conductivity of the reservoir
     MaterialProperty<Real> & _gfor; // gravity magnitude
-    MaterialProperty<Real> & _drot; // water partial rho over partial temperature
+    MaterialProperty<Real> & _epor; // see definition in the C file
+    MaterialProperty<Real> & _drop; // partial rho over partial pressure
+    MaterialProperty<Real> & _drot; // partial rho over partial temperature
+    MaterialProperty<Real> & _tau1; // SUPG tau1 
 
     MaterialProperty<RealGradient> & _guvec; // gravity unit directional vector
-    MaterialProperty<RealGradient> & _cgrdp; // constant pressure gradient
-    MaterialProperty<RealGradient> & _wdmfp; // water Darcy mass flux due to pressure
-    MaterialProperty<RealGradient> & _wdmfe; // water Darcy mass flux due to elevation
-    MaterialProperty<RealGradient> & _wdmfx; // water Darcy mass flux
     MaterialProperty<RealGradient> & _wdflx; // water Darcy flux
+    MaterialProperty<RealGradient> & _wdmfx; // water Darcy mass flux
+    MaterialProperty<RealGradient> & _evelo; // energy convective velocity
 
+  private:
+
+    RealGradient gradp;
 };
-
-#endif //GEOPROCPT_H
+#endif //PTGEOTHERMAL_H

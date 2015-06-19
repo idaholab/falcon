@@ -12,43 +12,27 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef VELOCITYAUX_H
-#define VELOCITYAUX_H
+#include "TimeDerivative.h"
 
-#include "AuxKernel.h"
+#ifndef PTENERGYTIMEDERIVATIVE_H
+#define PTENERGYTIMEDERIVATIVE_H
 
-
-//Forward Declarations
-class VelocityAux;
+class PTEnergyTimeDerivative;
 
 template<>
-InputParameters validParams<VelocityAux>();
+InputParameters validParams<PTEnergyTimeDerivative>();
 
-/**
- * Coupled auxiliary value
- */
-class VelocityAux : public AuxKernel
+class PTEnergyTimeDerivative : public TimeDerivative
 {
-public:
+  public:
 
-  /**
-   * Factory constructor, takes parameters so that all
-   * derived classes can be built using the same
-   * constructor.
-   */
-  VelocityAux(const std::string & name, InputParameters parameters);
+    PTEnergyTimeDerivative(const std::string & name, InputParameters parameters);
 
-  virtual ~VelocityAux() {}
+  protected:
 
-protected:
-  virtual Real computeValue();
+    virtual Real computeQpResidual();
+    virtual Real computeQpJacobian();
 
-  MaterialProperty<RealGradient> & _darcy_flux_water;
-  MaterialProperty<RealGradient> & _darcy_flux_steam;
-  MaterialProperty<Real> & _porosity;
-  std::string _phase;
-  int _i;
-
+    MaterialProperty<Real> & _epor;
 };
-
-#endif //VELOCITYAUX_H
+#endif //PTENERGYTIMEDERIVATIVE_H

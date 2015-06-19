@@ -12,28 +12,32 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef TEMPERATUREDIFFUSION
-#define TEMPERATUREDIFFUSION
+#ifndef PTENERGYOUTFLOWBC_H
+#define PTENERGYOUTFLOWBC_H
 
-#include "Diffusion.h"
+#include "IntegratedBC.h"
 #include "Material.h"
 
-class TemperatureDiffusion;
+class PTEnergyOutFlowBC;
 
 template<>
-InputParameters validParams<TemperatureDiffusion>();
+InputParameters validParams<PTEnergyOutFlowBC>();
 
-class TemperatureDiffusion : public Diffusion
+class PTEnergyOutFlowBC : public IntegratedBC
 {
-public:
+  public:
 
-  TemperatureDiffusion(const std::string & name, InputParameters parameters);
+    PTEnergyOutFlowBC(const std::string & name, InputParameters parameters);
 
-protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
+    virtual ~PTEnergyOutFlowBC(){}
 
-  MaterialProperty<Real> &_thermal_conductivity;
+  protected:
 
+    virtual Real computeQpResidual();
+    virtual Real computeQpJacobian();
+
+    MaterialProperty<Real> &_thco;
+
+    MaterialProperty<RealGradient> & _evelo;
 };
-#endif //TEMPERATUREDIFFUSION
+#endif //PTENERGYOUTFLOWBC_H

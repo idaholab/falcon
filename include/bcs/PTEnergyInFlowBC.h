@@ -12,31 +12,34 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef TEMPERATURECONVECTION
-#define TEMPERATURECONVECTION
+#ifndef PTENERGYINFLOWBC_H
+#define PTENERGYINFLOWBC_H
 
-#include "Kernel.h"
+#include "IntegratedBC.h"
 #include "Material.h"
 
-//Forward Declarations
-class TemperatureConvection;
+class PTEnergyInFlowBC;
 
 template<>
-InputParameters validParams<TemperatureConvection>();
+InputParameters validParams<PTEnergyInFlowBC>();
 
-class TemperatureConvection : public Kernel
+class PTEnergyInFlowBC : public IntegratedBC
 {
-public:
+  public:
 
-  TemperatureConvection(const std::string & name, InputParameters parameters);
+    PTEnergyInFlowBC(const std::string & name, InputParameters parameters);
 
-protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
+    virtual ~PTEnergyInFlowBC(){}
 
-  MaterialProperty<Real> & _specific_heat_water;
-  MaterialProperty<RealGradient> & _darcy_mass_flux_water;
-//  MooseArray<RealGradient> &_pore_velocity_water;
+  protected:
 
+    virtual Real computeQpResidual();
+    virtual Real computeQpJacobian();
+
+    MaterialProperty<Real> &_thco;
+
+    MaterialProperty<RealGradient> & _evelo;
+
+    Real _value;
 };
-#endif //TEMPERATURECONVECTION
+#endif //PTENERGYINFLOWBC_H

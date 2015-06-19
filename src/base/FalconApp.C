@@ -22,12 +22,53 @@ Baseline dependencies (do NOT touch)
 #include "Syntax.h"
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Actions
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+AuxKernels
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+#include "PTDarcyFluxAux.h"
+#include "PTFluidVelocityAux.h"
+#include "VariableGradientAux.h"
+
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BCs
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+#include "PTEnergyInFlowBC.h"
+#include "PTEnergyOutFlowBC.h"
+
+
+#include "PressureNeumannBC2.h"
+#include "GravityNeumannBC.h"
+#include "StepDirichletBC.h"
+#include "StepPressureBCFunc.h"
+#include "PressureBC.h"
+#include "PressureOutFlowBC.h"
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DGKernels
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ICs
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Kernels
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-// ===============
+// pressure & temperature based single-phase flow and heat
+#include "PTEnergyResidual.h"
+#include "PTEnergyTimeDerivative.h"
+#include "PTMassResidual.h"
+#include "PTMassTimeDerivative.h"
+
 // solid mechanics
-// ===============
 #include "SolidMechXFalcon.h"
 #include "SolidMechYFalcon.h"
 #include "SolidMechZFalcon.h"
@@ -43,77 +84,27 @@ Kernels
 #include "SolidMechPoroCoupleZ.h"
 #include "Gravity.h"
 
-// ================================================
-// single phase formulation: pressure & temperature
-// ================================================
-#include "TemperatureTimeDerivative.h"
-#include "TemperatureDiffusion.h"
-#include "TemperatureConvection.h"
-#include "TemperatureSUPG.h"
-
-#include "MassFluxTimeDerivative_PT.h"
-#include "MassFluxTimeDerivative_PT_comp.h"
-#include "WaterMassFluxPressure_PT.h"
-#include "WaterMassFluxElevation_PT.h"
-#include "PressureTimeDerivative.h"
-
-#include "InjectionSourceSink.h"
-
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-DGKernels
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-AuxKernels
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-#include "DarcyFluxAux.h"
-#include "VelocityAux.h"
-#include "VariableGradientAux.h"
-
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-BCs
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-#include "PressureNeumannBC2.h"
-#include "GravityNeumannBC.h"
-#include "OutFlowBC.h"
-#include "StepDirichletBC.h"
-#include "StepPressureBCFunc.h"
-#include "PressureBC.h"
-#include "PressureOutFlowBC.h"
-
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-ICs
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Materials
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-#include "Constant.h"
+#include "PTGeothermal.h"
 #include "PorousMedia.h"
-#include "FluidFlow.h"
-#include "HeatTransport.h"
 #include "SolidMechanics.h"
-#include "ChemicalReactions.h"
-#include "Geothermal.h"
-#include "GeoProcPT.h"
 
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-UserObjects
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-#include "WaterSteamEOS.h"
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 PostProcessors
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
+
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Actions
+UserObjects
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 MOOSE physics modules
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-#include "ChemicalReactionsApp.h"
 #include "PhaseFieldApp.h"
 
 
@@ -137,12 +128,10 @@ FalconApp::FalconApp(const std::string & name, InputParameters parameters) :
   srand(processor_id());
 
   Moose::registerObjects(_factory);
-  ChemicalReactionsApp::registerObjects(_factory);
   PhaseFieldApp::registerObjects(_factory);
   FalconApp::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
-  ChemicalReactionsApp::associateSyntax(_syntax, _action_factory);
   PhaseFieldApp::associateSyntax(_syntax, _action_factory);
   FalconApp::associateSyntax(_syntax, _action_factory);
 }
@@ -165,9 +154,41 @@ Routine: registerObjects
 void
 FalconApp::registerObjects(Factory & factory)
 {
-  // ===============
+  /* AuxKernels */
+
+  registerAux(PTDarcyFluxAux);
+  registerAux(PTFluidVelocityAux);
+  registerAux(VariableGradientAux);
+
+
+  /* BCs */
+
+  registerBoundaryCondition(PTEnergyInFlowBC);
+  registerBoundaryCondition(PTEnergyOutFlowBC);
+
+  registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
+  registerBoundaryCondition(GravityNeumannBC);
+  registerBoundaryCondition(StepDirichletBC);
+  registerBoundaryCondition(StepPressureBCFunc);
+  registerBoundaryCondition(PressureBC);
+  registerBoundaryCondition(PressureOutFlowBC);
+
+  /* DGKernels */
+
+
+  /* ICs */
+
+
+  /* Kernel */
+
+  // pressure & temperature based single-phase flow and heat
+  registerKernel(PTEnergyResidual);
+  registerKernel(PTEnergyTimeDerivative);
+  registerKernel(PTMassResidual);
+  registerKernel(PTMassTimeDerivative);
+
+
   // solid mechanics
-  // ===============
   registerNamedKernel(SolidMechXFalcon, "SolidMechXFalcon");
   registerNamedKernel(SolidMechYFalcon, "SolidMechYFalcon");
   registerNamedKernel(SolidMechZFalcon, "SolidMechZFalcon");
@@ -182,68 +203,18 @@ FalconApp::registerObjects(Factory & factory)
   registerKernel(SolidMechPoroCoupleZ);
   registerKernel(Gravity);
 
-  //isothermal flow for pressure field
-  registerKernel(PressureTimeDerivative);
-  //heat transport-PT formulation, single phase only
-  registerKernel(TemperatureTimeDerivative);
-  registerKernel(TemperatureDiffusion);
-  registerKernel(TemperatureConvection);
-  registerKernel(TemperatureSUPG);
-  //fluid-mass flow-single phase formulation
-  registerKernel(MassFluxTimeDerivative_PT);
-  registerKernel(MassFluxTimeDerivative_PT_comp);
-  registerKernel(WaterMassFluxPressure_PT);
-  registerKernel(WaterMassFluxElevation_PT);
 
-  //miscellaneous kernels
-  registerKernel(InjectionSourceSink);
+  /* Materials */
 
-  // =========
-  // DGKernels
-  // =========
-
-  // ==========
-  // AuxKernels
-  // ==========
-  registerAux(DarcyFluxAux);
-  registerAux(VelocityAux);
-  registerAux(VariableGradientAux);
-
-  // ===
-  // BCs
-  // ===
-  registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
-  registerBoundaryCondition(GravityNeumannBC);
-  registerBoundaryCondition(OutFlowBC);
-  registerBoundaryCondition(StepDirichletBC);
-  registerBoundaryCondition(StepPressureBCFunc);
-  registerBoundaryCondition(PressureBC);
-  registerBoundaryCondition(PressureOutFlowBC);
-
-  // ===
-  // ICs
-  // ===
-
-  // =========
-  // Materials
-  // =========
-  registerMaterial(Constant);
+  registerMaterial(PTGeothermal);
   registerMaterial(PorousMedia);
-  registerMaterial(FluidFlow);
-  registerMaterial(HeatTransport);
   registerMaterial(SolidMechanics);
-  registerMaterial(ChemicalReactions);
-  registerMaterial(Geothermal);
-  registerMaterial(GeoProcPT);
 
-  // ===========
-  // UserObjects
-  // ===========
-  registerUserObject(WaterSteamEOS);
 
-  // ==============
-  // PostProcessors
-  // ==============
+  /* PostProcessors */
+
+
+  /* UserObjects */
 
 }
 

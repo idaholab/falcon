@@ -12,42 +12,30 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef DARCYFLUXAUX_H
-#define DARCYFLUXAUX_H
+#ifndef PTDARCYFLUXAUX_H
+#define PTDARCYFLUXAUX_H
 
 #include "AuxKernel.h"
 
-
-//Forward Declarations
-class DarcyFluxAux;
+class PTDarcyFluxAux;
 
 template<>
-InputParameters validParams<DarcyFluxAux>();
+InputParameters validParams<PTDarcyFluxAux>();
 
-/**
- * Coupled auxiliary value
- */
-class DarcyFluxAux : public AuxKernel
+class PTDarcyFluxAux : public AuxKernel
 {
-public:
+  public:
 
-  /**
-   * Factory constructor, takes parameters so that all
-   * derived classes can be built using the same
-   * constructor.
-   */
-  DarcyFluxAux(const std::string & name, InputParameters parameters);
+    PTDarcyFluxAux(const std::string & name, InputParameters parameters);
 
-  virtual ~DarcyFluxAux() {}
+    virtual ~PTDarcyFluxAux() {}
 
-protected:
-  virtual Real computeValue();
+  protected:
 
-  MaterialProperty<RealGradient> & _darcy_flux_water;
-  MaterialProperty<RealGradient> & _darcy_flux_steam;
-  MooseEnum _phase;
-  int _i;
+    virtual Real computeValue();
 
+    MaterialProperty<RealGradient> & _wdflx;
+
+    int _i;
 };
-
-#endif //DARCYFLUXAUX_H
+#endif //PTDARCYFLUXAUX_H
