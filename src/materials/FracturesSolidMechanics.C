@@ -25,19 +25,19 @@ InputParameters validParams<FracturesSolidMechanics>()
   params.addCoupledVar("y_disp", "Coupled non-linear y-disp variable, [m]");
   params.addCoupledVar("z_disp", "Coupled non-linear z-disp variable. [m]");
   //rock property inputs
-  params.addParam<Real>("poissons_ratio",0.2,"dimensionless");
-  params.addParam<Real>("biot_coeff",1.0,"dimensionless");
-  params.addParam<Real>("biot_modulus",2.5e10,"dimensionless");
+  params.addParam<Real>("poissons_ratio", 0.2, "dimensionless");
+  params.addParam<Real>("biot_coeff", 1.0, "dimensionless");
+  params.addParam<Real>("biot_modulus", 2.5e10, "dimensionless");
 
 ////Matrix
-  params.addParam<Real>("matrix_thermal_expansion",1.0e-6,"thermal expansion coefficient of matrix, [1/K]");
-  params.addParam<Real>("matrix_youngs_modulus",1.50e10,"youngs modulus of matrix, [Pa]");
-  params.addParam<Real>("matrix_thermal_strain_ref_temp",293.15,"Initial reference temperature of matrix where there is no thermal strain, [K]");
+  params.addParam<Real>("matrix_thermal_expansion", 1.0e-6, "thermal expansion coefficient of matrix, [1/K]");
+  params.addParam<Real>("matrix_youngs_modulus", 1.50e10, "youngs modulus of matrix, [Pa]");
+  params.addParam<Real>("matrix_thermal_strain_ref_temp", 293.15, "Initial reference temperature of matrix where there is no thermal strain, [K]");
 
 ////Fractures
-  params.addParam<Real>("fracture_thermal_expansion",1.0e-6,"thermal expansion coefficient of fractures, [1/K]");
-  params.addParam<Real>("fracture_youngs_modulus",1.50e10,"youngs modulus of fractures, [Pa]");
-  params.addParam<Real>("fracture_thermal_strain_ref_temp",293.15,"Initial reference temperature of fractures where there is no thermal strain, [K]");
+  params.addParam<Real>("fracture_thermal_expansion", 1.0e-6, "thermal expansion coefficient of fractures, [1/K]");
+  params.addParam<Real>("fracture_youngs_modulus", 1.50e10, "youngs modulus of fractures, [Pa]");
+  params.addParam<Real>("fracture_thermal_strain_ref_temp", 293.15, "Initial reference temperature of fractures where there is no thermal strain, [K]");
 
   return params;
 
@@ -90,9 +90,10 @@ FracturesSolidMechanics::FracturesSolidMechanics(const std::string & name,
     _strain_shear_vector (declareProperty<RealVectorValue>("strain_shear_vector")),
 
     ////Grab darcy_flux_water_old stateful material property from FracturesFluidFlow to calculate strain dependent permeability mod
-    _darcy_flux_water_old(_has_strain_dependent_permeability ? &getMaterialPropertyOld<RealGradient>("darcy_flux_water") : NULL)
+    _darcy_flux_water_old(_has_strain_dependent_permeability ? &getMaterialPropertyOldByName<RealGradient>("darcy_flux_water") : NULL)
 
-{ }
+{
+}
 
 void
 FracturesSolidMechanics::computeProperties()
