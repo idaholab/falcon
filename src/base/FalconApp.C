@@ -54,6 +54,12 @@ DGKernels
 
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DiracKernels
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+#include "PTMassPointSource.h"
+
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ICs
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
@@ -174,6 +180,10 @@ FalconApp::registerObjects(Factory & factory)
   registerBoundaryCondition(PressureOutFlowBC);
 
   /* DGKernels */
+
+
+  /* DiracKernels */
+  registerDiracKernel(PTMassPointSource);
 
 
   /* ICs */
