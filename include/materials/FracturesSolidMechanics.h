@@ -77,7 +77,7 @@ protected:
   MaterialProperty<RealVectorValue> & _strain_shear_vector;
 
   // Grab darcy_flux_water_old stateful material property from FracturesFluidFlow
-  MaterialProperty<RealGradient> * _darcy_flux_water_old;
+  const MaterialProperty<RealGradient> * _darcy_flux_water_old;
 
   // Local variables declared
   Real E;
