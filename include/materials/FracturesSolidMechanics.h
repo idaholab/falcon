@@ -17,7 +17,7 @@
 
 #include "FracturesPorousMedia.h"
 
-//Forward Declarations
+// Forward Declarations
 class FracturesSolidMechanics;
 
 template<>
@@ -30,11 +30,12 @@ class FracturesSolidMechanics : virtual public FracturesPorousMedia
 {
 public:
   FracturesSolidMechanics(const std::string & name,
-                 InputParameters parameters);
+                          InputParameters parameters);
 
 protected:
   virtual void computeProperties();
-////Grab coupled variables
+
+  // Grab coupled variables
   bool _has_temp;
   VariableValue  & _temperature;
   bool _has_x_disp;
@@ -47,38 +48,38 @@ protected:
   VariableGradient & _grad_z_disp;
   VariableGradient & _grad_z_disp_old;
 
-////Grab user input parameters
-  //General
+  // Grab user input parameters
+  // General
   Real _input_poissons_ratio;
   Real _input_biot_coeff;
   Real _input_biot_modulus;
-  //Matrix
+  // Matrix
   Real _matrix_thermal_expansion;
   Real _matrix_youngs_modulus;
   Real _matrix_t_ref;
-  //Fractures
+  // Fractures
   Real _fracture_thermal_expansion;
   Real _fracture_youngs_modulus;
   Real _fracture_t_ref;
 
-///Declare material properties
-  //rock material props
+  // Declare material properties
+  // rock material props
   MaterialProperty<Real> & _thermal_strain;
   MaterialProperty<Real> & _alpha;
   MaterialProperty<Real> & _youngs_modulus;
   MaterialProperty<Real> & _poissons_ratio;
   MaterialProperty<Real> & _biot_coeff;
   MaterialProperty<Real> & _biot_modulus;
-  //stress/strain material props
+  // stress/strain material props
   MaterialProperty<RealVectorValue> & _stress_normal_vector;
   MaterialProperty<RealVectorValue> & _stress_shear_vector;
   MaterialProperty<RealVectorValue> & _strain_normal_vector;
   MaterialProperty<RealVectorValue> & _strain_shear_vector;
 
-////Grab darcy_flux_water_old stateful material property from FracturesFluidFlow
-  MaterialProperty<RealGradient> * _darcy_flux_water_old;
+  // Grab darcy_flux_water_old stateful material property from FracturesFluidFlow
+  const MaterialProperty<RealGradient> * _darcy_flux_water_old;
 
-////Local variables declared
+  // Local variables declared
   Real E;
   Real nu;
   Real c1;
@@ -86,4 +87,4 @@ protected:
   Real c3;
 };
 
-#endif //FRACTURESSOLIDMECHANICS_H
+#endif // FRACTURESSOLIDMECHANICS_H
