@@ -56,6 +56,7 @@ DGKernels
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 DiracKernels
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+#include "PTEnergyPointSource.h"
 #include "PTMassPointSource.h"
 
 
@@ -183,6 +184,7 @@ FalconApp::registerObjects(Factory & factory)
 
 
   /* DiracKernels */
+  registerDiracKernel(PTEnergyPointSource);
   registerDiracKernel(PTMassPointSource);
 
 
