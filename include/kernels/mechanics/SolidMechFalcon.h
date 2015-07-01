@@ -61,7 +61,7 @@ protected:
 
   const MaterialProperty<Real> & _E_prop;
   const MaterialProperty<Real> & _nu_prop;
-//  const MaterialProperty<Real> & _damage_coeff;
+//  MaterialProperty<Real> & _damage_coeff;
   const MaterialProperty<RealVectorValue> & _stress_normal_vector;
   const MaterialProperty<RealVectorValue> & _stress_shear_vector;
 };

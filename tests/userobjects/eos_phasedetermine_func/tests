@@ -1,7 +1,0 @@
-[Tests]
-  [./test]
-    type = 'CSVDiff'
-    input = 'phase_test.i'
-    csvdiff = 'phase_test_out.csv'
-  [../]
-[]

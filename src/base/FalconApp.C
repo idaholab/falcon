@@ -12,16 +12,70 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Baseline dependencies (do NOT touch)
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #include "Moose.h"
 #include "FalconApp.h"
 #include "AppFactory.h"
 #include "ActionFactory.h"
 #include "Syntax.h"
 
-// Kernels
-///////////////////////////////////////////////////////////////
-//      solid mechanics                                      //
-///////////////////////////////////////////////////////////////
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Actions
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+AuxKernels
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+#include "PTDarcyFluxAux.h"
+#include "PTFluidVelocityAux.h"
+#include "VariableGradientAux.h"
+
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BCs
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+#include "PTEnergyInFlowBC.h"
+#include "PTEnergyOutFlowBC.h"
+
+
+#include "PressureNeumannBC2.h"
+#include "GravityNeumannBC.h"
+#include "StepDirichletBC.h"
+#include "StepPressureBCFunc.h"
+#include "PressureBC.h"
+#include "PressureOutFlowBC.h"
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DGKernels
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DiracKernels
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+#include "PTEnergyPointSource.h"
+#include "PTMassPointSource.h"
+
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ICs
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Kernels
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+// pressure & temperature based single-phase flow and heat
+#include "PTEnergyResidual.h"
+#include "PTEnergyTimeDerivative.h"
+#include "PTMassResidual.h"
+#include "PTMassTimeDerivative.h"
+
+// solid mechanics
 #include "SolidMechXFalcon.h"
 #include "SolidMechYFalcon.h"
 #include "SolidMechZFalcon.h"
@@ -37,154 +91,33 @@
 #include "SolidMechPoroCoupleZ.h"
 #include "Gravity.h"
 
-///////////////////////////////////////////////////////////////
-//      Single phase formulation: pressure & temperature     //
-///////////////////////////////////////////////////////////////
-#include "TemperatureTimeDerivative.h"
-#include "TemperatureTimeDerivativeFluid.h"
-#include "TemperatureTimeDerivativeSolid.h"
-#include "TemperatureDiffusion.h"
-#include "TemperatureConvection.h"
-#include "TemperatureSUPG.h"
 
-#include "MassFluxTimeDerivative_PT.h"
-#include "MassFluxTimeDerivative_PT_comp.h"
-#include "WaterMassFluxPressure_PT.h"
-#include "WaterMassFluxElevation_PT.h"
-#include "PressureTimeDerivative.h"
-
-//////////////////////////////////////////////////////////////
-//     Miscellaneous                                        //
-//////////////////////////////////////////////////////////////
-#include "InjectionSourceSink.h"
-
-//////////////////////////////////////////////////////////////
-//     Generic diffusion                                    //
-//////////////////////////////////////////////////////////////
-#include "CoefDiffusion.h"
-
-//////////////////////////////////////////////////////////////
-//     Generic convection                                   //
-//////////////////////////////////////////////////////////////
-#include "Convection.h"
-#include "CoupledConvection.h"
-
-//////////////////////////////////////////////////////////////
-//     SUPG                                                 //
-//////////////////////////////////////////////////////////////
-#include "SUPGOneD.h"
-
-// DGKernels
-#include "DGConvection.h"
-#include "DGCoupledConvection.h"
-#include "DGMaterialDiffusion.h"
-#include "DGTemperatureConvection.h"
-
-// AuxKernels
-#include "CoupledTemperatureAux.h"         // T as functon of (P,H) -two phase formulation
-#include "DarcyFluxAux.h"
-#include "VelocityAux.h"
-#include "StressStrainDamageComputeAux.h"
-#include "FracManMapAux.h"
-#include "FracTipLocationAux.h"
-#include "StochasticFieldAux.h"
-#include "VariableGradientAux.h"
-
-// BCs
-#include "DGConvectionInflowBC.h"
-#include "DGConvectionOutflowBC.h"
-#include "DGCoupledConvectionInflowBC.h"
-#include "DGCoupledConvectionOutflowBC.h"
-#include "DGFunctionTemperatureConvectionInflowBC.h"
-#include "DGFunctionMaterialDiffusionBC.h"
-#include "DGTemperatureConvectionOutflowBC.h"
-#include "PressureNeumannBC2.h"
-#include "GravityNeumannBC.h"
-#include "OutFlowBC.h"
-#include "OutFlowBC_PH.h"
-#include "StepDirichletBC.h"
-#include "StepPressureBCFunc.h"
-#include "PressureBC.h"
-#include "PressureOutFlowBC.h"
-
-// ICs
-#include "LinearDisEnthalpyIC.h"
-
-// Materials
-#include "Constant.h"
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Materials
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+#include "PTGeothermal.h"
 #include "PorousMedia.h"
-#include "FluidFlow.h"
-#include "HeatTransport.h"
 #include "SolidMechanics.h"
-#include "ChemicalReactions.h"
-#include "Geothermal.h"
-
-#include "FracturesPorousMedia.h"
-#include "FracturesFluidFlow.h"
-#include "FracturesHeatTransport.h"
-#include "FracturesSolidMechanics.h"
-#include "FracturesChemicalReactions.h"
-#include "FracturesGeothermal.h"
-
-#include "StochasticMaterial.h"
-#include "StochasticPorousMedia.h"
-#include "StochasticFluidFlow.h"
-#include "StochasticHeatTransport.h"
-#include "StochasticSolidMechanics.h"
-#include "StochasticChemicalReactions.h"
-#include "StochasticGeothermal.h"
-
-#include "FracManPorousMedia.h"
-#include "FracManFluidFlow.h"
-#include "FracManHeatTransport.h"
-#include "FracManSolidMechanics.h"
-#include "FracManChemicalReactions.h"
-#include "FracManGeothermal.h"
-
-// UserObjects
-#include "WaterSteamEOS.h"
-
-// PostProcessors
-#include "EOSWaterAndSteamPTFuncPPS.h"
-#include "EOSPhaseDetermineFuncPPS.h"
-#include "EOSViscosityFuncPPS.h"
-
-// Actions
-#include "GeothermalMaterialAction.h"
-#include "StochasticGeothermalMaterialAction.h"
-#include "FracManGeothermalMaterialAction.h"
-#include "FracturesGeothermalMaterialAction.h"
-
-////////////////////////////////////////////////////////////////
-///      Souce and Sink, volume avagerged                     //
-////////////////////////////////////////////////////////////////
-#include "SourceSink.h"
-#include "EnergyExtraction.h"
-
-#include "EnthalpyTimeDerivative.h"
-#include "EnthalpyImplicitEuler.h"
-#include "EnthalpyDiffusion.h"
-#include "EnthalpyConvectionWater.h"
-#include "EnthalpyConvectionSteam.h"
-
-///////////////////////////////////////////////////////////////
-////    Single phase isothermal formulation: pressure        //
-///////////////////////////////////////////////////////////////
-#include "FluidFluxPressure.h"
-
-//////////////////////////////////////////////////////////////
-//       Two phase formulation: pressure & enthalpy         //
-//////////////////////////////////////////////////////////////
-#include "MassFluxTimeDerivative.h"
-#include "WaterMassFluxPressure.h"
-#include "SteamMassFluxPressure.h"
-#include "WaterMassFluxElevation.h"
 
 
-#include "ChemicalReactionsApp.h"
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+PostProcessors
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UserObjects
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+MOOSE physics modules
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #include "PhaseFieldApp.h"
 
 
+/*******************************************************************************
+Input template (do NOT touch)
+*******************************************************************************/
 template<>
 InputParameters validParams<FalconApp>()
 {
@@ -192,22 +125,28 @@ InputParameters validParams<FalconApp>()
   return params;
 }
 
+
+/*******************************************************************************
+Routine: FalconApp -- constructor
+*******************************************************************************/
 FalconApp::FalconApp(const std::string & name, InputParameters parameters) :
     MooseApp(name, parameters)
 {
   srand(processor_id());
 
   Moose::registerObjects(_factory);
-  ChemicalReactionsApp::registerObjects(_factory);
   PhaseFieldApp::registerObjects(_factory);
   FalconApp::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
-  ChemicalReactionsApp::associateSyntax(_syntax, _action_factory);
   PhaseFieldApp::associateSyntax(_syntax, _action_factory);
   FalconApp::associateSyntax(_syntax, _action_factory);
 }
 
+
+/*******************************************************************************
+Routine: registerApps (no NOT touch)
+*******************************************************************************/
 extern "C" void FalconApp__registerApps() { FalconApp::registerApps(); }
 void
 FalconApp::registerApps()
@@ -215,10 +154,53 @@ FalconApp::registerApps()
   registerApp(FalconApp);
 }
 
+
+/*******************************************************************************
+Routine: registerObjects
+*******************************************************************************/
 void
 FalconApp::registerObjects(Factory & factory)
 {
-  //mechanics
+  /* AuxKernels */
+
+  registerAux(PTDarcyFluxAux);
+  registerAux(PTFluidVelocityAux);
+  registerAux(VariableGradientAux);
+
+
+  /* BCs */
+
+  registerBoundaryCondition(PTEnergyInFlowBC);
+  registerBoundaryCondition(PTEnergyOutFlowBC);
+
+  registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
+  registerBoundaryCondition(GravityNeumannBC);
+  registerBoundaryCondition(StepDirichletBC);
+  registerBoundaryCondition(StepPressureBCFunc);
+  registerBoundaryCondition(PressureBC);
+  registerBoundaryCondition(PressureOutFlowBC);
+
+  /* DGKernels */
+
+
+  /* DiracKernels */
+  registerDiracKernel(PTEnergyPointSource);
+  registerDiracKernel(PTMassPointSource);
+
+
+  /* ICs */
+
+
+  /* Kernel */
+
+  // pressure & temperature based single-phase flow and heat
+  registerKernel(PTEnergyResidual);
+  registerKernel(PTEnergyTimeDerivative);
+  registerKernel(PTMassResidual);
+  registerKernel(PTMassTimeDerivative);
+
+
+  // solid mechanics
   registerNamedKernel(SolidMechXFalcon, "SolidMechXFalcon");
   registerNamedKernel(SolidMechYFalcon, "SolidMechYFalcon");
   registerNamedKernel(SolidMechZFalcon, "SolidMechZFalcon");
@@ -233,145 +215,25 @@ FalconApp::registerObjects(Factory & factory)
   registerKernel(SolidMechPoroCoupleZ);
   registerKernel(Gravity);
 
-  //isothermal flow for pressure field
-  registerKernel(PressureTimeDerivative);
-  //heat transport-PT formulation, single phase only
-  registerKernel(TemperatureTimeDerivative);
-  registerKernel(TemperatureTimeDerivativeFluid);
-  registerKernel(TemperatureTimeDerivativeSolid);
-  registerKernel(TemperatureDiffusion);
-  registerKernel(TemperatureConvection);
-  registerKernel(TemperatureSUPG);
-  //fluid-mass flow-single phase formulation
-  registerKernel(MassFluxTimeDerivative_PT);
-  registerKernel(MassFluxTimeDerivative_PT_comp);
-  registerKernel(WaterMassFluxPressure_PT);
-  registerKernel(WaterMassFluxElevation_PT);
 
-  //miscellaneous kernels
-  registerKernel(InjectionSourceSink);
+  /* Materials */
 
-  //generic diffusion kernels
-  registerKernel(CoefDiffusion);
-
-  //generic convection kernels
-  registerKernel(Convection);
-  registerKernel(CoupledConvection);
-
-  //SUPG kernels
-  registerKernel(SUPGOneD);
-
-  //dgkernels
-  registerKernel(DGConvection);
-  registerKernel(DGCoupledConvection);
-  registerKernel(DGMaterialDiffusion);
-  registerKernel(DGTemperatureConvection);
-
-  //auxkernels
-  registerAux(CoupledTemperatureAux);
-  registerAux(DarcyFluxAux);
-  registerAux(VelocityAux);
-  registerAux(StressStrainDamageComputeAux);
-  registerAux(StochasticFieldAux);
-  registerAux(FracManMapAux);
-  registerAux(FracTipLocationAux);
-  registerAux(VariableGradientAux);
-
-  //BCs
-  registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
-  registerBoundaryCondition(DGConvectionInflowBC);
-  registerBoundaryCondition(DGConvectionOutflowBC);
-  registerBoundaryCondition(DGCoupledConvectionInflowBC);
-  registerBoundaryCondition(DGCoupledConvectionOutflowBC);
-  registerBoundaryCondition(DGFunctionTemperatureConvectionInflowBC);
-  registerBoundaryCondition(DGFunctionMaterialDiffusionBC);
-  registerBoundaryCondition(DGTemperatureConvectionOutflowBC);
-  registerBoundaryCondition(GravityNeumannBC);
-  registerBoundaryCondition(OutFlowBC);
-  registerBoundaryCondition(OutFlowBC_PH);
-  registerBoundaryCondition(StepDirichletBC);
-  registerBoundaryCondition(StepPressureBCFunc);
-  registerBoundaryCondition(PressureBC);
-  registerBoundaryCondition(PressureOutFlowBC);
-
-  // ICs
-  registerInitialCondition(LinearDisEnthalpyIC);
-
-  //materials
-  registerMaterial(Constant);
+  registerMaterial(PTGeothermal);
   registerMaterial(PorousMedia);
-  registerMaterial(FluidFlow);
-  registerMaterial(HeatTransport);
   registerMaterial(SolidMechanics);
-  registerMaterial(ChemicalReactions);
-  registerMaterial(Geothermal);
 
-  registerMaterial(FracturesPorousMedia);
-  registerMaterial(FracturesFluidFlow);
-  registerMaterial(FracturesHeatTransport);
-  registerMaterial(FracturesSolidMechanics);
-  registerMaterial(FracturesChemicalReactions);
-  registerMaterial(FracturesGeothermal);
 
-  registerMaterial(StochasticMaterial);
-  registerMaterial(StochasticPorousMedia);
-  registerMaterial(StochasticFluidFlow);
-  registerMaterial(StochasticHeatTransport);
-  registerMaterial(StochasticSolidMechanics);
-  registerMaterial(StochasticChemicalReactions);
-  registerMaterial(StochasticGeothermal);
+  /* PostProcessors */
 
-  registerMaterial(FracManPorousMedia);
-  registerMaterial(FracManFluidFlow);
-  registerMaterial(FracManHeatTransport);
-  registerMaterial(FracManSolidMechanics);
-  registerMaterial(FracManChemicalReactions);
-  registerMaterial(FracManGeothermal);
 
-  //userobjects
-  registerUserObject(WaterSteamEOS);
+  /* UserObjects */
 
-  //postprocessors
-  registerPostprocessor(EOSWaterAndSteamPTFuncPPS);
-  registerPostprocessor(EOSPhaseDetermineFuncPPS);
-  registerPostprocessor(EOSViscosityFuncPPS);
-
-  /**
-   *fluid mass energy balance objects
-   */
-  //energy
-  registerKernel(EnthalpyImplicitEuler);
-  registerKernel(EnthalpyTimeDerivative);
-  registerKernel(EnthalpyDiffusion);
-  registerKernel(EnthalpyConvectionWater);
-  registerKernel(EnthalpyConvectionSteam);
-
-  //source sink
-  registerKernel(SourceSink);
-  registerKernel(EnergyExtraction);
-
-  //fluid-mass flow-two phase formulation
-  registerKernel(MassFluxTimeDerivative);
-  registerKernel(WaterMassFluxPressure);
-  registerKernel(WaterMassFluxElevation);
-  registerKernel(SteamMassFluxPressure);
-
-  //isothermal flow for pressure field
-  registerKernel(FluidFluxPressure);
 }
 
 
-
+/*******************************************************************************
+Routine: registerApps
+*******************************************************************************/
 void
 FalconApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
-{
-  registerAction(GeothermalMaterialAction, "add_material");
-  registerAction(StochasticGeothermalMaterialAction, "add_material");
-  registerAction(FracManGeothermalMaterialAction, "add_material");
-  registerAction(FracturesGeothermalMaterialAction, "add_material");
-
-  syntax.registerActionSyntax("GeothermalMaterialAction", "Materials/GeothermalMaterial");
-  syntax.registerActionSyntax("StochasticGeothermalMaterialAction", "Materials/StochasticGeothermalMaterial");
-  syntax.registerActionSyntax("FracManGeothermalMaterialAction", "Materials/FracManGeothermalMaterial");
-  syntax.registerActionSyntax("FracturesGeothermalMaterialAction", "Materials/FracturesGeothermalMaterial");
-}
+{}

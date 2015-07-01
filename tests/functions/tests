@@ -1,7 +1,0 @@
-[Tests]
-  [./test]
-    type = 'Exodiff'
-    input = 'step_pressure_bc_func_test.i'
-    exodiff = 'out.e'
-  [../]
-[]
