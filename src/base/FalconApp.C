@@ -41,13 +41,6 @@ BCs
 #include "PTEnergyOutFlowBC.h"
 
 
-#include "PressureNeumannBC2.h"
-#include "GravityNeumannBC.h"
-#include "StepDirichletBC.h"
-#include "StepPressureBCFunc.h"
-#include "PressureBC.h"
-#include "PressureOutFlowBC.h"
-
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 DGKernels
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -76,28 +69,12 @@ Kernels
 #include "PTMassTimeDerivative.h"
 
 // solid mechanics
-#include "SolidMechXFalcon.h"
-#include "SolidMechYFalcon.h"
-#include "SolidMechZFalcon.h"
-#include "SolidMechImplicitEuler.h"
-
-#include "SolidMechTempCoupleXFalcon.h"
-
-#include "SolidMechTempCoupleYFalcon.h"
-#include "SolidMechTempCoupleZFalcon.h"
-
-#include "SolidMechPoroCoupleX.h"
-#include "SolidMechPoroCoupleY.h"
-#include "SolidMechPoroCoupleZ.h"
-#include "Gravity.h"
 
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Materials
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #include "PTGeothermal.h"
-#include "PorousMedia.h"
-#include "SolidMechanics.h"
 
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -173,13 +150,6 @@ FalconApp::registerObjects(Factory & factory)
   registerBoundaryCondition(PTEnergyInFlowBC);
   registerBoundaryCondition(PTEnergyOutFlowBC);
 
-  registerNamedBoundaryCondition(PressureNeumannBC2, "PressureNeumannBC");
-  registerBoundaryCondition(GravityNeumannBC);
-  registerBoundaryCondition(StepDirichletBC);
-  registerBoundaryCondition(StepPressureBCFunc);
-  registerBoundaryCondition(PressureBC);
-  registerBoundaryCondition(PressureOutFlowBC);
-
   /* DGKernels */
 
 
@@ -201,26 +171,11 @@ FalconApp::registerObjects(Factory & factory)
 
 
   // solid mechanics
-  registerNamedKernel(SolidMechXFalcon, "SolidMechXFalcon");
-  registerNamedKernel(SolidMechYFalcon, "SolidMechYFalcon");
-  registerNamedKernel(SolidMechZFalcon, "SolidMechZFalcon");
-  registerKernel(SolidMechImplicitEuler);
-
-  registerKernel(SolidMechTempCoupleXFalcon);
-  registerKernel(SolidMechTempCoupleYFalcon);
-  registerKernel(SolidMechTempCoupleZFalcon);
-
-  registerKernel(SolidMechPoroCoupleX);
-  registerKernel(SolidMechPoroCoupleY);
-  registerKernel(SolidMechPoroCoupleZ);
-  registerKernel(Gravity);
 
 
   /* Materials */
 
   registerMaterial(PTGeothermal);
-  registerMaterial(PorousMedia);
-  registerMaterial(SolidMechanics);
 
 
   /* PostProcessors */
