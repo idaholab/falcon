@@ -17,10 +17,14 @@ Some of the capability at your fingertips:
 * Flexible, plugable graphical user interface
 * ~30 plugable interfaces allow specialization of every part of the solve
 
-More Information
-================
 
-**For more information, including installation instructions, please see the official website: [http://mooseframework.org](http://mooseframework.org)**
+Prerequisites
+=============
+
+**git**. Download and install the latest stable version of git at [https://git-scm.com](https://git-scm.com). For information on how to use git, see [https://git-scm.com/doc](https://git-scm.com/doc).
+
+**MOOSE framework**. For installation instructions, see the official website: [http://mooseframework.org](http://mooseframework.org).
+
 
 Contributing
 ============
