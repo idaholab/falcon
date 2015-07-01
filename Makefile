@@ -20,7 +20,6 @@ include $(FRAMEWORK_DIR)/build.mk
 include $(FRAMEWORK_DIR)/moose.mk
 
 ################################## MODULES ####################################
-CHEMICAL_REACTIONS        := yes
 PHASE_FIELD               := yes
 #ALL_MODULES       := yes
 include           $(MOOSE_DIR)/modules/modules.mk

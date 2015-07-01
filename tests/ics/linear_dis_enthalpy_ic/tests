@@ -1,7 +1,0 @@
-[Tests]
-  [./test]
-    type = 'Exodiff'
-    input = 'linear_dis_enthalpy_ic_test.i'
-    exodiff = 'out.e'
-  [../]
-[]
