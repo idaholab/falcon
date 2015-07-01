@@ -11,6 +11,6 @@
     input    = 'step2_comp.i'
     exodiff  = 'out2_comp.e'
     abs_zero = 1.0e-07
-    rel_err  = 1.0e-04
+    rel_err  = 1.0e-01
   [../]
 []

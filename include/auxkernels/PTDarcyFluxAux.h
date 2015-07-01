@@ -34,7 +34,7 @@ class PTDarcyFluxAux : public AuxKernel
 
     virtual Real computeValue();
 
-    MaterialProperty<RealGradient> & _wdflx;
+    const MaterialProperty<RealGradient> & _wdflx;
 
     int _i;
 };

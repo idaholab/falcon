@@ -34,6 +34,6 @@ class PTFluidVelocityAux : public PTDarcyFluxAux
 
     virtual Real computeValue();
 
-    MaterialProperty<Real> & _poro;
+    const MaterialProperty<Real> & _poro;
 };
 #endif //PTFLUIDVELOCITYAUX_H

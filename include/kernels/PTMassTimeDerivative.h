@@ -34,8 +34,8 @@ class PTMassTimeDerivative : public TimeDerivative
     virtual Real computeQpResidual();
     virtual Real computeQpJacobian();
 
-    MaterialProperty<Real> & _poro;
-    MaterialProperty<Real> & _wrho;
-    MaterialProperty<Real> & _drop;
+    const MaterialProperty<Real> & _poro;
+    const MaterialProperty<Real> & _wrho;
+    const MaterialProperty<Real> & _drop;
 };
 #endif //PTMASSTIMEDERIVATIVE_H

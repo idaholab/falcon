@@ -36,9 +36,9 @@ class PTEnergyInFlowBC : public IntegratedBC
     virtual Real computeQpResidual();
     virtual Real computeQpJacobian();
 
-    MaterialProperty<Real> &_thco;
+    const MaterialProperty<Real> &_thco;
 
-    MaterialProperty<RealGradient> & _evelo;
+    const MaterialProperty<RealGradient> & _evelo;
 
     Real _value;
 };

@@ -38,13 +38,13 @@ class PTMassResidual : public Kernel
 
     bool _has_coupled_temp;
 
-    MaterialProperty<Real> & _wrho;
-    MaterialProperty<Real> & _wtau;
-    MaterialProperty<Real> & _gfor;
-    MaterialProperty<Real> & _drot;
+    const MaterialProperty<Real> & _wrho;
+    const MaterialProperty<Real> & _wtau;
+    const MaterialProperty<Real> & _gfor;
+    const MaterialProperty<Real> & _drot;
 
-    MaterialProperty<RealGradient> & _guvec;
-    MaterialProperty<RealGradient> & _wdmfx;
+    const MaterialProperty<RealGradient> & _guvec;
+    const MaterialProperty<RealGradient> & _wdmfx;
 
   private:
 

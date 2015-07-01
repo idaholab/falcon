@@ -36,14 +36,14 @@ class PTEnergyResidual : public Kernel
 
     bool _has_coupled_pres;
 
-    MaterialProperty<unsigned int> & _stab;
+    const MaterialProperty<unsigned int> & _stab;
 
-    MaterialProperty<Real> & _thco;
-    MaterialProperty<Real> & _wsph;
-    MaterialProperty<Real> & _epor;
-    MaterialProperty<Real> & _tau1;
-    MaterialProperty<RealGradient> & _wdmfx;
-    MaterialProperty<RealGradient> & _evelo;
+    const MaterialProperty<Real> & _thco;
+    const MaterialProperty<Real> & _wsph;
+    const MaterialProperty<Real> & _epor;
+    const MaterialProperty<Real> & _tau1;
+    const MaterialProperty<RealGradient> & _wdmfx;
+    const MaterialProperty<RealGradient> & _evelo;
 
   private:
 

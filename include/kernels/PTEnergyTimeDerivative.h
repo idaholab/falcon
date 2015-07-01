@@ -33,6 +33,6 @@ class PTEnergyTimeDerivative : public TimeDerivative
     virtual Real computeQpResidual();
     virtual Real computeQpJacobian();
 
-    MaterialProperty<Real> & _epor;
+    const MaterialProperty<Real> & _epor;
 };
 #endif //PTENERGYTIMEDERIVATIVE_H

@@ -25,7 +25,7 @@ InputParameters validParams<PTEnergyPointSource>();
 class PTEnergyPointSource : public DiracKernel
 {
   public:
-  
+
     PTEnergyPointSource(const std::string & name, InputParameters parameters);
 
     virtual void addPoints();
@@ -39,7 +39,7 @@ class PTEnergyPointSource : public DiracKernel
     std::vector<Real> _value; // mass injection rates
     std::vector<Real> _temps; // temperature values of injected fluid
 
-    MaterialProperty<Real> & _wsph;
+    const MaterialProperty<Real> & _wsph;
 
     unsigned int nvalu, ntemp, nstag, istag;
     Real irate;
