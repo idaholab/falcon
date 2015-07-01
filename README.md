@@ -1,4 +1,4 @@
-#FALCON
+#FALCON#
 
 FALCON is a finite-element geothermal reservoir simulation and analysis code for coupled and fully implicit Thermo-Hydro-Mechanical-Chemical (THMC) geosystems based on the MOOSE framework mainly developed by [Idaho National Laboratory](http://www.inl.gov). It solves the coupled governing equations for fluid flow, heat transfer, rock deformation and fracturing, and chemical reactions in geological porous media. Due to the flexibility in the virtual abstract physics and transport interfaces, FALCON is highly extensible and can accommodate both multi-species and multi-phase formulations.
 
@@ -13,11 +13,11 @@ Some of the capability at your fingertips:
 * Flexible, plugable graphical user interface
 
 
-#Getting Started
+#Getting Started#
 
 Most of the instructions below are applicable to both the Mac OS X and Linux Ubuntu operating systems. Differences will be pointed out when necessary.
 
-##Git Installation and Configuration
+##Git Installation and Configuration##
 It is suggested that developers and/or users download and install the latest stable version of Git at [https://git-scm.com](https://git-scm.com). For information on how to use Git, see [https://git-scm.com/doc](https://git-scm.com/doc).
 
 The first thing you should do after you install Git is to set your user name and e-mail address.
@@ -40,17 +40,17 @@ color.diff=auto
 ...
 ```
 
-##GitHub Account
+##GitHub Account##
 
 Create a personal account at GitHub [https://github.com/join](https://github.com/join) if you do not have one.
 
-###Generate SSH Keys
+###Generate SSH Keys###
 
 The original complete post is on [GitHub Help](https://help.github.com/articles/generating-ssh-keys/#platform-mac), which covers Mac, Linux, and Windows operating systems.
 
 SSH keys are a way to identify trusted computers, without involving passwords. The steps below will walk you through generating an SSH key and adding the public key to your GitHub account.
 
-####Step 1. Generate a new SSH key (only if you have never done it)
+####Step 1. Generate a new SSH key (only if you have never done it)####
 
 * With Terminal open, copy and paste the text below. Make sure you substitute in your GitHub email address.
 
@@ -73,7 +73,7 @@ Enter passphrase (empty for no passphrase): [Press enter]
 Enter same passphrase again: [Press enter]
 ```
 
-####Step 2. Add your SSH key to your account
+####Step 2. Add your SSH key to your account####
 
 To configure your GitHub account to use your SSH key:
 
@@ -109,12 +109,12 @@ Add the copied key to GitHub:
 > Note that it is a similar way to add your SSH key to your INL's internal GitLab account at [https://hpcgitlab.inl.gov/profile](https://hpcgitlab.inl.gov/profile), if you have one.
 
 
-##MOOSE framework
+##MOOSE framework##
 For installation instructions, see the official website: [http://mooseframework.com/getting-started/](http://mooseframework.com/getting-started/).
 
-##FALCON
+##FALCON##
 
-###Clone FALCON
+###Clone FALCON###
 
 FALCON is hosted on GitHub and can be cloned directly from there using Git. We recommend placing FALCON alongside with MOOSE in the **projects** folder(from your home directory):
 
@@ -127,7 +127,7 @@ $ git checkout master
 
 > Note: The "*master*" branch of MOOSE is the "*stable*" branch that will only be updated after all tests are passing. This protects you from the day-to-day churn in the FALCON repository.
 
-###Compile and Test It
+###Compile and Test It###
 
 ```
 $ cd ~/projects/falcon
@@ -138,7 +138,7 @@ $ ./run_tests
 If everything is good then all of the tests will pass.
 
 
-##Setting Environment Variables
+##Setting Environment Variables##
 
 Open the system environment configuration file by `vi ~/.bash_profile` in Mac OS X, or `vi ~/.bashrc` in Linux Ubuntu, and add in the following text.
 
@@ -161,7 +161,7 @@ export PATH=~/projects/falcon:$PATH
 ```
 
 
-##How to Run Your FALCON Test Case in Terminal
+##How to Run Your FALCON Test Case in Terminal##
 
 As an example, you can copy one of the FALCON tests in a new folder
 
@@ -184,16 +184,16 @@ mpirun -np 4 falcon-opt -i inp.i
 ```
 
 
-##How to Visualize Your FALCON Test Results
+##How to Visualize Your FALCON Test Results##
 
 FALCON's default ExodusII format data files can be read by many open-source post-processing software packages, for example, [ParaView](http://www.paraview.org/), and [VisIt](https://wci.llnl.gov/simulation/computer-codes/visit/).
 
 
-#Contributing
+#Contributing#
 
 For information on how to contribute code changes to FALCON please see ...
 
-#Contact
+#Contact#
 
 For technical questions: Yidong Xia ([yidong.xia@inl.gov](yidong.xia@inl.gov))
 
