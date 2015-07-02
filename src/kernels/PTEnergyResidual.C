@@ -2,7 +2,7 @@
 /*             DO NOT MODIFY OR REMOVE THIS HEADER              */
 /*          FALCON - Fracturing And Liquid CONvection           */
 /*                                                              */
-/*       (c) pending 2012 Battelle Energy Alliance, LLC         */
+/*       (c)     2012 Battelle Energy Alliance, LLC             */
 /*                   ALL RIGHTS RESERVED                        */
 /*                                                              */
 /*          Prepared by Battelle Energy Alliance, LLC           */
@@ -69,7 +69,7 @@ computeQpResidual()
 
   r += -_evelo[_qp] * _u[_qp] * _grad_test[_i][_qp];
 
-  // contribution from the artificial dumping term
+  // contribution from the artificial damping term
   // =============================================
   if (_stab[_qp] == 1)
   {
@@ -101,7 +101,7 @@ computeQpJacobian()
   // ==========================================
   r += -_evelo[_qp] * _phi[_j][_qp] * _grad_test[_i][_qp];
 
-  // contribution from the artificial dumping term
+  // contribution from the artificial damping term
   // =============================================
   if (_stab[_qp] == 1)
   {

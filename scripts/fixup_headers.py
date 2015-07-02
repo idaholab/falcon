@@ -15,7 +15,7 @@ copyright_header = \
 /*             DO NOT MODIFY OR REMOVE THIS HEADER              */
 /*          FALCON - Fracturing And Liquid CONvection           */
 /*                                                              */
-/*       (c) pending 2012 Battelle Energy Alliance, LLC         */
+/*       (c)     2012 Battelle Energy Alliance, LLC             */
 /*                   ALL RIGHTS RESERVED                        */
 /*                                                              */
 /*          Prepared by Battelle Energy Alliance, LLC           */
