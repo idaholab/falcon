@@ -111,7 +111,33 @@ Add the copied key to GitHub:
 
 
 ## MOOSE Framework
-For installation instructions, see the official website: [http://mooseframework.com/getting-started/](http://mooseframework.com/getting-started/).
+For installation instructions on your personal desktop and/or laptop, see the official website: [http://mooseframework.com/getting-started/](http://mooseframework.com/getting-started/).
+
+If you want to use MOOSE on INL's HPC, you do not need to build libMesh on Falcon, Fission, Quark, etc. The MOOSE team has built libMesh for you on the HPC machines. In other words, all you need to do with MOOSE is to git clone the MOOSE repository on the designated location.
+
+Now suppose you are already in your home directory on the Falcon HPC, and `vi ~/.bash_login`. *Remove* the following if they are already in the file
+
+```
+if [[ -f /apps/projects/moose/moose_environment ]]; then
+    source /apps/projects/moose/moose_environment
+fi
+
+module load moose-dev-gcc 
+```
+
+Then copy & paste the following into the file
+
+```
+module load use.moose moose-dev-gcc
+```
+
+Now you can save and quit the file, and copy & paste the following into the terminal
+
+```
+source ~/.bash_login
+```
+
+More infomation on how to run your test cases on a compute node on the HPC will be updated soon.
 
 ## FALCON
 
