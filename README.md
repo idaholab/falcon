@@ -167,7 +167,7 @@ If everything is good then all of the tests will pass.
 
 ## Setting Environment Variables
 
-Open the system environment configuration file by `vi ~/.bash_profile` in Mac OS X, or `vi ~/.bashrc` in Linux Ubuntu, and add in the following text.
+Open the system environment configuration file by `vi ~/.bash_profile` in Mac OS X, or `vi ~/.bashrc` in Linux Ubuntu, or `vi ~/.bash_login` your INL's HPC home directory, and add in the following text.
 
 ```
 #... MOOSE environment settings
