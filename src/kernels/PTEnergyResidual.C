@@ -71,7 +71,7 @@ computeQpResidual()
 
   // contribution from the artificial damping term
   // =============================================
-  if (_stab[_qp] == 1)
+  if (_stab[_qp] == 2)
   {
     // strong-form residual = time derivative + convection
     sres = _epor[_qp]*_u_dot[_qp] + _evelo[_qp]*_grad_u[_qp];
@@ -103,7 +103,7 @@ computeQpJacobian()
 
   // contribution from the artificial damping term
   // =============================================
-  if (_stab[_qp] == 1)
+  if (_stab[_qp] == 2)
   {
     // strong-form Jacobian = time derivative + convection
     sres = _epor[_qp]*_phi[_j][_qp]*_du_dot_du[_qp] + _evelo[_qp]*_grad_phi[_j][_qp];

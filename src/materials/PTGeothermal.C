@@ -33,7 +33,7 @@ InputParameters validParams<PTGeothermal>()
   params.addParam<MooseEnum>("fluid_property_formulation", stat,
   "Fluid property formulation, default = constant");
 
-  MooseEnum stabilizer("none supg", "none");
+  MooseEnum stabilizer("none zero supg", "none");
   params.addParam<MooseEnum>("stabilizer", stabilizer,
   "Energy transport stabilizer, default = none");
 
@@ -282,6 +282,8 @@ PTGeothermal::computeQpProperties()
 
     // pre-compute a few varialbes upon stabilization options
     if (_stab[_qp] == 1)
+      _evelo[_qp] = 0.0;
+    else if (_stab[_qp] == 2)
     {
       // Streamline Upwind Petrov Galerkin
 
