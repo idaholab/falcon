@@ -47,9 +47,8 @@ InputParameters validParams<PTMassPointSource>()
 Routine: PTMassPointSource --- constructor
 Authors: Yidong Xia
 *******************************************************************************/
-PTMassPointSource::
-PTMassPointSource(const std::string & name, InputParameters parameters):
-  DiracKernel(name, parameters),
+PTMassPointSource::PTMassPointSource(const InputParameters & parameters):
+  DiracKernel(parameters),
   _ptloc(getParam<std::vector<Real> >("point")),
   _sched(getParam<std::vector<Real> >("schedule")),
   _value(getParam<std::vector<Real> >("value"))

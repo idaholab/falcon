@@ -26,7 +26,7 @@ class PTDarcyFluxAux : public AuxKernel
 {
   public:
 
-    PTDarcyFluxAux(const std::string & name, InputParameters parameters);
+    PTDarcyFluxAux(const InputParameters & parameters);
 
     virtual ~PTDarcyFluxAux() {}
 

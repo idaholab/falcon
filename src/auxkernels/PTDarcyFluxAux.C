@@ -35,9 +35,8 @@ InputParameters validParams<PTDarcyFluxAux>()
 Routine: PTDarcyFluxAux -- constructor
 Authors: Yidong Xia
 *******************************************************************************/
-PTDarcyFluxAux::
-PTDarcyFluxAux(const std::string & name, InputParameters parameters):
-  AuxKernel(name, parameters),
+PTDarcyFluxAux::PTDarcyFluxAux(const InputParameters & parameters):
+  AuxKernel(parameters),
   _wdflx(getMaterialProperty<RealGradient>("darcy_flux_water")),
   _i(getParam<int>("component"))
 {}

@@ -26,7 +26,7 @@ class PTFluidVelocityAux : public PTDarcyFluxAux
 {
   public:
 
-    PTFluidVelocityAux(const std::string & name, InputParameters parameters);
+    PTFluidVelocityAux(const InputParameters & parameters);
 
     virtual ~PTFluidVelocityAux() {}
 

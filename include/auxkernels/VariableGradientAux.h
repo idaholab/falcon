@@ -39,7 +39,7 @@ class VariableGradientAux : public AuxKernel
      * derived classes can be built using the same
      * constructor.
      */
-    VariableGradientAux(const std::string & name, InputParameters parameters);
+    VariableGradientAux(const InputParameters & parameters);
 
     virtual ~VariableGradientAux() {}
 

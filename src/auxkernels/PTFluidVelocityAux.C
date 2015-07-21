@@ -34,9 +34,8 @@ InputParameters validParams<PTFluidVelocityAux>()
 Routine: PTFluidVelocityAux -- constructor
 Authors: Yidong Xia
 *******************************************************************************/
-PTFluidVelocityAux::
-PTFluidVelocityAux(const std::string & name, InputParameters parameters):
-  PTDarcyFluxAux(name, parameters),
+PTFluidVelocityAux::PTFluidVelocityAux(const InputParameters & parameters):
+  PTDarcyFluxAux(parameters),
   _poro(getMaterialProperty<Real>("porosity"))
 {}
 

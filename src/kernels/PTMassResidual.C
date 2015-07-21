@@ -37,9 +37,8 @@ InputParameters validParams<PTMassResidual>()
 Routine: PTMassResidual -- constructor
 Authors: Yidong Xia
 *******************************************************************************/
-PTMassResidual::
-PTMassResidual(const std::string & name, InputParameters parameters):
-  Kernel(name, parameters),
+PTMassResidual::PTMassResidual(const InputParameters & parameters):
+  Kernel(parameters),
   _has_coupled_temp(isCoupled("coupled_temperature")),
   _wrho(getMaterialProperty<Real>("density_water")),
   _wtau(getMaterialProperty<Real>("tau_water")),

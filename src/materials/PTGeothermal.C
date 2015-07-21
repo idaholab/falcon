@@ -105,8 +105,8 @@ InputParameters validParams<PTGeothermal>()
 Routine: PTGeothermal -- constructor
 Authors: Yidong Xia
 *******************************************************************************/
-PTGeothermal::PTGeothermal(const std::string & name, InputParameters parameters):
-  Material(name, parameters),
+PTGeothermal::PTGeothermal(const InputParameters & parameters):
+  Material(parameters),
 
   _istat(getParam<MooseEnum>("fluid_property_formulation")),
   _istab(getParam<MooseEnum>("stabilizer")),

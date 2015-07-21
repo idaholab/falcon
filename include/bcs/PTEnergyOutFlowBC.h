@@ -27,7 +27,7 @@ class PTEnergyOutFlowBC : public IntegratedBC
 {
   public:
 
-    PTEnergyOutFlowBC(const std::string & name, InputParameters parameters);
+    PTEnergyOutFlowBC(const InputParameters & parameters);
 
     virtual ~PTEnergyOutFlowBC(){}
 
