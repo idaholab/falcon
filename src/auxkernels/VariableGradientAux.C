@@ -26,8 +26,8 @@ InputParameters validParams<VariableGradientAux>()
   return params;
 }
 
-VariableGradientAux::VariableGradientAux(const std::string & name, InputParameters parameters)
-  :AuxKernel(name, parameters),
+VariableGradientAux::VariableGradientAux(const InputParameters & parameters)
+  :AuxKernel(parameters),
    _grad_coupled_variable(coupledGradient("coupled_variable")),
    _i(getParam<int>("component"))
 {}

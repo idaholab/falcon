@@ -27,7 +27,7 @@ class PTEnergyResidual : public Kernel
 {
   public:
 
-    PTEnergyResidual(const std::string & name, InputParameters parameters);
+    PTEnergyResidual(const InputParameters & parameters);
 
   protected:
 

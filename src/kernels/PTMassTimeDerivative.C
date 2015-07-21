@@ -36,9 +36,8 @@ InputParameters validParams<PTMassTimeDerivative>()
 Routine: PTMassTimeDerivative -- constructor
 Authors: Yidong Xia
 *******************************************************************************/
-PTMassTimeDerivative::
-PTMassTimeDerivative(const std::string & name, InputParameters parameters):
-  TimeDerivative(name, parameters),
+PTMassTimeDerivative::PTMassTimeDerivative(const InputParameters & parameters):
+  TimeDerivative(parameters),
   _poro(getMaterialProperty<Real>("porosity")),
   _wrho(getMaterialProperty<Real>("density_water")),
   _drop(getMaterialProperty<Real>("partial_rho_over_partial_pres"))

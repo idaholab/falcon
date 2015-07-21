@@ -26,7 +26,7 @@ class PTEnergyTimeDerivative : public TimeDerivative
 {
   public:
 
-    PTEnergyTimeDerivative(const std::string & name, InputParameters parameters);
+    PTEnergyTimeDerivative(const InputParameters & parameters);
 
   protected:
 

@@ -51,9 +51,8 @@ InputParameters validParams<PTEnergyPointSource>()
 Routine: PTEnergyPointSource --- constructor
 Authors: Yidong Xia
 *******************************************************************************/
-PTEnergyPointSource::
-PTEnergyPointSource(const std::string & name, InputParameters parameters):
-  DiracKernel(name, parameters),
+PTEnergyPointSource::PTEnergyPointSource(const InputParameters & parameters):
+  DiracKernel(parameters),
   _ptloc(getParam<std::vector<Real> >("point")),
   _sched(getParam<std::vector<Real> >("schedule")),
   _value(getParam<std::vector<Real> >("value")),

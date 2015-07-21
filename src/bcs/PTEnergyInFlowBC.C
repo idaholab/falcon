@@ -40,9 +40,8 @@ InputParameters validParams<PTEnergyInFlowBC>()
 Routine: PTEnergyInFlowBC --- constructor
 Authors: Yidong Xia
 *******************************************************************************/
-PTEnergyInFlowBC::
-PTEnergyInFlowBC(const std::string & name, InputParameters parameters):
-  IntegratedBC(name, parameters),
+PTEnergyInFlowBC::PTEnergyInFlowBC(const InputParameters & parameters):
+  IntegratedBC(parameters),
   _thco(getMaterialProperty<Real>("thermal_conductivity")),
   _evelo(getMaterialProperty<RealGradient>("energy_convective_velocity")),
   _value(getParam<Real>("value"))

@@ -36,9 +36,8 @@ InputParameters validParams<PTEnergyResidual>()
 Routine: PTEnergyResidual --- constructor
 Authors: Yidong Xia
 *******************************************************************************/
-PTEnergyResidual::
-PTEnergyResidual(const std::string & name, InputParameters parameters):
-  Kernel(name, parameters),
+PTEnergyResidual::PTEnergyResidual(const InputParameters & parameters):
+  Kernel(parameters),
   _has_coupled_pres(isCoupled("coupled_pressure")),
   _stab(getMaterialProperty<unsigned int>("stabilization_options")),
   _thco(getMaterialProperty<Real>("thermal_conductivity")),
