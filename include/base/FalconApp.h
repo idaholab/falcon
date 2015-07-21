@@ -25,7 +25,7 @@ InputParameters validParams<FalconApp>();
 class FalconApp : public MooseApp
 {
 public:
-  FalconApp(const std::string & name, InputParameters parameters);
+  FalconApp(InputParameters parameters);
 
   static void registerApps();
   static void registerObjects(Factory & factory);

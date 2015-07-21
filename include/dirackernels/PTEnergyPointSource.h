@@ -26,7 +26,7 @@ class PTEnergyPointSource : public DiracKernel
 {
   public:
 
-    PTEnergyPointSource(const std::string & name, InputParameters parameters);
+    PTEnergyPointSource(const InputParameters & parameters);
 
     virtual void addPoints();
 

@@ -26,7 +26,7 @@ class PTMassPointSource : public DiracKernel
 {
   public:
 
-    PTMassPointSource(const std::string & name, InputParameters parameters);
+    PTMassPointSource(const InputParameters & parameters);
 
     virtual void addPoints();
 

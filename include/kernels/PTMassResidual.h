@@ -27,8 +27,7 @@ class PTMassResidual : public Kernel
 {
   public:
 
-    PTMassResidual(const std::string & name,
-                          InputParameters parameters);
+    PTMassResidual(const InputParameters & parameters);
 
   protected:
 

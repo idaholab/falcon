@@ -36,9 +36,8 @@ InputParameters validParams<PTEnergyTimeDerivative>()
 Routine: PTEnergyTimeDerivative - constructor
 Authors: Yidong Xia
 *******************************************************************************/
-PTEnergyTimeDerivative::
-PTEnergyTimeDerivative(const std::string & name, InputParameters parameters):
-  TimeDerivative(name, parameters),
+PTEnergyTimeDerivative::PTEnergyTimeDerivative(const InputParameters & parameters):
+  TimeDerivative(parameters),
    _epor(getMaterialProperty<Real>("porous_media_energy"))
 {}
 

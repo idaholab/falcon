@@ -35,9 +35,8 @@ InputParameters validParams<PTEnergyOutFlowBC>()
 Routine: PTEnergyOutFlowBC --- constructor
 Authors: Yidong Xia
 *******************************************************************************/
-PTEnergyOutFlowBC::
-PTEnergyOutFlowBC(const std::string & name, InputParameters parameters):
-  IntegratedBC(name, parameters),
+PTEnergyOutFlowBC::PTEnergyOutFlowBC(const InputParameters & parameters):
+  IntegratedBC(parameters),
   _thco(getMaterialProperty<Real>("thermal_conductivity")),
   _evelo(getMaterialProperty<RealGradient>("energy_convective_velocity"))
 {}

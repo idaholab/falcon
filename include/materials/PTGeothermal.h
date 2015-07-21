@@ -27,7 +27,7 @@ class PTGeothermal : public Material
 {
   public:
 
-    PTGeothermal(const std::string & name, InputParameters parameters);
+    PTGeothermal(const InputParameters & parameters);
 
   protected:
 
