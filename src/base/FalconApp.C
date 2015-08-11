@@ -109,8 +109,6 @@ Routine: FalconApp -- constructor
 FalconApp::FalconApp(InputParameters parameters) :
     MooseApp(parameters)
 {
-  srand(processor_id());
-
   Moose::registerObjects(_factory);
   PhaseFieldApp::registerObjects(_factory);
   FalconApp::registerObjects(_factory);
@@ -128,13 +126,7 @@ extern "C" void FalconApp__registerApps() { FalconApp::registerApps(); }
 void
 FalconApp::registerApps()
 {
-#undef  registerApp
-#define registerApp(name) AppFactory::instance().reg<name>(#name)
-
   registerApp(FalconApp);
-
-#undef  registerApp
-#define registerApp(name) AppFactory::instance().regLegacy<name>(#name)
 }
 
 
@@ -144,9 +136,6 @@ Routine: registerObjects
 void
 FalconApp::registerObjects(Factory & factory)
 {
-#undef registerObject
-#define registerObject(name) factory.reg<name>(stringifyName(name))
-
   /* AuxKernels */
 
   registerAux(PTDarcyFluxAux);
@@ -191,8 +180,6 @@ FalconApp::registerObjects(Factory & factory)
 
 
   /* UserObjects */
-#undef registerObject
-#define registerObject(name) factory.regLegacy<name>(stringifyName(name))
 }
 
 
