@@ -40,6 +40,7 @@ BCs
 #include "PTEnergyInFlowBC.h"
 #include "PTEnergyOutFlowBC.h"
 #include "PTMassFluxBC.h"
+#include "PTMassFreeBC.h"
 
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -149,6 +150,7 @@ FalconApp::registerObjects(Factory & factory)
   registerBoundaryCondition(PTEnergyInFlowBC);
   registerBoundaryCondition(PTEnergyOutFlowBC);
   registerBoundaryCondition(PTMassFluxBC);
+  registerBoundaryCondition(PTMassFreeBC);
 
   /* DGKernels */
 
