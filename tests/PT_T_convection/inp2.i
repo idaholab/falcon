@@ -103,8 +103,6 @@
 ############################################################
 [Outputs]
   file_base      = out2
-  output_initial = true
-  interval       = 1
   exodus         = true
   [./Console]
     type = Console

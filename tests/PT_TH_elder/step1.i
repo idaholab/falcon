@@ -77,8 +77,6 @@
 ############################################################
 [Outputs]
   file_base      = out1
-  output_initial = true
-  interval       = 1
   exodus         = true
   [./console]
     type = Console

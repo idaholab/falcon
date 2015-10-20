@@ -161,8 +161,7 @@
 ############################################################
 [Outputs]
   file_base      = out2_comp
-  output_initial = true
-  interval       = 1 # use 100 for complete run
+  # use 100 for complete run
   exodus         = true
   [./console]
     type = Console
