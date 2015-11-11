@@ -24,6 +24,9 @@ Descriptions: material properties for pressure-temperature based
 
 #include "PTGeothermal.h"
 
+// libMesh includes
+#include "libmesh/quadrature.h"
+
 template<>
 InputParameters validParams<PTGeothermal>()
 {
