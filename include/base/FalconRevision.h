@@ -3,6 +3,6 @@
 #ifndef FALCON_REVISION_H
 #define FALCON_REVISION_H
 
-#define FALCON_REVISION "git commit 6597d27 on 2014-10-27"
+#define FALCON_REVISION "git commit 973245b on 2015-10-20"
 
 #endif // FALCON_REVISION_H

@@ -20,7 +20,7 @@ include $(FRAMEWORK_DIR)/build.mk
 include $(FRAMEWORK_DIR)/moose.mk
 
 ################################## MODULES ####################################
-PHASE_FIELD               := yes
+#PHASE_FIELD               := yes
 #ALL_MODULES       := yes
 include           $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
