@@ -85,8 +85,8 @@ InputParameters validParams<PTGeothermal>()
   "Initial water density [kg/m^3], default = 1000");
 
   params.addParam<Real>(
-  "viscosity_water", 0.12e-3,
-  "Initial water viscosity [Pa.s], default = 0.12e-3");
+  "viscosity_water", 0.001,
+  "Initial water viscosity [Pa.s], default = 0.001");
 
   params.addParam<Real>(
   "specific_heat_rock", 0.92e3,
