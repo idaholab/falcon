@@ -82,7 +82,7 @@ Materials
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 PostProcessors
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
+#include "PTMassSideFluxIntegral.h"
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 UserObjects
@@ -182,7 +182,7 @@ FalconApp::registerObjects(Factory & factory)
 
 
   /* PostProcessors */
-
+  registerPostprocessor(PTMassSideFluxIntegral);
 
   /* UserObjects */
 }
