@@ -82,6 +82,7 @@ Materials
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 PostProcessors
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+#include "PTEnergySideProductionIntegral.h"
 #include "PTMassSideFluxAverage.h"
 #include "PTMassSideFluxIntegral.h"
 
@@ -183,6 +184,7 @@ FalconApp::registerObjects(Factory & factory)
 
 
   /* PostProcessors */
+  registerPostprocessor(PTEnergySideProductionIntegral);
   registerPostprocessor(PTMassSideFluxAverage);
   registerPostprocessor(PTMassSideFluxIntegral);
 
