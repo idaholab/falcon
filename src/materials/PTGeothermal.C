@@ -45,6 +45,14 @@ InputParameters validParams<PTGeothermal>()
   "Flag true if permeability is pressure dependent, default = false");
 
   params.addParam<Real>(
+  "reference_pressure", 101325,
+  "Reference pressure [Pa], default = 101325");
+
+  params.addParam<Real>(
+  "reference_temperature", 297.15,
+  "Reference temperature [K], default = 297.15");
+
+  params.addParam<Real>(
   "permeability", 1.0e-12,
   "Intrinsic permeability [m^2], default = 1.0e-12");
 
@@ -125,6 +133,8 @@ PTGeothermal::PTGeothermal(const InputParameters & parameters):
   // =====================
   // user-input parameters
   // =====================
+  _ipres(getParam<Real>("reference_pressure")),
+  _itemp(getParam<Real>("reference_temperature")),
   _iperm(getParam<Real>("permeability")),
   _iporo(getParam<Real>("porosity")),
   _irrho(getParam<Real>("density_rock")),
@@ -222,6 +232,11 @@ PTGeothermal::computeQpProperties()
   _guvec[_qp] = _igvec;
         gradp = _igrdp;
 
+  // use the nonlinear variables when available
+  rpres = _ipres; if (_has_pres) rpres = _pres[_qp];
+  rtemp = _itemp; if (_has_temp) rtemp = _temp[_qp];
+
+
   if (_has_pres)
   {
     gradp = _grad_pres[_qp];
@@ -235,25 +250,15 @@ PTGeothermal::computeQpProperties()
 
   if (_stat[_qp] == 1) // solely T-dependent fluid properties and use compressibility
   {
-    if (!_has_pres)
-      mooseError("In material GeoProc_PT: missing nonlinear variable for pressure!");
-    if (!_has_temp)
-      mooseError("In material GeoProc_PT: missing nonlinear variable for temperature!");
-
-    _wrho[_qp] = computeTempBasedWaterDens(_temp[_qp]);
-    _wvis[_qp] = computeTempBasedWaterVisc(_temp[_qp]);
-    _drot[_qp] = computeTempBasedWaterPartialDensOverPartialTemp(_temp[_qp]);
+    _wrho[_qp] = computeTempBasedWaterDens(rtemp);
+    _wvis[_qp] = computeTempBasedWaterVisc(rtemp);
+    _drot[_qp] = computeTempBasedWaterPartialDensOverPartialTemp(rtemp);
     _drop[_qp] = _wrho[_qp]*_comp[_qp];
 
   }
   else if (_stat[_qp] == 2) // P-T dependent fluid properties
   {
-    if (!_has_pres)
-      mooseError("In material GeoProc_PT: missing nonlinear variable for pressure!");
-    if (!_has_temp)
-      mooseError("In material GeoProc_PT: missing nonlinear variable for temperature!");
-
-    Real inp[2] = {_pres[_qp], _temp[_qp]};
+    Real inp[2] = {rpres, rtemp};
     Real out[2] = {0.0, 0.0};
 
     Real inpd[2][2] = { {1.0, 0.0}, {0.0, 1.0} };
@@ -265,7 +270,7 @@ PTGeothermal::computeQpProperties()
     _drop[_qp] = outd[0][0];
     _drot[_qp] = outd[0][1];
 
-    computeViscosity(_wrho[_qp], _temp[_qp], _wvis[_qp]);
+    computeViscosity(_wrho[_qp], rtemp, _wvis[_qp]);
   }
 
   // water mobility

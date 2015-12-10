@@ -82,6 +82,8 @@ class PTGeothermal : public Material
     // =====================
     // user-input parameters
     // =====================
+    Real _ipres; // user-input reference pressure
+    Real _itemp; // user-input reference temperature
     Real _iperm; // user-input rock permeability
     Real _iporo; // user-input rock porosity
     Real _irrho; // user-input rock density
@@ -134,6 +136,8 @@ class PTGeothermal : public Material
 
   private:
 
+    Real rpres; 
+    Real rtemp;
     RealGradient gradp;
 };
 #endif //PTGEOTHERMAL_H
