@@ -20,6 +20,7 @@ Baseline dependencies (do NOT touch)
 #include "AppFactory.h"
 #include "ActionFactory.h"
 #include "Syntax.h"
+#include "MooseSyntax.h"
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Actions
@@ -196,5 +197,5 @@ FalconApp::registerObjects(Factory & factory)
 Routine: registerApps
 *******************************************************************************/
 void
-FalconApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
+FalconApp::associateSyntax(Syntax & /*syntax*/, ActionFactory & /*action_factory*/)
 {}
