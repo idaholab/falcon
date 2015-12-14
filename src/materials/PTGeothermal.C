@@ -36,7 +36,7 @@ InputParameters validParams<PTGeothermal>()
   params.addParam<MooseEnum>("fluid_property_formulation", stat,
   "Fluid property formulation, default = constant");
 
-  MooseEnum stabilizer("none zero supg", "none");
+  MooseEnum stabilizer("none zero supg supg_dc", "none");
   params.addParam<MooseEnum>("stabilizer", stabilizer,
   "Energy transport stabilizer, default = none");
 
@@ -108,6 +108,10 @@ InputParameters validParams<PTGeothermal>()
   "thermal_conductivity", 2.5,
   "Thermal conductivity of the reservoir [W/(m.K)], default = 2.5");
 
+  params.addParam<Real>(
+  "supg_dc_threshold", 1e-12,
+  "Threshold magnitude of temperature gradient to include SUPG discontinuity capturing, default = 1e-12");
+
   return params;
 }
 
@@ -144,6 +148,7 @@ PTGeothermal::PTGeothermal(const InputParameters & parameters):
   _iwvis(getParam<Real>("viscosity_water")),
   _iwsph(getParam<Real>("specific_heat_water")),
   _ithco(getParam<Real>("thermal_conductivity")),
+  _ipgdc(getParam<Real>("supg_dc_threshold")),
   _igfor(getParam<Real>("gravity")),
 
   _igvec(getParam<RealGradient>("gravity_direction")),
@@ -181,6 +186,7 @@ PTGeothermal::PTGeothermal(const InputParameters & parameters):
   _drop(declareProperty<Real>("partial_rho_over_partial_pres")),
   _drot(declareProperty<Real>("partial_rho_over_partial_temp")),
   _tau1(declareProperty<Real>("supg_tau1")),
+  _tau2(declareProperty<Real>("supg_tau2")),
 
   _guvec(declareProperty<RealGradient>("gravity_direction")),
   _wdflx(declareProperty<RealGradient>("darcy_flux_water")),
@@ -227,6 +233,7 @@ PTGeothermal::computeQpProperties()
   _drop[_qp] = 0.0;
   _drot[_qp] = 0.0;
   _tau1[_qp] = 0.0;
+  _tau2[_qp] = 0.0;
 
   // vector arrays
   _guvec[_qp] = _igvec;
@@ -290,7 +297,9 @@ PTGeothermal::computeQpProperties()
 
     // pre-compute a few varialbes upon stabilization options
     if (_stab[_qp] == 1)
+    {
       _evelo[_qp] = 0.0;
+    }
     else if (_stab[_qp] == 2)
     {
       // Streamline Upwind Petrov Galerkin
@@ -305,6 +314,33 @@ PTGeothermal::computeQpProperties()
 
       // compute the SUPG stabilization parameter: tau1
       _tau1[_qp] = hsupg / (2.0*(amag+1.0e-7));
+    }
+    else if (_stab[_qp] == 3)
+    {
+      // Streamline Upwind Petrov Galerkin with Discontinuity Capturing
+      // (Note: this method may only slightly improve stability
+      //        or make it worse depending on specific situations)
+      // Specifically speaking, the nonlinear convergence becomes worse
+      // So always use with caution and only when you understand the mechanism
+
+      // compute the SUPG h size
+      const double hsupg = _current_elem->hmin();
+
+      // compute the energy convective velocity magnitude
+      Real amag = _wsph[_qp]*sqrt(_wdmfx[_qp](0)*_wdmfx[_qp](0)+
+                                  _wdmfx[_qp](1)*_wdmfx[_qp](1)+
+                                  _wdmfx[_qp](2)*_wdmfx[_qp](2));
+
+      // compute the SUPG stabilization parameter: tau1
+      _tau1[_qp] = hsupg / (2.0*(amag+1.0e-7));
+
+      // compute the magnitude of temperature gradient
+      Real grad_temp_mod = sqrt( _grad_temp[_qp](0)+_grad_temp[_qp](0)
+                                +_grad_temp[_qp](1)+_grad_temp[_qp](1)
+                                +_grad_temp[_qp](2)+_grad_temp[_qp](2));
+
+      // compute the discontinuity capturing parameter: tau2
+      if (grad_temp_mod > _ipgdc) _tau2[_qp] = hsupg / (2.0*grad_temp_mod);
     }
   }
 }

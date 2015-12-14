@@ -93,6 +93,7 @@ class PTGeothermal : public Material
     Real _iwvis; // user-input water viscosity
     Real _iwsph; // user-input water specific heat
     Real _ithco; // user-input thermal conductivity of the reservoir
+    Real _ipgdc; // user-input threshold value to include SUPG discontinuity capturing
     Real _igfor; // user-input gravity amplitude
 
     RealGradient _igvec; // user-input gravity unit directional vector
@@ -128,6 +129,7 @@ class PTGeothermal : public Material
     MaterialProperty<Real> & _drop; // partial rho over partial pressure
     MaterialProperty<Real> & _drot; // partial rho over partial temperature
     MaterialProperty<Real> & _tau1; // SUPG tau1
+    MaterialProperty<Real> & _tau2; // SUPG tau2
 
     MaterialProperty<RealGradient> & _guvec; // gravity unit directional vector
     MaterialProperty<RealGradient> & _wdflx; // water Darcy flux
@@ -136,7 +138,7 @@ class PTGeothermal : public Material
 
   private:
 
-    Real rpres; 
+    Real rpres;
     Real rtemp;
     RealGradient gradp;
 };
