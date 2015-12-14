@@ -13,4 +13,11 @@
     abs_zero = 1.0e-07
     rel_err  = 1.0e-04
   [../]
+  [./PT_T_convection_SUPG_Discontinuity_Capturing]
+    type     = 'Exodiff'
+    input    = 'inp3.i'
+    exodiff  = 'out3.e'
+    abs_zero = 1.0e-02
+    rel_err  = 1.0e-02
+  [../]
 []

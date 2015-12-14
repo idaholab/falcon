@@ -44,6 +44,7 @@ PTEnergyResidual::PTEnergyResidual(const InputParameters & parameters):
   _wsph(getMaterialProperty<Real>("specific_heat_water")),
   _epor(getMaterialProperty<Real>("porous_media_energy")),
   _tau1(getMaterialProperty<Real>("supg_tau1")),
+  _tau2(getMaterialProperty<Real>("supg_tau2")),
   _wdmfx(getMaterialProperty<RealGradient>("darcy_mass_flux_water")),
   _evelo(getMaterialProperty<RealGradient>("energy_convective_velocity")),
   _pres_var(_has_coupled_pres ? coupled("coupled_pressure") : zero)
@@ -68,8 +69,8 @@ computeQpResidual()
 
   r += -_evelo[_qp] * _u[_qp] * _grad_test[_i][_qp];
 
-  // contribution from the artificial damping term
-  // =============================================
+  // contribution from the SUPG term
+  // ===============================
   if (_stab[_qp] == 2)
   {
     // strong-form residual = time derivative + convection
@@ -77,6 +78,19 @@ computeQpResidual()
 
     // SUPG stabilization term
     r += _tau1[_qp] * _evelo[_qp] * sres * _grad_test[_i][_qp];
+  }
+  // contribution from the SUPG with Discontinuity Capturing term
+  // ============================================================
+  else if (_stab[_qp] == 3)
+  {
+    // strong-form residual = time derivative + convection
+    sres = _epor[_qp]*_u_dot[_qp] + _evelo[_qp]*_grad_u[_qp];
+
+    // SUPG stabilization term
+    r += _tau1[_qp] * _evelo[_qp] * sres * _grad_test[_i][_qp];
+
+    // SUPG discontinuity capturing term
+    r += _tau2[_qp] * _grad_u[_qp] * std::abs(sres) * _grad_test[_i][_qp];
   }
 
   return r;
@@ -100,8 +114,8 @@ computeQpJacobian()
   // ==========================================
   r += -_evelo[_qp] * _phi[_j][_qp] * _grad_test[_i][_qp];
 
-  // contribution from the artificial damping term
-  // =============================================
+  // contribution from the SUPG term
+  // ===============================
   if (_stab[_qp] == 2)
   {
     // strong-form Jacobian = time derivative + convection
@@ -109,6 +123,19 @@ computeQpJacobian()
 
     // SUPG stabilization term
     r += _tau1[_qp] * _evelo[_qp] * sres * _grad_test[_i][_qp];
+  }
+  // contribution from the SUPG with Discontinuity Capturing term
+  // ============================================================
+  else if (_stab[_qp] == 3)
+  {
+    // strong-form Jacobian = time derivative + convection
+    sres = _epor[_qp]*_phi[_j][_qp]*_du_dot_du[_qp] + _evelo[_qp]*_grad_phi[_j][_qp];
+
+    // SUPG stabilization term
+    r += _tau1[_qp] * _evelo[_qp] * sres * _grad_test[_i][_qp];
+
+   // (Note: contribution from discontinuity capturing term is not included
+   //       because of bad convergence observed)
   }
 
   return r;

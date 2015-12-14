@@ -42,6 +42,7 @@ class PTEnergyResidual : public Kernel
     const MaterialProperty<Real> & _wsph;
     const MaterialProperty<Real> & _epor;
     const MaterialProperty<Real> & _tau1;
+    const MaterialProperty<Real> & _tau2;
     const MaterialProperty<RealGradient> & _wdmfx;
     const MaterialProperty<RealGradient> & _evelo;
 
