@@ -1,0 +1,18 @@
+[Tests]
+  [./Initial_Run]
+    type     = 'Exodiff'
+    input    = 'inp3d_ini.i'
+    exodiff  = 'out3d_ini.e'
+    abs_zero = 1.0e-07
+    rel_err  = 1.0e-02
+    skip = 'long time'
+  [../]
+  [./Production_Run]
+    type     = 'Exodiff'
+    input    = 'inp3d_run.i'
+    exodiff  = 'out3d_run.e'
+    abs_zero = 1.0e-07
+    rel_err  = 1.0e-02
+    skip = 'long time'
+  [../]
+[]
