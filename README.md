@@ -12,6 +12,9 @@ Some of the capability at your fingertips:
 * Dimension agnostic, parallel geometric search (for contact related applications)
 * Flexible, plugable graphical user interface
 
+# Documentation
+
+Please navigate to the folder /doc/publications/ for the papers that employed FALCON for modeling & simulation. 
 
 # Getting Started
 
