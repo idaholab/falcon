@@ -102,8 +102,8 @@ class PTGeothermal : public Material
     // ========================
     // main nonlinear variables
     // ========================
-    VariableValue & _pres; // pressure
-    VariableValue & _temp; // temperature
+    const VariableValue & _pres; // pressure
+    const VariableValue & _temp; // temperature
 
     VariableGradient & _grad_pres; // pressure gradient
     VariableGradient & _grad_temp; // temperature gradient
