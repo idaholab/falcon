@@ -46,7 +46,7 @@ class VariableGradientAux : public AuxKernel
   protected:
     virtual Real computeValue();
 
-    VariableGradient & _grad_coupled_variable;
+    const VariableGradient & _grad_coupled_variable;
 
     int _i;
 };
