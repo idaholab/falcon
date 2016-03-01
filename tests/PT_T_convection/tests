@@ -6,10 +6,24 @@
     abs_zero = 1.0e-07
     rel_err  = 1.0e-04
   [../]
+  [./PT_T_convection_gaussian]
+    type     = 'Exodiff'
+    input    = 'inp1_gaussian.i'
+    exodiff  = 'out1_gaussian.e'
+    abs_zero = 1.0e-07
+    rel_err  = 1.0e-04
+  [../]
   [./PT_T_convection_SUPG]
     type     = 'Exodiff'
     input    = 'inp2.i'
     exodiff  = 'out2.e'
+    abs_zero = 1.0e-07
+    rel_err  = 1.0e-04
+  [../]
+  [./PT_T_convection_SUPG_gaussian]
+    type     = 'Exodiff'
+    input    = 'inp2_gaussian.i'
+    exodiff  = 'out2_gaussian.e'
     abs_zero = 1.0e-07
     rel_err  = 1.0e-04
   [../]
