@@ -70,6 +70,7 @@ Kernels
 #include "PTEnergyTimeDerivative.h"
 #include "PTMassResidual.h"
 #include "PTMassTimeDerivative.h"
+#include "PTMassTimeDerivative_FD.h"
 
 // solid mechanics
 
@@ -174,6 +175,7 @@ FalconApp::registerObjects(Factory & factory)
   registerKernel(PTEnergyTimeDerivative);
   registerKernel(PTMassResidual);
   registerKernel(PTMassTimeDerivative);
+  registerKernel(PTMassTimeDerivative_FD);
 
 
   // solid mechanics
