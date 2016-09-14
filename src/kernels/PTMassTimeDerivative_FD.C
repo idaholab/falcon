@@ -53,7 +53,10 @@ Real
 PTMassTimeDerivative_FD::
 computeQpResidual()
 {
-  return _test[_i][_qp] * _poro[_qp] * (_wrho[_qp] - _wrho_old[_qp]) / _dt;
+  if(_t_step == 1)
+    return _poro[_qp]*_drop[_qp]*TimeDerivative::computeQpResidual();
+  else
+    return _test[_i][_qp] * _poro[_qp] * (_wrho[_qp] - _wrho_old[_qp]) / _dt;
 }
 
 
