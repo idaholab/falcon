@@ -31,6 +31,7 @@ class PTGeothermal : public Material
 
   protected:
 
+    virtual void initQpStatefulProperties();
     virtual void computeProperties();
     virtual void computeQpProperties();
 
@@ -104,6 +105,8 @@ class PTGeothermal : public Material
     // ========================
     const VariableValue & _pres; // pressure
     const VariableValue & _temp; // temperature
+    const VariableValue & _pres_old; // pressure at previous time step
+    const VariableValue & _temp_old; // temperature at previous time step
 
     const VariableGradient & _grad_pres; // pressure gradient
     const VariableGradient & _grad_temp; // temperature gradient
@@ -136,10 +139,15 @@ class PTGeothermal : public Material
     MaterialProperty<RealGradient> & _wdmfx; // water Darcy mass flux
     MaterialProperty<RealGradient> & _evelo; // energy convective velocity
 
+    // ============================
+    // stateful material properties
+    // ============================
+    MaterialProperty<Real> & _wrho_old; // water density at previous time step
+
   private:
 
-    Real rpres;
-    Real rtemp;
+    Real rpres, rpres_old;
+    Real rtemp, rtemp_old;
     RealGradient gradp;
 };
 #endif //PTGEOTHERMAL_H
