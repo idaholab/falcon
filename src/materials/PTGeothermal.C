@@ -161,6 +161,9 @@ PTGeothermal::PTGeothermal(const InputParameters & parameters):
   _pres(_has_pres ? coupledValue("pressure")    : _zero),
   _temp(_has_temp ? coupledValue("temperature") : _zero),
 
+  _pres_old((_has_pres & _is_transient) ? coupledValueOld("pressure") : _zero),
+  _temp_old((_has_temp & _is_transient) ? coupledValueOld("temperature") : _zero),
+
   // coupled solution variable gradients
   _grad_pres(_has_pres ? coupledGradient("pressure")    : _grad_zero),
   _grad_temp(_has_temp ? coupledGradient("temperature") : _grad_zero),
@@ -191,9 +194,23 @@ PTGeothermal::PTGeothermal(const InputParameters & parameters):
   _guvec(declareProperty<RealGradient>("gravity_direction")),
   _wdflx(declareProperty<RealGradient>("darcy_flux_water")),
   _wdmfx(declareProperty<RealGradient>("darcy_mass_flux_water")),
-  _evelo(declareProperty<RealGradient>("energy_convective_velocity"))
+  _evelo(declareProperty<RealGradient>("energy_convective_velocity")),
+
+  // ============================
+  // stateful material properties
+  // ============================
+  _wrho_old(declarePropertyOld<Real>("density_water"))
 {}
 
+/*******************************************************************************
+Routine: initQpStatefulProperties -- called only when stateful props are used
+Authors: Yidong Xia
+*******************************************************************************/
+void
+PTGeothermal::initQpStatefulProperties()
+{
+  _wrho[_qp] = _iwrho;
+}
 
 /*******************************************************************************
 Routine: computeProperties -- self-explanatory
@@ -205,7 +222,6 @@ PTGeothermal::computeProperties()
   for(_qp=0; _qp<_qrule->n_points(); _qp++)
     computeQpProperties();
 }
-
 
 /*******************************************************************************
 Routine: computeQpProperties -- self-explanatory
@@ -242,7 +258,8 @@ PTGeothermal::computeQpProperties()
   // use the nonlinear variables when available
   rpres = _ipres; if (_has_pres) rpres = _pres[_qp];
   rtemp = _itemp; if (_has_temp) rtemp = _temp[_qp];
-
+  rpres_old = _ipres; if (_has_pres) rpres_old = _pres_old[_qp];
+  rtemp_old = _itemp; if (_has_temp) rtemp_old = _temp_old[_qp];
 
   if (_has_pres)
   {
