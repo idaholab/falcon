@@ -30,6 +30,7 @@ Actions
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 AuxKernels
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+#include "FracManMapAux.h"
 #include "PTDarcyFluxAux.h"
 #include "PTFluidVelocityAux.h"
 #include "VariableGradientAux.h"
@@ -53,7 +54,9 @@ DGKernels
 DiracKernels
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #include "PTEnergyPointSource.h"
+#include "PTEnergyPointSourceSchedule.h"
 #include "PTMassPointSource.h"
+#include "PTMassPointSourceSchedule.h"
 
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -79,6 +82,7 @@ Kernels
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Materials
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+#include "PTFracGeothermal.h"
 #include "PTGeothermal.h"
 
 
@@ -146,6 +150,7 @@ FalconApp::registerObjects(Factory & factory)
 {
   /* AuxKernels */
 
+  registerAux(FracManMapAux);
   registerAux(PTDarcyFluxAux);
   registerAux(PTFluidVelocityAux);
   registerAux(VariableGradientAux);
@@ -163,7 +168,9 @@ FalconApp::registerObjects(Factory & factory)
 
   /* DiracKernels */
   registerDiracKernel(PTEnergyPointSource);
+  registerDiracKernel(PTEnergyPointSourceSchedule);
   registerDiracKernel(PTMassPointSource);
+  registerDiracKernel(PTMassPointSourceSchedule);
 
 
   /* ICs */
@@ -185,6 +192,7 @@ FalconApp::registerObjects(Factory & factory)
 
   /* Materials */
 
+  registerMaterial(PTFracGeothermal);
   registerMaterial(PTGeothermal);
 
 
