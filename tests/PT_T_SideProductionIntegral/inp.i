@@ -108,6 +108,7 @@
     variable = T
     boundary = 'right'
     injection_temperature = 1.0
+    execute_on = 'initial timestep_end'
   [../]
 []
 ############################################################
