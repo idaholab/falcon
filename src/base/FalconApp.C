@@ -96,6 +96,7 @@ UserObjects
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 MOOSE physics modules
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+#include "PorousFlowApp.h"
 //#include "PhaseFieldApp.h"
 
 
@@ -119,10 +120,12 @@ FalconApp::FalconApp(InputParameters parameters) :
     MooseApp(parameters)
 {
   Moose::registerObjects(_factory);
+  PorousFlowApp::registerObjects(_factory);
   //PhaseFieldApp::registerObjects(_factory);
   FalconApp::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
+  PorousFlowApp::associateSyntax(_syntax, _action_factory);
   //PhaseFieldApp::associateSyntax(_syntax, _action_factory);
   FalconApp::associateSyntax(_syntax, _action_factory);
 }
