@@ -1,0 +1,47 @@
+#CUBIT script
+create surface ellipse major radius 200 minor radius 300 yplane
+create surface rectangle width 2000 yplane
+subtract volume 1 from volume 2 keep
+delete surface 2
+merge all
+surface 1 size auto factor 5
+sweep surface all vector 0 1 0 distance 1
+move volume all x 0 y -0.5 z 0 include_merged
+curve 16 9 10 13 7 20 18 8 interval 3
+curve 16 9 10 13 7 20 18 8 scheme equal
+mesh curve 16 9 10 13 7 20 18 8
+curve 21 1 interval 20
+curve 21 1 scheme equal
+mesh curve 21 1
+volume 1 size auto factor 10
+mesh volume 1
+volume 3 size auto factor 10
+mesh volume 3
+create curve location 0 0.5 0 direction 0 1 0 length 999.5
+curve 23 interval 3
+curve 23 scheme bias factor 2
+mesh curve 23
+undo group begin
+sweep surface 3 1 along curve 23 include_mesh keep
+delete curve 23
+undo group end
+create curve location 0 -0.5 0 direction 0 -1 0 length 999.5
+curve 42 interval 3
+curve 42 scheme bias factor 2
+mesh curve 42
+undo group begin
+sweep surface 11 5 along curve 42 include_mesh keep
+delete curve 42
+undo group end
+merge all
+set duplicate block elements off
+block 1 volume 1
+set duplicate block elements off
+block 2 volume 3 4 5 6 7
+sideset 1 surface 23 7 12
+sideset 2 surface 25 9 14
+sideset 3 surface 13 22 8
+sideset 4 surface 24 15 6
+sideset 5 surface 27 30
+sideset 6 surface 17 20
+move volume all x 0 y 0 z -2500 include_merged
