@@ -100,6 +100,10 @@ InputParameters validParams<PTGeothermal>()
   "temperature",
   "Assign nonlinear variable for temperature [K], if energy balance is involved");
 
+  params.addCoupledVar(
+  "stochastic_permeability",
+  "Assign aux variable for stochastic permeability [m2]");
+
   params.addParam<Real>(
   "density_water", 1000,
   "Initial water density [kg/m^3], default = 1000");
@@ -143,6 +147,7 @@ PTGeothermal::PTGeothermal(const InputParameters & parameters):
   // ========================================================
   _has_pres(isCoupled("pressure")),
   _has_temp(isCoupled("temperature")),
+  _sto_perm(isCoupled("stochastic_permeability")),
 
   _pres_dep_perm(getParam<bool>("pressure_dependent_permeability")),
 
@@ -182,6 +187,8 @@ PTGeothermal::PTGeothermal(const InputParameters & parameters):
   // coupled solution variable gradients
   _grad_pres(_has_pres ? coupledGradient("pressure")    : _grad_zero),
   _grad_temp(_has_temp ? coupledGradient("temperature") : _grad_zero),
+
+  _perm_sto(_sto_perm ? coupledValue("stochastic_permeability") : _zero),
 
   // ===================
   // material properties
@@ -277,6 +284,10 @@ PTGeothermal::computeQpProperties()
   rtemp = _itemp; if (_has_temp) rtemp = _temp[_qp];
   rpres_old = _ipres; if (_has_pres) rpres_old = _pres_old[_qp];
   rtemp_old = _itemp; if (_has_temp) rtemp_old = _temp_old[_qp];
+
+  // use stochastic permeability when available
+  if (_sto_perm)
+    _perm[_qp] = _perm_sto[_qp];
 
   if (_has_pres)
   {
