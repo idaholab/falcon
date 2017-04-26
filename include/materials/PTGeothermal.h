@@ -77,6 +77,7 @@ class PTGeothermal : public Material
     // ========================================================
     bool _has_pres; // flag for pressure-based mass balance equation
     bool _has_temp; // flag for temperature-based energy balance equation
+    bool _sto_perm; // flag for stochastic field
 
     bool _pres_dep_perm; // flag for pressure-based permeability
 
@@ -113,6 +114,8 @@ class PTGeothermal : public Material
 
     const VariableGradient & _grad_pres; // pressure gradient
     const VariableGradient & _grad_temp; // temperature gradient
+
+    const VariableValue & _perm_sto; // permeability read from a stochastic field data file
 
     // ===================
     // material properties

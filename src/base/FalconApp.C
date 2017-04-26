@@ -34,6 +34,7 @@ AuxKernels
 #include "PTDarcyFluxAux.h"
 #include "PTFluidVelocityAux.h"
 #include "PTPermeabilityAux.h"
+#include "StochasticFieldAux.h"
 #include "VariableGradientAux.h"
 
 
@@ -148,6 +149,7 @@ FalconApp::registerObjects(Factory & factory)
   registerAux(PTDarcyFluxAux);
   registerAux(PTFluidVelocityAux);
   registerAux(PTPermeabilityAux);
+  registerAux(StochasticFieldAux);
   registerAux(VariableGradientAux);
 
 
