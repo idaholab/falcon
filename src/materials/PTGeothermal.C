@@ -45,6 +45,18 @@ InputParameters validParams<PTGeothermal>()
   "Flag true if permeability is pressure dependent, default = false");
 
   params.addParam<Real>(
+  "initial_fluid_pressure", 0.0,
+  "Initial fluid pressure [Pa], default = 0");
+
+  params.addParam<Real>(
+  "total_overburden_confining_pressure", 45.0e6,
+  "Total overburden confining pressure [Pa], default = 45000000");
+
+  params.addParam<Real>(
+  "fitting_parameter", 10.0,
+  "Fitting parameter, default = 10");
+
+  params.addParam<Real>(
   "reference_pressure", 101325,
   "Reference pressure [Pa], default = 101325");
 
@@ -137,6 +149,9 @@ PTGeothermal::PTGeothermal(const InputParameters & parameters):
   // =====================
   // user-input parameters
   // =====================
+  _ipini(getParam<Real>("initial_fluid_pressure")),
+  _iptoc(getParam<Real>("total_overburden_confining_pressure")),
+  _icfit(getParam<Real>("fitting_parameter")),
   _ipres(getParam<Real>("reference_pressure")),
   _itemp(getParam<Real>("reference_temperature")),
   _iperm(getParam<Real>("permeability")),
@@ -188,6 +203,7 @@ PTGeothermal::PTGeothermal(const InputParameters & parameters):
   _epor(declareProperty<Real>("porous_media_energy")),
   _drop(declareProperty<Real>("partial_rho_over_partial_pres")),
   _drot(declareProperty<Real>("partial_rho_over_partial_temp")),
+  _dkdp(declareProperty<Real>("partial_perm_over_partial_pres")),
   _tau1(declareProperty<Real>("supg_tau1")),
   _tau2(declareProperty<Real>("supg_tau2")),
 
@@ -248,6 +264,7 @@ PTGeothermal::computeQpProperties()
   _epor[_qp] = 0.0;
   _drop[_qp] = 0.0;
   _drot[_qp] = 0.0;
+  _dkdp[_qp] = 0.0;
   _tau1[_qp] = 0.0;
   _tau2[_qp] = 0.0;
 
@@ -267,7 +284,10 @@ PTGeothermal::computeQpProperties()
 
     // permeability function
     if (_pres_dep_perm)
-      mooseError("Pressure-dependent permeability function to be implemented");
+    {
+      _perm[_qp] = _iperm * std::exp(_icfit * (rpres - _ipini) / _iptoc);
+      _dkdp[_qp] = _icfit / _iptoc * _perm[_qp];
+    }
   }
 
   // options for calculating variable water properties
