@@ -12,44 +12,28 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef PTMASSRESIDUAL_H
-#define PTMASSRESIDUAL_H
+#ifndef PTPERMEABILITYAUX_H
+#define PTPERMEABILITYAUX_H
 
-#include "Kernel.h"
-#include "Material.h"
+#include "AuxKernel.h"
 
-class PTMassResidual;
+class PTPermeabilityAux;
 
 template<>
-InputParameters validParams<PTMassResidual>();
+InputParameters validParams<PTPermeabilityAux>();
 
-class PTMassResidual : public Kernel
+class PTPermeabilityAux : public AuxKernel
 {
   public:
 
-    PTMassResidual(const InputParameters & parameters);
+    PTPermeabilityAux(const InputParameters & parameters);
+
+    virtual ~PTPermeabilityAux() {}
 
   protected:
 
-    virtual Real computeQpResidual();
-    virtual Real computeQpJacobian();
-    virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+    virtual Real computeValue();
 
-    bool _has_coupled_temp;
-
-    const MaterialProperty<Real> & _wrho;
-    const MaterialProperty<Real> & _wtau;
-    const MaterialProperty<Real> & _gfor;
-    const MaterialProperty<Real> & _drot;
     const MaterialProperty<Real> & _perm;
-    const MaterialProperty<Real> & _dkdp;
-
-    const MaterialProperty<RealGradient> & _guvec;
-    const MaterialProperty<RealGradient> & _wdmfx;
-
-  private:
-
-    unsigned int _temp_var;
 };
-
-#endif //PTMASSRESIDUAL_H
+#endif //PTPERMEABILITYAUX_H
