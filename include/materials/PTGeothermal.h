@@ -83,6 +83,9 @@ class PTGeothermal : public Material
     // =====================
     // user-input parameters
     // =====================
+    Real _ipini; // user-input initial fluid pressure
+    Real _iptoc; // user-input total overburden confining pressure
+    Real _icfit; // user-inpit fitting parameter
     Real _ipres; // user-input reference pressure
     Real _itemp; // user-input reference temperature
     Real _iperm; // user-input rock permeability
@@ -131,6 +134,7 @@ class PTGeothermal : public Material
     MaterialProperty<Real> & _epor; // see definition in the C file
     MaterialProperty<Real> & _drop; // partial rho over partial pressure
     MaterialProperty<Real> & _drot; // partial rho over partial temperature
+    MaterialProperty<Real> & _dkdp; // partial permeability over partial pressure
     MaterialProperty<Real> & _tau1; // SUPG tau1
     MaterialProperty<Real> & _tau2; // SUPG tau2
 

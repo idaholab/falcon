@@ -44,6 +44,8 @@ PTMassResidual::PTMassResidual(const InputParameters & parameters):
   _wtau(getMaterialProperty<Real>("tau_water")),
   _gfor(getMaterialProperty<Real>("gravity")),
   _drot(getMaterialProperty<Real>("partial_rho_over_partial_temp")),
+  _perm(getMaterialProperty<Real>("permeability")),
+  _dkdp(getMaterialProperty<Real>("partial_perm_over_partial_pres")),
   _guvec(getMaterialProperty<RealGradient>("gravity_direction")),
   _wdmfx(getMaterialProperty<RealGradient>("darcy_mass_flux_water")),
   _temp_var(_has_coupled_temp ? coupled("coupled_temperature") : zero)
@@ -73,7 +75,8 @@ computeQpJacobian()
   Real r = 0.0;
 
   // contribution from Darcy mass flux due to pressure gradient
-  r += _wtau[_qp]*_wrho[_qp]*_grad_phi[_j][_qp]*_grad_test[_i][_qp];
+  r += (_wtau[_qp]*_wrho[_qp]*_grad_phi[_j][_qp] +
+        _dkdp[_qp]/_perm[_qp]*_wdmfx[_qp])*_grad_test[_i][_qp];
 
   // contribution from Darcy mass flux due to elevation
   // omitted
