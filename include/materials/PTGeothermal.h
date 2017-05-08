@@ -79,7 +79,7 @@ class PTGeothermal : public Material
     bool _has_temp; // flag for temperature-based energy balance equation
     bool _sto_perm; // flag for stochastic field
 
-    bool _pres_dep_perm; // flag for pressure-based permeability
+    MooseEnum _perm_func; // option for permeability function
 
     // =====================
     // user-input parameters

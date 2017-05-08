@@ -5,7 +5,7 @@
 ############################################################
 [Variables]
   [./P]
-    initial_condition = 0.0
+    initial_condition = 20e6
   [../]
 []
 ############################################################
@@ -53,14 +53,14 @@
     type = PresetBC
     variable = P
     boundary = '5'
-    value = 10e6
+    value = 20e6
   [../]
 
   [./P_out]
     type = PresetBC
     variable = P
     boundary = '6'
-    value = 0.0
+    value = 1e6
   [../]
 []
 ############################################################
@@ -75,12 +75,9 @@
     fluid_property_formulation = 'constant'
     stabilizer = 'none'
 
-    pressure_dependent_permeability = true
-    initial_fluid_pressure = 0.0
-    total_overburden_confining_pressure = 10e6 #1000e6
-    fitting_parameter = 1.0
+    permeability_function_type = '2'
 
-    permeability         = 1e-12
+    permeability         = 4.368e-11
     porosity             = 1
     compressibility      = 4.0e-10
     density_rock         = 2700
@@ -124,28 +121,28 @@
 [Executioner]
   type = Steady
 
-  solve_type = 'NEWTON' # default = PJFNK | NEWTON
+  solve_type = 'PJFNK' # default = PJFNK | NEWTON
   petsc_options_iname = '-pc_type -pc_hypre_type
                          -ksp_gmres_restart -snes_ls
                          -pc_hypre_boomeramg_strong_threshold'
   petsc_options_value = 'hypre boomeramg 201 cubic 0.7'
 
-  l_max_its = 400
+  l_max_its = 1000
   l_tol = 1e-3
   nl_max_its = 500
- #nl_rel_tol = 1e-5
-  nl_abs_tol = 1e-6
+  #nl_rel_tol = 1e-12
+  nl_abs_tol = 1e-9
 []
 
 ############################################################
 [Outputs]
   [./Exodus]
     type = Exodus
-    file_base = out
+    file_base = out2
   [../]
   [./CSV]
     type = CSV
-    file_base = out_mfr
+    file_base = out2_post
   [../]
   [./console]
     type = Console
@@ -156,6 +153,11 @@
 []
 ############################################################
 [Postprocessors]
+  [./InMassFlowRate]
+    type = PTMassSideFluxIntegral
+    variable = P
+    boundary = '5'
+  [../]
   [./OutMassFlowRate]
     type = PTMassSideFluxIntegral
     variable = P

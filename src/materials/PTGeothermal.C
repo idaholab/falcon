@@ -40,9 +40,9 @@ InputParameters validParams<PTGeothermal>()
   params.addParam<MooseEnum>("stabilizer", stabilizer,
   "Energy transport stabilizer, default = none");
 
-  params.addParam<bool>(
-  "pressure_dependent_permeability", false,
-  "Flag true if permeability is pressure dependent, default = false");
+  MooseEnum perm_func("constant 1 2", "constant");
+  params.addParam<MooseEnum>("permeability_function_type", perm_func,
+  "Type for permeability function, default = constant");
 
   params.addParam<Real>(
   "initial_fluid_pressure", 0.0,
@@ -149,7 +149,7 @@ PTGeothermal::PTGeothermal(const InputParameters & parameters):
   _has_temp(isCoupled("temperature")),
   _sto_perm(isCoupled("stochastic_permeability")),
 
-  _pres_dep_perm(getParam<bool>("pressure_dependent_permeability")),
+  _perm_func(getParam<MooseEnum>("permeability_function_type")),
 
   // =====================
   // user-input parameters
@@ -293,12 +293,51 @@ PTGeothermal::computeQpProperties()
   {
     gradp = _grad_pres[_qp];
 
-    // permeability function
-    if (_pres_dep_perm)
+    if (_perm_func == 0)
     {
+      // constant permeability
+    }
+    else if (_perm_func == 1)
+    {
+      // type-1 permeability function
+
       _perm[_qp] = _iperm * std::exp(_icfit * (rpres - _ipini) / _iptoc);
       _dkdp[_qp] = _icfit / _iptoc * _perm[_qp];
     }
+    else if (_perm_func == 2)
+    {
+      // type-2 permeability function
+
+      Real a =  0.2003;
+      Real d = -0.22252;
+      Real c = -0.03394;
+      Real P = rpres / 1E6;
+
+      Real part1 = a + c * std::sqrt(P);
+      Real part2 = 1.0 + d * std::sqrt(P);
+      Real part3 = part1 / part2;
+
+      _perm[_qp] = _iperm * std::pow(part3, 2.0/3.0);
+      _dkdp[_qp] = 0.0;
+
+      /* use of analytical Jacobian and numerical Jacobian leads to divergence */
+
+      /* analytical Jacobian */
+
+      //_dkdp[_qp] = _iperm * (1.0/3.0) * std::pow(part3, (-1.0/3.0)) * (c-d*part3)/std::sqrt(P)/part2;
+
+      /* numerical Jacobian */
+
+      //Real eps = 1e-3;
+      //Real Pd = P - eps;
+      //Real part1d = a + c * std::sqrt(Pd);
+      //Real part2d = 1.0 + d * std::sqrt(Pd);
+      //Real part3d = part1d / part2d;
+      //Real permd = _iperm * std::pow(part3d, 2.0/3.0);
+      //_dkdp[_qp] = (_perm[_qp] - permd) / eps;
+    }
+    else
+      mooseError("Unknown permeability function!");
   }
 
   // options for calculating variable water properties
