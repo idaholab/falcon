@@ -1,0 +1,16 @@
+[Tests]
+  [./type_1]
+    type     = 'Exodiff'
+    input    = 'test1.i'
+    exodiff  = 'out1.e'
+    abs_zero = 1.0e-07
+    rel_err  = 1.0e-04
+  [../]
+  [./type_2]
+    type     = 'Exodiff'
+    input    = 'test2.i'
+    exodiff  = 'out2.e'
+    abs_zero = 1.0e-07
+    rel_err  = 1.0e-03
+  [../]
+[]
