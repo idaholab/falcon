@@ -518,9 +518,15 @@
     plastic_models = mc
     debug_fspb = crash
   [../]
-  [./stress_joint]
-    type = ComputeCappedWeakInclinedPlaneStress
+  [./admissible]
+    type = ComputeMultipleInelasticStress
+    inelastic_models = stress_joint
+    perform_finite_strain_rotations = false
     initial_stress = 'initial_stress_xx initial_stress_xy 0  initial_stress_xy initial_stress_yy 0  0 0 initial_stress_zz'
+    block = 1
+  [../]
+  [./stress_joint]
+    type = CappedWeakInclinedPlaneStressUpdate
     block = 1
     normal_vector = '0 1 0'
     cohesion = coh
