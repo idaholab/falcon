@@ -5,7 +5,6 @@
     exodiff  = 'thm_steady_out.e'
     abs_zero = 1.0e-07
     rel_err  = 1.0e-04
-    skip = 'TO BE FIXED'
   [../]
   [./transient_run]
     type     = 'Exodiff'
@@ -13,6 +12,5 @@
     exodiff  = 'thm_transient_out.e'
     abs_zero = 1.0e-07
     rel_err  = 1.0e-04
-    skip = 'TO BE FIXED'
   [../]
 []
