@@ -1,5 +1,5 @@
 [Tests]
-  [./PT_H_csvreader]
+  [./tutorial]
     type     = 'Exodiff'
     input    = 'inp.i'
     exodiff  = 'out.e'
