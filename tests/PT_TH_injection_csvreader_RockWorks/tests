@@ -1,0 +1,9 @@
+[Tests]
+  [./example]
+    type     = 'Exodiff'
+    input    = 'inp.i'
+    exodiff  = 'out.e'
+    abs_zero = 1.0e-07
+    rel_err  = 1.0e-04
+  [../]
+[]

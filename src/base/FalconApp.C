@@ -31,6 +31,7 @@ Actions
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 AuxKernels
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+#include "CSVNodalMaterialDataAux.h"
 #include "PTDarcyFluxAux.h"
 #include "PTFluidVelocityAux.h"
 #include "PTPermeabilityAux.h"
@@ -146,6 +147,7 @@ FalconApp::registerObjects(Factory & factory)
 {
   /* AuxKernels */
 
+  registerAux(CSVNodalMaterialDataAux);
   registerAux(PTDarcyFluxAux);
   registerAux(PTFluidVelocityAux);
   registerAux(PTPermeabilityAux);

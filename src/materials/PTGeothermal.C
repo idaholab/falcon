@@ -104,6 +104,26 @@ InputParameters validParams<PTGeothermal>()
   "stochastic_permeability",
   "Assign aux variable for stochastic permeability [m2]");
 
+  params.addCoupledVar(
+  "csv_permeability",
+  "Assign aux variable for permeability [m2] read from a CSV file");
+
+  params.addCoupledVar(
+  "csv_porosity",
+  "Assign aux variable for porosity read from a CSV file");
+
+  params.addCoupledVar(
+  "csv_density_rock",
+  "Assign aux variable for rock density [kg/m^3] read from a CSV file");
+
+  params.addCoupledVar(
+  "csv_specific_heat_rock",
+  "Assign aux variable for specific heat of the rock [J/(kg.K)] read from a CSV file");
+
+  params.addCoupledVar(
+  "csv_thermal_conductivity",
+  "Assign aux variable for thermal conductivity of the reservoir [W/(m.K)] read from a CSV file");
+
   params.addParam<Real>(
   "density_water", 1000,
   "Initial water density [kg/m^3], default = 1000");
@@ -149,6 +169,12 @@ PTGeothermal::PTGeothermal(const InputParameters & parameters):
   _has_temp(isCoupled("temperature")),
   _sto_perm(isCoupled("stochastic_permeability")),
 
+  _csv_perm(isCoupled("csv_permeability")),
+  _csv_poro(isCoupled("csv_porosity")),
+  _csv_rrho(isCoupled("csv_density_rock")),
+  _csv_rsph(isCoupled("csv_specific_heat_rock")),
+  _csv_thco(isCoupled("csv_thermal_conductivity")),
+
   _perm_func(getParam<MooseEnum>("permeability_function_type")),
 
   // =====================
@@ -189,6 +215,12 @@ PTGeothermal::PTGeothermal(const InputParameters & parameters):
   _grad_temp(_has_temp ? coupledGradient("temperature") : _grad_zero),
 
   _perm_sto(_sto_perm ? coupledValue("stochastic_permeability") : _zero),
+
+  _perm_csv(_csv_perm ? coupledValue("csv_permeability") : _zero),
+  _poro_csv(_csv_poro ? coupledValue("csv_porosity") : _zero),
+  _rrho_csv(_csv_rrho ? coupledValue("csv_density_rock") : _zero),
+  _rsph_csv(_csv_rsph ? coupledValue("csv_specific_heat_rock") : _zero),
+  _thco_csv(_csv_thco ? coupledValue("csv_thermal_conductivity") : _zero),
 
   // ===================
   // material properties
@@ -288,6 +320,18 @@ PTGeothermal::computeQpProperties()
   // use stochastic permeability when available
   if (_sto_perm)
     _perm[_qp] = _perm_sto[_qp];
+
+  // use field material properties read from CSV files when available
+  if (_csv_perm)
+    _perm[_qp] = _perm_csv[_qp];
+  if (_csv_poro)
+    _poro[_qp] = _poro_csv[_qp];
+  if (_csv_rrho)
+    _rrho[_qp] = _rrho_csv[_qp];
+  if (_csv_rsph)
+    _rsph[_qp] = _rsph_csv[_qp];
+  if (_csv_thco)
+    _thco[_qp] = _thco_csv[_qp];
 
   if (_has_pres)
   {

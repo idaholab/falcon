@@ -79,6 +79,12 @@ class PTGeothermal : public Material
     bool _has_temp; // flag for temperature-based energy balance equation
     bool _sto_perm; // flag for stochastic field
 
+    bool _csv_perm; // flag for permeability field read from a CSV file
+    bool _csv_poro; // flag for porosity field read from a CSV file
+    bool _csv_rrho; // flag for rock density field read from a CSV file
+    bool _csv_rsph; // flag for rock specific heat field read from a CSV file
+    bool _csv_thco; // flag for thermal conductivity field read from a CSV file
+
     MooseEnum _perm_func; // option for permeability function
 
     // =====================
@@ -116,6 +122,12 @@ class PTGeothermal : public Material
     const VariableGradient & _grad_temp; // temperature gradient
 
     const VariableValue & _perm_sto; // permeability read from a stochastic field data file
+
+    const VariableValue & _perm_csv; // permeability field read from a CSV file
+    const VariableValue & _poro_csv; // porosity field read from a CSV file
+    const VariableValue & _rrho_csv; // rock density field read from a CSV file
+    const VariableValue & _rsph_csv; // rock specific heat field read from a CSV file
+    const VariableValue & _thco_csv; // thermal conductivity field read from a CSV file
 
     // ===================
     // material properties
