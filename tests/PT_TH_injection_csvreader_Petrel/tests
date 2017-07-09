@@ -1,5 +1,5 @@
 [Tests]
-  [./tutorial]
+  [./example]
     type     = 'Exodiff'
     input    = 'inp.i'
     exodiff  = 'out.e'

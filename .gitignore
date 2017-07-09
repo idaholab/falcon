@@ -66,6 +66,7 @@ traceout*.txt
 *.out
 *.vtk
 *.vtu
+*.node
 .depend
 
 # Allow .e files in gold directories (7 levels)
