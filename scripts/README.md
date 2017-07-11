@@ -42,7 +42,7 @@ CXX = g++
  
 ## Workflow Part 1: From Point Cloud to VTK Mesh
 
-Currently, a working directory must be one located under __falcon/test/__, which is a limitation as a trade-off for requiring minimum user's effort. Two examples can be found in FALCON repository: one is to start from *RockWorks* data, and the other is to start from *Petrel* data.
+Two examples can be found in FALCON repository: one is to start from *RockWorks* data, and the other is to start from *Petrel* data.
 
 ### Example: Start from *RockWorks* Data 
 
