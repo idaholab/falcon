@@ -39,7 +39,7 @@ to compile the source code and generate an executable file __falcon/tpl/tetgen/t
 ```
 CXX = g++
 ```
- 
+
 ## Workflow Part 1: From Point Cloud to VTK Mesh
 
 Two examples can be found in FALCON repository: one is to start from *RockWorks* data, and the other is to start from *Petrel* data.
@@ -72,13 +72,13 @@ Enter Input File Name:
 
 Note:
 
- * __example.permeability.txt__ is one of the five *RockWorks* data files in the directory, with the other four named __example.porosity.txt__, __example.rock\_density.txt__, __example.rock\_specific\_heat.txt__ and __example.thermal\_conductivity.txt__. They have to be individual files because *RockWorks* outputs them individually.
+* __example.permeability.txt__ is one of the five *RockWorks* data files in the directory, with the other four named __example.porosity.txt__, __example.rock\_density.txt__, __example.rock\_specific\_heat.txt__ and __example.thermal\_conductivity.txt__. They have to be individual files because *RockWorks* outputs them individually.
 
- * Each data file contains only one type of nodal material property, as indicated by the file names. In each file, the data  looks like *`<x> <y> <z> <attribute>`* in each line. 
+* Each data file contains only one type of nodal material property, as indicated by the file names. In each file, the data  looks like *`<x> <y> <z> <attribute>`* in each line. 
 
- * It is OK to enter any of the five file names, because the Python script will read through all files named in the form of __example.*.txt__. The resulting __example.vtk__ file contains all the five sets of material properties.
+* It is OK to enter any of the five file names, because the Python script will read through all files named in the form of __example.*.txt__. The resulting __example.vtk__ file contains all the five sets of material properties.
 
- * Users are responsible for ensuring that such a file is provided in the correct format.
+* Users are responsible for ensuring that such a file is provided in the correct format.
 
 ### Example: Start from *Petrel* Data
 
@@ -114,22 +114,54 @@ Note:
 
 ## Workflow Part 2: VTK Mesh to Exodous Mesh
 
-To convert VTK Mesh into Exodous:
+To convert a VTK Mesh to Exodous, a script has been prepared to automate the conversion from **example.vtk** to **example.e** and **example.csv**. To use the automated script:
 
-* Load the VTK mesh **example.vtk** into ParaView, and "save data" in  Exodus format as **example.e**.
-* Load the **example.e** back into ParaView and "save data" in **example.csv** as CSV format with the reordered nodal attributes
-* Remove all the double commas on the first line in **"example.csv"**, and save. 
+* First, open ParaView, and navigate to **Tools** and **Python Shell**,
 
-	If you are using vi as editor, type the following in the vi command environment:
-	
-		:%s/,/ /g
-	This replaces all commas from the 1st line and replace it with space. 
+![Tools](../contents/tools.png)
 
-* **example.e** does not contain Sideset info. Load **"example.e"** in Cubit and assign Sideset IDs to the boundaries. Set the element of type from **"TERA"** to **"TERA4"**, and overwrite **"example.e"**
+* Then open a new window in the python shell. From there choose **Run Scripts**,
 
-At the end, there should be two files if you follow all the steps above:
+![Python_shell](../contents/shell.png)
 
-* **"example.e"** contains an Exodus mesh file with Subset IDs, but without any nodal material properties. FALCON reads this file in the [mesh] keyword block in the FALCON input script.
-* **"example.csv"** a CSV file containing the nodal material properties. FALCON reads this file in the [VectorPostprocessors] keyword block.
+* The script is located in **falcon/scripts/paraview2exodus.py**. After that, the console will ask for input file,
+
+![Console](../contents/console.png)
+
+* Since **example.e** does not contain any Sideset info, we will need to assign Sideset IDs in Cubit. Open Cubit, and select **File** and import **"example.e"**.
+
+![Python_shell](../contents/file.png)
+
+* To assign SideSet IDs, click on the Yellow Cube on the command toolbar, and choose **exodus sideset**
+
+![Python_shell](../contents/sideset.png)
+
+* Follow the table below to set all SideSet IDs
+
+| SideSet IDs Number|Corrpsonding Facet|
+|:-----------------:|:----------------:| 
+| 1                 | X-min            | 
+| 2                 | X-max            | 
+| 3                 | Y-min            |
+| 4                 | Y-max            |
+| 5                 | Z-min            |
+| 6                 | Z-max            | 
+
+* After that, we need to change the element type from **TERA** to **TERA4**. To do that, expand **Blocks** on the powertools on the right, 
+
+![Python_shell](../contents/powertools.png)
+
+* Choose the Block (Default is Block 10) and change the Element type to **TERA4** .
+
+![Python_shell](../contents/elementtype.png)
+
+* At the end, there should be two files if you follow all the steps above:
+
+	* **"example.e"** contains an Exodus mesh file with Subset IDs, but without any nodal material properties. FALCON reads this file in the [mesh] keyword block in the FALCON input script.
+	* **"example.csv"** is a CSV file containing the nodal material properties. FALCON reads this file in the [VectorPostprocessors] keyword block.
 
 
+### Side Note: 
+
+* Conversion from **example.vtk** to **example.e** and **example.csv** occurs inside the ParaView GUI python shell. Fully automated process through command-line terminal had been explored. However errors were encountered on different operating systems. By using python shell inside ParaView GUI client, it can guarantee compatibility across different ParaView versions and operating systems.
+* Additional scripting has been developed for **example.csv**, because the underlying MOOSE's CSV reader does not accept commas on the header of file.
