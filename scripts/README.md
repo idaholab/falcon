@@ -124,9 +124,11 @@ To convert a VTK Mesh to Exodous, a script has been prepared to automate the con
 
 ![Python_shell](../contents/shell.png)
 
-* The script is located in **falcon/scripts/paraview2exodus.py**. After that, the console will ask for input file,
+* The script is located in **falcon/scripts/paraview2exodus.py**. After that, the console will ask for input file as shown below. 
 
 ![Console](../contents/console.png)
+
+* Paste the path to the input window, e.g., **/Users/xiay/gitprojects/falcon/tests/PT\_TH\_injection\_csvreader\_Petrel/example.vtk**, and click OK. An Exodus file will be generated in the same directory, i.e., **/Users/xiay/gitprojects/falcon/tests/PT\_TH\_injection\_csvreader\_Petrel/example.e**.
 
 * Since **example.e** does not contain any Sideset info, we will need to assign Sideset IDs in Cubit. Open Cubit, and select **File** and import **"example.e"**.
 
