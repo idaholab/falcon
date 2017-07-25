@@ -71,7 +71,7 @@ paraview.simple._DisableFirstRenderCameraReset()
 # create a new 'Legacy VTK Reader'
 examplevtk = LegacyVTKReader(FileNames=[inname])
 print(filename+" is loaded into ParaView")
-      
+
 # save data
 SaveData(ename, proxy=examplevtk)
 print(ename+" is saved in working directory")
