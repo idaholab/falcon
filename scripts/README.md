@@ -44,6 +44,9 @@ CXX = g++
 
 Two examples can be found in FALCON repository: one is to start from *RockWorks* data, and the other is to start from *Petrel* data.
 
+__Input X,Y,Z points cloud__
+
+![Tools](../contents/example_points.png)
 
 ### Example: Start from *RockWorks* Data 
 
@@ -121,7 +124,7 @@ Note:
 
 * Users are responsible for ensuring that such a file is provided in the correct format.
 
-This is the result of the output file
+__Result of Output File__
 
 ![Python_shell](../contents/finalout.png)
 ## Workflow Part 2: VTK Mesh to Exodous Mesh
