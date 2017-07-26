@@ -44,7 +44,12 @@ CXX = g++
 
 Two examples can be found in FALCON repository: one is to start from *RockWorks* data, and the other is to start from *Petrel* data.
 
+
 ### Example: Start from *RockWorks* Data 
+
+__example.rock_density.txt__ (ROCKWORKS)
+
+![Tools](../contents/rockworks.png)
 
 Follow the steps:
 
@@ -82,6 +87,10 @@ Note:
 
 ### Example: Start from *Petrel* Data
 
+__example.txt__ (PETREL)
+
+![Tools](../contents/petrel.png)
+
 Follow the steps:
 
 * Navigate to directory __falcon/tests/PT\_TH\_injection\_csvreader\_Petrel__, and enter the command:
@@ -112,6 +121,9 @@ Note:
 
 * Users are responsible for ensuring that such a file is provided in the correct format.
 
+This is the result of the output file
+
+![Python_shell](../contents/finalout.png)
 ## Workflow Part 2: VTK Mesh to Exodous Mesh
 
 To convert a VTK Mesh to Exodous, a script has been prepared to automate the conversion from **example.vtk** to **example.e** and **example.csv**. To use the automated script:
@@ -126,7 +138,11 @@ To convert a VTK Mesh to Exodous, a script has been prepared to automate the con
 
 * The script is located in **falcon/scripts/paraview2exodus.py**. After that, the console will ask for input file as shown below. 
 
-![Console](../contents/console.png)
+![Console](../contents/paraview_input.png)
+
+* If the script run sucessfully, it should be similar to the figure below.
+
+![Console](../contents/paraview_finish.png)
 
 * Paste the path to the input window, e.g., **/Users/xiay/gitprojects/falcon/tests/PT\_TH\_injection\_csvreader\_Petrel/example.vtk**, and click OK. An Exodus file will be generated in the same directory, i.e., **/Users/xiay/gitprojects/falcon/tests/PT\_TH\_injection\_csvreader\_Petrel/example.e**.
 
@@ -149,11 +165,11 @@ To convert a VTK Mesh to Exodous, a script has been prepared to automate the con
 | 5                 | Z-min            |
 | 6                 | Z-max            | 
 
-* After that, we need to change the element type from **TERA** to **TERA4**. To do that, expand **Blocks** on the powertools on the right, 
+* After that, we need to change the element type from **TETRA** to **TETRA4**. To do that, expand **Blocks** on the powertools on the right, 
 
 ![Python_shell](../contents/powertools.png)
 
-* Choose the Block (Default is Block 10) and change the Element type to **TERA4** .
+* Choose the Block (Default is Block 10) and change the Element type to **TETRA4** .
 
 ![Python_shell](../contents/elementtype.png)
 
@@ -162,8 +178,7 @@ To convert a VTK Mesh to Exodous, a script has been prepared to automate the con
 	* **"example.e"** contains an Exodus mesh file with Subset IDs, but without any nodal material properties. FALCON reads this file in the [mesh] keyword block in the FALCON input script.
 	* **"example.csv"** is a CSV file containing the nodal material properties. FALCON reads this file in the [VectorPostprocessors] keyword block.
 
-
 ### Side Note: 
 
 * Conversion from **example.vtk** to **example.e** and **example.csv** occurs inside the ParaView GUI python shell. Fully automated process through command-line terminal had been explored. However errors were encountered on different operating systems. By using python shell inside ParaView GUI client, it can guarantee compatibility across different ParaView versions and operating systems.
-* Additional scripting has been developed for **example.csv**, because the underlying MOOSE's CSV reader does not accept commas on the header of file.
+* Additional scripting has been developed for **example.csv**, because the underlying MOOSE's CSV reader does not accept double-quotes on the header of file.
