@@ -47,7 +47,7 @@ Two examples can be found in FALCON repository: one is to start from *RockWorks*
 
 ### Example: Start from *RockWorks* Data 
 
-__example.rock_density.txt__ (ROCKWORKS)
+__example.permeability.txt__ (ROCKWORKS)
 
 ![Tools](../contents/rockworks.png)
 
