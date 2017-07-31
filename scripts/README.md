@@ -46,6 +46,8 @@ Two examples can be found in FALCON repository: one is to start from *RockWorks*
 
 __Input X,Y,Z points cloud__
 
+The example is consists of a 27 points cube with five attributes
+The example is consists of 27 points to form a cube with five attributes. 
 ![Tools](../contents/example_points.png)
 
 ### Example: Start from *RockWorks* Data 
@@ -124,7 +126,7 @@ Note:
 
 * Users are responsible for ensuring that such a file is provided in the correct format.
 
-__Result of Output File__
+__Result of Output File__ 
 
 ![Python_shell](../contents/finalout.png)
 ## Workflow Part 2: VTK Mesh to Exodous Mesh
@@ -185,3 +187,4 @@ To convert a VTK Mesh to Exodous, a script has been prepared to automate the con
 
 * Conversion from **example.vtk** to **example.e** and **example.csv** occurs inside the ParaView GUI python shell. Fully automated process through command-line terminal had been explored. However errors were encountered on different operating systems. By using python shell inside ParaView GUI client, it can guarantee compatibility across different ParaView versions and operating systems.
 * Additional scripting has been developed for **example.csv**, because the underlying MOOSE's CSV reader does not accept double-quotes on the header of file.
+* In **PETREL** 
