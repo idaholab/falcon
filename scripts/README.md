@@ -1,14 +1,19 @@
 # A Workflow of Tetrahedral Mesh Generation with Nodal Attributes from a Point Cloud
+![VTK_MESH](../contents/vtk_mesh.png)
 
 ## Developers ##
 
-* Miu-Lun (Andy) Lau
+* Miu-Lun (Andy) Lau (INL intern student from Boise State University, as of 2017)
 * Yidong Xia
 
 ## Introduction
 
-This document describes a workflow of how to generate a tetrahedral mesh with nodal attributes from a point cloud. In reservoir engieering, it is flexible to use a tetrahedral mesh for representing a geological subsurface domain, and  the nodal attributes in a mesh can be used to represent __material properties__ of interest, e.g., permeability, porosity, rock density and thermal conductivity. Usually, those properties can be provided from the output of reservoir modeling software (e.g. [RockWorks](https://www.rockware.com/product/overview.php?id=165) or [Petrel](https://www.software.slb.com/products/petrel)) in the form of (x, y, z) node coordinates with nodal attributes.
+This documentation describes a workflow of how to generate a tetrahedral mesh with nodal attributes from a point cloud. In reservoir engieering, it is flexible to use a tetrahedral mesh for representing a geological subsurface domain, and  the nodal attributes in a mesh can be used to represent __material properties__ of interest, e.g., permeability, porosity, rock density and thermal conductivity. Usually, those properties can be provided from the output of reservoir modeling software (e.g. [RockWorks](https://www.rockware.com/product/overview.php?id=165) or [Petrel](https://www.software.slb.com/products/petrel)) in the form of (x, y, z) node coordinates with nodal attributes.
 
+__Examples of output from this workflow is shown below:__
+
+![VTK_density](../contents/vtk_density.png) 
+![VTK_porosity](../contents/vtk_porosity.png)
 The workflow consists of two parts:
 
 * **Part 1. From Point Cloud to VTK Mesh** describes the generation of a VTK mesh from a point cloud.
@@ -44,14 +49,7 @@ CXX = g++
 
 Two examples can be found in FALCON repository: one is to start from *RockWorks* data, and the other is to start from *Petrel* data.
 
-An example of (x, y, z) point cloud looks like below
-![Tools](../contents/example_points.png)
-
-### Example: Start from *RockWorks* Data
-
-__example.permeability.txt__ (ROCKWORKS)
-
-![Tools](../contents/rockworks.png)
+### Example: Start from *RockWorks* Data 
 
 Follow the steps:
 
@@ -81,17 +79,13 @@ Note:
 
 * __example.permeability.txt__ is one of the five *RockWorks* data files in the directory, with the other four named __example.porosity.txt__, __example.rock\_density.txt__, __example.rock\_specific\_heat.txt__ and __example.thermal\_conductivity.txt__. They have to be individual files because *RockWorks* outputs them individually.
 
-* Each data file contains only one type of nodal material property, as indicated by the file names. In each file, the data  looks like *`<x> <y> <z> <attribute>`* in each line.
+* Each data file contains only one type of nodal material property, as indicated by the file names. In each file, the data  looks like *`<x> <y> <z> <attribute>`* in each line. 
 
 * It is OK to enter any of the five file names, because the Python script will read through all files named in the form of __example.*.txt__. The resulting __example.vtk__ file contains all the five sets of material properties.
 
 * Users are responsible for ensuring that such a file is provided in the correct format.
 
 ### Example: Start from *Petrel* Data
-
-__example.txt__ (PETREL)
-
-![Tools](../contents/petrel.png)
 
 Follow the steps:
 
@@ -115,6 +109,12 @@ ENTER FORMAT:
 Enter Input File Name:
 ```
 
+* Enter __1__ or __2__ depend on unit of input file
+
+```
+Standard Unit[1] or Geophysics Unit[2]: 
+```
+
 * A tetrahedral mesh file named __example.vtk__ is generated at the end.
 
 Note:
@@ -123,9 +123,6 @@ Note:
 
 * Users are responsible for ensuring that such a file is provided in the correct format.
 
-__Result of Output File__
-
-![Python_shell](../contents/finalout.png)
 ## Workflow Part 2: VTK Mesh to Exodous Mesh
 
 To convert a VTK Mesh to Exodous, a script has been prepared to automate the conversion from **example.vtk** to **example.e** and **example.csv**. To use the automated script:
@@ -138,7 +135,7 @@ To convert a VTK Mesh to Exodous, a script has been prepared to automate the con
 
 ![Python_shell](../contents/shell.png)
 
-* The script is located in **falcon/scripts/paraview2exodus.py**. After that, the console will ask for input file as shown below.
+* The script is located in **falcon/scripts/paraview2exodus.py**. After that, the console will ask for input file as shown below. 
 
 ![Console](../contents/paraview_input.png)
 
@@ -159,15 +156,15 @@ To convert a VTK Mesh to Exodous, a script has been prepared to automate the con
 * Follow the table below to set all SideSet IDs
 
 | SideSet IDs Number|Corrpsonding Facet|
-|:-----------------:|:----------------:|
-| 1                 | X-min            |
-| 2                 | X-max            |
+|:-----------------:|:----------------:| 
+| 1                 | X-min            | 
+| 2                 | X-max            | 
 | 3                 | Y-min            |
 | 4                 | Y-max            |
 | 5                 | Z-min            |
-| 6                 | Z-max            |
+| 6                 | Z-max            | 
 
-* After that, we need to change the element type from **TETRA** to **TETRA4**. To do that, expand **Blocks** on the powertools on the right,
+* After that, we need to change the element type from **TETRA** to **TETRA4**. To do that, expand **Blocks** on the powertools on the right, 
 
 ![Python_shell](../contents/powertools.png)
 
@@ -180,7 +177,8 @@ To convert a VTK Mesh to Exodous, a script has been prepared to automate the con
 	* **"example.e"** contains an Exodus mesh file with Subset IDs, but without any nodal material properties. FALCON reads this file in the [mesh] keyword block in the FALCON input script.
 	* **"example.csv"** is a CSV file containing the nodal material properties. FALCON reads this file in the [VectorPostprocessors] keyword block.
 
-### Side Note:
+
+### Side Note: 
 
 * Conversion from **example.vtk** to **example.e** and **example.csv** occurs inside the ParaView GUI python shell. Fully automated process through command-line terminal had been explored. However errors were encountered on different operating systems. By using python shell inside ParaView GUI client, it can guarantee compatibility across different ParaView versions and operating systems.
 * Additional scripting has been developed for **example.csv**, because the underlying MOOSE's CSV reader does not accept double-quotes on the header of file.

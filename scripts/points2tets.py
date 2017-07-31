@@ -1,7 +1,7 @@
 #==============================================================================
 #
-#  Program:   TetgenMesh
-#.
+#  Program: points2tets
+#
 #==============================================================================
 
 
@@ -106,13 +106,13 @@ os2=os.getcwd()   # OS2: Current working directory
 
 # ASK FOR USER INPUT TO FILEFORMAT
 while True:
-    formatname=raw_input(bcolors.BOLD+"[1] ROCKWORKS OR [2] PETREL \nENTER FORMAT:" + bcolors.N)
+    formatname=raw_input(bcolors.BOLD+"[1] ROCKWORKS OR [2] PETREL \nENTER FORMAT: " + bcolors.N)
     if formatname == '1':  # ROCKWORKS
         break
     elif formatname == '2':  # PETREL
         break
     else:
-        print(bcolors.RED +"ERROR: FILE FORMAT NOT FOUND" + bcolors.N)
+        print(bcolors.RED +"ERROR: FILE FORMAT NOT FOUND \n" + bcolors.N)
 
 # ASK FOR USER INPUT TO THE FILE
 while True:
@@ -247,6 +247,71 @@ if formatname == "1" :
 
 # PETREL
 elif formatname == "2":
+
+    while True:
+        SIname=raw_input(bcolors.BOLD+"Standard Unit[1] or GeoPhysics Unit[2]: "+bcolors.N)
+        if SIname == '1':  #Standard Unit
+            break
+        elif SIname == '2':  # GeoPhysics Unit
+            #Convert Unit
+            out=readfile(inname)
+            list = out
+            i=0
+            header=[]
+            for s in list:
+                if 'FLOAT' in str(s):
+                    header.append(0)
+                    header[i]=list.index(s)
+                    i+=1
+
+            pheader=[]
+            for i in range(len(header)):
+                pheader.append(0)
+                pheader[i]=out[header[i]]
+
+            headername=[]
+            for i in range(len(pheader)):
+                string=pheader[i][0]
+                headername.append([])
+                headername[i]=string.replace('FLOAT,','')
+
+            for i in range(len(header)):
+                if "NEUTRON_POROSITY" in str(headername[i]):
+                    Neutron=i+3
+                if "DENSITY" in str(headername[i]):
+                    Density=i+3
+                if "GAMMA" in str(headername[i]):
+                    Gamma=i+3
+
+            i=0
+            for i in range(len(out)):
+                if "END" in out[i]:
+                    start=i
+                    break
+
+            NumRows=len(out)
+            NumCol=len(out[start+1])
+
+            for i in range(start+1,NumRows):
+                for j in range(NumCol):
+                    if float(out[i][j])==float(-999):
+                        break
+                    else:
+                        if j==Neutron:  # Convert form Unit value to Percentage(%)
+                            out[i][j]=float(out[i][j])*0.01
+                        if j==Density:  # Convert g/cm^3 to kg/m^3
+                            out[i][j]=float(out[i][j])*1000
+
+            with open(inname,"w") as f:
+                for i in range(len(out)):
+                    for j in range(len(out[i])):
+                        f.write(str(out[i][j]))
+                        f.write(' ')
+                    f.write('\n')
+            print(bcolors.BOLD+'Converted to standard Unit'+bcolors.N)
+            break
+        else:
+            print(bcolors.RED +"ERROR: Wrong Input" + bcolors.N)
     list = out
 
     locat=int(findlocation('END'))
@@ -310,7 +375,6 @@ with open(outname, "w") as f:
 # STATE OUTPUT
 print(bcolors.BOLD+"[DONE]"+bcolors.N)
 print 'Number of Nodes:',NumsRows
-
 """-------------------------------------------------------------------------------------------------------------"""
 
 ### CALL PROCESS TO RUN TETGEN
@@ -330,7 +394,6 @@ output=(pathtotetgen + " -kNEF " + outname)
 
 subprocess.call(output,shell=True)
 print(bcolors.GREEN+'Tetgen OK'+bcolors.N)
-
 """-------------------------------------------------------------------------------------------------------------"""
 
 outname2=outname[:-4]+'1.vtk'
@@ -379,4 +442,5 @@ with open (outname2, "a+") as f:
 os.rename(outname2, outname2.replace(".1",""))
 print("-"*70)
 print(bcolors.GREEN+bcolors.BOLD+"Finish"+bcolors.N)
+print("Output VTK file: " +outname2.replace(".1",""))
 print("-"*70)
