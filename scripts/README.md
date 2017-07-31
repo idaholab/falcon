@@ -12,7 +12,7 @@ This documentation describes a workflow of how to generate a tetrahedral mesh wi
 
 __Examples of output from this workflow is shown below:__
 
-![VTK_density](../contents/vtk_density.png) 
+![VTK_density](../contents/vtk_density.png)
 ![VTK_porosity](../contents/vtk_porosity.png)
 The workflow consists of two parts:
 
@@ -49,7 +49,7 @@ CXX = g++
 
 Two examples can be found in FALCON repository: one is to start from *RockWorks* data, and the other is to start from *Petrel* data.
 
-### Example: Start from *RockWorks* Data 
+### Example: Start from *RockWorks* Data
 
 Follow the steps:
 
@@ -79,7 +79,7 @@ Note:
 
 * __example.permeability.txt__ is one of the five *RockWorks* data files in the directory, with the other four named __example.porosity.txt__, __example.rock\_density.txt__, __example.rock\_specific\_heat.txt__ and __example.thermal\_conductivity.txt__. They have to be individual files because *RockWorks* outputs them individually.
 
-* Each data file contains only one type of nodal material property, as indicated by the file names. In each file, the data  looks like *`<x> <y> <z> <attribute>`* in each line. 
+* Each data file contains only one type of nodal material property, as indicated by the file names. In each file, the data  looks like *`<x> <y> <z> <attribute>`* in each line.
 
 * It is OK to enter any of the five file names, because the Python script will read through all files named in the form of __example.*.txt__. The resulting __example.vtk__ file contains all the five sets of material properties.
 
@@ -112,7 +112,7 @@ Enter Input File Name:
 * Enter __1__ or __2__ depend on unit of input file
 
 ```
-Standard Unit[1] or Geophysics Unit[2]: 
+Standard Unit[1] or Geophysics Unit[2]:
 ```
 
 * A tetrahedral mesh file named __example.vtk__ is generated at the end.
@@ -135,7 +135,7 @@ To convert a VTK Mesh to Exodous, a script has been prepared to automate the con
 
 ![Python_shell](../contents/shell.png)
 
-* The script is located in **falcon/scripts/paraview2exodus.py**. After that, the console will ask for input file as shown below. 
+* The script is located in **falcon/scripts/paraview2exodus.py**. After that, the console will ask for input file as shown below.
 
 ![Console](../contents/paraview_input.png)
 
@@ -156,15 +156,15 @@ To convert a VTK Mesh to Exodous, a script has been prepared to automate the con
 * Follow the table below to set all SideSet IDs
 
 | SideSet IDs Number|Corrpsonding Facet|
-|:-----------------:|:----------------:| 
-| 1                 | X-min            | 
-| 2                 | X-max            | 
+|:-----------------:|:----------------:|
+| 1                 | X-min            |
+| 2                 | X-max            |
 | 3                 | Y-min            |
 | 4                 | Y-max            |
 | 5                 | Z-min            |
-| 6                 | Z-max            | 
+| 6                 | Z-max            |
 
-* After that, we need to change the element type from **TETRA** to **TETRA4**. To do that, expand **Blocks** on the powertools on the right, 
+* After that, we need to change the element type from **TETRA** to **TETRA4**. To do that, expand **Blocks** on the powertools on the right,
 
 ![Python_shell](../contents/powertools.png)
 
@@ -178,7 +178,7 @@ To convert a VTK Mesh to Exodous, a script has been prepared to automate the con
 	* **"example.csv"** is a CSV file containing the nodal material properties. FALCON reads this file in the [VectorPostprocessors] keyword block.
 
 
-### Side Note: 
+### Side Note:
 
 * Conversion from **example.vtk** to **example.e** and **example.csv** occurs inside the ParaView GUI python shell. Fully automated process through command-line terminal had been explored. However errors were encountered on different operating systems. By using python shell inside ParaView GUI client, it can guarantee compatibility across different ParaView versions and operating systems.
 * Additional scripting has been developed for **example.csv**, because the underlying MOOSE's CSV reader does not accept double-quotes on the header of file.
