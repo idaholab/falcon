@@ -1,9 +1,9 @@
 # A Workflow of Tetrahedral Mesh Generation with Nodal Attributes from a Point Cloud
-![VTK_MESH](../contents/vtk_mesh.png)
+![VTK_MESH](./images/vtk_mesh.png)
 
 ## Developers ##
 
-* Miu-Lun (Andy) Lau (INL intern student from Boise State University, as of 2017)
+* Miu-Lun (Andy) Lau (INL student intern from Boise State University, as of 2017)
 * Yidong Xia
 
 ## Introduction
@@ -12,8 +12,8 @@ This documentation describes a workflow of how to generate a tetrahedral mesh wi
 
 __Examples of output from this workflow is shown below:__
 
-![VTK_density](../contents/vtk_density.png)
-![VTK_porosity](../contents/vtk_porosity.png)
+![VTK_density](./images/vtk_density.png)
+![VTK_porosity](./images/vtk_porosity.png)
 The workflow consists of two parts:
 
 * **Part 1. From Point Cloud to VTK Mesh** describes the generation of a VTK mesh from a point cloud.
@@ -39,7 +39,7 @@ In this workflow, the open-source mesh generator TetGen is used to generate a VT
 ```
 make
 ```
-to compile the source code and generate an executable file __falcon/tpl/tetgen/tetgen__. Users do not need to call TetGen directly by themselves. Instead, TetGen is called in a Python script __falcon/scripts/points2tets.py__. The GNU C++ compiler **g++** is the default compiler in file __falcon/tpl/tetgen/makefile__; see line 14:
+to compile the source code and generate an executable file __falcon/tpl/tetgen/tetgen__. Users do not need to call TetGen directly by themselves. Instead, TetGen is called in a Python script __falcon/utilities/gen\_tet\_mesh\_from_points/points2tets.py__. The GNU C++ compiler **g++** is the default compiler in file __falcon/tpl/tetgen/makefile__; see line 14:
 
 ```
 CXX = g++
@@ -56,7 +56,7 @@ Follow the steps:
 * Navigate to directory __falcon/tests/PT\_TH\_injection\_csvreader\_RockWorks__, and enter the command:
 
 ```
-../../scripts/generate_vtk_tet_mesh_from_point_cloud.sh
+../../utilities/gen_tet_mesh_from_points/generate_vtk_tet_mesh_from_point_cloud.sh
 ```
 
 * Enter __1__ at the prompt:
@@ -92,7 +92,7 @@ Follow the steps:
 * Navigate to directory __falcon/tests/PT\_TH\_injection\_csvreader\_Petrel__, and enter the command:
 
 ```
-../../scripts/generate_vtk_tet_mesh_from_point_cloud.sh
+../../utilities/gen_tet_mesh_from_points/generate_vtk_tet_mesh_from_point_cloud.sh
 ```
 
 * Enter __2__ at the prompt:
@@ -129,29 +129,29 @@ To convert a VTK Mesh to Exodous, a script has been prepared to automate the con
 
 * First, open ParaView, and navigate to **Tools** and **Python Shell**,
 
-![Tools](../contents/tools.png)
+![Tools](./images/tools.png)
 
 * Then open a new window in the python shell. From there choose **Run Scripts**,
 
-![Python_shell](../contents/shell.png)
+![Python_shell](./images/shell.png)
 
-* The script is located in **falcon/scripts/paraview2exodus.py**. After that, the console will ask for input file as shown below.
+* The script is located in **falcon/utilities/gen\_tet\_mesh\_from\_points/vtk2exodus.py**. After that, the console will ask for input file as shown below.
 
-![Console](../contents/paraview_input.png)
+![Console](./images/paraview_input.png)
 
 * If the script run sucessfully, it should be similar to the figure below.
 
-![Console](../contents/paraview_finish.png)
+![Console](./images/paraview_finish.png)
 
 * Paste the path to the input window, e.g., **/Users/xiay/gitprojects/falcon/tests/PT\_TH\_injection\_csvreader\_Petrel/example.vtk**, and click OK. An Exodus file will be generated in the same directory, i.e., **/Users/xiay/gitprojects/falcon/tests/PT\_TH\_injection\_csvreader\_Petrel/example.e**.
 
 * Since **example.e** does not contain any Sideset info, we will need to assign Sideset IDs in Cubit. Open Cubit, and select **File** and import **"example.e"**.
 
-![Python_shell](../contents/file.png)
+![Python_shell](./images/file.png)
 
 * To assign SideSet IDs, click on the Yellow Cube on the command toolbar, and choose **exodus sideset**
 
-![Python_shell](../contents/sideset.png)
+![Python_shell](./images/sideset.png)
 
 * Follow the table below to set all SideSet IDs
 
@@ -166,11 +166,11 @@ To convert a VTK Mesh to Exodous, a script has been prepared to automate the con
 
 * After that, we need to change the element type from **TETRA** to **TETRA4**. To do that, expand **Blocks** on the powertools on the right,
 
-![Python_shell](../contents/powertools.png)
+![Python_shell](./images/powertools.png)
 
 * Choose the Block (Default is Block 10) and change the Element type to **TETRA4** .
 
-![Python_shell](../contents/elementtype.png)
+![Python_shell](./images/elementtype.png)
 
 * At the end, there should be two files if you follow all the steps above:
 
