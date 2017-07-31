@@ -10,9 +10,9 @@ This workflow describes the workout to generate a textfile containing nodal coor
 
 __The workflow consists of three sections:__
 
-* **Section 1.** Record nodal boundaries from **Petrel** 
-* **Section 2.** Use __SplitSquareGrid script__ to generate a point file
-* **Section 3.** Extract attributes data from **Petrel** into nodal file
+* **Section 1.** Record nodal boundaries from **Petrel**.
+* **Section 2.** Use __SplitSquareGrid script__ to generate a point file.
+* **Section 3.** Extract attributes data from **Petrel** into nodal file.
 
 Currently __Section 2__ is accomplished though Python script, where __Section 1__ and __Section 3__ involve manual operation. 
 ## Prerequisites
@@ -24,19 +24,19 @@ A list of software packages required for this workflow is as below:
 ## WorkFlow
 ### Section 1. Identify Nodal Boundaries from Petrel
 
-* Start **PETREL**
-* Open Petrel project file **"example.ptd"**
-* In Models Pane, expand your petrel model
-* Scroll down to **3D grid**, rightclick and select **Settings**
+* Start **PETREL**.
+* Open Petrel project file **"example.ptd"**.
+* In Models Pane, expand your petrel model.
+* Scroll down to **3D grid**, rightclick and select **Settings**.
 
 	![Boundary](../../contents/Boundary1.png)
 	
-* Navigate to **Statistics** tab and record the XYZ boundaries on **Axis** window and the average Xinc, Yinc, and Zinc on **Description** window 
+* Navigate to **Statistics** tab and record the XYZ boundaries in **Axis** window and the average Xinc, Yinc, and Zinc in **Description** window. 
 	![STATS](../../contents/Statistics.png)
 
 ### Section 2. Use SplitSqaureGrid Python Script to Generate Points File
 
-* With nodal boundaries known, navigate to **../SplitSquareGrid** and enter the command:
+* With nodal boundaries known, navigate to **../falcon/utilities/splitsquaregrid** and enter the command:
 
 ```
 ./run_test
@@ -51,35 +51,34 @@ A list of software packages required for this workflow is as below:
 
 ### Section 3. Extract Attibutes Data from PETREL into Nodal File
 
-* Start **PETREL**
-* Open Petrel Project **"example.ptd"**
-* Right click on empty space inside **Input Toolbar** and select **Import File**
+* Start **PETREL**.
+* Open Petrel Project **"example.ptd"**.
+* Right click on empty space inside **Input Toolbar** and select **Import File**.
 	
 	![Input](../../contents/rawinput.png)
 
-* Navigate to the Nodal File(**"example.txt"**) and select **Open**, verify the format is **Irap Classic Points(ASCII)**
+* Navigate to the Nodal file(**"example.txt"**) and select **Open**, ensure the format is **Irap Classic Points(ASCII)**.
 
 	![Fileinput](../../contents/fileinput.png)
 
-* A window call **Input Data** will show up, ensure the Project(**"example.ptd"**) coordinate reference system(CRS) and file(**"example.txt"**) CRS is identical.
-* Uncheck **[Neglect Z value when mostly positive]** and select **OK**
+* A window call **Input Data** will show up, verify the project(**"example.ptd"**) coordinate reference system(CRS) and file(**"example.txt"**) CRS is identical.
+* Uncheck **[Neglect Z value when mostly positive]** and select **OK**.
 
 	![InputData](../../contents/inputdata.png)
 
 * In Input Pane,
-	* Right click on **example.txt**
-	* Select **Insert new attributes** and choose **Continous**
+	* Right click on **example.txt**.
+	* Select **Insert new attributes** and choose **Continous**.
 	
 		![InsertATT](../../contents/insertATT.png)
 	
-* In the operations tabs,
-	* Expand **"expand values from property"** and select **"Assign values from properties"**
-	* On the model pane, expand the Models and select the properties
-	
+* In the __Operations Tabs__,
+	* Expand **"expand values from property"** and select **"Assign values from properties"**.
+
 		![assignATT](../../contents/assignATT.png)
-	
-	* Select one attribute from models toolbar
-	* Click on __Blue Arrow__ to import attibute and choose **Run** to apply
+	* In the model pane, expand the Models then expand __Properties__.
+	* Select one attribute.
+	* Click on __Blue Arrow__ to import attribute and choose **Run** to apply.
 
 		![Right arrow](../../contents/rightarrow.png)
 		
@@ -92,13 +91,13 @@ A list of software packages required for this workflow is as below:
 
 		![Outputformat](../../contents/outputformat.png)
 	
-	* Again, check to ensure both file have identical CRS, and click __OK__ to export 
+	* Again, check to ensure both files have identical CRS, and click __OK__ to export 
 
 		![checkCRS](../../contents/outputCRS.png)
 
 ## Side Note
 
-* Make sure to check the units from Petrel. In geophysics, density is often expressed in **g/cm^3** and porosity as a __part out of 100__. 
+* Verify the units from Petrel is proper unit. In geophysics, density is often expressed in **g/cm^3** and porosity as __parts of 100__. 
 	* __TetgenMESH__ has included options to convert unit into standard unit(SI)
  
 * In Petrel, __null__ values will automatically change to __-999__. 
