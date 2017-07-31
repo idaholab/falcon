@@ -6,7 +6,7 @@
 * Yidong Xia
 
 ## Introduction
-This workflow describes the workout to generate a textfile containing nodal coordinates with attributes from [Petrel](https://www.software.slb.com/products/petrel). In reservoir engineering, Petrel is often used to create structural models of faults and other geological features. The structure models are gridded using pillar grid geometry, and well data is interpeted into 3D propertie volumes using stochastic algorithms. The following workflow outlines the procedure to extract the attributes' data from Petrel.  
+This workflow describes the workout to generate a text file containing nodal coordinates with attributes from [Petrel](https://www.software.slb.com/products/petrel). In reservoir engineering, Petrel is often used to create structural models of faults and other geological features. The structure models are gridded using pillar grid geometry, and well data is interpreted into 3D properties volumes using stochastic algorithms. The following workflow outlines the procedure to extract the attributes' data from Petrel.
 
 __The workflow consists of three sections:__
 
@@ -47,7 +47,6 @@ A list of software packages required for this workflow is as below:
 	![Limit](../../contents/splitinput.png)
 	
 * A points file named **example.txt** that contains all nodes is generated in the same directory. 
-
 
 ### Section 3. Extract Attibutes Data from PETREL into Nodal File
 
