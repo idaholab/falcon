@@ -102,6 +102,6 @@ A list of software packages required for this workflow is as below:
 ## Side Note
 
 * Verify the units from Petrel is proper unit. In geophysics, density is often expressed in **g/cm^3** and porosity as __parts of 100__.
-	* __TetgenMESH__ has included options to convert unit into standard unit(SI)
+	* __points2tet__ has included options to convert unit into standard unit(SI)
 
 * In Petrel, __null__ values will automatically change to __-999__.
