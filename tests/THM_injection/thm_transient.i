@@ -378,6 +378,24 @@
     tensile_tip_smoother = 1.0
     internal_constraint_tolerance = 1E-5
   [../]
+  [./pc]
+    type = PorousFlowCapillaryPressureVG
+    alpha = 1E-8
+    m = 0.5
+  [../]
+[]
+############################################################
+[Modules]
+  [./FluidProperties]
+    [./fluid]
+      type = SimpleFluidProperties
+      density0 = 999.526
+      bulk_modulus = 2E9
+      viscosity = 0.001
+      cv = 4180
+      thermal_expansion = 0
+    [../]
+  [../]
 []
 ############################################################
 [Materials]
@@ -395,22 +413,22 @@
     specific_heat_capacity = 920.0
     density = 2540.0
   [../]
-  [./fluid_energy]
-    type = PorousFlowInternalEnergyIdeal
-    at_nodes = true
-    specific_heat_capacity = 4180.0
+  [./fluid_props]
+    type = PorousFlowSingleComponentFluid
+    fp = fluid
     phase = 0
+    at_nodes = true
+  [../]
+  [./fluid_props_qp]
+    type = PorousFlowSingleComponentFluid
+    phase = 0
+    fp = fluid
   [../]
   [./energy_all]
     type = PorousFlowJoiner
     include_old = true
     at_nodes = true
     material_property = PorousFlow_fluid_phase_internal_energy_nodal
-  [../]
-  [./fluid_enthalpy]
-    type = PorousFlowEnthalpy
-    at_nodes = true
-    phase = 0
   [../]
   [./enthalpy_all]
     type = PorousFlowJoiner
@@ -422,28 +440,19 @@
     dry_thermal_conductivity = '1.0 0 0  0 1.0 0  0 0 1.0'
   [../]
   [./ppss]
-    type = PorousFlow1PhaseP_VG
+    type = PorousFlow1PhaseP
     at_nodes = true
     porepressure = P
-    al = 1E-8
-    m = 0.5
+    capillary_pressure = pc
   [../]
   [./ppss_qp]
-    type = PorousFlow1PhaseP_VG
+    type = PorousFlow1PhaseP
     porepressure = P
-    al = 1E-8
-    m = 0.5
+    capillary_pressure = pc
   [../]
   [./massfrac]
     type = PorousFlowMassFraction
     at_nodes = true
-  [../]
-  [./dens0]
-    type = PorousFlowDensityConstBulk
-    at_nodes = true
-    density_P0 = 999.526
-    bulk_modulus = 2.0E9
-    phase = 0
   [../]
   [./dens_all]
     type = PorousFlowJoiner
@@ -451,22 +460,10 @@
     include_old = true
     material_property = PorousFlow_fluid_phase_density_nodal
   [../]
-  [./dens0_qp]
-    type = PorousFlowDensityConstBulk
-    density_P0 = 999.526
-    bulk_modulus = 2.0E9
-    phase = 0
-  [../]
   [./dens_qp_all]
     type = PorousFlowJoiner
     material_property = PorousFlow_fluid_phase_density_qp
     at_nodes = false
-  [../]
-  [./visc0]
-    type = PorousFlowViscosityConst
-    at_nodes = true
-    viscosity = 1E-3
-    phase = 0
   [../]
   [./visc_all]
     type = PorousFlowJoiner
