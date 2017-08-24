@@ -39,6 +39,7 @@
     type = PTEnergyResidual
     variable = T
   [../]
+[]
 ############################################################
 [DiracKernels]
   [./P_mass_source]

@@ -26,6 +26,7 @@
     type = PTMassResidual
     variable = P
   [../]
+[]
 ############################################################
 [DiracKernels]
   [./P_mass_source]
