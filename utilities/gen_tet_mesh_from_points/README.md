@@ -6,6 +6,12 @@
 * Miu-Lun (Andy) Lau (INL student intern from Boise State University, as of 2017)
 * Yidong Xia
 
+## Notes/Comments ##
+* 2017.11.02 R. Podgorney.  
+	* This works with Paraview 5.4.1 (Mac) and may not work properly with earlier versions.
+	* Only works with rectangular regions, does not accept iregular surfaces
+	
+
 ## Introduction
 
 This documentation describes a workflow of how to generate a tetrahedral mesh with nodal attributes from a point cloud. In reservoir engieering, it is flexible to use a tetrahedral mesh for representing a geological subsurface domain, and  the nodal attributes in a mesh can be used to represent __material properties__ of interest, e.g., permeability, porosity, rock density and thermal conductivity. Usually, those properties can be provided from the output of reservoir modeling software (e.g. [RockWorks](https://www.rockware.com/product/overview.php?id=165) or [Petrel](https://www.software.slb.com/products/petrel)) in the form of (x, y, z) node coordinates with nodal attributes.
