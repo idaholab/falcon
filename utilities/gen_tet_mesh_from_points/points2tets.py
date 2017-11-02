@@ -296,7 +296,7 @@ elif formatname == "2":
                 for j in range(NumCol):
                     if float(out[i][j])==float(-999):
 
-  #RKP need to skip any lines that have a -999, it is a key value for points outside the active simulation area 
+  #RKP need to skip any lines that have a -999, it is a key value for points outside the active simulation area
                        print "Found", (out[i][j]), "skipping line"
                        break
                     else:
