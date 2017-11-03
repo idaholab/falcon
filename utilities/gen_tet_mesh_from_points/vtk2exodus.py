@@ -72,9 +72,22 @@ paraview.simple._DisableFirstRenderCameraReset()
 examplevtk = LegacyVTKReader(FileNames=[inname])
 print(filename+" is loaded into ParaView")
 
+
+
+#RKP debugging 2017.11.02
+
+
+#class SaveData:
+#    def out(self):
+#        print("it works")
+
 # save data
 SaveData(ename, proxy=examplevtk)
 print(ename+" is saved in working directory")
+
+
+
+
 
 # create a new 'ExodusIIReader'
 examplee = ExodusIIReader(FileName=[ename])
@@ -84,9 +97,19 @@ examplee.PointVariables = []
 print "Loaded attributes into ParaView"
 examplee.PointVariables = attName
 
+
+
+#RKP 2017.101.02
 # save data
+
 SaveData(csvname, proxy=examplee, UseScientificNotation=1)
 print(csvname+" is saved in working directory")
+
+
+
+
+
+
 #### uncomment the following to render all views
 # RenderAllViews()
 # alternatively, if you want to write images, you can use SaveScreenshot(...)
