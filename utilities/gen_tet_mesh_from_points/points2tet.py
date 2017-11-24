@@ -1,14 +1,10 @@
 #==============================================================================
 #
 #  Program: points2tets
+#  Rev: 0.2
+#  Date: November 23, 17
 #
 #==============================================================================
-
-
-# Modules
-import os
-import sys
-import subprocess
 
 # USER DEFINE FUNCTION
 
@@ -100,6 +96,12 @@ def readatt(filepath):
 # START OF THE SCRIPTS
 #############################################################################
 
+
+# Modules
+import os
+import sys
+import subprocess
+
 print("-"*70)
 # GET CURRENT WORKING DIRECTORY AND MOVE INTO TEST DIRECTORY
 os2=os.getcwd()   # OS2: Current working directory
@@ -118,7 +120,6 @@ while True:
 while True:
     usrname=raw_input(bcolors.BOLD+'Enter Input File Name: '+bcolors.N)
     inname=os.path.join(os2,usrname)
-
     try:
         f= open(inname)
         break
@@ -136,212 +137,34 @@ for root, dirs, files in os.walk(os2, topdown=True):    # Find all files in the 
             x.append([])
             x[i-1]=(os.path.join(root, name))
 
-f=inname.find(".")
+f=inname.find(".")  # Find the file location
 outname=inname[0:f]+'.node'  # print .node absolute filepath
-
-out=readfile(inname)
-
+out=readfile(inname)  # Read the file
 """-------------------------------------------------------------------------------------------------------------"""
-# FILE FORMAT MANUIPATION BASE ON FORMAT
-# ROCKWORKS
+
+while True:
+    NullANS=raw_input(bcolors.BOLD+'Remove invalid data: \n[1]Yes or [2]No: '+bcolors.N)
+    if NullANS == '1' :
+        break
+    elif NullANS == '2' :
+        break
+    else:
+        print(bcolors.RED +"ERROR: Input Not understand \n" + bcolors.N)
+        
+# File format base on format
 if formatname == "1" :
-    del out[0]
-
-    n=usrname.find('.')
-    string=usrname[:n]
-    fileformat='.txt'
-    # Find files
-    i=0
-    j=0
-    x=[]
-    for root, dirs, files in os.walk(os2, topdown=True):    # Find all files in the the dir
-        for name in files:
-            if string in name and fileformat in name:
-                j+=1
-                x.append([])
-                x[i-1]=(os.path.join(root, name))
+    import rockworks
+elif formatname == "2" :
+    import petrel
 
 
-    # Call redundancy FUNCTION
-    redundancy(x)
-
-    # Extract Header Data
-    i=0
-    rheader=[]
-    for i in range(len(x)):
-        rheader.append([])
-        rheader[i]=readatt(x[i])
-
-    i=0
-    kheader=[]
-    for i in range(len(rheader)):
-        string=rheader[i]
-        kheader.append([])
-        kheader[i]=string.replace('\r\n','')
-    del rheader
-
-    i=0
-    header=[]
-    for i in range(len(kheader)):
-        string=kheader[i]
-        header.append([])
-        header[i]=string.replace('X Y Z ','')
-
-    # Extract XYZ data
-    with open(x[0]) as f:
-            out=[]
-            for line in f:
-                line = line.split()
-                if line:
-                    line=[str(i) for i in line]  # convert to str
-                    out.append(line)
-            del out[0]
-
-
-    xyz=[]
-    for i in range(len(out)):
-        xyz.append([])
-        for j in range(3):
-            xyz[i].append(0)
-            xyz[i][j]=float(out[i][j])
-
-
-    # Combine into one VTK
-    att=[]
-    for i in range(len(x)):
-
-        # OPEN AND READ FILES
-        with open(x[i]) as f:
-            out=[]
-            for line in f:
-                line = line.split()
-                if line:
-                    line=[str(j) for j in line]  # convert to str
-                    out.append(line)
-            del out[0]
-
-        # EXTRACT ATT VALUES
-        att.append([])
-        for k in range(len(out)):
-            att[i].append(0)
-            att[i][k]=str(out[k][3])
-
-    # Transpose the att
-    tatt=[list(x) for x in zip(*att)]
-
-    # Combine xyz and attributes
-    sourceout=[]
-    for i in range(len(xyz)):
-        sourceout.append([])
-        sourceout[i]=xyz[i]+tatt[i]
-
-    with open (outname,"w") as f:
-        for i in range(len(sourceout)):
-            for j in range(len(sourceout[0])):
-                f.write(str(sourceout[i][j]))
-                f.write(' ')
-            f.write('\n')
-
-    inname=outname
-    out=readfile(inname)
-
-# PETREL
-elif formatname == "2":
-
-    while True:
-        SIname=raw_input(bcolors.BOLD+"Standard Unit[1] or GeoPhysics Unit[2]: "+bcolors.N)
-        if SIname == '1':  #Standard Unit
-            break
-        elif SIname == '2':  # GeoPhysics Unit
-            #Convert Unit
-            out=readfile(inname)
-            list = out
-            i=0
-            header=[]
-            for s in list:
-                if 'FLOAT' in str(s):
-                    header.append(0)
-                    header[i]=list.index(s)
-                    i+=1
-
-            pheader=[]
-            for i in range(len(header)):
-                pheader.append(0)
-                pheader[i]=out[header[i]]
-
-            headername=[]
-            for i in range(len(pheader)):
-                string=pheader[i][0]
-                headername.append([])
-                headername[i]=string.replace('FLOAT,','')
-
-            for i in range(len(header)):
-                if "NEUTRON_POROSITY" in str(headername[i]):
-                    Neutron=i+3
-                if "DENSITY" in str(headername[i]):
-                    Density=i+3
-                if "GAMMA" in str(headername[i]):
-                    Gamma=i+3
-
-            i=0
-            for i in range(len(out)):
-                if "END" in out[i]:
-                    start=i
-                    break
-
-            NumRows=len(out)
-            NumCol=len(out[start+1])
-
-            for i in range(start+1,NumRows):
-                for j in range(NumCol):
-                    if float(out[i][j])==float(-999):
-
-  #RKP need to skip any lines that have a -999, it is a key value for points outside the active simulation area
-                       print "Found", (out[i][j]), "skipping line"
-                       break
-                    else:
-                        if j==Neutron:  # Convert form Unit value to Percentage(%)
-                            out[i][j]=float(out[i][j])*0.01
-                        if j==Density:  # Convert g/cm^3 to kg/m^3
-                            out[i][j]=float(out[i][j])*1000
-
-            with open(inname,"w") as f:
-                for i in range(len(out)):
-                    for j in range(len(out[i])):
-                        f.write(str(out[i][j]))
-                        f.write(' ')
-                    f.write('\n')
-            print(bcolors.BOLD+'Converted to standard Unit'+bcolors.N)
-            break
-        else:
-            print(bcolors.RED +"ERROR: Wrong Input" + bcolors.N)
-    list = out
-
-    locat=int(findlocation('END'))
-    headlocat=[]
-    i=0
-    string = 'FLOAT'
-    for s in list:
-        if string in str(s):
-            headlocat.append(0)
-            headlocat[i]=list.index(s)
-            i+=1
-
-    pheader=[]
-    for i in range(len(headlocat)):
-        pheader.append(0)
-        pheader[i]=out[headlocat[i]]
-
-    header=[]
-    for i in range(len(pheader)):
-        string=pheader[i][0]
-        header.append([])
-        header[i]=string.replace('FLOAT,','')
-
-    del out[0:locat+1]
-
-
+#Calling Tetgen
 """-------------------------------------------------------------------------------------------------------------"""
+# Export Out
+if formatname == "1" :
+    from rockworks import out
+elif formatname == "2" :
+    from petrel import out
 
 # NUMBER OF ROWS AND COLUMNS
 NumsRows=len(out)
@@ -351,11 +174,13 @@ sys.stdout.write('Reading Input File'+'.'*15)
 
 # ORGANIZE DATA INTO COLUMNS AND ROWS
 x=[]
-for j in range(NumsRows):
+for i in range(NumsRows):
     x.append([])
-    for i in range(NumsColu):
-        x[j].append(0)
-        x[j][i]=out[j][i]
+    for j in range(NumsColu):
+        x[i].append(0)
+        x[i][j]=out[i][j]
+
+print x
 
 print(bcolors.BOLD+"[DONE]"+bcolors.N)
 
@@ -397,6 +222,7 @@ output=(pathtotetgen + " -kNEF " + outname)
 
 subprocess.call(output,shell=True)
 print(bcolors.GREEN+'Tetgen OK'+bcolors.N)
+
 """-------------------------------------------------------------------------------------------------------------"""
 
 outname2=outname[:-4]+'1.vtk'
@@ -415,13 +241,15 @@ for i in range(NumsRows):
     x.append([])
     for j in range(NumsA):
         x[i].append(0)
-        if float(out[i][j])<NullV:
-            x[i][j]=-1;
-        else:
-            x[i][j]=out[i][j+3]
+        x[i][j]=out[i][j+3]
 
 print("-"*70)
 print("Writing Attributes...")
+
+if formatname == '1':
+    from rockworks import header
+elif formatname == '2':
+    from petrel import header
 
 # OUTPUT INTO VTK
 with open (outname2, "a+") as f:
