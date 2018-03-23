@@ -24,6 +24,8 @@ Descriptions: time derivative of energy balance equation
 
 #include "PTEnergyTimeDerivative.h"
 
+registerMooseObject("FalconApp", PTEnergyTimeDerivative);
+
 template<>
 InputParameters validParams<PTEnergyTimeDerivative>()
 {

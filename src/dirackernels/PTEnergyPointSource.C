@@ -22,6 +22,8 @@ Descriptions: scheduled energy point source
 
 #include "PTEnergyPointSource.h"
 
+registerMooseObject("FalconApp", PTEnergyPointSource);
+
 template<>
 InputParameters validParams<PTEnergyPointSource>()
 {

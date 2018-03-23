@@ -22,6 +22,8 @@ Descriptions: scheduled mass point source
 
 #include "PTMassPointSource.h"
 
+registerMooseObject("FalconApp", PTMassPointSource);
+
 template<>
 InputParameters validParams<PTMassPointSource>()
 {

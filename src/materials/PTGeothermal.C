@@ -27,6 +27,8 @@ Descriptions: material properties for pressure-temperature based
 // libMesh includes
 #include "libmesh/quadrature.h"
 
+registerMooseObject("FalconApp", PTGeothermal);
+
 template<>
 InputParameters validParams<PTGeothermal>()
 {

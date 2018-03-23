@@ -14,6 +14,8 @@
 
 #include "PTPermeabilityAux.h"
 
+registerMooseObject("FalconApp", PTPermeabilityAux);
+
 template<>
 InputParameters validParams<PTPermeabilityAux>()
 {

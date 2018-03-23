@@ -22,6 +22,8 @@ Descriptions: calculate P-T based volume-average mass flux on a side
 
 #include "PTMassSideFluxAverage.h"
 
+registerMooseObject("FalconApp", PTMassSideFluxAverage);
+
 template<>
 InputParameters validParams<PTMassSideFluxAverage>()
 {

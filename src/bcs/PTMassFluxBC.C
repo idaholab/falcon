@@ -23,6 +23,8 @@ Descriptions: P-T based single-phase mass balance equation
 
 #include "PTMassFluxBC.h"
 
+registerMooseObject("FalconApp", PTMassFluxBC);
+
 template<>
 InputParameters validParams<PTMassFluxBC>()
 {

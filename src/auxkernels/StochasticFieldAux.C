@@ -14,6 +14,8 @@
 
 #include "StochasticFieldAux.h"
 
+registerMooseObject("FalconApp", StochasticFieldAux);
+
 template<>
 InputParameters validParams<StochasticFieldAux>()
 {

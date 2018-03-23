@@ -22,6 +22,8 @@ Descriptions: calculate P-T based total energy production on a side
 
 #include "PTEnergySideProductionIntegral.h"
 
+registerMooseObject("FalconApp", PTEnergySideProductionIntegral);
+
 template<>
 InputParameters validParams<PTEnergySideProductionIntegral>()
 {

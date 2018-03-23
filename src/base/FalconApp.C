@@ -23,82 +23,6 @@ Baseline dependencies (do NOT touch)
 #include "ModulesApp.h"
 #include "MooseSyntax.h"
 
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Actions
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-AuxKernels
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-#include "CSVNodalMaterialDataAux.h"
-#include "PTDarcyFluxAux.h"
-#include "PTFluidVelocityAux.h"
-#include "PTPermeabilityAux.h"
-#include "StochasticFieldAux.h"
-#include "VariableGradientAux.h"
-
-
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-BCs
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-#include "PTEnergyInFlowBC.h"
-#include "PTEnergyOutFlowBC.h"
-#include "PTMassFluxBC.h"
-#include "PTMassFreeBC.h"
-
-
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-DGKernels
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-DiracKernels
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-#include "PTEnergyPointSource.h"
-#include "PTMassPointSource.h"
-
-
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-ICs
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Kernels
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-// pressure & temperature based single-phase flow and heat
-#include "PTEnergyResidual.h"
-#include "PTEnergyTimeDerivative.h"
-#include "PTMassResidual.h"
-#include "PTMassTimeDerivative.h"
-#include "PTMassTimeDerivative_FD.h"
-#include "HeatSource.h"
-
-// solid mechanics
-
-
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Materials
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-#include "PTGeothermal.h"
-
-
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-PostProcessors
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-#include "PTEnergySideProductionIntegral.h"
-#include "PTMassSideFluxAverage.h"
-#include "PTMassSideFluxIntegral.h"
-
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-UserObjects
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-
-
 /*******************************************************************************
 Input template (do NOT touch)
 *******************************************************************************/
@@ -145,59 +69,7 @@ Routine: registerObjects
 void
 FalconApp::registerObjects(Factory & factory)
 {
-  /* AuxKernels */
-
-  registerAux(CSVNodalMaterialDataAux);
-  registerAux(PTDarcyFluxAux);
-  registerAux(PTFluidVelocityAux);
-  registerAux(PTPermeabilityAux);
-  registerAux(StochasticFieldAux);
-  registerAux(VariableGradientAux);
-
-
-  /* BCs */
-
-  registerBoundaryCondition(PTEnergyInFlowBC);
-  registerBoundaryCondition(PTEnergyOutFlowBC);
-  registerBoundaryCondition(PTMassFluxBC);
-  registerBoundaryCondition(PTMassFreeBC);
-
-  /* DGKernels */
-
-
-  /* DiracKernels */
-  registerDiracKernel(PTEnergyPointSource);
-  registerDiracKernel(PTMassPointSource);
-
-
-  /* ICs */
-
-
-  /* Kernel */
-
-  // pressure & temperature based single-phase flow and heat
-  registerKernel(PTEnergyResidual);
-  registerKernel(PTEnergyTimeDerivative);
-  registerKernel(PTMassResidual);
-  registerKernel(PTMassTimeDerivative);
-  registerKernel(PTMassTimeDerivative_FD);
-  registerKernel(HeatSource);
-
-
-  // solid mechanics
-
-
-  /* Materials */
-
-  registerMaterial(PTGeothermal);
-
-
-  /* PostProcessors */
-  registerPostprocessor(PTEnergySideProductionIntegral);
-  registerPostprocessor(PTMassSideFluxAverage);
-  registerPostprocessor(PTMassSideFluxIntegral);
-
-  /* UserObjects */
+  Registry::registerObjectsTo(factory, {"FalconApp"});
 }
 
 

@@ -15,6 +15,8 @@
 #include "MooseError.h"
 #include "CSVNodalMaterialDataAux.h"
 
+registerMooseObject("FalconApp", CSVNodalMaterialDataAux);
+
 template <>
 InputParameters
 validParams<CSVNodalMaterialDataAux>()

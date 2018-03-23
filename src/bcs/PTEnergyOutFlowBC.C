@@ -23,6 +23,8 @@ Descriptions: P-T based single-phase energy balance equation
 
 #include "PTEnergyOutFlowBC.h"
 
+registerMooseObject("FalconApp", PTEnergyOutFlowBC);
+
 template<>
 InputParameters validParams<PTEnergyOutFlowBC>()
 {
