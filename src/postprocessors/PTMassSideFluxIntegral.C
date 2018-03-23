@@ -22,6 +22,8 @@ Descriptions: calculate P-T based total mass flux on a side
 
 #include "PTMassSideFluxIntegral.h"
 
+registerMooseObject("FalconApp", PTMassSideFluxIntegral);
+
 template<>
 InputParameters validParams<PTMassSideFluxIntegral>()
 {

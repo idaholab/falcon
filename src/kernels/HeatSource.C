@@ -6,6 +6,8 @@
 /****************************************************************/
 #include "HeatSource.h"
 
+registerMooseObject("FalconApp", HeatSource);
+
 template<>
 InputParameters validParams<HeatSource>()
 {

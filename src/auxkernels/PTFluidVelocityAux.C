@@ -22,6 +22,8 @@ Descriptions: output computed Darcy flux
 
 #include "PTFluidVelocityAux.h"
 
+registerMooseObject("FalconApp", PTFluidVelocityAux);
+
 template<>
 InputParameters validParams<PTFluidVelocityAux>()
 {
