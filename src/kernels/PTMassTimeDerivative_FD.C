@@ -24,6 +24,8 @@ Descriptions: time derivative of mass balance equation
 
 #include "PTMassTimeDerivative_FD.h"
 
+registerMooseObject("FalconApp", PTMassTimeDerivative_FD);
+
 template<>
 InputParameters validParams<PTMassTimeDerivative_FD>()
 {

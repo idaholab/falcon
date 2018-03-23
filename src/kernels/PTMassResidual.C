@@ -23,6 +23,8 @@ Descriptions: compute the residual & Jacobian of
 
 #include "PTMassResidual.h"
 
+registerMooseObject("FalconApp", PTMassResidual);
+
 template<>
 InputParameters validParams<PTMassResidual>()
 {

@@ -17,6 +17,8 @@
 
 #include "VariableGradientAux.h"
 
+registerMooseObject("FalconApp", VariableGradientAux);
+
 template<>
 InputParameters validParams<VariableGradientAux>()
 {

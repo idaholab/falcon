@@ -23,6 +23,8 @@ Descriptions: compute the residual & Jacobian of
 
 #include "PTEnergyResidual.h"
 
+registerMooseObject("FalconApp", PTEnergyResidual);
+
 template<>
 InputParameters validParams<PTEnergyResidual>()
 {
