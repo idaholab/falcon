@@ -12,6 +12,10 @@ Some of the capability at your fingertips:
 * Dimension agnostic, parallel geometric search (for contact related applications)
 * Flexible, plugable graphical user interface
 
+# Citing FALCON
+
+Yidong Xia, Mitchell Plummer, Earl Mattson, Robert Podgorney, and Ahmad Ghassemi. "Design, modeling, and evaluation of a doublet heat extraction model in enhanced geothermal systems." Renewable Energy, 105 (2017): 232-247, DOI: 10.1016/j.renene.2016.12.064.
+
 # Documentation
 
 Please navigate to the folder /doc/publications/ for the papers that employed FALCON for modeling & simulation. 
