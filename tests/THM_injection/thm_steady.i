@@ -454,14 +454,19 @@
   [../]
   [./strain]
     type = ComputeIncrementalSmallStrain
+    eigenstrain_names = 'ini_stress'
   [../]
   [./stress]
     type = ComputeMultiPlasticityStress
-    initial_stress = 'kxx_fcn kxy_fcn 0  kxy_fcn kyy_fcn 0  0 0 weight_fcn'
     # the rest of this stuff is irrelevant for this test
     ep_plastic_tolerance = 1E-5
     plastic_models = mc
     debug_fspb = crash
+  [../]
+  [./strain_from_initial_stress]
+    type = ComputeEigenstrainFromInitialStress
+    initial_stress = 'kxx_fcn kxy_fcn 0  kxy_fcn kyy_fcn 0  0 0 weight_fcn'
+    eigenstrain_name = ini_stress
   [../]
   [./density]
     type = GenericConstantMaterial
