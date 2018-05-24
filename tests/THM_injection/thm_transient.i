@@ -426,7 +426,6 @@
   [../]
   [./energy_all]
     type = PorousFlowJoiner
-    include_old = true
     at_nodes = true
     material_property = PorousFlow_fluid_phase_internal_energy_nodal
   [../]
@@ -457,7 +456,6 @@
   [./dens_all]
     type = PorousFlowJoiner
     at_nodes = true
-    include_old = true
     material_property = PorousFlow_fluid_phase_density_nodal
   [../]
   [./dens_qp_all]
@@ -505,10 +503,15 @@
   [../]
   [./strain]
     type = ComputeIncrementalSmallStrain
+    eigenstrain_names = 'ini_stress'
+  [../]
+  [./strain_from_initial_stress]
+    type = ComputeEigenstrainFromInitialStress
+    initial_stress = 'initial_stress_xx initial_stress_xy 0  initial_stress_xy initial_stress_yy 0  0 0 initial_stress_zz'
+    eigenstrain_name = ini_stress
   [../]
   [./stress_rock]
     type = ComputeMultiPlasticityStress
-    initial_stress = 'initial_stress_xx initial_stress_xy 0  initial_stress_xy initial_stress_yy 0  0 0 initial_stress_zz'
     block = 2
     # the rest of this stuff is irrelevant for this test
     ep_plastic_tolerance = 1E-5
@@ -519,7 +522,6 @@
     type = ComputeMultipleInelasticStress
     inelastic_models = stress_joint
     perform_finite_strain_rotations = false
-    initial_stress = 'initial_stress_xx initial_stress_xy 0  initial_stress_xy initial_stress_yy 0  0 0 initial_stress_zz'
     block = 1
   [../]
   [./stress_joint]
