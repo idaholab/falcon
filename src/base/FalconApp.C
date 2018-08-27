@@ -36,6 +36,8 @@ InputParameters validParams<FalconApp>()
 }
 
 
+registerKnownLabel("FalconApp");
+
 /*******************************************************************************
 Routine: FalconApp -- constructor
 *******************************************************************************/
