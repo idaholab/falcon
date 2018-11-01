@@ -94,10 +94,11 @@
   num_steps = 250
 
   solve_type = 'NEWTON' # default = PJFNK | NEWTON
+  line_search = 'bt'
   petsc_options_iname = '-pc_type -pc_hypre_type
-                         -ksp_gmres_restart -snes_ls
+                         -ksp_gmres_restart
                          -pc_hypre_boomeramg_strong_threshold'
-  petsc_options_value = 'hypre boomeramg 201 cubic 0.7'
+  petsc_options_value = 'hypre boomeramg 201 0.7'
 
   l_max_its  = 50
   l_tol      = 1e-2
