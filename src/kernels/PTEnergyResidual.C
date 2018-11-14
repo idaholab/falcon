@@ -49,6 +49,8 @@ PTEnergyResidual::PTEnergyResidual(const InputParameters & parameters):
   _tau2(getMaterialProperty<Real>("supg_tau2")),
   _wdmfx(getMaterialProperty<RealGradient>("darcy_mass_flux_water")),
   _evelo(getMaterialProperty<RealGradient>("energy_convective_velocity")),
+  _u_dot(dot()),
+  _du_dot_du(dotDu()),
   _pres_var(_has_coupled_pres ? coupled("coupled_pressure") : zero)
 {}
 
