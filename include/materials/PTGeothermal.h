@@ -161,7 +161,7 @@ class PTGeothermal : public Material
     // ============================
     // stateful material properties
     // ============================
-    MaterialProperty<Real> & _wrho_old; // water density at previous time step
+    const MaterialProperty<Real> & _wrho_old; // water density at previous time step
 
   private:
 
