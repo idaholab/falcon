@@ -52,7 +52,14 @@ PTEnergyResidual::PTEnergyResidual(const InputParameters & parameters):
   _u_dot(dot()),
   _du_dot_du(dotDu()),
   _pres_var(_has_coupled_pres ? coupled("coupled_pressure") : zero)
-{}
+{
+  // In case this is the only Kernel present in a given simulation, it
+  // is responsible for telling the FEProblem that it needs
+  // u_dot. Technically any Kernel which uses u_dot should do this
+  // now, but often it isn't needed because it is already handled by
+  // the TimeIntegrator constructor.
+  _fe_problem.setUDotRequested(true);
+}
 
 
 /*******************************************************************************
