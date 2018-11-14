@@ -256,7 +256,7 @@ PTGeothermal::PTGeothermal(const InputParameters & parameters):
   // ============================
   // stateful material properties
   // ============================
-  _wrho_old(declarePropertyOld<Real>("density_water"))
+  _wrho_old(getMaterialPropertyOld<Real>("density_water"))
 {}
 
 /*******************************************************************************
