@@ -49,16 +49,10 @@ PTEnergyResidual::PTEnergyResidual(const InputParameters & parameters):
   _tau2(getMaterialProperty<Real>("supg_tau2")),
   _wdmfx(getMaterialProperty<RealGradient>("darcy_mass_flux_water")),
   _evelo(getMaterialProperty<RealGradient>("energy_convective_velocity")),
-  _u_dot(dot()),
-  _du_dot_du(dotDu()),
+  _u_dot(_is_transient ? dot() : _zero),
+  _du_dot_du(_is_transient ? dotDu() : _zero),
   _pres_var(_has_coupled_pres ? coupled("coupled_pressure") : zero)
 {
-  // In case this is the only Kernel present in a given simulation, it
-  // is responsible for telling the FEProblem that it needs
-  // u_dot. Technically any Kernel which uses u_dot should do this
-  // now, but often it isn't needed because it is already handled by
-  // the TimeIntegrator constructor.
-  _fe_problem.setUDotRequested(true);
 }
 
 
