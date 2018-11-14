@@ -112,7 +112,6 @@
   exodus         = true
   [./Console]
     type = Console
-    perf_log = false
     output_linear = true
     output_nonlinear = true
   [../]

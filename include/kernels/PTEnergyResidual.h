@@ -45,6 +45,8 @@ class PTEnergyResidual : public Kernel
     const MaterialProperty<Real> & _tau2;
     const MaterialProperty<RealGradient> & _wdmfx;
     const MaterialProperty<RealGradient> & _evelo;
+    const VariableValue & _u_dot;
+    const VariableValue & _du_dot_du;
 
   private:
 

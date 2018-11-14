@@ -27,9 +27,8 @@ class FalconApp : public MooseApp
 public:
   FalconApp(InputParameters parameters);
 
+  static void registerAll(Factory & factory, ActionFactory & action_factory, Syntax & syntax);
   static void registerApps();
-  static void registerObjects(Factory & factory);
-  static void associateSyntax(Syntax & syntax, ActionFactory & action_factory);
 };
 
 #endif //FALCONAPP_H

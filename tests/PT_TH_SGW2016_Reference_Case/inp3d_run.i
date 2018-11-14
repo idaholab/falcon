@@ -221,7 +221,6 @@
   [../]
   [./CONSOLE]
     type = Console
-    perf_log = false
     output_linear = true
     output_nonlinear = true
     execute_postprocessors_on = 'none'

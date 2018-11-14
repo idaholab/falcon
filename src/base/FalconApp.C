@@ -44,13 +44,22 @@ Routine: FalconApp -- constructor
 FalconApp::FalconApp(InputParameters parameters) :
     MooseApp(parameters)
 {
-  Moose::registerObjects(_factory);
-  ModulesApp::registerObjects(_factory);
-  FalconApp::registerObjects(_factory);
+  FalconApp::registerAll(_factory, _action_factory, _syntax);
+}
 
-  Moose::associateSyntax(_syntax, _action_factory);
-  ModulesApp::associateSyntax(_syntax, _action_factory);
-  FalconApp::associateSyntax(_syntax, _action_factory);
+// External entry point for object registration
+extern "C" void
+FalconApp__registerAll(Factory & factory, ActionFactory & action_factory, Syntax & syntax)
+{
+  FalconApp::registerAll(factory, action_factory, syntax);
+}
+
+void
+FalconApp::registerAll(Factory & factory, ActionFactory & action_factory, Syntax & syntax)
+{
+  Registry::registerObjectsTo(factory, {"FalconApp"});
+  Registry::registerActionsTo(action_factory, {"FalconApp"});
+  ModulesApp::registerAll(factory, action_factory, syntax);
 }
 
 
@@ -63,21 +72,3 @@ FalconApp::registerApps()
 {
   registerApp(FalconApp);
 }
-
-
-/*******************************************************************************
-Routine: registerObjects
-*******************************************************************************/
-void
-FalconApp::registerObjects(Factory & factory)
-{
-  Registry::registerObjectsTo(factory, {"FalconApp"});
-}
-
-
-/*******************************************************************************
-Routine: registerApps
-*******************************************************************************/
-void
-FalconApp::associateSyntax(Syntax & /*syntax*/, ActionFactory & /*action_factory*/)
-{}

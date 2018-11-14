@@ -163,3 +163,5 @@ peacock_*.e
 lib
 include/FalconRevision.h
 include/base/FalconRevision.h
+.previous_test_results.json
+build/
