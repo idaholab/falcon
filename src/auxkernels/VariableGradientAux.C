@@ -19,10 +19,9 @@
 
 registerMooseObject("FalconApp", VariableGradientAux);
 
-template<>
-InputParameters validParams<VariableGradientAux>()
+InputParameters VariableGradientAux::validParams()
 {
-  InputParameters params = validParams<AuxKernel>();
+  InputParameters params = AuxKernel::validParams();
   params.addRequiredCoupledVar("coupled_variable", "The gradient of this variable will be used.");
   params.addParam<int>("component",0,"Direction/component of the velocity vector (0=x, 1=y, 2=z)");
   return params;

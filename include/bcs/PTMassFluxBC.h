@@ -18,11 +18,6 @@
 #include "IntegratedBC.h"
 #include "Material.h"
 
-class PTMassFluxBC;
-
-template<>
-InputParameters validParams<PTMassFluxBC>();
-
 class PTMassFluxBC : public IntegratedBC
 {
   public:
@@ -37,5 +32,8 @@ class PTMassFluxBC : public IntegratedBC
     virtual Real computeQpJacobian();
 
     Real _value;
+
+  public:
+    static InputParameters validParams();
 };
 #endif //PTMASSFLUXBC_H

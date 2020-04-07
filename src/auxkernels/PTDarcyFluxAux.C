@@ -24,10 +24,9 @@ Descriptions: output computed Darcy flux
 
 registerMooseObject("FalconApp", PTDarcyFluxAux);
 
-template<>
-InputParameters validParams<PTDarcyFluxAux>()
+InputParameters PTDarcyFluxAux::validParams()
 {
-  InputParameters params = validParams<AuxKernel>();
+  InputParameters params = AuxKernel::validParams();
   params.addParam<int>("component", 0, "component of the Darcy flux vector");
   return params;
 }
@@ -53,4 +52,3 @@ computeValue()
 {
   return _wdflx[_qp](_i);
 }
-

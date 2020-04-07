@@ -24,10 +24,9 @@ Descriptions: calculate P-T based total energy production on a side
 
 registerMooseObject("FalconApp", PTEnergySideProductionIntegral);
 
-template<>
-InputParameters validParams<PTEnergySideProductionIntegral>()
+InputParameters PTEnergySideProductionIntegral::validParams()
 {
-  InputParameters params = validParams<SideIntegralVariablePostprocessor>();
+  InputParameters params = SideIntegralVariablePostprocessor::validParams();
 
   params.addParam<Real>(
   "injection_temperature", 0.0,

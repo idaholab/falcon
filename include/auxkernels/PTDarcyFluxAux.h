@@ -17,11 +17,6 @@
 
 #include "AuxKernel.h"
 
-class PTDarcyFluxAux;
-
-template<>
-InputParameters validParams<PTDarcyFluxAux>();
-
 class PTDarcyFluxAux : public AuxKernel
 {
   public:
@@ -37,5 +32,9 @@ class PTDarcyFluxAux : public AuxKernel
     const MaterialProperty<RealGradient> & _wdflx;
 
     int _i;
+
+  public:
+    static InputParameters validParams();
 };
+
 #endif //PTDARCYFLUXAUX_H

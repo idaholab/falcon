@@ -20,13 +20,6 @@
 
 #include "AuxKernel.h"
 
-
-//Forward Declarations
-class VariableGradientAux;
-
-template<>
-InputParameters validParams<VariableGradientAux>();
-
 /**
  * Coupled auxiliary value
  */
@@ -49,6 +42,9 @@ class VariableGradientAux : public AuxKernel
     const VariableGradient & _grad_coupled_variable;
 
     int _i;
+
+  public:
+    static InputParameters validParams();
 };
 
 #endif //VARIABLEGRADIENTAUX_H

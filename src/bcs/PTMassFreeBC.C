@@ -25,10 +25,9 @@ Descriptions: P-T based single-phase mass balance equation
 
 registerMooseObject("FalconApp", PTMassFreeBC);
 
-template<>
-InputParameters validParams<PTMassFreeBC>()
+InputParameters PTMassFreeBC::validParams()
 {
-  InputParameters params = validParams<IntegratedBC>();
+  InputParameters params = IntegratedBC::validParams();
 
   params.addCoupledVar("coupled_temperature",
   "This coupled variable will be used as temperature");

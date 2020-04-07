@@ -24,10 +24,9 @@ Descriptions: calculate P-T based total mass flux on a side
 
 registerMooseObject("FalconApp", PTMassSideFluxIntegral);
 
-template<>
-InputParameters validParams<PTMassSideFluxIntegral>()
+InputParameters PTMassSideFluxIntegral::validParams()
 {
-  InputParameters params = validParams<SideIntegralVariablePostprocessor>();
+  InputParameters params = SideIntegralVariablePostprocessor::validParams();
   return params;
 }
 
@@ -51,4 +50,3 @@ PTMassSideFluxIntegral::computeQpIntegral()
 {
   return _wdmfx[_qp]*_normals[_qp];
 }
-

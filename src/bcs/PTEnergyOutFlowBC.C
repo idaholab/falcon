@@ -25,10 +25,9 @@ Descriptions: P-T based single-phase energy balance equation
 
 registerMooseObject("FalconApp", PTEnergyOutFlowBC);
 
-template<>
-InputParameters validParams<PTEnergyOutFlowBC>()
+InputParameters PTEnergyOutFlowBC::validParams()
 {
-  InputParameters params = validParams<IntegratedBC>();
+  InputParameters params = IntegratedBC::validParams();
   return params;
 }
 

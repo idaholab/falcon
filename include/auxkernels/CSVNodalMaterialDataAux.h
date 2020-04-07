@@ -18,12 +18,6 @@
 #include "AuxKernel.h"
 #include "GeneralUserObject.h"
 
-// Forward declaration
-class CSVNodalMaterialDataAux;
-
-template <>
-InputParameters validParams<CSVNodalMaterialDataAux>();
-
 /** AuxKernal for reading data from CSV file
  * Creates a function that extracts data read from a CSV file,
  * via a CSVReader. It is possible to scale and add a constant to the
@@ -46,6 +40,9 @@ protected:
 
   /// Reference to the VectorPostprocessorValue storing the data
   const VectorPostprocessorValue & _vpp_data;
+
+public:
+  static InputParameters validParams();
 };
 
 #endif // CSVNODALMATERIALDATAAUX_H

@@ -17,11 +17,6 @@
 
 #include "DiracKernel.h"
 
-class PTEnergyPointSource;
-
-template<>
-InputParameters validParams<PTEnergyPointSource>();
-
 class PTEnergyPointSource : public DiracKernel
 {
   public:
@@ -44,5 +39,8 @@ class PTEnergyPointSource : public DiracKernel
     unsigned int nvalu, ntemp, nstag, istag;
     Real irate;
     Point _p;
+
+  public:
+    static InputParameters validParams();
 };
 #endif //PTENERGYPOINTSOURCE_H

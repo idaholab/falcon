@@ -18,11 +18,6 @@
 #include "AuxKernel.h"
 #include "StochasticField.h"
 
-class StochasticFieldAux;
-
-template<>
-InputParameters validParams<StochasticFieldAux>();
-
 class StochasticFieldAux : public AuxKernel
 {
 public:
@@ -34,6 +29,9 @@ protected:
 
 private:
   StochasticField _stoch_field;
+
+public:
+  static InputParameters validParams();
 };
 
 #endif // STOCHASTICFIELDAUX_H

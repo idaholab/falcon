@@ -24,10 +24,9 @@ Descriptions: calculate P-T based volume-average mass flux on a side
 
 registerMooseObject("FalconApp", PTMassSideFluxAverage);
 
-template<>
-InputParameters validParams<PTMassSideFluxAverage>()
+InputParameters PTMassSideFluxAverage::validParams()
 {
-  InputParameters params = validParams<PTMassSideFluxIntegral>();
+  InputParameters params = PTMassSideFluxIntegral::validParams();
   return params;
 }
 
