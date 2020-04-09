@@ -16,10 +16,9 @@
 
 registerMooseObject("FalconApp", StochasticFieldAux);
 
-template<>
-InputParameters validParams<StochasticFieldAux>()
+InputParameters StochasticFieldAux::validParams()
 {
-  InputParameters params = validParams<AuxKernel>();
+  InputParameters params = AuxKernel::validParams();
 
   params.addRequiredParam<std::string>(
   "file_name",

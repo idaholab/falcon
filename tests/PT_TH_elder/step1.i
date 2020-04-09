@@ -25,7 +25,7 @@
 ############################################################
 [BCs]
   [./P_top]
-    type = PresetBC
+    type = DirichletBC
     variable = P
     boundary = '3'
     value = 101325

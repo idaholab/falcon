@@ -31,7 +31,7 @@
 ############################################################
 [BCs]
   [./P_left]
-    type = PresetBC
+    type = DirichletBC
     variable = P
     boundary = 'left'
     value = 2.0

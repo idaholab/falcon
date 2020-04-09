@@ -43,28 +43,28 @@
 ############################################################
 [BCs]
   [./P_left]
-    type = PresetBC
+    type = DirichletBC
     variable = P
     boundary = 'left'
     value = 10.5e+06
   [../]
 
   [./P_right]
-    type = PresetBC
+    type = DirichletBC
     variable = P
     boundary = 'right'
     value = 10.0e+06
   [../]
 
   [./T_left]
-    type = PresetBC
+    type = DirichletBC
     variable = T
     boundary = 'left'
     value = 423.15
   [../]
 
   [./T_right]
-    type = PresetBC
+    type = DirichletBC
     variable = T
     boundary = 'right'
     value = 473.15

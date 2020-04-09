@@ -26,10 +26,9 @@ Descriptions: time derivative of energy balance equation
 
 registerMooseObject("FalconApp", PTEnergyTimeDerivative);
 
-template<>
-InputParameters validParams<PTEnergyTimeDerivative>()
+InputParameters PTEnergyTimeDerivative::validParams()
 {
-  InputParameters params = validParams<TimeDerivative>();
+  InputParameters params = TimeDerivative::validParams();
   return params;
 }
 

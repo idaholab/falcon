@@ -17,12 +17,6 @@
 
 #include "Material.h"
 
-//Forward Declarations
-class PTGeothermal;
-
-template<>
-InputParameters validParams<PTGeothermal>();
-
 class PTGeothermal : public Material
 {
   public:
@@ -168,5 +162,8 @@ class PTGeothermal : public Material
     Real rpres, rpres_old;
     Real rtemp, rtemp_old;
     RealGradient gradp;
+
+  public:
+    static InputParameters validParams();
 };
 #endif //PTGEOTHERMAL_H

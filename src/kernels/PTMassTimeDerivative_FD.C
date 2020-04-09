@@ -26,10 +26,9 @@ Descriptions: time derivative of mass balance equation
 
 registerMooseObject("FalconApp", PTMassTimeDerivative_FD);
 
-template<>
-InputParameters validParams<PTMassTimeDerivative_FD>()
+InputParameters PTMassTimeDerivative_FD::validParams()
 {
-  InputParameters params = validParams<TimeDerivative>();
+  InputParameters params = TimeDerivative::validParams();
   return params;
 }
 

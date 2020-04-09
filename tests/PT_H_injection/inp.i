@@ -40,7 +40,7 @@
 ############################################################
 [BCs]
   [./P_bcs]
-    type = PresetBC
+    type = DirichletBC
     variable = P
     boundary = 'left right bottom top'
     value = 0.10e+06

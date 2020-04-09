@@ -17,11 +17,6 @@
 
 #include "PTDarcyFluxAux.h"
 
-class PTFluidVelocityAux;
-
-template<>
-InputParameters validParams<PTFluidVelocityAux>();
-
 class PTFluidVelocityAux : public PTDarcyFluxAux
 {
   public:
@@ -35,5 +30,8 @@ class PTFluidVelocityAux : public PTDarcyFluxAux
     virtual Real computeValue();
 
     const MaterialProperty<Real> & _poro;
+
+  public:
+    static InputParameters validParams();
 };
 #endif //PTFLUIDVELOCITYAUX_H

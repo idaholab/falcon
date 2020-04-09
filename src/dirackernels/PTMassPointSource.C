@@ -24,10 +24,9 @@ Descriptions: scheduled mass point source
 
 registerMooseObject("FalconApp", PTMassPointSource);
 
-template<>
-InputParameters validParams<PTMassPointSource>()
+InputParameters PTMassPointSource::validParams()
 {
-  InputParameters params = validParams<DiracKernel>();
+  InputParameters params = DiracKernel::validParams();
 
   params.addRequiredParam<std::vector<Real> >(
   "point",
@@ -117,4 +116,3 @@ computeQpResidual()
 
   return -_test[_i][_qp]*irate;
 }
-

@@ -157,37 +157,37 @@
   # 5 = ymin
   # 6 = ymax
   [./P_top]
-    type = FunctionPresetBC
+    type = FunctionDirichletBC
     variable = P
     boundary = '1'
     function = '101325-z*9800'
   [../]
   [./T_top]
-    type = FunctionPresetBC
+    type = FunctionDirichletBC
     variable = T
     boundary = '1'
     function = '293-z*25.0/1000.0'
   [../]
   [./T_bot]
-    type = FunctionPresetBC
+    type = FunctionDirichletBC
     variable = T
     boundary = '2'
     function = '293-z*25.0/1000.0'
   [../]
   [./roller_x]
-    type = PresetBC
+    type = DirichletBC
     variable = sdisp_x
     value = 0
     boundary = '3 4'
   [../]
   [./roller_y]
-    type = PresetBC
+    type = DirichletBC
     variable = sdisp_y
     value = 0
     boundary = '5 6'
   [../]
   [./bottom_z]
-    type = PresetBC
+    type = DirichletBC
     variable = sdisp_z
     value = 0
     boundary = '2'

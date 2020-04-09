@@ -19,12 +19,6 @@
 #include "MaterialPropertyInterface.h"
 #include "Material.h"
 
-//Forward Declarations
-class PTMassSideFluxIntegral;
-
-template<>
-InputParameters validParams<PTMassSideFluxIntegral>();
-
 class PTMassSideFluxIntegral : public SideIntegralVariablePostprocessor
 {
   public:
@@ -36,6 +30,9 @@ class PTMassSideFluxIntegral : public SideIntegralVariablePostprocessor
     virtual Real computeQpIntegral();
 
     const MaterialProperty<RealGradient> & _wdmfx;
+
+  public:
+    static InputParameters validParams();
 };
 
 #endif // PTMASSSIDEFLUXINTEGRAL_H

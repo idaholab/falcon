@@ -30,14 +30,14 @@
 ############################################################
 [BCs]
   [./P_left]
-    type = PresetBC
+    type = DirichletBC
     variable = P
     boundary = 'left'
     value = 2.0
   [../]
 
   [./P_right]
-    type = PresetBC
+    type = DirichletBC
     variable = P
     boundary = 'right'
     value = 1.0

@@ -17,11 +17,10 @@
 
 registerMooseObject("FalconApp", CSVNodalMaterialDataAux);
 
-template <>
 InputParameters
-validParams<CSVNodalMaterialDataAux>()
+CSVNodalMaterialDataAux::validParams()
 {
-  InputParameters params = validParams<AuxKernel>();
+  InputParameters params = AuxKernel::validParams();
 
   params.addRequiredParam<VectorPostprocessorName>(
       "csv_reader_object_name",

@@ -25,10 +25,9 @@ Descriptions: compute the residual & Jacobian of
 
 registerMooseObject("FalconApp", PTMassResidual);
 
-template<>
-InputParameters validParams<PTMassResidual>()
+InputParameters PTMassResidual::validParams()
 {
-  InputParameters params = validParams<Kernel>();
+  InputParameters params = Kernel::validParams();
   params.addCoupledVar("coupled_temperature",
   "This coupled variable will be used as temperature");
   return params;

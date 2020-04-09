@@ -136,14 +136,14 @@
 ############################################################
 [BCs]
   [./P_bcs]
-    type = PresetBC
+    type = DirichletBC
     variable = P
     boundary = '1 2 3 4 5 6'
     value = 30.0e+06
   [../]
 
   [./T_bcs]
-    type = PresetBC
+    type = DirichletBC
     variable = T
     boundary = '1 2 3 4 5 6'
     value = 483.15

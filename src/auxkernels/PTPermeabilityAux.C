@@ -16,10 +16,9 @@
 
 registerMooseObject("FalconApp", PTPermeabilityAux);
 
-template<>
-InputParameters validParams<PTPermeabilityAux>()
+InputParameters PTPermeabilityAux::validParams()
 {
-  InputParameters params = validParams<AuxKernel>();
+  InputParameters params = AuxKernel::validParams();
   return params;
 }
 
@@ -34,4 +33,3 @@ computeValue()
 {
   return _perm[_qp];
 }
-

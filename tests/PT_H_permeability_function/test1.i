@@ -50,14 +50,14 @@
 ############################################################
 [BCs]
   [./P_in]
-    type = PresetBC
+    type = DirichletBC
     variable = P
     boundary = '5'
     value = 10e6
   [../]
 
   [./P_out]
-    type = PresetBC
+    type = DirichletBC
     variable = P
     boundary = '6'
     value = 0.0
