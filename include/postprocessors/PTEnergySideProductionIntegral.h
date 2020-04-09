@@ -19,12 +19,6 @@
 #include "MaterialPropertyInterface.h"
 #include "Material.h"
 
-//Forward Declarations
-class PTEnergySideProductionIntegral;
-
-template<>
-InputParameters validParams<PTEnergySideProductionIntegral>();
-
 class PTEnergySideProductionIntegral : public SideIntegralVariablePostprocessor
 {
   public:
@@ -38,6 +32,9 @@ class PTEnergySideProductionIntegral : public SideIntegralVariablePostprocessor
     const MaterialProperty<RealGradient> & _evelo;
 
     Real _temp; // temperature of injected fluid
+
+  public:
+    static InputParameters validParams();
 };
 
 #endif // PTENERGYSIDEPRODUCTIONINTEGRAL_H

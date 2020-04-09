@@ -17,11 +17,6 @@
 
 #include "AuxKernel.h"
 
-class PTPermeabilityAux;
-
-template<>
-InputParameters validParams<PTPermeabilityAux>();
-
 class PTPermeabilityAux : public AuxKernel
 {
   public:
@@ -35,5 +30,8 @@ class PTPermeabilityAux : public AuxKernel
     virtual Real computeValue();
 
     const MaterialProperty<Real> & _perm;
+
+  public:
+    static InputParameters validParams();
 };
 #endif //PTPERMEABILITYAUX_H

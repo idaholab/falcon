@@ -17,11 +17,6 @@
 #ifndef PTENERGYTIMEDERIVATIVE_H
 #define PTENERGYTIMEDERIVATIVE_H
 
-class PTEnergyTimeDerivative;
-
-template<>
-InputParameters validParams<PTEnergyTimeDerivative>();
-
 class PTEnergyTimeDerivative : public TimeDerivative
 {
   public:
@@ -34,5 +29,8 @@ class PTEnergyTimeDerivative : public TimeDerivative
     virtual Real computeQpJacobian();
 
     const MaterialProperty<Real> & _epor;
+
+  public:
+    static InputParameters validParams();
 };
 #endif //PTENERGYTIMEDERIVATIVE_H

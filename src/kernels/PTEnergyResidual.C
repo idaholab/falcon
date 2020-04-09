@@ -25,10 +25,9 @@ Descriptions: compute the residual & Jacobian of
 
 registerMooseObject("FalconApp", PTEnergyResidual);
 
-template<>
-InputParameters validParams<PTEnergyResidual>()
+InputParameters PTEnergyResidual::validParams()
 {
-  InputParameters params = validParams<Kernel>();
+  InputParameters params = Kernel::validParams();
   params.addCoupledVar("coupled_pressure",
   "This coupled variable will be used as pressure");
   return params;

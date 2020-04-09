@@ -68,14 +68,14 @@
   [../]
 
   #[./P_in]
-  #  type = PresetBC
+  #  type = DirichletBC
   #  variable = P
   #  boundary = 'left'
   #  value = 40e6
   #[../]
 
   [./P_out]
-    type = PresetBC
+    type = DirichletBC
     variable = P
     boundary = 'right'
     value = 30e6

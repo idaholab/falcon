@@ -18,11 +18,6 @@
 #include "Kernel.h"
 #include "Material.h"
 
-class PTEnergyResidual;
-
-template<>
-InputParameters validParams<PTEnergyResidual>();
-
 class PTEnergyResidual : public Kernel
 {
   public:
@@ -54,5 +49,8 @@ class PTEnergyResidual : public Kernel
 
     Real r;
     Real sres;
+
+  public:
+    static InputParameters validParams();
 };
 #endif //PTENERGYRESIDUAL_H

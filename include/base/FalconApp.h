@@ -17,11 +17,6 @@
 
 #include "MooseApp.h"
 
-class FalconApp;
-
-template<>
-InputParameters validParams<FalconApp>();
-
 class FalconApp : public MooseApp
 {
 public:
@@ -29,6 +24,9 @@ public:
 
   static void registerAll(Factory & factory, ActionFactory & action_factory, Syntax & syntax);
   static void registerApps();
+
+public:
+  static InputParameters validParams();
 };
 
 #endif //FALCONAPP_H

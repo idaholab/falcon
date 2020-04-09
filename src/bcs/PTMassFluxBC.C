@@ -25,10 +25,9 @@ Descriptions: P-T based single-phase mass balance equation
 
 registerMooseObject("FalconApp", PTMassFluxBC);
 
-template<>
-InputParameters validParams<PTMassFluxBC>()
+InputParameters PTMassFluxBC::validParams()
 {
-  InputParameters params = validParams<IntegratedBC>();
+  InputParameters params = IntegratedBC::validParams();
 
   params.addRequiredParam<Real>(
   "value",

@@ -24,10 +24,9 @@ Descriptions: output computed Darcy flux
 
 registerMooseObject("FalconApp", PTFluidVelocityAux);
 
-template<>
-InputParameters validParams<PTFluidVelocityAux>()
+InputParameters PTFluidVelocityAux::validParams()
 {
-  InputParameters params = validParams<PTDarcyFluxAux>();
+  InputParameters params = PTDarcyFluxAux::validParams();
   return params;
 }
 
@@ -52,4 +51,3 @@ computeValue()
 {
   return PTDarcyFluxAux::computeValue() / _poro[_qp];
 }
-

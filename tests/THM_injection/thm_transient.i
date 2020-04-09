@@ -166,31 +166,31 @@
   # 5 = ymin
   # 6 = ymax
   [./P_top]
-    type = FunctionPresetBC
+    type = FunctionDirichletBC
     variable = P
     boundary = '1'
     function = '101325-z*9800'
   [../]
   [./T_sides_top_bot]
-    type = FunctionPresetBC
+    type = FunctionDirichletBC
     variable = T
     boundary = '1 2 3 4 5 6'
     function = initial_t
   [../]
   [./roller_x]
-    type = PresetBC
+    type = DirichletBC
     variable = disp_x
     value = 0
     boundary = '3 4'
   [../]
   [./roller_y]
-    type = PresetBC
+    type = DirichletBC
     variable = disp_y
     value = 0
     boundary = '5 6'
   [../]
   [./bottom_z]
-    type = PresetBC
+    type = DirichletBC
     variable = disp_z
     value = 0
     boundary = '2'
@@ -204,13 +204,13 @@
     boundary = '1'
   [../]
   [./P_source]
-    type = FunctionPresetBC
+    type = FunctionDirichletBC
     variable = P
     boundary = 7
     function = 'if(t<=6*3600*24,101325-z*9800+30E6*t/6.0/3600.0/24.0,101325-z*9800)' # linearly increase to 30MPa over 6 days
   [../]
   [./T_source]
-    type = FunctionPresetBC
+    type = FunctionDirichletBC
     variable = T
     boundary = 7
     function = 293

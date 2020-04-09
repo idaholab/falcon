@@ -64,7 +64,7 @@
   [../]
 
   [./P_out]
-    type = PresetBC
+    type = DirichletBC
     variable = P
     boundary = '1006 1007 1008 1009 1010'
     value = 30e6

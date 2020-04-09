@@ -18,11 +18,6 @@
 #include "Kernel.h"
 #include "Material.h"
 
-class PTMassResidual;
-
-template<>
-InputParameters validParams<PTMassResidual>();
-
 class PTMassResidual : public Kernel
 {
   public:
@@ -50,6 +45,9 @@ class PTMassResidual : public Kernel
   private:
 
     unsigned int _temp_var;
+
+  public:
+    static InputParameters validParams();
 };
 
 #endif //PTMASSRESIDUAL_H

@@ -85,28 +85,28 @@
   #### 3 = top boundary      (12 Celsius)
 
   [./P_top]
-    type = PresetBC
+    type = DirichletBC
     variable = P
     boundary = '3'
     value = 101325
   [../]
 
   [./T_top]
-    type = PresetBC
+    type = DirichletBC
     variable = T
     boundary = '3'
     value = 285.15
   [../]
 
   [./T_bottom1]
-    type = PresetBC
+    type = DirichletBC
     variable = T
     boundary = '1'
     value = 293.15
   [../]
 
   [./T_bottom2]
-    type = PresetBC
+    type = DirichletBC
     variable = T
     boundary = '2'
     value = 285.15

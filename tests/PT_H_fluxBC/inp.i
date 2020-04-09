@@ -38,7 +38,7 @@
   [../]
 
   [./P_right]
-    type = PresetBC
+    type = DirichletBC
     variable = P
     boundary = 'right'
     value = 2.0

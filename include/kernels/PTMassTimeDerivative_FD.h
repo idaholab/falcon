@@ -17,12 +17,6 @@
 #ifndef PTMASSTIMEDERIVATIVE_FD_H
 #define PTMASSTIMEDERIVATIVE_FD_H
 
-//Forward Declarations
-class PTMassTimeDerivative_FD;
-
-template<>
-InputParameters validParams<PTMassTimeDerivative_FD>();
-
 class PTMassTimeDerivative_FD : public TimeDerivative
 {
   public:
@@ -38,5 +32,8 @@ class PTMassTimeDerivative_FD : public TimeDerivative
     const MaterialProperty<Real> & _wrho;
     const MaterialProperty<Real> & _wrho_old;
     const MaterialProperty<Real> & _drop;
+
+  public:
+    static InputParameters validParams();
 };
 #endif

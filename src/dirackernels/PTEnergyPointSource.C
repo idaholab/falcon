@@ -24,10 +24,9 @@ Descriptions: scheduled energy point source
 
 registerMooseObject("FalconApp", PTEnergyPointSource);
 
-template<>
-InputParameters validParams<PTEnergyPointSource>()
+InputParameters PTEnergyPointSource::validParams()
 {
-  InputParameters params = validParams<DiracKernel>();
+  InputParameters params = DiracKernel::validParams();
 
   params.addRequiredParam<std::vector<Real> >(
   "point",

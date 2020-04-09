@@ -18,11 +18,6 @@
 #include "IntegratedBC.h"
 #include "Material.h"
 
-class PTEnergyInFlowBC;
-
-template<>
-InputParameters validParams<PTEnergyInFlowBC>();
-
 class PTEnergyInFlowBC : public IntegratedBC
 {
   public:
@@ -41,5 +36,8 @@ class PTEnergyInFlowBC : public IntegratedBC
     const MaterialProperty<RealGradient> & _evelo;
 
     Real _value;
+
+  public:
+    static InputParameters validParams();
 };
 #endif //PTENERGYINFLOWBC_H

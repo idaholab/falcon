@@ -17,12 +17,6 @@
 
 #include "PTMassSideFluxIntegral.h"
 
-//Forward Declarations
-class PTMassSideFluxAverage;
-
-template<>
-InputParameters validParams<PTMassSideFluxAverage>();
-
 class PTMassSideFluxAverage : public PTMassSideFluxIntegral
 {
 public:
@@ -36,6 +30,9 @@ public:
 
 protected:
   Real _volume;
+
+public:
+  static InputParameters validParams();
 };
 
 #endif // PTMASSSIDEFLUXAVERAGE_H

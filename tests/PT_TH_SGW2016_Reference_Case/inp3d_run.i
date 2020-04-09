@@ -105,14 +105,14 @@
   [../]
 
   [./P_out]
-    type = PresetBC
+    type = DirichletBC
     variable = P
     boundary = '1006 1007 1008 1009 1010' # T = 203.75 deg. C
     value = 30e6
   [../]
 
   [./T_in]
-    type = PresetBC
+    type = DirichletBC
     variable = T
     value = 353.15
     boundary = '1001 1002 1003 1004 1005 1111'

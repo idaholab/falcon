@@ -29,10 +29,9 @@ Descriptions: material properties for pressure-temperature based
 
 registerMooseObject("FalconApp", PTGeothermal);
 
-template<>
-InputParameters validParams<PTGeothermal>()
+InputParameters PTGeothermal::validParams()
 {
-  InputParameters params = validParams<Material>();
+  InputParameters params = Material::validParams();
 
   MooseEnum stat("constant compressibility wseos", "constant");
   params.addParam<MooseEnum>("fluid_property_formulation", stat,

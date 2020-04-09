@@ -18,11 +18,6 @@
 #include "IntegratedBC.h"
 #include "Material.h"
 
-class PTMassFreeBC;
-
-template<>
-InputParameters validParams<PTMassFreeBC>();
-
 class PTMassFreeBC : public IntegratedBC
 {
   public:
@@ -51,5 +46,8 @@ class PTMassFreeBC : public IntegratedBC
   private:
 
     unsigned int _temp_var;
+
+  public:
+    static InputParameters validParams();
 };
 #endif //PTMASSFREEBC_H
