@@ -27,9 +27,9 @@
 [Samplers]
   [hypercube]
     type = LatinHypercube
-    num_rows = 10
+    num_rows = 4
     distributions = 'injection_temp init_temp'
-    num_bins = 10
+    num_bins = 4
   []
 []
 
@@ -66,3 +66,9 @@
     ci_levels = '0.05'
   []
 []
+
+[Outputs]
+  execute_on = 'INITIAL TIMESTEP_END'
+  csv = true
+[]
+
