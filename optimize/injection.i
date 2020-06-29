@@ -19,9 +19,23 @@
 # Materials/porosity_aquifer/porosity = [0.01 0.05 0.1 0.2 0.3]
 # Materials/permeability_aquifer/permeability = [1e-12 1e-13 1e-14 1e-15 1e-16 1e-17]
 
+#switch_to_extraction = 4000000
+switch_to_extraction = 7776000
+full_duration = ${fparse 2 * switch_to_extraction}
 
-[Controls/stochastic]
-  type = SamplerReceiver
+[Controls]
+  [stochastic]
+    type = SamplerReceiver
+  []
+
+  [during_injection]
+    type = TimePeriod
+    enable_objects = 'BoundaryCondition::T_injection DiracKernel::injection_P'
+    disable_objects = 'DiracKernel::production_P DiracKernel::production_T'
+    start_time = 0
+    end_time = ${switch_to_extraction}
+    set_sync_times = true
+  [] 
 []
 
 # Darcy flow with heat advection and conduction
@@ -162,7 +176,7 @@
     point_file = coldwell.bh
     use_mobility = false
     p_or_t_vals = '-1e9 1e9'
-    fluxes = '0.0 0.0'
+    fluxes = '0.25 0.25'
   [../]
   [./production_T]
     type = PorousFlowPolyLineSink
@@ -173,7 +187,7 @@
     use_mobility = false
     use_enthalpy = true
     p_or_t_vals = '-1e9 1e9'
-    fluxes = '0.0 0.0'
+    fluxes = '0.25 0.25'
   [../]
 []
 ############################################################
@@ -346,7 +360,7 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
 [Executioner]
   type = Transient
   solve_type = Newton
-  end_time = 7776000
+  end_time = ${full_duration}
   dtmax = 259200 #3days
   dtmin = 100
  [./TimeStepper]
