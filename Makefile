@@ -22,6 +22,7 @@ include $(FRAMEWORK_DIR)/moose.mk
 ################################## MODULES ####################################
 #PHASE_FIELD       := yes
 POROUS_FLOW       := yes
+STOCHASTIC_TOOLS  := yes
 include           $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
 
