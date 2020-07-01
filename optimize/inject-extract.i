@@ -24,9 +24,6 @@ switch_to_extraction = 7776000
 full_duration = ${fparse 2 * switch_to_extraction}
 
 [Controls]
-  [stochastic]
-    type = SamplerReceiver
-  []
   [extraction-period]
     type = TimePeriod
     enable_objects = 'DiracKernel::production_P DiracKernel::production_T'

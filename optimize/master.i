@@ -7,7 +7,7 @@
     type = SamplerFullSolveMultiApp
     sampler = hypercube
     input_files = 'inject-extract.i'
-    mode = batch-restore
+    mode = batch-reset
   []
 []
 
@@ -22,25 +22,33 @@
     lower_bound = ${fparse 20 + 273}
     upper_bound = ${fparse 80 + 273}
   []
+  [switch_extraction]
+    type = Uniform
+    lower_bound = 7000
+    upper_bound = 15000
+  []
 []
 
 [Samplers]
   [hypercube]
     type = LatinHypercube
-    num_rows = 4
-    distributions = 'injection_temp init_temp'
+    num_rows = 15
+    distributions = 'injection_temp init_temp switch_extraction'
     num_bins = 4
+    execute_on = 'PRE_MULTIAPP_SETUP'
+  []
+[]
+
+[Controls]
+  [cmdline]
+    type = MultiAppCommandLineControl
+    multi_app = runner
+    sampler = hypercube
+    param_names = 'ICs/init_temp/value BCs/T_injection/value switch_to_extraction'
   []
 []
 
 [Transfers]
-  [parameters]
-    type = SamplerParameterTransfer
-    multi_app = runner
-    sampler = hypercube
-    parameters = 'ICs/init_temp/value BCs/T_injection/value'
-    to_control = 'stochastic'
-  []
   [results]
     type = SamplerPostprocessorTransfer
     multi_app = runner
