@@ -6,7 +6,7 @@
   [runner]
     type = SamplerFullSolveMultiApp
     sampler = hypercube
-    input_files = 'injection.i'
+    input_files = 'inject-extract.i'
     mode = batch-restore
   []
 []

@@ -1,7 +1,7 @@
-# geothermal battery project - looking for sweet spot 
+# geothermal battery project - looking for sweet spot
 # sweep parameters/ICs/BCs:
-# ICs/init_pp/porepressure=[1e7 2e7 3e7 4e7] 
-# Ics/init_temp/temperature = [293.15 313.15 333.15 350.15] 
+# ICs/init_pp/porepressure=[1e7 2e7 3e7 4e7]
+# Ics/init_temp/temperature = [293.15 313.15 333.15 350.15]
 
 # Note the two BCs in the following need to be adjusted according to the ICs
 # BCs/P_drained/function =[1e7 2e7 3e7 4e7]
@@ -12,14 +12,14 @@
 # DiracKernels/injection_P/fluxes = [0.25 0.5 1.25 2.5]
 
 # The following two need to be activiated at extraction period
-# DiracKernels/production_P/fluxes = [0.25 0.5 1.25 2.5] 
-# DiracKernels/production_T/fluxes = [0.25 0.5 1.25 2.5] 
+# DiracKernels/production_P/fluxes = [0.25 0.5 1.25 2.5]
+# DiracKernels/production_T/fluxes = [0.25 0.5 1.25 2.5]
 
 # Materials/thermal_conductivity_aquifer/dry_thermal_conductivity = [2 2.5 3]
 # Materials/porosity_aquifer/porosity = [0.01 0.05 0.1 0.2 0.3]
 # Materials/permeability_aquifer/permeability = [1e-12 1e-13 1e-14 1e-15 1e-16 1e-17]
 
-#switch_to_extraction = 4000000
+# switch_to_extraction = 25000
 switch_to_extraction = 7776000
 full_duration = ${fparse 2 * switch_to_extraction}
 
@@ -27,15 +27,20 @@ full_duration = ${fparse 2 * switch_to_extraction}
   [stochastic]
     type = SamplerReceiver
   []
-
-  [during_injection]
+  [extraction-period]
+    type = TimePeriod
+    enable_objects = 'DiracKernel::production_P DiracKernel::production_T'
+    start_time = '${switch_to_extraction}'
+    end_time = '${full_duration}'
+    set_sync_times = true
+  []
+  [injection-period]
     type = TimePeriod
     enable_objects = 'BoundaryCondition::T_injection DiracKernel::injection_P'
-    disable_objects = 'DiracKernel::production_P DiracKernel::production_T'
-    start_time = 0
-    end_time = ${switch_to_extraction}
+    start_time = '0'
+    end_time = '${switch_to_extraction}'
     set_sync_times = true
-  [] 
+  []
 []
 
 # Darcy flow with heat advection and conduction
@@ -142,7 +147,7 @@ full_duration = ${fparse 2 * switch_to_extraction}
     variable = temperature
     boundary = InjWell
     value = 373.15 # sweep parameter
-  [../] 
+  [../]
 
 []
 ############################################################
@@ -166,7 +171,7 @@ full_duration = ${fparse 2 * switch_to_extraction}
     use_mobility = false
     use_enthalpy = false
     p_or_t_vals = '-1e9 1e9'
-    fluxes = '0.0 0.0' 
+    fluxes = '0.0 0.0'
   [../]
   [./production_P]
     type = PorousFlowPolyLineSink
@@ -359,7 +364,7 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
 ##########################################################
 [Executioner]
   type = Transient
-  solve_type = Newton
+  solve_type = NEWTON
   end_time = ${full_duration}
   dtmax = 259200 #3days
   dtmin = 100
