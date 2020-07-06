@@ -44,7 +44,7 @@
     type = MultiAppCommandLineControl
     multi_app = runner
     sampler = hypercube
-    param_names = 'ICs/init_temp/value BCs/T_injection/value switch_to_extraction'
+    param_names = 'ICs/init_temp/value BCs/T_injection/value switch_to_extraction distance_between_wells'
   []
 []
 

@@ -147,6 +147,12 @@ full_duration = ${fparse 2 * switch_to_extraction}
   [../]
 
 []
+
+distance_between_wells = 20
+coldwell_x = ${fparse 0 + distance_between_wells / 2}
+hotwell_x = ${fparse 0 - distance_between_wells / 2}
+well_length = 10
+
 ############################################################
 [DiracKernels]
   [./injection_P]
@@ -154,7 +160,9 @@ full_duration = ${fparse 2 * switch_to_extraction}
     fluid_phase = 0
     variable = porepressure
     SumQuantityUO = fluid_mass_in_inc
-    point_file = hotwell.bh
+    line_base = '1 ${hotwell_x} 0 10'
+    line_length = ${well_length}
+    line_direction = '0 0 1'
     use_mobility = false
     p_or_t_vals = '-1e9 1e9'
     fluxes = '-0.25 -0.25'  # ~5 kg/s over length of 10(injection_length)/2
@@ -164,7 +172,9 @@ full_duration = ${fparse 2 * switch_to_extraction}
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_in_inc
-    point_file = hotwell.bh
+    line_base = '1 ${hotwell_x} 0 10'
+    line_length = ${well_length}
+    line_direction = '0 0 1'
     use_mobility = false
     use_enthalpy = false
     p_or_t_vals = '-1e9 1e9'
@@ -175,7 +185,9 @@ full_duration = ${fparse 2 * switch_to_extraction}
     fluid_phase = 0
     variable = porepressure
     SumQuantityUO = fluid_mass_out_inc
-    point_file = coldwell.bh
+    line_base = '1 ${coldwell_x} 0 10'
+    line_length = ${well_length}
+    line_direction = '0 0 1'
     use_mobility = false
     p_or_t_vals = '-1e9 1e9'
     fluxes = '0.25 0.25'
@@ -185,7 +197,9 @@ full_duration = ${fparse 2 * switch_to_extraction}
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_out_inc
-    point_file = coldwell.bh
+    line_base = '1 ${coldwell_x} 0 10'
+    line_length = ${well_length}
+    line_direction = '0 0 1'
     use_mobility = false
     use_enthalpy = true
     p_or_t_vals = '-1e9 1e9'
