@@ -33,7 +33,8 @@ full_duration = ${fparse 2 * switch_to_extraction}
   []
   [injection-period]
     type = TimePeriod
-    enable_objects = 'BoundaryCondition::T_injection DiracKernel::injection_P'
+    enable_objects = 'DiracKernel:: injection_T DiracKernel::injection_P'
+#    enable_objects = 'BoundaryCondition::T_injection DiracKernel::injection_P'
     start_time = '0'
     end_time = '${switch_to_extraction}'
     set_sync_times = true
@@ -139,12 +140,12 @@ full_duration = ${fparse 2 * switch_to_extraction}
     function = '293.15'
   [../]
 
-  [./T_injection]
-    type = PresetBC
-    variable = temperature
-    boundary = InjWell
-    value = 373.15 # sweep parameter
-  [../]
+#  [./T_injection]
+#    type = PresetBC
+#    variable = temperature
+#    boundary = InjWell
+#    value = 373.15 # sweep parameter
+#  [../]
 
 []
 
@@ -168,17 +169,17 @@ well_length = 10
     fluxes = '-0.25 -0.25'  # ~5 kg/s over length of 10(injection_length)/2
   [../]
   [./injection_T]
-    type = PorousFlowPolyLineSink
+    type = PorousFlowEnthalpySink
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_in_inc
     line_base = '1 ${hotwell_x} 0 10'
     line_length = ${well_length}
     line_direction = '0 0 1'
-    use_mobility = false
-    use_enthalpy = false
-    p_or_t_vals = '-1e9 1e9'
-    fluxes = '0.0 0.0'
+    mass_flux = -0.25
+    pressure = porepressure
+    T_in = 373.15
+    fp = tabulated_water
   [../]
   [./production_P]
     type = PorousFlowPolyLineSink
