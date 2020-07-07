@@ -38,7 +38,7 @@
   [hypercube]
     type = LatinHypercube
     num_rows = 15
-    distributions = 'injection_temp init_temp switch_extraction'
+    distributions = 'injection_temp init_temp switch_extraction distance_between_wells'
     num_bins = 4
     execute_on = 'PRE_MULTIAPP_SETUP'
   []
