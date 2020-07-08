@@ -1,25 +1,36 @@
-# geothermal battery project - looking for sweet spot
-# sweep parameters/ICs/BCs:
+#---geothermal battery project - looking for sweet spot
+#---sweep parameters/ICs/BCs:
 # ICs/init_pp/porepressure=[1e7 2e7 3e7 4e7]
 # Ics/init_temp/temperature = [293.15 313.15 333.15 350.15]
-
-# Note the two BCs in the following need to be adjusted according to the ICs
+#----Note the two BCs in the following need to be adjusted according to the ICs
 # BCs/P_drained/function =[1e7 2e7 3e7 4e7]
 # BCs/T_cont/function = [293.15 313.15 333.15 350.15]
+#---Define two scalar variables to sweep consistently
+pp_ini_bc = 1e7
+T_ini_bc = 293.15
 
-# The following two need to be activiated at injection period
-# BCs/T_injection/temperature = [373.1500  398.1500  423.1500  448.1500  473.1500  498.1500  523.1500  548.1500  573.1500]
+# DiracKernel/injection_T/T_in = [373.1500  398.1500  423.1500  448.1500  473.1500  498.1500  523.1500  548.1500  573.1500]
+
+#----The following two need to be activiated at injection period
+# DiracKernels/injection_T/fluxes = [0.25 0.5 1.25 2.5]
 # DiracKernels/injection_P/fluxes = [0.25 0.5 1.25 2.5]
-
-# The following two need to be activiated at extraction period
+#----The following two need to be activiated at extraction period
 # DiracKernels/production_P/fluxes = [0.25 0.5 1.25 2.5]
 # DiracKernels/production_T/fluxes = [0.25 0.5 1.25 2.5]
+#---Define a scalar variable to sweep consistently
+inj_ext_flux= 0.25
 
 # Materials/thermal_conductivity_aquifer/dry_thermal_conductivity = [2 2.5 3]
-# Materials/porosity_aquifer/porosity = [0.01 0.05 0.1 0.2 0.3]
-# Materials/permeability_aquifer/permeability = [1e-12 1e-13 1e-14 1e-15 1e-16 1e-17]
+#---Define a scalar variable to replace the tensor components
+Tcond_aquifer = 2
 
-# switch_to_extraction = 25000
+# Materials/porosity_aquifer/porosity = [0.01 0.05 0.1 0.2 0.3]
+
+# Materials/permeability_aquifer/permeability = [1e-12 1e-13 1e-14 1e-15 1e-16 1e-17]
+#---Define a scalar variable to replace the tensor components
+perm_aquifer = 1e-12
+
+#---Define a scalar variable to automatically change injection duration
 switch_to_extraction = 7776000
 full_duration = ${fparse 2 * switch_to_extraction}
 
@@ -33,8 +44,7 @@ full_duration = ${fparse 2 * switch_to_extraction}
   []
   [injection-period]
     type = TimePeriod
-    enable_objects = 'DiracKernel:: injection_T DiracKernel::injection_P'
-#    enable_objects = 'BoundaryCondition::T_injection DiracKernel::injection_P'
+    enable_objects =  'DiracKernel::injection_T DiracKernel::injection_P'
     start_time = '0'
     end_time = '${switch_to_extraction}'
     set_sync_times = true
@@ -46,13 +56,6 @@ full_duration = ${fparse 2 * switch_to_extraction}
   [./fmg]
     type = FileMeshGenerator
     file = doublet_10-10.e
-  []
-  [./extra_nodeset]
-    type = ExtraNodesetGenerator
-    input = fmg
-    coord = '-10 0 10;	-10 0 12.5;	-10 0 15;	-10 0 17.5;	-10 0 20'
-    tolerance = 0.5  #keep this to approx 1/10 of mesh spacing
-    new_boundary = InjWell
   []
 []
 #############################################################
@@ -114,46 +117,35 @@ full_duration = ${fparse 2 * switch_to_extraction}
 [ICs]
   [./init_pp]
     type = FunctionIC
-    function = '3e7'
+    function = ${pp_ini_bc}
     variable = porepressure
   [../]
   [./init_temp]
     type = ConstantIC
-    value ='293.15' # sweep parameter
+    value = ${T_ini_bc}
     variable = temperature
   [../]
 []
 ###############################################################
 [BCs]
-
   [./P_drained]
     type = FunctionPresetBC
     variable = porepressure
     boundary = 'east west north top bottom'
-    function = '3e7'
+    function = ${pp_ini_bc}
   [../]
-
   [./T_cont]
     type = FunctionPresetBC
     variable = temperature
     boundary = 'east west north top bottom'
-    function = '293.15'
+    function = ${T_ini_bc}
   [../]
-
-#  [./T_injection]
-#    type = PresetBC
-#    variable = temperature
-#    boundary = InjWell
-#    value = 373.15 # sweep parameter
-#  [../]
-
 []
 
 distance_between_wells = 20
 coldwell_x = ${fparse 0 + distance_between_wells / 2}
 hotwell_x = ${fparse 0 - distance_between_wells / 2}
-well_length = 10
-
+well_length = 10  #fixed number in accordance with the mesh
 ############################################################
 [DiracKernels]
   [./injection_P]
@@ -166,7 +158,7 @@ well_length = 10
     line_direction = '0 0 1'
     use_mobility = false
     p_or_t_vals = '-1e9 1e9'
-    fluxes = '-0.25 -0.25'  # ~5 kg/s over length of 10(injection_length)/2
+    fluxes = '-${inj_ext_flux} -${inj_ext_flux}'  # ~5 kg/s over length of 10(injection_length)/2
   [../]
   [./injection_T]
     type = PorousFlowEnthalpySink
@@ -176,10 +168,11 @@ well_length = 10
     line_base = '1 ${hotwell_x} 0 10'
     line_length = ${well_length}
     line_direction = '0 0 1'
-    mass_flux = -0.25
     pressure = porepressure
     T_in = 373.15
     fp = tabulated_water
+    p_or_t_vals = '-1e9 1e9'
+    fluxes = '-${inj_ext_flux} -${inj_ext_flux}'
   [../]
   [./production_P]
     type = PorousFlowPolyLineSink
@@ -191,7 +184,7 @@ well_length = 10
     line_direction = '0 0 1'
     use_mobility = false
     p_or_t_vals = '-1e9 1e9'
-    fluxes = '0.25 0.25'
+    fluxes = '${inj_ext_flux} ${inj_ext_flux}'
   [../]
   [./production_T]
     type = PorousFlowPolyLineSink
@@ -204,7 +197,7 @@ well_length = 10
     use_mobility = false
     use_enthalpy = true
     p_or_t_vals = '-1e9 1e9'
-    fluxes = '0.25 0.25'
+    fluxes = '${inj_ext_flux} ${inj_ext_flux}'
   [../]
 []
 ############################################################
@@ -235,20 +228,20 @@ well_length = 10
 
   [./thermal_conductivity_aquifer]
     type = PorousFlowThermalConductivityIdeal
-    dry_thermal_conductivity = '2 0 0  0 2 0  0 0 2' # Sweep here
+    dry_thermal_conductivity = '${Tcond_aquifer} 0 0  0 ${Tcond_aquifer} 0  0 0 ${Tcond_aquifer}'
     block = aquifer
   [../]
 
   [./porosity_aquifer]
     type = PorousFlowPorosityConst
     block = aquifer
-    porosity = 0.01 # Sweep here
+    porosity = 0.01 
   [../]
 
   [./permeability_aquifer]
     type = PorousFlowPermeabilityConst
     block = aquifer
-    permeability = '1E-12 0 0   0 1E-12 0   0 0 1E-12'  # Sweep here
+    permeability = '${perm_aquifer} 0 0   0 ${perm_aquifer} 0   0 0 ${perm_aquifer}'
   [../]
 
 
@@ -329,6 +322,7 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
 
 []
 ############################################################
+aquifer_mid= ${fparse 10 + well_length / 2}
 [Postprocessors]
 
   [./inlet_mass_kg]
@@ -350,25 +344,25 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
   [./inj_point_pres]
     type = PointValue
     execute_on = 'initial timestep_end'
-    point = '-10 0 15'
+    point = '${hotwell_x} 0 ${aquifer_mid}'
     variable = porepressure
   [../]
   [./inj_point_temp]
     type = PointValue
     execute_on = 'initial timestep_end'
-    point = '-10 0 15'
+    point = '${hotwell_x} 0 ${aquifer_mid}'
     variable = temperature
   [../]
   [./pro_point_pres]
     type = PointValue
     execute_on = 'initial timestep_end'
-    point = '10 0 15'
+    point = '${hotwell_x} 0 ${aquifer_mid}'
     variable = porepressure
   [../]
   [./pro_point_temp]
     type = PointValue
     execute_on = 'initial timestep_end'
-    point = '10 0 15'
+    point = '${hotwell_x} 0 ${aquifer_mid}'
     variable = temperature
   [../]
 []
