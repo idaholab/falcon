@@ -27,13 +27,18 @@
     lower_bound = 7000
     upper_bound = 15000
   []
+  [distance_between_wells]
+    type = Uniform
+    lower_bound = 10
+    upper_bound = 20
+  []
 []
 
 [Samplers]
   [hypercube]
     type = LatinHypercube
     num_rows = 15
-    distributions = 'injection_temp init_temp switch_extraction'
+    distributions = 'injection_temp init_temp switch_extraction distance_between_wells'
     num_bins = 4
     execute_on = 'PRE_MULTIAPP_SETUP'
   []
