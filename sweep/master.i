@@ -90,8 +90,7 @@ well_length = 10 # need to change for the 5 meshes with different aquifer thickn
                             ${Distributions/distance_between_wells/cartprod}
                             ${Distributions/perm_aquifer/cartprod}
                             ${Distributions/porosity/cartprod}
-                            ${Distributions/Tcond_aquifer/cartprod}
-                            ${Distributions/switch_extraction/cartprod}'
+                            ${Distributions/Tcond_aquifer/cartprod}'
       execute_on = 'PRE_MULTIAPP_SETUP'
   []
 []
