@@ -34,22 +34,22 @@ perm_aquifer = 1e-12
 switch_to_extraction = 7776000
 full_duration = ${fparse 2 * switch_to_extraction}
 
-[Controls]
-  [extraction-period]
-    type = TimePeriod
-    enable_objects = 'DiracKernel::production_P DiracKernel::production_T'
-    start_time = '${switch_to_extraction}'
-    end_time = '${full_duration}'
-    set_sync_times = true
-  []
-  [injection-period]
-    type = TimePeriod
-    enable_objects =  'DiracKernel::injection_T DiracKernel::injection_P'
-    start_time = '0'
-    end_time = '${switch_to_extraction}'
-    set_sync_times = true
-  []
-[]
+#[Controls]
+#  [extraction-period]
+#    type = TimePeriod
+#    enable_objects = 'DiracKernel::production_P DiracKernel::production_T'
+#    start_time = '${switch_to_extraction}'
+#    end_time = '${full_duration}'
+#    set_sync_times = true
+#  []
+#  [injection-period]
+#    type = TimePeriod
+#    enable_objects =  'DiracKernel::injection_T DiracKernel::injection_P'
+#    start_time = '0'
+#    end_time = '${switch_to_extraction}'
+#    set_sync_times = true
+#  []
+#[]
 
 # Darcy flow with heat advection and conduction
 [Mesh]

@@ -63,22 +63,22 @@ well_length = 10 # need to change for the 5 meshes with different aquifer thickn
     n = 2
     cartprod = '${lower_bound} ${fparse (upper_bound - lower_bound) / (n - 1)} ${n}'
   []
-  [switch_extraction]
-    type = Uniform
-    #lower_bound = 7000
-    #upper_bound = 15000
-    lower_bound = 100
-    upper_bound = 200
-    n = 2
-    cartprod = '${lower_bound} ${fparse (upper_bound - lower_bound) / (n - 1)} ${n}'
-  []
+#  [switch_extraction]
+#    type = Uniform
+#    #lower_bound = 7000
+#    #upper_bound = 15000
+#    lower_bound = 100
+#    upper_bound = 200
+#    n = 2
+#    cartprod = '${lower_bound} ${fparse (upper_bound - lower_bound) / (n - 1)} ${n}'
+#  []
 []
 
 [Samplers]
   [montecarlo]
     type = MonteCarlo
-    num_rows = 10
-    distributions = 'init_temp init_pp injection_temp inj_ext_rate distance_between_wells perm_aquifer porosity Tcond_aquifer switch_extraction'
+    num_rows = 96
+    distributions = 'init_temp init_pp injection_temp inj_ext_rate distance_between_wells perm_aquifer porosity Tcond_aquifer'
     execute_on = 'PRE_MULTIAPP_SETUP'
   []
   [cartesian]
@@ -101,7 +101,7 @@ well_length = 10 # need to change for the 5 meshes with different aquifer thickn
     type = MultiAppCommandLineControl
     multi_app = runner
     sampler = ${sampler}
-    param_names = 'T_ini_bc pp_ini_bc DiracKernels/injection_T/T_in inj_ext_flux distance_between_wells perm_aquifer Materials/porosity_aquifer/porosity Tcond_aquifer switch_to_extraction'
+    param_names = 'T_ini_bc pp_ini_bc DiracKernels/injection_T/T_in inj_ext_flux distance_between_wells perm_aquifer Materials/porosity_aquifer/porosity Tcond_aquifer'
   []
 []
 
