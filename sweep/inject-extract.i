@@ -55,7 +55,7 @@ full_duration = ${fparse 2 * switch_to_extraction}
 [Mesh]
   [./fmg]
     type = FileMeshGenerator
-    file = doublet_10-10.e
+    file = doublet_10-10_finemesh.e
   []
 []
 #############################################################
@@ -144,7 +144,7 @@ full_duration = ${fparse 2 * switch_to_extraction}
 
 distance_between_wells = 20
 coldwell_x = ${fparse 0 + distance_between_wells / 2}
-hotwell_x = ${fparse 0 - distance_between_wells / 2}
+hotwell_x  = ${fparse 0 - distance_between_wells / 2}
 well_length = 10  #fixed number in accordance with the mesh
 ############################################################
 [DiracKernels]
@@ -323,8 +323,8 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
 []
 ############################################################
 aquifer_mid= ${fparse 10 + well_length / 2}
+aquifer_top= ${fparse 10 + well_length}
 [Postprocessors]
-
   [./inlet_mass_kg]
     type = PorousFlowPlotQuantity
     uo = fluid_mass_in_inc
@@ -356,14 +356,44 @@ aquifer_mid= ${fparse 10 + well_length / 2}
   [./pro_point_pres]
     type = PointValue
     execute_on = 'initial timestep_end'
-    point = '${hotwell_x} 0 ${aquifer_mid}'
+    point = '${coldwell_x} 0 ${aquifer_mid}'
     variable = porepressure
   [../]
   [./pro_point_temp]
     type = PointValue
     execute_on = 'initial timestep_end'
-    point = '${hotwell_x} 0 ${aquifer_mid}'
+    point = '${coldwell_x} 0 ${aquifer_mid}'
     variable = temperature
+  [../]
+  [./pro_mean_temp]
+    type = FunctionValuePostprocessor
+    function = temp_mean_fcn
+    execute_on = timestep_end
+  [../]
+[] 
+
+[VectorPostprocessors]
+  [./pp]
+    type = LineValueSampler
+    num_points = 10
+    start_point = '${coldwell_x} 0 10'
+    end_point = '${coldwell_x} 0 ${aquifer_top}'
+    sort_by = z
+    variable = temperature
+  [../]
+  [stats]
+    type = Statistics
+    vectorpostprocessors = 'pp'
+    compute = 'mean'
+  []
+[]
+
+[Functions]
+  [./temp_mean_fcn]
+    type = ParsedFunction
+    value = abs(a)
+    vars = 'a'
+    vals = 'pro_mean_temp'
   [../]
 []
 
