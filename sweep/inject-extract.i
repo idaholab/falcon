@@ -438,7 +438,10 @@ aquifer_top= ${fparse 10 + well_length}
 [Executioner]
   type = Transient
   solve_type = NEWTON
-  end_time = 86400 #${full_duration}
+#  end_time = 86400 #${full_duration}
+  steady_state_detection = true
+  steady_state_start_time = 864000 # 10 days
+  steady_state_tolerance = 1e-6
   dtmax = 7200 #2 hours
   dtmin = 100
  [./TimeStepper]

@@ -13,8 +13,8 @@
 
 class PorousFlowSteadyStateDetection;
 
-template <>
-InputParameters validParams<PorousFlowSteadyStateDetection>();
+///template <>
+///InputParameters validParams<PorousFlowSteadyStateDetection>();
 
 /**
  * Computes the relative change rate in a post-processor value.
