@@ -77,7 +77,7 @@ well_length = 10 # need to change for the 5 meshes with different aquifer thickn
 [Samplers]
   [montecarlo]
     type = MonteCarlo
-    num_rows = 96
+    num_rows = 10
     distributions = 'init_temp init_pp injection_temp inj_ext_rate distance_between_wells perm_aquifer porosity Tcond_aquifer'
     execute_on = 'PRE_MULTIAPP_SETUP'
   []

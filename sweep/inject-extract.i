@@ -129,16 +129,16 @@ full_duration = ${fparse 2 * switch_to_extraction}
 ###############################################################
 [BCs]
   [./P_drained]
-    type = FunctionPresetBC
+    type = DirichletBC
     variable = porepressure
     boundary = 'east west north'
-    function = ${pp_ini_bc}
+    value = ${pp_ini_bc}
   [../]
   [./T_cont]
-    type = FunctionPresetBC
+    type = DirichletBC
     variable = temperature
     boundary = 'east west north'
-    function = ${T_ini_bc}
+    value = ${T_ini_bc}
   [../]
 []
 
@@ -321,10 +321,18 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
 [../]
 
 []
+
 ############################################################
 aquifer_mid= ${fparse 10 + well_length / 2}
 aquifer_top= ${fparse 10 + well_length}
 [Postprocessors]
+
+
+#  [./pro_mean_temp]
+#    type = FunctionValuePostprocessor
+#    function = temp_mean_fcn
+#    execute_on = timestep_end
+#  [../]
   [./inlet_mass_kg]
     type = PorousFlowPlotQuantity
     uo = fluid_mass_in_inc
@@ -341,18 +349,27 @@ aquifer_top= ${fparse 10 + well_length}
     type = PorousFlowPlotQuantity
     uo = heat_enthalpy_out_inc
   [../]
-
   [./inj_P_mid]
     type = PointValue
     execute_on = 'initial timestep_end'
     point = '${inj_well_x} 0 ${aquifer_mid}'
     variable = porepressure
+  [../]
   [./inj_T_mid]
     type = PointValue
     execute_on = 'initial timestep_end'
     point = '${inj_well_x} 0 ${aquifer_mid}'
     variable = temperature
   [../]
+  [./step_dt]
+    type = TimestepSize
+  [../]
+  [./change_over_time]
+    type = PorousFlowSteadyStateDetection
+    targetpostprocessor = outlet_enthalpy_J
+    timepostprocessor = step_dt
+  [../]
+
 
   [./pro_P_bot]
     type = PointValue
@@ -378,7 +395,6 @@ aquifer_top= ${fparse 10 + well_length}
     point = '${pro_well_x} 0 ${aquifer_mid}'
     variable = temperature
   [../]
-
   [./pro_P_top]
     type = PointValue
     execute_on = 'initial timestep_end'
@@ -391,12 +407,6 @@ aquifer_top= ${fparse 10 + well_length}
     point = '${pro_well_x} 0 ${aquifer_top}'
     variable = temperature
   [../]
-
-#  [./pro_mean_temp]
-#    type = FunctionValuePostprocessor
-#    function = temp_mean_fcn
-#    execute_on = timestep_end
-#  [../]
 [] 
 
 #[VectorPostprocessors]
