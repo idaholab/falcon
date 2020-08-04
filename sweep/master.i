@@ -137,6 +137,7 @@ well_length = 10 # need to change for the 5 meshes with different aquifer thickn
     sampler = ${sampler}
     input_files = 'inject-extract.i'
     mode = batch-reset
+    ignore_solve_not_converge = true
   []
 []
 
