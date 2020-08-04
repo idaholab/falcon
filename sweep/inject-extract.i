@@ -161,7 +161,7 @@ well_length = 10  #fixed number in accordance with the mesh
     fluxes = '-${inj_ext_flux} -${inj_ext_flux}'  # ~5 kg/s over length of 10(injection_length)/2
   [../]
   [./injection_T]
-    type = PorousFlowEnthalpySink
+    type = EnthalpySink
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_in_inc
