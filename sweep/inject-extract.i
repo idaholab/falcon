@@ -129,22 +129,22 @@ full_duration = ${fparse 2 * switch_to_extraction}
 ###############################################################
 [BCs]
   [./P_drained]
-    type = FunctionPresetBC
+    type = DirichletBC
     variable = porepressure
-    boundary = 'east west north top bottom'
-    function = ${pp_ini_bc}
+    boundary = 'east west north'
+    value = ${pp_ini_bc}
   [../]
   [./T_cont]
-    type = FunctionPresetBC
+    type = DirichletBC
     variable = temperature
-    boundary = 'east west north top bottom'
-    function = ${T_ini_bc}
+    boundary = 'east west north'
+    value = ${T_ini_bc}
   [../]
 []
 
 distance_between_wells = 20
-coldwell_x = ${fparse 0 + distance_between_wells / 2}
-hotwell_x = ${fparse 0 - distance_between_wells / 2}
+pro_well_x = ${fparse 0 + distance_between_wells / 2}
+inj_well_x  = ${fparse 0 - distance_between_wells / 2}
 well_length = 10  #fixed number in accordance with the mesh
 ############################################################
 [DiracKernels]
@@ -153,7 +153,7 @@ well_length = 10  #fixed number in accordance with the mesh
     fluid_phase = 0
     variable = porepressure
     SumQuantityUO = fluid_mass_in_inc
-    line_base = '1 ${hotwell_x} 0 10'
+    line_base = '1 ${inj_well_x} 0 10'
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -161,11 +161,11 @@ well_length = 10  #fixed number in accordance with the mesh
     fluxes = '-${inj_ext_flux} -${inj_ext_flux}'  # ~5 kg/s over length of 10(injection_length)/2
   [../]
   [./injection_T]
-    type = PorousFlowEnthalpySink
+    type = EnthalpySink
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_in_inc
-    line_base = '1 ${hotwell_x} 0 10'
+    line_base = '1 ${inj_well_x} 0 10'
     line_length = ${well_length}
     line_direction = '0 0 1'
     pressure = porepressure
@@ -179,7 +179,7 @@ well_length = 10  #fixed number in accordance with the mesh
     fluid_phase = 0
     variable = porepressure
     SumQuantityUO = fluid_mass_out_inc
-    line_base = '1 ${coldwell_x} 0 10'
+    line_base = '1 ${pro_well_x} 0 10'
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -191,7 +191,7 @@ well_length = 10  #fixed number in accordance with the mesh
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_out_inc
-    line_base = '1 ${coldwell_x} 0 10'
+    line_base = '1 ${pro_well_x} 0 10'
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -321,10 +321,18 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
 [../]
 
 []
+
 ############################################################
 aquifer_mid= ${fparse 10 + well_length / 2}
+aquifer_top= ${fparse 10 + well_length}
 [Postprocessors]
 
+
+#  [./pro_mean_temp]
+#    type = FunctionValuePostprocessor
+#    function = temp_mean_fcn
+#    execute_on = timestep_end
+#  [../]
   [./inlet_mass_kg]
     type = PorousFlowPlotQuantity
     uo = fluid_mass_in_inc
@@ -341,38 +349,100 @@ aquifer_mid= ${fparse 10 + well_length / 2}
     type = PorousFlowPlotQuantity
     uo = heat_enthalpy_out_inc
   [../]
-  [./inj_point_pres]
+  [./inj_P_mid]
     type = PointValue
     execute_on = 'initial timestep_end'
-    point = '${hotwell_x} 0 ${aquifer_mid}'
+    point = '${inj_well_x} 0 ${aquifer_mid}'
     variable = porepressure
   [../]
-  [./inj_point_temp]
+  [./inj_T_mid]
     type = PointValue
     execute_on = 'initial timestep_end'
-    point = '${hotwell_x} 0 ${aquifer_mid}'
+    point = '${inj_well_x} 0 ${aquifer_mid}'
     variable = temperature
   [../]
-  [./pro_point_pres]
+  [./step_dt]
+    type = TimestepSize
+  [../]
+  [./change_over_time]
+    type = PorousFlowSteadyStateDetection
+    targetpostprocessor = outlet_enthalpy_J
+    timepostprocessor = step_dt
+  [../]
+
+
+  [./pro_P_bot]
     type = PointValue
     execute_on = 'initial timestep_end'
-    point = '${hotwell_x} 0 ${aquifer_mid}'
+    point = '${pro_well_x} 0 10'
     variable = porepressure
   [../]
-  [./pro_point_temp]
+  [./pro_T_bot]
     type = PointValue
     execute_on = 'initial timestep_end'
-    point = '${hotwell_x} 0 ${aquifer_mid}'
+    point = '${pro_well_x} 0 10'
     variable = temperature
   [../]
-[]
+  [./pro_P_mid]
+    type = PointValue
+    execute_on = 'initial timestep_end'
+    point = '${pro_well_x} 0 ${aquifer_mid}'
+    variable = porepressure
+  [../]
+  [./pro_T_mid]
+    type = PointValue
+    execute_on = 'initial timestep_end'
+    point = '${pro_well_x} 0 ${aquifer_mid}'
+    variable = temperature
+  [../]
+  [./pro_P_top]
+    type = PointValue
+    execute_on = 'initial timestep_end'
+    point = '${pro_well_x} 0 ${aquifer_top}'
+    variable = porepressure
+  [../]
+  [./pro_T_top]
+    type = PointValue
+    execute_on = 'initial timestep_end'
+    point = '${pro_well_x} 0 ${aquifer_top}'
+    variable = temperature
+  [../]
+[] 
+
+#[VectorPostprocessors]
+#  [./pp]
+#    type = LineValueSampler
+#    num_points = 10
+#    start_point = '${pro_well_x} 0 10'
+#    end_point = '${pro_well_x} 0 ${aquifer_top}'
+#    sort_by = z
+#    variable = temperature
+#  [../]
+#  [stats]
+#    type = Statistics
+#    vectorpostprocessors = 'pp'
+#    compute = 'mean'
+#  []
+#[]
+
+#[Functions]
+#  [./temp_mean_fcn]
+#    type = ParsedFunction
+#    value = abs(a)
+#    vars = 'a'
+#    vals = 'pro_mean_temp'
+#  [../]
+#[]
 
 ##########################################################
 [Executioner]
   type = Transient
   solve_type = NEWTON
-  end_time = ${full_duration}
-  dtmax = 259200 #3days
+#  end_time = 86400 #${full_duration}
+  steady_state_detection = true
+  steady_state_start_time = 864000 # 10 days
+  steady_state_tolerance = 1e-6
+  dtmax = 7200 #2 hours
   dtmin = 100
  [./TimeStepper]
    type = IterationAdaptiveDT
