@@ -10,7 +10,7 @@
 #include "EnthalpySink.h"
 #include "SinglePhaseFluidProperties.h"
 
-registerMooseObject("App", EnthalpySink);
+registerMooseObject("FalconApp", EnthalpySink);
 
 InputParameters
 EnthalpySink::validParams()

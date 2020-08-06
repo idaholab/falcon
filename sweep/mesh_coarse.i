@@ -55,7 +55,7 @@ full_duration = ${fparse 2 * switch_to_extraction}
 [Mesh]
   [./fmg]
     type = FileMeshGenerator
-    file = doubleLets_10_10_median.e
+    file = doubleLets_10_10_coarse.e
   []
 []
 #############################################################
