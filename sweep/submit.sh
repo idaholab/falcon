@@ -1,8 +1,8 @@
 #!/bin/bash
 #PBS -N GeothermalBattery
-#PBS -l select=100:ncpus=1:mpiprocs=1
+#PBS -l select=30:ncpus=1:mpiprocs=1
 #PBS -l place=free:shared
-#PBS -l walltime=1:00:00
+#PBS -l walltime=24:00:00
 #PBS -joe
 #PBS -ko
 
@@ -12,7 +12,7 @@ cd $PBS_O_WORKDIR
 #ln -s $HOME/$PBS_JOBNAME.o$JOB_NUM $PBS_JOBNAME.o$JOB_NUM
 
 FALCON_APP=$HOME/falcon/falcon-opt
-INFILE=$HOME/falcon/sweep/master.i
+INFILE=$HOME/falcon/sweep/mesh_fine.i
 
 NSLOTS=`cat $PBS_NODEFILE | wc -l`
 date

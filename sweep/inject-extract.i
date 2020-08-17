@@ -55,7 +55,7 @@ full_duration = ${fparse 2 * switch_to_extraction}
 [Mesh]
   [./fmg]
     type = FileMeshGenerator
-    file = doublet_10-10.e
+    file = doubleLets_10_10_median.e
   []
 []
 #############################################################
@@ -161,7 +161,7 @@ well_length = 10  #fixed number in accordance with the mesh
     fluxes = '-${inj_ext_flux} -${inj_ext_flux}'  # ~5 kg/s over length of 10(injection_length)/2
   [../]
   [./injection_T]
-    type = PorousFlowEnthalpySink
+    type = EnthalpySink
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_in_inc
@@ -438,11 +438,11 @@ aquifer_top= ${fparse 10 + well_length}
 [Executioner]
   type = Transient
   solve_type = NEWTON
-#  end_time = 86400 #${full_duration}
-  steady_state_detection = true
-  steady_state_start_time = 864000 # 10 days
-  steady_state_tolerance = 1e-6
-  dtmax = 7200 #2 hours
+  end_time =31104000 #${full_duration}
+#  steady_state_detection = true
+#  steady_state_start_time = 864000 # 10 days
+#  steady_state_tolerance = 1e-6
+  dtmax = 864000 #2 hours
   dtmin = 100
  [./TimeStepper]
    type = IterationAdaptiveDT

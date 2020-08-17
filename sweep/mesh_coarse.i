@@ -22,7 +22,11 @@ inj_ext_flux= 0.25
 
 # Materials/thermal_conductivity_aquifer/dry_thermal_conductivity = [2 2.5 3]
 #---Define a scalar variable to replace the tensor components
+<<<<<<< HEAD
 Tcond_aquifer = 2.0
+=======
+Tcond_aquifer = 2
+>>>>>>> refs/remotes/origin/sweep
 
 # Materials/porosity_aquifer/porosity = [0.01 0.05 0.1 0.2 0.3]
 
@@ -31,8 +35,13 @@ Tcond_aquifer = 2.0
 perm_aquifer = 1e-12
 
 #---Define a scalar variable to automatically change injection duration
+<<<<<<< HEAD
 switch_to_extraction = 31104000
 full_duration = ${fparse 10 * switch_to_extraction}
+=======
+switch_to_extraction = 7776000
+full_duration = ${fparse 2 * switch_to_extraction}
+>>>>>>> refs/remotes/origin/sweep
 
 #[Controls]
 #  [extraction-period]
@@ -55,7 +64,11 @@ full_duration = ${fparse 10 * switch_to_extraction}
 [Mesh]
   [./fmg]
     type = FileMeshGenerator
+<<<<<<< HEAD
     file = doubleLets-10-coarse.e
+=======
+    file = doubleLets_10_10_coarse.e
+>>>>>>> refs/remotes/origin/sweep
   []
 []
 #############################################################
@@ -142,6 +155,7 @@ full_duration = ${fparse 10 * switch_to_extraction}
   [../]
 []
 
+<<<<<<< HEAD
 distance_between_wells = 100
 pro_well_x = ${fparse 0.1 + distance_between_wells / 2}
 inj_well_x  = ${fparse 0.1 - distance_between_wells / 2}
@@ -149,6 +163,12 @@ well_length = 10  #fixed number in accordance with the mesh
 aquifer_mid= ${fparse 0 + 0}
 aquifer_top= ${fparse 0 + well_length/2}
 aquifer_bot= ${fparse 0 - well_length/2}
+=======
+distance_between_wells = 20
+pro_well_x = ${fparse 0 + distance_between_wells / 2}
+inj_well_x  = ${fparse 0 - distance_between_wells / 2}
+well_length = 10  #fixed number in accordance with the mesh
+>>>>>>> refs/remotes/origin/sweep
 ############################################################
 [DiracKernels]
   [./injection_P]
@@ -156,7 +176,11 @@ aquifer_bot= ${fparse 0 - well_length/2}
     fluid_phase = 0
     variable = porepressure
     SumQuantityUO = fluid_mass_in_inc
+<<<<<<< HEAD
     line_base = '1 ${inj_well_x} 0 ${aquifer_bot}'
+=======
+    line_base = '1 ${inj_well_x} 0 10'
+>>>>>>> refs/remotes/origin/sweep
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -168,7 +192,11 @@ aquifer_bot= ${fparse 0 - well_length/2}
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_in_inc
+<<<<<<< HEAD
     line_base = '1 ${inj_well_x} 0 ${aquifer_bot}'
+=======
+    line_base = '1 ${inj_well_x} 0 10'
+>>>>>>> refs/remotes/origin/sweep
     line_length = ${well_length}
     line_direction = '0 0 1'
     pressure = porepressure
@@ -182,7 +210,11 @@ aquifer_bot= ${fparse 0 - well_length/2}
     fluid_phase = 0
     variable = porepressure
     SumQuantityUO = fluid_mass_out_inc
+<<<<<<< HEAD
     line_base = '1 ${pro_well_x} 0 ${aquifer_bot}'
+=======
+    line_base = '1 ${pro_well_x} 0 10'
+>>>>>>> refs/remotes/origin/sweep
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -194,7 +226,11 @@ aquifer_bot= ${fparse 0 - well_length/2}
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_out_inc
+<<<<<<< HEAD
     line_base = '1 ${pro_well_x} 0 ${aquifer_bot}'
+=======
+    line_base = '1 ${pro_well_x} 0 10'
+>>>>>>> refs/remotes/origin/sweep
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -250,7 +286,11 @@ aquifer_bot= ${fparse 0 - well_length/2}
 
   [./internal_energy_caps]
     type = PorousFlowMatrixInternalEnergy
+<<<<<<< HEAD
     specific_heat_capacity = 1000.0
+=======
+    specific_heat_capacity = 770.0
+>>>>>>> refs/remotes/origin/sweep
     density = 2500.0
     block = caps
   [../]
@@ -272,13 +312,22 @@ aquifer_bot= ${fparse 0 - well_length/2}
 []
 ############################################################
 [Preconditioning]
+<<<<<<< HEAD
 active = 'ilu_may_use_less_mem'
 #active = 'superlu'
+=======
+#active = 'ilu_may_use_less_mem'
+active = 'superlu'
+>>>>>>> refs/remotes/origin/sweep
 
 [./ilu_may_use_less_mem]
 type = SMP
 full = true
+<<<<<<< HEAD
 petsc_options = '-ksp_diagonal_scale -ksp_diagonal_scale_fix -ksp_gmres_modifiedgramschmidt'
+=======
+petsc_options = '-ksp_diagonal_scale -ksp_diagonal_scale_fix'
+>>>>>>> refs/remotes/origin/sweep
 petsc_options_iname = '-ksp_type -pc_type -sub_pc_type -sub_pc_factor_shift_type'
 petsc_options_value = 'gmres asm ilu NONZERO'
 [../]
@@ -326,9 +375,17 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
 []
 
 ############################################################
+<<<<<<< HEAD
 
 [Postprocessors]
 
+=======
+aquifer_mid= ${fparse 10 + well_length / 2}
+aquifer_top= ${fparse 10 + well_length}
+[Postprocessors]
+
+
+>>>>>>> refs/remotes/origin/sweep
 #  [./pro_mean_temp]
 #    type = FunctionValuePostprocessor
 #    function = temp_mean_fcn
@@ -371,16 +428,28 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
     timepostprocessor = step_dt
   [../]
 
+<<<<<<< HEAD
   [./pro_P_bot]
     type = PointValue
     execute_on = 'initial timestep_end'
     point = '${pro_well_x} 0 ${aquifer_bot}'
+=======
+
+  [./pro_P_bot]
+    type = PointValue
+    execute_on = 'initial timestep_end'
+    point = '${pro_well_x} 0 10'
+>>>>>>> refs/remotes/origin/sweep
     variable = porepressure
   [../]
   [./pro_T_bot]
     type = PointValue
     execute_on = 'initial timestep_end'
+<<<<<<< HEAD
     point = '${pro_well_x} 0 ${aquifer_bot}'
+=======
+    point = '${pro_well_x} 0 10'
+>>>>>>> refs/remotes/origin/sweep
     variable = temperature
   [../]
   [./pro_P_mid]
@@ -407,6 +476,7 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
     point = '${pro_well_x} 0 ${aquifer_top}'
     variable = temperature
   [../]
+<<<<<<< HEAD
   [total]
     type = MemoryUsage
     mem_units = 'bytes'
@@ -424,6 +494,8 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
     mem_units = 'bytes'
     execute_on = 'INITIAL TIMESTEP_END'
   []
+=======
+>>>>>>> refs/remotes/origin/sweep
 [] 
 
 #[VectorPostprocessors]
@@ -455,7 +527,11 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
 [Executioner]
   type = Transient
   solve_type = NEWTON
+<<<<<<< HEAD
   end_time =${full_duration}
+=======
+  end_time =31104000 #${full_duration}
+>>>>>>> refs/remotes/origin/sweep
 #  steady_state_detection = true
 #  steady_state_start_time = 864000 # 10 days
 #  steady_state_tolerance = 1e-6
@@ -464,7 +540,11 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
  [./TimeStepper]
    type = IterationAdaptiveDT
    dt = 1000.0
+<<<<<<< HEAD
    optimal_iterations = 10
+=======
+   optimal_iterations = 5
+>>>>>>> refs/remotes/origin/sweep
  [../]
 # controls for linear iterations
   l_max_its = 15
