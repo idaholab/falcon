@@ -38,7 +38,7 @@ well_length = 10 # need to change for the 5 meshes with different aquifer thickn
   [distance_between_wells]
     type = Uniform
     lower_bound = 10
-    upper_bound = 200
+    upper_bound = 100
     n = 2
     cartprod = '${lower_bound} ${fparse (upper_bound - lower_bound) / (n - 1)} ${n}'
   []
@@ -77,7 +77,7 @@ well_length = 10 # need to change for the 5 meshes with different aquifer thickn
 [Samplers]
   [montecarlo]
     type = MonteCarlo
-    num_rows = 10
+    num_rows = 1000
     distributions = 'init_temp init_pp injection_temp inj_ext_rate distance_between_wells perm_aquifer porosity Tcond_aquifer'
     execute_on = 'PRE_MULTIAPP_SETUP'
   []
