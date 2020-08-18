@@ -112,7 +112,12 @@ full_duration = ${fparse 10 * switch_to_extraction}
   [./heat_enthalpy_out_inc]
     type = PorousFlowSumQuantity
   [../]
+  [./steady_detection]
+    type = Terminator
+    expression = 'term_indicator >= 1'
+  [../]
 []
+
 ############################################################
 [ICs]
   [./init_pp]
@@ -334,6 +339,8 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
 #    function = temp_mean_fcn
 #    execute_on = timestep_end
 #  [../]
+
+
   [./inlet_mass_kg]
     type = PorousFlowPlotQuantity
     uo = fluid_mass_in_inc
@@ -362,6 +369,10 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
     point = '${inj_well_x} 0 ${aquifer_mid}'
     variable = temperature
   [../]
+  [./time]
+    type = TimePostprocessor
+    execute_on = 'timestep_end'
+  []
   [./step_dt]
     type = TimestepSize
   [../]
@@ -369,6 +380,14 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
     type = PorousFlowSteadyStateDetection
     targetpostprocessor = outlet_enthalpy_J
     timepostprocessor = step_dt
+  [../]
+  [./term_indicator]
+    type = PorousFlowSteadyStateTerminator
+    targetpostprocessor = change_over_time
+    timepostprocessor = time
+    ss_dection_start_time = 7776000
+    ss_dection_end_time = 311040000
+    ss_relative_error = 2.5E-4
   [../]
 
   [./pro_P_bot]
@@ -407,6 +426,7 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
     point = '${pro_well_x} 0 ${aquifer_top}'
     variable = temperature
   [../]
+
 #  [total]
 #    type = MemoryUsage
 #    mem_units = 'bytes'
@@ -442,24 +462,15 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
 #  []
 #[]
 
-#[Functions]
-#  [./temp_mean_fcn]
-#    type = ParsedFunction
-#    value = abs(a)
-#    vars = 'a'
-#    vals = 'pro_mean_temp'
-#  [../]
-#[]
-
 ##########################################################
 [Executioner]
   type = Transient
   solve_type = NEWTON
-  end_time =${full_duration}
+#  end_time =${full_duration}
 #  steady_state_detection = true
 #  steady_state_start_time = 864000 # 10 days
 #  steady_state_tolerance = 1e-6
-  dtmax = 864000 #2 hours
+  dtmax = 864000 # 10 days
   dtmin = 100
  [./TimeStepper]
    type = IterationAdaptiveDT

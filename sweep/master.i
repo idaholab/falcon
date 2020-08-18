@@ -77,7 +77,7 @@ well_length = 10 # need to change for the 5 meshes with different aquifer thickn
 [Samplers]
   [montecarlo]
     type = MonteCarlo
-    num_rows = 1000
+    num_rows =500
     distributions = 'init_temp init_pp injection_temp inj_ext_rate distance_between_wells perm_aquifer porosity Tcond_aquifer'
     execute_on = 'PRE_MULTIAPP_SETUP'
   []
@@ -110,7 +110,7 @@ well_length = 10 # need to change for the 5 meshes with different aquifer thickn
     multi_app = runner
     sampler = ${sampler}
     to_vector_postprocessor = results
-    from_postprocessor = 'outlet_mass_kg outlet_enthalpy_J'
+    from_postprocessor = 'time'
   []
 []
 
@@ -135,7 +135,7 @@ well_length = 10 # need to change for the 5 meshes with different aquifer thickn
   [runner]
     type = SamplerFullSolveMultiApp
     sampler = ${sampler}
-    input_files = 'inject-extract.i'
+    input_files = 'base_10.i'
     mode = batch-reset
     ignore_solve_not_converge = true
   []
