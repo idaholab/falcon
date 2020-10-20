@@ -8,12 +8,13 @@
 
 ############################################################
 [Mesh]
-  file = thm_transient_ic.e # use thm_steady_out.e for actual
-[]
-############################################################
-[MeshModifiers]
+  [./file]
+    type = FileMeshGenerator
+    file = thm_transient_ic.e # use thm_steady_out.e for actual
+  [../]
   [./source_position]
-    type = AddExtraNodeset
+    type = ExtraNodesetGenerator
+    input = file
     coord = '0 0 -2.5E3'
     tolerance = 50 # 20 for coarse and fine mesh | 50 for vcoarse mesh
     new_boundary = 7
