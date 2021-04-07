@@ -1,0 +1,23 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "lldb",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/falcon-opt",
+        "args": [
+          "-i",
+          "~/projects/geotes/cranfield/Cranfield_HT_season_brine.i"
+        ],
+        "stopAtEntry": true,
+        "cwd": "${workspaceFolder}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "lldb"
+      }
+    ]
+  }

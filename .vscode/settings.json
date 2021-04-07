@@ -1,0 +1,18 @@
+{
+    "files.associations": {
+        "PorousFlowDoubletBreakthroughTerminator.C": "cpp",
+        "complex": "cpp",
+        "timestepPostprocessor.C": "cpp",
+        "PTMassSideFluxIntegral.C": "cpp",
+        "PTMassSideFluxAverage.C": "cpp",
+        "PorousFlowDoubletSwitch.C": "cpp",
+        "PorousFlowDoubletBreakthroughTime.C": "cpp",
+        "PorousFlowRecoveryRate.C": "cpp",
+        "PorousFlowRecoveryTime.C": "cpp",
+        "FunctionDirichletBC.C": "cpp",
+        "FunctionPresetBC.C": "cpp",
+        "DirichletBC.C": "cpp",
+        "main.C": "cpp",
+        "FunctionEnthalpySink.C": "cpp"
+    }
+}
