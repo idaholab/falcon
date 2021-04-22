@@ -22,6 +22,8 @@ include $(FRAMEWORK_DIR)/moose.mk
 ################################## MODULES ####################################
 #PHASE_FIELD       := yes
 POROUS_FLOW       := yes
+TEMSOR_MESHANICS  := yes
+GEOCHEMISTRY      := yes
 include           $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
 
