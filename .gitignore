@@ -6,6 +6,7 @@ tpl/tetgen/tetgen
 *.d
 *.o
 *.a
+*.zip
 *-opt
 *-dbg
 *-oprof

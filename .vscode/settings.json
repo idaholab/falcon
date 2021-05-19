@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.ipynb": "jupyter",
         "PorousFlowDoubletBreakthroughTerminator.C": "cpp",
         "complex": "cpp",
         "timestepPostprocessor.C": "cpp",
@@ -13,6 +14,17 @@
         "FunctionPresetBC.C": "cpp",
         "DirichletBC.C": "cpp",
         "main.C": "cpp",
-        "FunctionEnthalpySink.C": "cpp"
+        "FunctionEnthalpySink.C": "cpp",
+        "EnthalpySink.C": "cpp",
+        "PorousFlowPolyLineSink.C": "cpp",
+        "PointEnthalpySourceFromFunction.C": "cpp",
+        "PorousFlowSquarePulsePointSource.C": "cpp",
+        "PorousFlowLineSink.C": "cpp",
+        "PorousFlowPointEnthalpySinkFromPostprocessor.C": "cpp",
+        "PTEnergyPointSource.C": "cpp",
+        "PTMassPointSource.C": "cpp",
+        "PTEnergyResidual.C": "cpp",
+        "PointEnthalpySink.C": "cpp",
+        "PorousFlowLineGeometry.C": "cpp"
     }
 }
