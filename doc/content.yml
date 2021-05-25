@@ -1,0 +1,19 @@
+# falcon:
+#     base: ${ROOT_DIR}/doc/content
+#     include:
+#         - doc/content/**
+#
+# moose:
+#     root_dir: $MOOSE_DIR
+#     base: docs/content
+#     include:
+#         - docs/content/getting_started/**
+#         - docs/content/documentation/systems/**/index.md
+#         - docs/content/documentation/systems/**/framework/**
+#         - docs/content/documentation/systems/**/tensor_mechanics/**
+#
+#         - docs/content/documentation/examples/**
+#         - docs/content/documentation/tutorial/**
+#
+#         - docs/content/media/**
+#         - docs/content/bib/**

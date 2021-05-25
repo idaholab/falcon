@@ -1,0 +1,61 @@
+Content:
+    - ${ROOT_DIR}/doc/content
+    - ${MOOSE_DIR}/framework/doc/content
+    - ${MOOSE_DIR}/modules/tensor_mechanics/doc/content
+    - ${MOOSE_DIR}/modules/porous_flow/doc/content
+    - ${MOOSE_DIR}/modules/fluid_properties/doc/content
+    - ${MOOSE_DIR}/modules/chemical_reactions/doc/content
+    # - ${MOOSE_DIR}/modules/geochemistry/doc/content
+    - moose:
+          root_dir: ${MOOSE_DIR}/modules/doc/content
+          content:
+              - media/**
+              - bib/**
+
+Renderer:
+    type: MooseDocs.base.MaterializeRenderer
+
+Extensions:
+    MooseDocs.extensions.navigation:
+        name: FALCON
+        repo: https://github.com/idaholab/falcon
+        home: https://www.mooseframework.org/falcon
+        menu:
+          Syntax: syntax/index.md
+        #     Getting Started:
+        #         Installation:
+        #         Running FALCON:
+        #         Tutorial:
+        #    Documentation: documentation.menu.md
+        #     SQA:
+        #     News:
+        #     Help:
+        #         FAQ:
+        #         Contact:
+
+    MooseDocs.extensions.appsyntax:
+        executable: ${ROOT_DIR}
+        remove: !include ${MOOSE_DIR}/framework/doc/remove.yml
+        includes:
+            - include
+            - ${MOOSE_DIR}/framework/include
+            - ${MOOSE_DIR}/modules/tensor_mechanics/include
+            - ${MOOSE_DIR}/modules/porous_flow/include
+            # - ${MOOSE_DIR}/modules/geochemistry/include
+
+    MooseDocs.extensions.common:
+        shortcuts: !include ${MOOSE_DIR}/framework/doc/globals.yml
+
+    MooseDocs.extensions.acronym:
+        acronyms: !include ${MOOSE_DIR}/framework/doc/acronyms.yml
+
+    MooseDocs.extensions.template:
+        active: True
+
+    MooseDocs.extensions.sqa:
+        active: False
+        repos:
+             default: https://github.com/idaholab/falcon
+        reports: !include ${ROOT_DIR}/doc/sqa_reports.yml
+        categories:
+            framework: !include ${MOOSE_DIR}/framework/doc/sqa_framework.yml
