@@ -25,6 +25,21 @@
         "PTMassPointSource.C": "cpp",
         "PTEnergyResidual.C": "cpp",
         "PointEnthalpySink.C": "cpp",
-        "PorousFlowLineGeometry.C": "cpp"
+        "PorousFlowLineGeometry.C": "cpp",
+        "PorousFlowSteadyStateTerminator.C": "cpp",
+        "PorousFlowTemperatureDropTerminator.C": "cpp",
+        "PorousFlowAccumulator.C": "cpp",
+        "PorousFlowRecoveryTimeAccumulator.C": "cpp",
+        "PorousFlowRecoveryRateSeason.C": "cpp",
+        "PorousFlowEnergyAccumulator.C": "cpp",
+        "array": "c",
+        "compare": "c",
+        "functional": "c",
+        "istream": "c",
+        "ostream": "c",
+        "ranges": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c"
     }
 }
