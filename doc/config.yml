@@ -1,0 +1,71 @@
+Content:
+    - ${ROOT_DIR}/doc/content
+    - ${MOOSE_DIR}/framework/doc/content
+    - ${MOOSE_DIR}/modules/tensor_mechanics/doc/content
+    - ${MOOSE_DIR}/modules/porous_flow/doc/content
+    - ${MOOSE_DIR}/modules/fluid_properties/doc/content
+    - ${MOOSE_DIR}/modules/chemical_reactions/doc/content
+    # - ${MOOSE_DIR}/modules/geochemistry/doc/content
+    - moose:
+          root_dir: ${MOOSE_DIR}/modules/doc/content
+          content:
+              - getting_started/installation/install_miniconda.md
+              - getting_started/installation/install_conda_moose.md
+              - getting_started/installation/uninstall_conda.md
+              - getting_started/installation/wsl.md
+              - application_usage/peacock.md
+              - media/**
+              - bib/**
+
+Renderer:
+    type: MooseDocs.base.MaterializeRenderer
+
+Extensions:
+    MooseDocs.extensions.navigation:
+        name: FALCON
+        repo: https://github.com/idaholab/falcon
+        home: https://www.mooseframework.org/falcon
+        # google-cse: <add Google search engine ID here>
+        menu:
+            Getting Started:
+                Installation: getting_started/installation/index.md
+                Running FALCON: getting_started/running_falcon.md
+                Tutorial: getting_started/tutorial/index.md
+            Documentation: documentation.menu.md
+            SQA: /sqa/index.md
+            News: news/index.md
+            Help:
+                FAQ: help/faq/index.md
+                Contact: help/contact_us.md
+
+    MooseDocs.extensions.appsyntax:
+        executable: ${ROOT_DIR}
+        remove: !include ${MOOSE_DIR}/framework/doc/remove.yml
+        includes:
+            - include
+            - ${MOOSE_DIR}/framework/include
+            - ${MOOSE_DIR}/modules/tensor_mechanics/include
+            - ${MOOSE_DIR}/modules/porous_flow/include
+            # - ${MOOSE_DIR}/modules/geochemistry/include
+
+    MooseDocs.extensions.common:
+        shortcuts: !include ${MOOSE_DIR}/framework/doc/globals.yml
+
+    MooseDocs.extensions.acronym:
+        acronyms:
+            framework: !include ${MOOSE_DIR}/framework/doc/acronyms.yml
+            falcon: !include ${ROOT_DIR}/doc/acronyms.yml
+
+    MooseDocs.extensions.template:
+        active: True
+
+    MooseDocs.extensions.sqa:
+        active: False
+        repos:
+             default: https://github.com/idaholab/falcon
+        reports: !include ${ROOT_DIR}/doc/sqa_reports.yml
+        categories:
+            falcon: !include ${ROOT_DIR}/doc/sqa_falcon.yml
+            framework: !include ${MOOSE_DIR}/framework/doc/sqa_framework.yml
+            tensor_mechanics: !include ${MOOSE_DIR}/modules/tensor_mechanics/doc/sqa_tensor_mechanics.yml
+            # porous_flow: !include ${MOOSE_DIR}/modules/porous_flow/doc/sqa_porous_flow.yml

@@ -1,0 +1,16 @@
+Applications:
+    falcon:
+        exe_directory: ${ROOT_DIR}
+        exe_name: falcon
+        app_types:
+            - FalconApp
+        content_directory: doc/content
+        remove:
+            - ${MOOSE_DIR}/framework/doc/remove.yml
+
+Documents:
+
+Requirements:
+    falcon:
+        directories:
+            - ${ROOT_DIR}/test/tests

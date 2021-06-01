@@ -1,0 +1,5 @@
+specs:
+  - tests
+directories:
+  - ${ROOT_DIR}/test/tests
+reports: !include ${ROOT_DIR}/doc/sqa_reports.yml

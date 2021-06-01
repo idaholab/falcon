@@ -18,7 +18,9 @@ Yidong Xia, Mitchell Plummer, Earl Mattson, Robert Podgorney, and Ahmad Ghassemi
 
 # Documentation
 
-Please navigate to the folder /doc/publications/ for the papers that employed FALCON for modeling & simulation. 
+Please navigate to the folder /doc/publications/ for the papers that employed FALCON for modeling & simulation.
+
+<!--TODO: update this information once the website/doxygen goes live-->
 
 # Getting Started
 
@@ -129,7 +131,7 @@ if [[ -f /apps/projects/moose/moose_environment ]]; then
     source /apps/projects/moose/moose_environment
 fi
 
-module load moose-dev-gcc 
+module load moose-dev-gcc
 ```
 
 Then copy & paste the following into the file
@@ -154,9 +156,9 @@ FALCON is hosted on GitHub and can be cloned directly from there using Git. We r
 
 ```
 $ cd ~/projects
-$ git clone git@github.com:idaholab/falcon.git 
+$ git clone git@github.com:idaholab/falcon.git
 $ cd ~/projects/falcon
-$ git checkout master 
+$ git checkout master
 ```
 
 > Note: The "*master*" branch of MOOSE is the "*stable*" branch that will only be updated after all tests are passing. This protects you from the day-to-day churn in the FALCON repository.
