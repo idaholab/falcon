@@ -30,10 +30,10 @@ Extensions:
             Getting Started:
                 Installation: getting_started/installation/index.md
                 Running FALCON: getting_started/running_falcon.md
-                Tutorial: getting_started/tutorial/index.md
+                #Tutorial: getting_started/tutorial/index.md
             Documentation: documentation.menu.md
-            SQA: /sqa/index.md
-            News: news/index.md
+            Examples: examples/index.md
+            #News: news/index.md
             Help:
                 FAQ: help/faq/index.md
                 Contact: help/contact_us.md

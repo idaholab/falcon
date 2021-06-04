@@ -1,19 +1,19 @@
 !row! class=row
 
 !col! small=12 medium=6 large=4
-## Usage
+## Theory
 
-- [manuals/theory.md]
-- [manuals/user.md]
-- [Syntax](syntax/index.md)
-- [application_usage/peacock.md]
+- [Governing Equations](https://mooseframework.inl.gov/modules/porous_flow/governing_equations.html)
+- [Material Laws](https://mooseframework.inl.gov/modules/porous_flow/material_laws.html)
+- [Fluid Equations of State](https://mooseframework.inl.gov/modules/porous_flow/fluids.html)
+- [Geochemistry](https://mooseframework.inl.gov/modules/geochemistry/theory/index.html)
 
 !col-end!
 
 !col! small=12 medium=6 large=4
 ## Development
 
-- [manuals/developer.md]
+- [Code Standards](https://mooseframework.inl.gov/sqa/framework_scs.html)
 - [MOOSE Doxygen](https://mooseframework.org/docs/doxygen/moose/classes.html)
 
 <!-- - [FALCON Doxygen](https://mooseframework.inl.gov/falcon/docs/doxygen/)-->
@@ -21,12 +21,13 @@
 !col-end!
 
 !col! small=12 medium=6 large=4
-## Demonstration
+## Usage
 
-- [Examples](examples/index.md)
-- [Publications](bib/publications.md)
+- [Syntax](syntax/index.md)
+- [application_usage/peacock.md]
 
 !col-end!
+
 !row-end!
 
 !!!
