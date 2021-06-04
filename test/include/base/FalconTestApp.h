@@ -2,7 +2,7 @@
 /*             DO NOT MODIFY OR REMOVE THIS HEADER              */
 /*          FALCON - Fracturing And Liquid CONvection           */
 /*                                                              */
-/*       (c)     2012 Battelle Energy Alliance, LLC             */
+/*       (c) pending 2012 Battelle Energy Alliance, LLC         */
 /*                   ALL RIGHTS RESERVED                        */
 /*                                                              */
 /*          Prepared by Battelle Energy Alliance, LLC           */
@@ -16,14 +16,14 @@
 
 #include "MooseApp.h"
 
-class FalconApp : public MooseApp
+class FalconTestApp : public MooseApp
 {
 public:
   static InputParameters validParams();
 
-  FalconApp(InputParameters parameters);
-  virtual ~FalconApp();
+  FalconTestApp(InputParameters parameters);
+  virtual ~FalconTestApp();
 
   static void registerApps();
-  static void registerAll(Factory & f, ActionFactory & af, Syntax & s);
+  static void registerAll(Factory & f, ActionFactory & af, Syntax & s, bool use_test_objs = false);
 };

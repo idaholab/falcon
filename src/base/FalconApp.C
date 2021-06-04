@@ -15,60 +15,64 @@
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Baseline dependencies (do NOT touch)
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-#include "Moose.h"
 #include "FalconApp.h"
+#include "Moose.h"
 #include "AppFactory.h"
-#include "ActionFactory.h"
-#include "Syntax.h"
 #include "ModulesApp.h"
 #include "MooseSyntax.h"
 
 /*******************************************************************************
 Input template (do NOT touch)
 *******************************************************************************/
-InputParameters FalconApp::validParams()
+InputParameters
+FalconApp::validParams()
 {
   InputParameters params = MooseApp::validParams();
-  params.set<bool>("use_legacy_uo_initialization") = false;
-  params.set<bool>("use_legacy_uo_aux_computation") = false;
-  params.set<bool>("use_legacy_dirichlet_bc") = false;
+
+  // Do not use legacy material output, i.e., output properties on INITIAL as well as TIMESTEP_END
+  params.set<bool>("use_legacy_material_output") = false;
+
   return params;
 }
-
-
-registerKnownLabel("FalconApp");
 
 /*******************************************************************************
 Routine: FalconApp -- constructor
 *******************************************************************************/
-FalconApp::FalconApp(InputParameters parameters) :
-    MooseApp(parameters)
+FalconApp::FalconApp(InputParameters parameters) : MooseApp(parameters)
 {
   FalconApp::registerAll(_factory, _action_factory, _syntax);
 }
 
-// External entry point for object registration
-extern "C" void
-FalconApp__registerAll(Factory & factory, ActionFactory & action_factory, Syntax & syntax)
-{
-  FalconApp::registerAll(factory, action_factory, syntax);
-}
+FalconApp::~FalconApp() {}
 
 void
-FalconApp::registerAll(Factory & factory, ActionFactory & action_factory, Syntax & syntax)
+FalconApp::registerAll(Factory & f, ActionFactory & af, Syntax & syntax)
 {
-  Registry::registerObjectsTo(factory, {"FalconApp"});
-  Registry::registerActionsTo(action_factory, {"FalconApp"});
-  ModulesApp::registerAll(factory, action_factory, syntax);
+  ModulesApp::registerAll(f, af, syntax);
+  Registry::registerObjectsTo(f, {"FalconApp"});
+  Registry::registerActionsTo(af, {"FalconApp"});
+
+  /* register custom execute flags, action syntax, etc. here */
 }
 
+// External entry point for object registration
+extern "C" void
+FalconApp__registerAll(Factory & f, ActionFactory & af, Syntax & s)
+{
+  FalconApp::registerAll(f, af, s);
+}
 
 /*******************************************************************************
 Routine: registerApps (no NOT touch)
 *******************************************************************************/
-extern "C" void FalconApp__registerApps() { FalconApp::registerApps(); }
 void
 FalconApp::registerApps()
 {
   registerApp(FalconApp);
+}
+
+extern "C" void
+FalconApp__registerApps()
+{
+  FalconApp::registerApps();
 }
