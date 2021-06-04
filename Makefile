@@ -20,10 +20,9 @@ include $(FRAMEWORK_DIR)/build.mk
 include $(FRAMEWORK_DIR)/moose.mk
 
 ################################## MODULES ####################################
-#PHASE_FIELD       := yes
-POROUS_FLOW       := yes
-TEMSOR_MESHANICS  := yes
 GEOCHEMISTRY      := yes
+POROUS_FLOW       := yes
+TENSOR_MECHANICS  := yes
 include           $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
 
@@ -31,7 +30,7 @@ include           $(MOOSE_DIR)/modules/modules.mk
 APPLICATION_DIR    := $(CURDIR)
 APPLICATION_NAME   := falcon
 BUILD_EXEC         := yes
-DEP_APPS           := $(shell $(FRAMEWORK_DIR)/scripts/find_dep_apps.py $(APPLICATION_NAME))
+GEN_REVISION       := no
 include            $(FRAMEWORK_DIR)/app.mk
 
 ###############################################################################
