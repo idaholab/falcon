@@ -2,7 +2,7 @@
 
 # FALCON class=center light style=font-size:500%
 
-# Fracuring And Liquid CONvection class=center light style=font-size:300%
+# Fracturing And Liquid CONvection class=center light style=font-size:300%
 
 # A MOOSE-based application for simulating coupled Thermal-Hydraulic-Mechanical-Chemical processes in subsurface systems class=center style=font-weight:200;font-size:200%
 
