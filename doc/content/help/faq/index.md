@@ -1,4 +1,7 @@
-!alert construction title=[Initialize Documentation #43 [!icon!link]](https://github.com/idaholab/falcon/issues/43) prefix=False
-All pages on this website are currently under development and do not yet serve as general documentation of the [FALCON repository](https://github.com/idaholab/falcon).
-
 # Frequently Asked Question
+
+If you have questions regarding the use of FALCON, please first check the [MOOSE Discussion Forum](https://github.com/idaholab/moose/discussions)--chances are someone else already asked (and had answered) your question. You can also post questions on the forum.
+
+The FALCON development team will periodically post common questions here.
+
+Please see the [Contact Page](help/contact_us.md) if you'd like to reach out to the development team directly.
