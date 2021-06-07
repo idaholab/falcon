@@ -6,7 +6,7 @@
 - [modules/porous_flow/governing_equations.md]
 - [modules/porous_flow/material_laws.md]
 - [modules/porous_flow/fluids.md]
-- [Geochemistry](https://mooseframework.inl.gov/modules/geochemistry/index.html)
+- [Geochemistry](modules/geochemistry/theory/index.md)
 !col-end!
 
 !col! small=12 medium=6 large=4
