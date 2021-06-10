@@ -85,10 +85,10 @@
   petsc_options_value = 'hypre boomeramg 201 cubic 0.7'
 
   l_max_its  = 50
-  l_tol      = 1e-4
+  l_tol      = 1e-8
   nl_max_its = 15
-  nl_rel_tol = 1e-4
-  nl_abs_tol = 1e-7
+  nl_rel_tol = 1e-8
+  nl_abs_tol = 1e-8
 []
 ############################################################
 [Outputs]
