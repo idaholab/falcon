@@ -1,6 +1,6 @@
 # Install MOOSE
 
-FALCON is based on, and requires, the [!ac](MOOSE) Framework.
+FALCON is based on and requires the [!ac](MOOSE) Framework.
 To install [!ac](MOOSE), click the link below that corresponds to your operating system/platform and follow the instructions:
 
 - [Linux and MacOS](getting_started/installation/falcon_conda.md)

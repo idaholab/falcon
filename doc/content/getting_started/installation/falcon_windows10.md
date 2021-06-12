@@ -7,9 +7,6 @@ NOTE: Here, we're simply copying and pasting the content from
       Thus, this page ought to be kept up-to-date as its framework counterpart evolves.
 !!!
 
-!alert construction title=[Initialize Documentation #43 [!icon!link]](https://github.com/idaholab/falcon/issues/43) prefix=False
-All pages on this website are currently under development and do not yet serve as general documentation of the [FALCON repository](https://github.com/idaholab/falcon).
-
 # Windows 10
 
 !alert! warning
