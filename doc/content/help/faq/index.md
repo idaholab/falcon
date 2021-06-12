@@ -1,4 +1,4 @@
-# Frequently Asked Question
+# Frequently Asked Questions
 
 If you have questions regarding the use of FALCON, please first check the [MOOSE Discussion Forum](https://github.com/idaholab/moose/discussions)--chances are someone else already asked (and had answered) your question. You can also post questions on the forum.
 
