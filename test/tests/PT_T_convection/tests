@@ -33,5 +33,6 @@
     exodiff  = 'out3.e'
     abs_zero = 1.0e-02
     rel_err  = 1.0e-01
+    method = '!dbg' # too slow for debug
   [../]
 []
