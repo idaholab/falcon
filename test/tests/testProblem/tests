@@ -1,0 +1,23 @@
+[Tests]
+  [./steady_run]
+    type     = 'Exodiff'
+    input    = 'thm_steady.i'
+    exodiff  = 'thm_steady_out.e'
+    abs_zero = 1.0e-07
+    rel_err  = 1.0e-04
+  [../]
+  [./transient_run]
+    type     = 'Exodiff'
+    input    = 'thm_transient.i'
+    exodiff  = 'thm_transient_out.e'
+    abs_zero = 1.0e-07
+    rel_err  = 1.0e-04
+  [../]
+  [./steady_run3]
+    type     = 'Exodiff'
+    input    = 'thm_steady.i'
+    exodiff  = 'thm_steady_out.e'
+    abs_zero = 1.0e-07
+    rel_err  = 1.0e-04
+  [../]
+[]
