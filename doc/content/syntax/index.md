@@ -12,6 +12,7 @@ FluidPropertiesApp
 GeochemsitryApp
 PorousFlowApp
 TensorMechanicsApp
+RichardsApp
 
 The reason that CR and FP modules are included is because PF is set to depend on them in
 $(MOOSE_DIR)/modules/modules.mk. We can exclude objects from these lower level modules by listing
@@ -22,6 +23,7 @@ the syntax groups explicitly, e.g.,
                         GeochemistryApp
                         PorousFlowApp
                         TensorMechanicsApp
+                        RichardsApp
 
 This will also force the groups to be listed in the order specified here (except that MooseApp is
 always listed first and overridden if not set to), where as with just `!syntax complete` they really
