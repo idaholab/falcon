@@ -6,6 +6,7 @@ Content:
     - ${MOOSE_DIR}/modules/chemical_reactions/doc/content
     - ${MOOSE_DIR}/modules/fluid_properties/doc/content
     - ${MOOSE_DIR}/modules/tensor_mechanics/doc/content
+    - ${MOOSE_DIR}/modules/richards/doc/content
     - moose:
           root_dir: ${MOOSE_DIR}/modules/doc/content
           content:
@@ -40,13 +41,16 @@ Extensions:
 
     MooseDocs.extensions.appsyntax:
         executable: ${ROOT_DIR}
-        remove: !include ${MOOSE_DIR}/framework/doc/remove.yml
+        remove: 
+                framework: !include ${MOOSE_DIR}/framework/doc/remove.yml
+                richards: !include ${MOOSE_DIR}/modules/richards/doc/remove.yml
         includes:
             - include
             - ${MOOSE_DIR}/framework/include
             - ${MOOSE_DIR}/modules/geochemistry/include
             - ${MOOSE_DIR}/modules/porous_flow/include
             - ${MOOSE_DIR}/modules/tensor_mechanics/include
+            - ${MOOSE_DIR}/modules/richards/include
 
     MooseDocs.extensions.common:
         shortcuts: !include ${MOOSE_DIR}/framework/doc/globals.yml
