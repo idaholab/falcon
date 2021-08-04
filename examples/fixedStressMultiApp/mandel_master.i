@@ -76,24 +76,27 @@
     variable = disp_z
     component = 2
   [../]
-  [./poro_x]
-  type = PoroMechanicsCoupling
-  variable = disp_x
-  component = 0
-  porepressure=porepressure
-  [../]
-  [./poro_y]
-    type = PoroMechanicsCoupling
+  [poro_x]
+    type = PorousFlowEffectiveStressCoupling
+    PorousFlowDictator = dictator
+    biot_coefficient = 0.6
+    variable = disp_x
+    component = 0
+  []
+  [poro_y]
+    type = PorousFlowEffectiveStressCoupling
+    PorousFlowDictator = dictator
+    biot_coefficient = 0.6
     variable = disp_y
     component = 1
-    porepressure=porepressure
-  [../]
-  [./poro_z]
-    type = PoroMechanicsCoupling
-    variable = disp_z
+  []
+  [poro_z]
+    type = PorousFlowEffectiveStressCoupling
+    PorousFlowDictator = dictator
+    biot_coefficient = 0.6
     component = 2
-    porepressure=porepressure
-  [../]
+    variable = disp_z
+  []
 []
 
 [AuxVariables]
@@ -128,6 +131,15 @@
   [../]
 []
 
+[UserObjects]
+  [dictator]
+    type = PorousFlowDictator
+    porous_flow_vars = 'disp_x disp_y disp_z'
+    number_fluid_phases = 1
+    number_fluid_components = 1
+  []
+[]
+
 [Materials]
   [./elasticity_tensor]
     type = ComputeElasticityTensor
@@ -142,16 +154,18 @@
   [./stress]
     type = ComputeLinearElasticStress
   [../]
-  [./poro_material]
-    type = PoroFullSatMaterial
-    porosity0 = 0.1
-    biot_coefficient = 0.6
-    solid_bulk_compliance = 1
-    fluid_bulk_compliance = 0.125
-    constant_porosity = true
+
+  [vol_strain]
+    type = PorousFlowEffectiveFluidPressure
+    consistent_with_displaced_mesh = false
     displacements = 'disp_x disp_y disp_z'
-    porepressure=porepressure
-  [../]
+    PorousFlowDictator = dictator
+  []
+  [ppss]
+    PorousFlowDictator = dictator
+    type = PorousFlow1PhaseFullySaturated
+    porepressure = porepressure
+  []
 []
 
 [Executioner]
@@ -163,7 +177,6 @@
   petsc_options = '-ksp_snes_ew'
   petsc_options_iname = '-pc_type -pc_factor_mat_solver_package'
   petsc_options_value = 'lu       superlu_dist'
-
 
   #fixed_point_algorithm = 'secant'
 
