@@ -120,6 +120,10 @@
     fp = simple_fluid
     phase = 0
   []
+  [total_strain]
+    type = ComputeSmallStrain
+    displacements = 'disp_x disp_y disp_z'
+  []
   [vol_strain]
     displacements = 'disp_x disp_y disp_z'
     type = PorousFlowVolumetricStrain
