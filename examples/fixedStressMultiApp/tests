@@ -1,0 +1,11 @@
+[Tests]
+  [./mandel_MultiApp]
+    type = CSVDiff
+    input = mandel_master.i
+    csvdiff = mandel_master.csv
+    #threading = '!pthreads'
+    requirement = 'Falcon shall be able to model standard poroelasticity and be able to correctly simulate Mandel consolidation of a drained medium using fixedStress approach based on the multiApp system'
+    issues = '#58'
+    design = 'porous_flow/tests/poro_elasticity/poro_elasticity_tests.md'
+  [../]
+[]
