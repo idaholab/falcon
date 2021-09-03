@@ -5,7 +5,7 @@
 # first to make sure there is a clean dry run of the files that should
 # be updated
 
-import os, string
+import os
 from optparse import OptionParser
 
 global_ignores = ['contrib', '.svn']
@@ -37,8 +37,6 @@ def fixupHeader():
       if ignore in dirnames:
         dirnames.remove(ignore)
 
-    #print dirpath
-    #print dirnames
     for file in filenames:
       suffix = os.path.splitext(file)
       if suffix[-1] == '.C' or suffix[-1] == '.h':
@@ -51,12 +49,12 @@ def checkAndUpdate(filename):
   f.close()
 
   # Check (exact match only)
-  if (string.find(text, copyright_header) == -1):
+  if copyright_header not in text:
     # print the first 10 lines or so of the file
     if global_options.update == False: # Report only
-      print filename + ' does not contain an up to date header'
+      print(filename + ' does not contain an up to date header')
       if global_options.verbose == True:
-        print '>'*40, '\n', '\n'.join((text.split('\n', 10))[:10]), '\n'*5
+        print('>'*40, '\n', '\n'.join((text.split('\n', 10))[:10]), '\n'*5)
     else:
       # Update
       f = open(filename + '~tmp', 'w')
@@ -71,5 +69,3 @@ if __name__ == '__main__':
   parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False)
   (global_options, args) = parser.parse_args()
   fixupHeader()
-
-
