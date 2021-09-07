@@ -1,0 +1,64 @@
+[Tests]
+  [mesh]
+    type = RunCommand
+    command = '../../../scripts/mesh_terrain.py -o terrain.msh bottom_40m.csv granitoid_40m.csv surface_40m.csv --mesh_size 500 100 200'
+    required_python_packages = 'pandas numpy scipy gmsh'
+  []
+  [sim]
+    type = RunApp
+    input = terrain.i
+    cli_args = Executioner/num_steps=1
+    prereq = mesh
+  []
+  [exodus]
+    type = Exodiff
+    input = terrain.i
+    exodiff = terrain_in.e
+    cli_args = '--mesh-only'
+    prereq = mesh
+  []
+  [errors]
+    [n_files]
+      type = RunException
+      required_python_packages = 'pandas numpy scipy gmsh'
+      command = '../../../scripts/mesh_terrain.py bottom_40m.csv'
+      expect_err = "At least two file names are required"
+    []
+    [no_exist]
+      type = RunException
+      required_python_packages = 'pandas numpy scipy gmsh'
+      command = '../../../scripts/mesh_terrain.py bottom_40m.csv wrong.csv'
+      expect_err = "The following supplied 'file_names' do not exist: wrong.csv"
+    []
+    [num_elements_and_mesh_size]
+      type = RunException
+      required_python_packages = 'pandas numpy scipy gmsh'
+      command = '../../../scripts/mesh_terrain.py bottom_40m.csv surface_40m.csv --mesh_size=100 --num_elements=2'
+      expect_err = "The 'num_elements' and 'mesh_size' options must not be used together"
+    []
+    [num_elements]
+      type = RunException
+      required_python_packages = 'pandas numpy scipy gmsh'
+      command = '../../../scripts/mesh_terrain.py bottom_40m.csv surface_40m.csv --num_elements 1 2 3'
+      expect_err = "The number of entries in 'num_elements' must be"
+    []
+    [mesh_size]
+      type = RunException
+      required_python_packages = 'pandas numpy scipy gmsh'
+      command = '../../../scripts/mesh_terrain.py bottom_40m.csv surface_40m.csv --mesh_size 1 2 3'
+      expect_err = "The number of entries in 'mesh_size' must be"
+    []
+    [surface_names]
+      type = RunException
+      required_python_packages = 'pandas numpy scipy gmsh'
+      command = '../../../scripts/mesh_terrain.py bottom_40m.csv surface_40m.csv --surface_names surf'
+      expect_err = "The number of 'surface_names' must be"
+    []
+    [volume_names]
+      type = RunException
+      required_python_packages = 'pandas numpy scipy gmsh'
+      command = '../../../scripts/mesh_terrain.py bottom_40m.csv surface_40m.csv --volume_names vol vol2'
+      expect_err = "The number of 'volume_names' must be"
+    []
+  []
+[]
