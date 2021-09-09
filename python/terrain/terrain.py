@@ -5,8 +5,11 @@ import math
 import dataclasses
 import pandas
 import numpy
+import tempfile
+import subprocess
 import scipy.interpolate
 import gmsh
+
 
 @dataclasses.dataclass
 class TerrainData:
@@ -28,6 +31,9 @@ def get_arguments():
 
     parser.add_argument("-o", "--output", type=str,
                         help="The name of the Gmsh mesh file to create.")
+
+    parser.add_argument("--exodus", action='store_true',
+                        help="Execute falcon with --mesh-only option to convert gmsh format to Exodus.")
 
     parser.add_argument("--show", action='store_true',
                         help="Open the interactive Gmsh window.")
@@ -164,7 +170,13 @@ def main():
 
     gmsh.model.mesh.generate()
 
-    gmsh.write(args.output)
+    # Output the msh to .msh format and Exodus format via falcon executable
+    if args.output is not None:
+        gmsh.write(args.output)
+
+        if args.exodus is not None:
+            convert_to_exodus(args.output)
+
     if args.show:
         gmsh.fltk.run()
 
@@ -280,3 +292,26 @@ def build_side_surfaces(bot_lines: list, bot_points: numpy.ndarray,
 
     gmsh.model.occ.synchronize()
     return surfaces
+
+def convert_to_exodus(mesh_name):
+    """
+    Use falcon executable to convert supplied gmsh output in *mesh_name* to Exodus.
+    """
+    exe = os.path.join(os.path.dirname(__file__), '..', '..', 'falcon-{}'.format(os.getenv("METHOD", 'opt')))
+    if not os.path.isfile(exe):
+        msg = "The falcon executable does not exist, cannot convert to Exodus format."
+        raise IOError(msg)
+
+    template_file = os.path.join(os.path.dirname(__file__), 'terrain_to_exodus.i.template')
+    with open(template_file, 'r') as fid:
+        template = fid.read()
+
+    template = template.replace('GMSH_FILENAME', mesh_name)
+
+    input_file = 'terrain_to_exodus.i'
+    with open(input_file, 'w') as fid:
+        fid.write(template)
+
+    subprocess.run([exe, '-i', input_file, '--mesh-only'], check=True)
+
+    os.rename('terrain_to_exodus_in.e', '{}.e'.format(os.path.splitext(mesh_name)[0]))
