@@ -4,6 +4,12 @@
     command = '../../../scripts/mesh_terrain.py -o terrain.msh bottom_40m.csv granitoid_40m.csv surface_40m.csv --mesh_size 500 100 200'
     required_python_packages = 'pandas numpy scipy gmsh'
   []
+  [mesh_to_exodus]
+    type = Exodiff
+    command = '../../../scripts/mesh_terrain.py -o terrain.msh --exodus bottom_40m.csv granitoid_40m.csv surface_40m.csv --mesh_size 500 100 200'
+    exodiff = terrain.e
+    required_python_packages = 'pandas numpy scipy gmsh'
+  []
   [sim]
     type = RunApp
     input = terrain.i

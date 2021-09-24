@@ -1,0 +1,4 @@
+[Mesh/gmsh]
+  type = FileMeshGenerator
+  file = GMSH_FILENAME
+[]
