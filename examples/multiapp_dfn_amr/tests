@@ -1,0 +1,9 @@
+[Tests]
+  [refinement]
+    method = '!dbg'
+    type     = CSVDiff
+    input    = 'matrix_app_amr.i'
+    csvdiff = 'matrix_app_amr_out.csv'
+    requirement = 'Run multiapp matrix DFN simulation with AMR in matrix around fracture'
+  [../]
+[]
