@@ -1,0 +1,35 @@
+
+#  *****************************************************************
+#             EXODIFF	(Version: 2.90) Modified: 2018-02-15
+#             Authors:  Richard Drake, rrdrake@sandia.gov           
+#                       Greg Sjaardema, gdsjaar@sandia.gov          
+#             Run on    2021/10/27   21:11:46 MDT
+#  *****************************************************************
+
+#  FILE 1: /Users/mundlb/projects/falcon/examples/multiapp_exodus_dfn/matrix_app_amr_out_fracture_app0_fracture.e
+#   Title: matrix_app_amr_out_fracture_app0_fracture.e
+#          Dim = 3, Blocks = 1, Nodes = 681, Elements = 1221, Nodesets = 1, Sidesets = 0
+#          Vars: Global = 12, Nodal = 7, Element = 15, Nodeset = 0, Sideset = 0, Times = 1
+
+
+# ==============================================================
+#  NOTE: All node and element ids are reported as global ids.
+
+# NOTES:  - The min/max values are reporting the min/max in absolute value.
+#         - Time values (t) are 1-offset time step numbers.
+#         - Element block numbers are the block ids.
+#         - Node(n) and element(e) numbers are 1-offset.
+
+COORDINATES absolute 1.e-6    # min separation not calculated
+
+TIME STEPS relative 1.e-6 floor 0.0     # min:               1 @ t1 max:               1 @ t1
+
+NODAL VARIABLES relative 1.e-6 floor 0.0
+	FILE_nodal_aper       # min:   2.7598114e-10 @ t1,n248	max:   2.9681939e-07 @ t1,n623
+	FILE_nodal_pres       # min:       11.039717 @ t1,n671	max:        98.53492 @ t1,n226
+
+ELEMENT VARIABLES relative 1.e-6 floor 0.0
+	FILE_BlockIndex                   # min:               1 @ t1,b15,e297	max:              10 @ t1,b15,e160
+	FILE_cell_aper                    # min:   4.8574909e-10 @ t1,b15,e1040	max:   2.1644287e-07 @ t1,b15,e702
+
+
