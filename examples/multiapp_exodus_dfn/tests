@@ -1,0 +1,9 @@
+[Tests]
+  [./test]
+    type = 'Exodiff'
+    input = 'matrix_app.i'
+    exodiff = 'matrix_app_out_fracture_app0_fracture.e'
+    custom_cmp = exodiff.cmp
+    requirement = "Read in aperture from the input exodus mesh."
+  [../]
+[]
