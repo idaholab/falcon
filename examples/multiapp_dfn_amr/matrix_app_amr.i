@@ -284,10 +284,9 @@ endTime = 3     #1e8
   [fracture_app]
     type = TransientMultiApp
     input_files = fracture_only_aperture_changing_amr.i
-    #cli_args = 'Outputs/ex/sync_only=false'
-    cli_args = 'Outputs/file_base=amr2/frac'
+    #cli_args = 'Outputs/file_base=amr2/frac'
     execute_on = TIMESTEP_BEGIN
-    sub_cycling = false
+    sub_cycling = true
 ### catch_up = true
 ### max_catch_up_steps = 100
   []
