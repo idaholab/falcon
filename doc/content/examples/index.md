@@ -15,5 +15,5 @@ A list of simulations using FALCON is provided below.
 
 ## Table of Contents id=contents
 
-- [Example 1](examples/example01.md): The first FALCON example
-- [Example 2](examples/example02.md): The second FALCON example
+- [Example 1](examples/example01.md): Discrete Fracture Network Multiapp
+- [Example 2](examples/example02.md): Placeholder for Stress Porous flow Multiapp example
