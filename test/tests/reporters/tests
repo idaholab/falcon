@@ -1,0 +1,8 @@
+[Tests]
+  issues='48'
+  [./constant_projection]
+    type = 'CSVDiff'
+    input    = 'constant_projection.i'
+    csvdiff = 'constant_projection_out_coords_0001.csv'
+  [../]
+[]
