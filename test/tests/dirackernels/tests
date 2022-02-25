@@ -1,0 +1,10 @@
+[Tests]
+  [./reporterPoint_hfrompps]
+    type = 'CSVDiff'
+    input = 'reporterPoint_hfrompps.i'
+    csvdiff = 'reporterPoint_hfrompps_out.csv'
+    threading = '!pthreads'
+    requirement = 'The system shall provide an enthalphy point source computed by a postprocessor with the location of point source given by a reporter'
+    issues = '#89'
+  [../]
+[]
