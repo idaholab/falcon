@@ -50,13 +50,11 @@ PorousFlowReporterPointSourcePP::addPoints()
 {
   if (_x_coord.size() != 1)
   {
-    std::string errMsg = "Only a single location can be in this reporter ie a vector of size 1.\n"
-                         "x_coord size = " +
-                         std::to_string(_x_coord.size()) +
-                         ";  y_coord size = " + std::to_string(_y_coord.size()) +
-                         ";  z_coord size = " + std::to_string(_z_coord.size());
-
-    mooseError(errMsg);
+    mooseError("Only a single location can be in this reporter ie a vector of size 1.\n"
+               "x_coord size = " +
+               std::to_string(_x_coord.size()) +
+               ";  y_coord size = " + std::to_string(_y_coord.size()) +
+               ";  z_coord size = " + std::to_string(_z_coord.size()));
   }
 
   Point pt(_x_coord[0], _y_coord[0], _z_coord[0]);

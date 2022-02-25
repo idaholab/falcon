@@ -166,6 +166,7 @@
 []
 
 [DiracKernels]
+  active = 'source source_h'
   [source]
     type = PorousFlowReporterPointSourcePP
     variable = pressure
@@ -185,6 +186,25 @@
     pressure = pressure
     fp = simple_fluid
   []
+  [source2]
+    type = PorousFlowReporterPointSourcePP
+    variable = pressure
+    mass_flux = mass_flux_in
+    x_coord_reporter = 'coords_bad/x'
+    y_coord_reporter = 'coords_bad/y'
+    z_coord_reporter = 'coords_bad/z'
+  []
+  [source2_h]
+    type = PorousFlowReporterPointEnthalpySourcePP
+    variable = temperature
+    mass_flux = mass_flux_in
+    x_coord_reporter = 'coords_bad/x'
+    y_coord_reporter = 'coords_bad/y'
+    z_coord_reporter = 'coords_bad/z'
+    T_in = T_in
+    pressure = pressure
+    fp = simple_fluid
+  []
 []
 
 [Reporters]
@@ -192,6 +212,13 @@
     type = ConstantReporter
     real_vector_names = 'x y z'
     real_vector_values = '0.5; 0.5; 0'
+    outputs = none
+  []
+  [coords_bad]
+    type = ConstantReporter
+    real_vector_names = 'x y z'
+    real_vector_values = '0.5 0.4; 0.5 0.4; 0 0'
+    outputs = none
   []
 []
 
