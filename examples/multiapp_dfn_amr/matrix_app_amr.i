@@ -1,6 +1,6 @@
 # 3D matrix app doing thermo-hydro PorousFlow and receiving heat energy via a VectorPostprocessor from the 2D fracture App
 intial_temperature=473
-endTime = 3     #1e8
+endTime = 3 # 1e8
 [Mesh]
   uniform_refine = 0
   [generate]
@@ -109,6 +109,33 @@ endTime = 3     #1e8
     type = StatisticsReporter
     reporters = 'heat_transfer_rate/transferred_joules_per_s'
     compute = 'sum'
+    outputs = var_all
+  []
+  [frac_in]
+    type = ConstantReporter
+    # integer_vector_names = 'node_id'  #node id is not an int it is int64?
+    # integer_vector_values = '0'
+    real_vector_names = 'xcoord ycoord zcoord frac_T frac_P'
+    real_vector_values = '0; 0; 0; 0; 0'
+    outputs = none #var_all
+  []
+  [frac_out]
+    type = ConstantReporter
+    # integer_vector_names = 'node_id'
+    # integer_vector_values = '0'
+    real_vector_names = 'xcoord ycoord zcoord frac_T frac_P'
+    real_vector_values = '0; 0; 0; 0; 0'
+    outputs = none #var_all
+  []
+  [acc_frac_in]
+    type = AccumulateReporter
+    reporters = 'time/value frac_in/xcoord frac_in/ycoord frac_in/zcoord frac_in/frac_T frac_in/frac_P'
+    outputs = var_in
+  []
+  [acc_frac_out]
+    type = AccumulateReporter
+    reporters = 'time/value frac_out/xcoord frac_out/ycoord frac_out/zcoord frac_out/frac_T frac_out/frac_P'
+    outputs = var_out
   []
 []
 
@@ -238,6 +265,10 @@ endTime = 3     #1e8
     data_type = total
     outputs = none
   []
+  [time]
+    type = TimePostprocessor
+    outputs = none
+  []
 []
 
 
@@ -257,7 +288,7 @@ endTime = 3     #1e8
   []
 []
 
-#this is suppressing some output and
+#this is suppressing some output
 [Outputs]
   print_linear_residuals = false
   #file_base = 'amr2/matrix'
@@ -277,6 +308,24 @@ endTime = 3     #1e8
     1800000 1900000 2000000 2100000 2200000 2300000 2400000 2500000 2600000
     2700000 2800000 2900000 3e6 1e7 1e8'
     sync_only = true
+  []
+  [var_all]
+    type = JSON
+    execute_system_information_on = none
+    execute_on = 'TIMESTEP_END'
+    #file_base = 'var_in'
+  []
+  [var_in]
+    type = JSON
+    execute_system_information_on = none
+    execute_on = 'FINAL'
+    #file_base = 'var_in'
+  []
+  [var_out]
+    type = JSON
+    execute_system_information_on = none
+    execute_on = 'FINAL'
+    #file_base = 'var_out'
   []
 []
 
@@ -341,5 +390,19 @@ endTime = 3     #1e8
     multi_app = fracture_app
     from_reporters = 'heat_transfer_rate/joules_per_s heat_transfer_rate/x heat_transfer_rate/y heat_transfer_rate/z'
     to_reporters = 'heat_transfer_rate/transferred_joules_per_s heat_transfer_rate/x heat_transfer_rate/y heat_transfer_rate/z'
+  []
+  [frac_var_in]
+    type = MultiAppReporterTransfer
+    direction = from_multiapp
+    multi_app = fracture_app
+    from_reporters = 'TK_in/xcoord TK_in/ycoord TK_in/zcoord TK_in/frac_T P_in/frac_P'
+    to_reporters = 'frac_in/xcoord frac_in/ycoord frac_in/zcoord frac_in/frac_T frac_in/frac_P'
+  []
+  [frac_var_out]
+    type = MultiAppReporterTransfer
+    direction = from_multiapp
+    multi_app = fracture_app
+    from_reporters = 'TK_out/xcoord TK_out/ycoord TK_out/zcoord TK_out/frac_T P_out/frac_P'
+    to_reporters = 'frac_out/xcoord frac_out/ycoord frac_out/zcoord frac_out/frac_T frac_out/frac_P'
   []
 []
