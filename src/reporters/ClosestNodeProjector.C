@@ -16,39 +16,49 @@ ClosestNodeProjector::validParams()
 {
   InputParameters params = GeneralReporter::validParams();
   params.addClassDescription("Reporter that moves a point and value to the closets node");
-  params.addRequiredParam<Point>("point", "Point location to project onto closest node");
-  params.addRequiredParam<Real>("value", "Values at point locations to project onto closest node");
-  params.addParam<ReporterValueName>(
-      "xcoord_name", "x", "Reporter value to create containing x coordinate of point");
-  params.addParam<ReporterValueName>(
-      "ycoord_name", "y", "Reporter value to create containing y coordinate of point");
-  params.addParam<ReporterValueName>(
-      "zcoord_name", "z", "Reporter value to create containing z coordinate of point");
-  params.addParam<ReporterValueName>(
-      "value_name", "value", "Reporter value to create containing value of point");
+  params.addRequiredParam<ReporterName>(
+      "point_value",
+      "input reporter of value to project onto closets node.  This uses "
+      "the reporter syntax <reporter>/<name>.");
+  params.addRequiredParam<ReporterName>("point_x",
+                                        "input reporter of x-coordinate name for point.  This uses "
+                                        "the reporter syntax <reporter>/<name>.");
+  params.addRequiredParam<ReporterName>("point_y",
+                                        "input reporter of y-coordinate name for point.  This uses "
+                                        "the reporter syntax <reporter>/<name>.");
+  params.addRequiredParam<ReporterName>("point_z",
+                                        "input reporter of z-coordinate name for point.  This uses "
+                                        "the reporter syntax <reporter>/<name>.");
   params.addParam<Real>("projection_tolerance",
                         libMesh::TOLERANCE,
                         "Search tolerance between point and the closest node.  If a node is not "
                         "found, an error will be produced");
+
   return params;
 }
 
 ClosestNodeProjector::ClosestNodeProjector(const InputParameters & parameters)
   : GeneralReporter(parameters),
-    _xcoord(declareValue<Real>("xcoord_name", REPORTER_MODE_REPLICATED)),
-    _ycoord(declareValue<Real>("ycoord_name", REPORTER_MODE_REPLICATED)),
-    _zcoord(declareValue<Real>("zcoord_name", REPORTER_MODE_REPLICATED)),
-    _value(declareValue<Real>("value_name", REPORTER_MODE_REPLICATED, getParam<Real>("value"))),
-    _tolerance(getParam<Real>("projection_tolerance"))
+    _point_x(getReporterValue<Real>("point_x", REPORTER_MODE_REPLICATED)),
+    _point_y(getReporterValue<Real>("point_y", REPORTER_MODE_REPLICATED)),
+    _point_z(getReporterValue<Real>("point_z", REPORTER_MODE_REPLICATED)),
+    _point_value(getReporterValue<Real>("point_value", REPORTER_MODE_REPLICATED)),
+    _tolerance(getParam<Real>("projection_tolerance")),
+    _nid(declareValueByName<dof_id_type>("node_id", REPORTER_MODE_REPLICATED)),
+    _node_x(declareValueByName<Real>("node_x", REPORTER_MODE_REPLICATED)),
+    _node_y(declareValueByName<Real>("node_y", REPORTER_MODE_REPLICATED)),
+    _node_z(declareValueByName<Real>("node_z", REPORTER_MODE_REPLICATED)),
+    _node_value(declareValueByName<Real>("node_value", REPORTER_MODE_REPLICATED))
 {
-  Point pt = getParam<Point>("point");
+  Point pt(_point_x, _point_y, _point_z);
+
   MooseMesh & mesh = _subproblem.mesh();
 
   Point pmax(pt(0) + _tolerance, pt(1) + _tolerance, pt(2) + _tolerance);
   Point pmin(pt(0) - _tolerance, pt(1) - _tolerance, pt(2) - _tolerance);
   BoundingBox bbox(pmin, pmax);
 
-  Point closest_node;
+  const Node * closest_node;
   Real nearest_distance = std::numeric_limits<Real>::max();
   for (const auto & node : mesh.getMesh().node_ptr_range())
   {
@@ -58,15 +68,17 @@ ClosestNodeProjector::ClosestNodeProjector(const InputParameters & parameters)
       if (distance < nearest_distance)
       {
         nearest_distance = distance;
-        closest_node = *node;
+        closest_node = node;
       }
     }
   }
   if (nearest_distance < _tolerance)
   {
-    _xcoord = closest_node(0);
-    _ycoord = closest_node(1);
-    _zcoord = closest_node(2);
+    _node_x = (*closest_node)(0);
+    _node_y = (*closest_node)(1);
+    _node_z = (*closest_node)(2);
+    _node_value = _point_value;
+    _nid = closest_node->id();
   }
   else
   {

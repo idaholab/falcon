@@ -3,16 +3,36 @@
         "coords": {
             "type": "ClosestNodeProjector",
             "values": {
-                "value": {
+                "node_id": {
+                    "type": "unsigned long long"
+                },
+                "node_value": {
                     "type": "double"
                 },
-                "x": {
+                "node_x": {
                     "type": "double"
                 },
-                "y": {
+                "node_y": {
                     "type": "double"
                 },
-                "z": {
+                "node_z": {
+                    "type": "double"
+                }
+            }
+        },
+        "pt": {
+            "type": "ConstantReporter",
+            "values": {
+                "pt_value": {
+                    "type": "double"
+                },
+                "pt_x": {
+                    "type": "double"
+                },
+                "pt_y": {
+                    "type": "double"
+                },
+                "pt_z": {
                     "type": "double"
                 }
             }
@@ -21,20 +41,34 @@
     "time_steps": [
         {
             "coords": {
-                "value": 6.0,
-                "x": 0.7,
-                "y": 0.3,
-                "z": 0.0
+                "node_id": 40,
+                "node_value": 6.0,
+                "node_x": 0.7,
+                "node_y": 0.3,
+                "node_z": 0.0
+            },
+            "pt": {
+                "pt_value": 6.0,
+                "pt_x": 0.7,
+                "pt_y": 0.3,
+                "pt_z": -0.1
             },
             "time": 0.0,
             "time_step": 0
         },
         {
             "coords": {
-                "value": 6.0,
-                "x": 0.7,
-                "y": 0.3,
-                "z": 0.0
+                "node_id": 40,
+                "node_value": 6.0,
+                "node_x": 0.7,
+                "node_y": 0.3,
+                "node_z": 0.0
+            },
+            "pt": {
+                "pt_value": 6.0,
+                "pt_x": 0.7,
+                "pt_y": 0.3,
+                "pt_z": -0.1
             },
             "time": 1.0,
             "time_step": 1

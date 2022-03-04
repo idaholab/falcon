@@ -15,13 +15,18 @@
 []
 
 [Reporters]
+  [pt]
+    type=ConstantReporter
+    real_names = 'pt_value pt_x pt_y pt_z'
+    real_values = '6 .7 .3 -.1'
+  []
+
   [coords]
     type=ClosestNodeProjector
-    xcoord_name = x
-    ycoord_name = y
-    zcoord_name = z
-    point = '.7 .3 -.1'
-    value = '6'
+    point_value =  pt/pt_value
+    point_x = pt/pt_x
+    point_y = pt/pt_y
+    point_z = pt/pt_z
     projection_tolerance = 1
     outputs = out
   []
