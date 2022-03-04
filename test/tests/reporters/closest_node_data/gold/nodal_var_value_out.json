@@ -9,16 +9,16 @@
                 "node12p:node_id": {
                     "type": "std::vector<unsigned long long>"
                 },
+                "node12p:node_x": {
+                    "type": "std::vector<double>"
+                },
+                "node12p:node_y": {
+                    "type": "std::vector<double>"
+                },
+                "node12p:node_z": {
+                    "type": "std::vector<double>"
+                },
                 "node12p:u": {
-                    "type": "std::vector<double>"
-                },
-                "node12p:xcoord": {
-                    "type": "std::vector<double>"
-                },
-                "node12p:ycoord": {
-                    "type": "std::vector<double>"
-                },
-                "node12p:zcoord": {
                     "type": "std::vector<double>"
                 },
                 "node18:v": {
@@ -27,17 +27,73 @@
                 "node18p:node_id": {
                     "type": "std::vector<unsigned long long>"
                 },
+                "node18p:node_x": {
+                    "type": "std::vector<double>"
+                },
+                "node18p:node_y": {
+                    "type": "std::vector<double>"
+                },
+                "node18p:node_z": {
+                    "type": "std::vector<double>"
+                },
                 "node18p:u": {
                     "type": "std::vector<double>"
+                }
+            }
+        },
+        "pt12": {
+            "type": "ConstantReporter",
+            "values": {
+                "pt_x": {
+                    "type": "double"
                 },
-                "node18p:xcoord": {
-                    "type": "std::vector<double>"
+                "pt_y": {
+                    "type": "double"
                 },
-                "node18p:ycoord": {
-                    "type": "std::vector<double>"
+                "pt_z": {
+                    "type": "double"
+                }
+            }
+        },
+        "pt12p": {
+            "type": "ConstantReporter",
+            "values": {
+                "pt_x": {
+                    "type": "double"
                 },
-                "node18p:zcoord": {
-                    "type": "std::vector<double>"
+                "pt_y": {
+                    "type": "double"
+                },
+                "pt_z": {
+                    "type": "double"
+                }
+            }
+        },
+        "pt18": {
+            "type": "ConstantReporter",
+            "values": {
+                "pt_x": {
+                    "type": "double"
+                },
+                "pt_y": {
+                    "type": "double"
+                },
+                "pt_z": {
+                    "type": "double"
+                }
+            }
+        },
+        "pt18p": {
+            "type": "ConstantReporter",
+            "values": {
+                "pt_x": {
+                    "type": "double"
+                },
+                "pt_y": {
+                    "type": "double"
+                },
+                "pt_z": {
+                    "type": "double"
                 }
             }
         }
@@ -71,6 +127,45 @@
                     12,
                     12
                 ],
+                "node12p:node_x": [
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "node12p:node_y": [
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "node12p:node_z": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
                 "node12p:u": [
                     0.0,
                     0.07500000000003303,
@@ -83,45 +178,6 @@
                     0.6000000000001948,
                     0.6750000000002029,
                     0.7500000000002103
-                ],
-                "node12p:xcoord": [
-                    0.5,
-                    0.5,
-                    0.5,
-                    0.5,
-                    0.5,
-                    0.5,
-                    0.5,
-                    0.5,
-                    0.5,
-                    0.5,
-                    0.5
-                ],
-                "node12p:ycoord": [
-                    0.5,
-                    0.5,
-                    0.5,
-                    0.5,
-                    0.5,
-                    0.5,
-                    0.5,
-                    0.5,
-                    0.5,
-                    0.5,
-                    0.5
-                ],
-                "node12p:zcoord": [
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0
                 ],
                 "node18:v": [
                     0.0,
@@ -149,6 +205,45 @@
                     18,
                     18
                 ],
+                "node18p:node_x": [
+                    0.75,
+                    0.75,
+                    0.75,
+                    0.75,
+                    0.75,
+                    0.75,
+                    0.75,
+                    0.75,
+                    0.75,
+                    0.75,
+                    0.75
+                ],
+                "node18p:node_y": [
+                    0.75,
+                    0.75,
+                    0.75,
+                    0.75,
+                    0.75,
+                    0.75,
+                    0.75,
+                    0.75,
+                    0.75,
+                    0.75,
+                    0.75
+                ],
+                "node18p:node_z": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
                 "node18p:u": [
                     0.0,
                     0.04375000000000196,
@@ -161,46 +256,27 @@
                     0.35000000000009013,
                     0.3937500000000946,
                     0.43750000000009825
-                ],
-                "node18p:xcoord": [
-                    0.75,
-                    0.75,
-                    0.75,
-                    0.75,
-                    0.75,
-                    0.75,
-                    0.75,
-                    0.75,
-                    0.75,
-                    0.75,
-                    0.75
-                ],
-                "node18p:ycoord": [
-                    0.75,
-                    0.75,
-                    0.75,
-                    0.75,
-                    0.75,
-                    0.75,
-                    0.75,
-                    0.75,
-                    0.75,
-                    0.75,
-                    0.75
-                ],
-                "node18p:zcoord": [
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0
                 ]
+            },
+            "pt12": {
+                "pt_x": 0.5,
+                "pt_y": 0.5,
+                "pt_z": 0.0
+            },
+            "pt12p": {
+                "pt_x": 0.55,
+                "pt_y": 0.45,
+                "pt_z": 0.05
+            },
+            "pt18": {
+                "pt_x": 0.75,
+                "pt_y": 0.75,
+                "pt_z": 0.0
+            },
+            "pt18p": {
+                "pt_x": 0.76,
+                "pt_y": 0.76,
+                "pt_z": 0.3
             },
             "time": 0.9999999999999999,
             "time_step": 11

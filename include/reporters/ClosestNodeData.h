@@ -9,26 +9,18 @@
 
 #pragma once
 
-#include "GeneralReporter.h"
+#include "ClosestNodeBase.h"
 
-class ClosestNodeData : public GeneralReporter
+class ClosestNodeData : public ClosestNodeBase
 {
 public:
   static InputParameters validParams();
 
   ClosestNodeData(const InputParameters & parameters);
 
-  virtual void initialize() override {}
   virtual void execute() override;
-  virtual void finalize() override {}
 
 protected:
   std::string _var_name;
-  Real & _xcoord;
-  Real & _ycoord;
-  Real & _zcoord;
-  const Real _tolerance;
   Real & _var;
-  const Node * _node_ptr;
-  dof_id_type & _nid;
 };
