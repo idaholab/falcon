@@ -179,8 +179,8 @@ z_out=39.5722
 [Reporters]
   [inject_pt]
     type=ConstantReporter
-    real_names = 'pt_x pt_y pt_z'
-    real_values = '${x_in} ${y_in} ${z_in}'
+    real_vector_names = 'pt_x pt_y pt_z'
+    real_vector_values = '${x_in}; ${y_in}; ${z_in}'
   []
   [inject_node]
     type=ClosestNode
@@ -216,13 +216,13 @@ z_out=39.5722
 
   [prod_pt]
     type=ConstantReporter
-    real_names = 'pt_val pt_x pt_y pt_z'
-    real_values = '0.01 ${x_out} ${y_out} ${z_out}'
+    real_vector_names = 'pt_val pt_x pt_y pt_z'
+    real_vector_values = '0.01; ${x_out}; ${y_out}; ${z_out}'
   []
   [prod_node]
     #production.xyz
     type=ClosestNodeProjector
-    point_value =  prod_pt/pt_value
+    point_value =  prod_pt/pt_val
     point_x = prod_pt/pt_x
     point_y = prod_pt/pt_y
     point_z = prod_pt/pt_z

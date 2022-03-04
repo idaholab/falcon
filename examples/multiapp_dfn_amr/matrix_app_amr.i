@@ -243,7 +243,7 @@ endTime = 3 #1e8
   []
   [nelems]
     type = NumElems
-    outputs = none
+    #outputs = none
   []
   [nl_its]
     type = NumNonlinearIterations
@@ -299,9 +299,8 @@ endTime = 3 #1e8
 #this is suppressing some output
 [Outputs]
   print_linear_residuals = false
-  #file_base = 'amr2/matrix'
-  csv=True
   exodus=False
+  csv = true
   [matrix]
     type = Exodus
     sync_times = '1 10 100 200 300 400 500 600 700 800 900 1000 1100 1200 1300
