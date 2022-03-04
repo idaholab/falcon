@@ -4,19 +4,19 @@
             "type": "ClosestNodeProjector",
             "values": {
                 "node_id": {
-                    "type": "unsigned long long"
+                    "type": "std::vector<unsigned long long>"
                 },
                 "node_value": {
-                    "type": "double"
+                    "type": "std::vector<double>"
                 },
                 "node_x": {
-                    "type": "double"
+                    "type": "std::vector<double>"
                 },
                 "node_y": {
-                    "type": "double"
+                    "type": "std::vector<double>"
                 },
                 "node_z": {
-                    "type": "double"
+                    "type": "std::vector<double>"
                 }
             }
         },
@@ -24,33 +24,16 @@
             "type": "ClosestNode",
             "values": {
                 "node_id": {
-                    "type": "unsigned long long"
+                    "type": "std::vector<unsigned long long>"
                 },
                 "node_x": {
-                    "type": "double"
+                    "type": "std::vector<double>"
                 },
                 "node_y": {
-                    "type": "double"
+                    "type": "std::vector<double>"
                 },
                 "node_z": {
-                    "type": "double"
-                }
-            }
-        },
-        "pt": {
-            "type": "ConstantReporter",
-            "values": {
-                "pt_value": {
-                    "type": "double"
-                },
-                "pt_x": {
-                    "type": "double"
-                },
-                "pt_y": {
-                    "type": "double"
-                },
-                "pt_z": {
-                    "type": "double"
+                    "type": "std::vector<double>"
                 }
             }
         }
@@ -58,46 +41,160 @@
     "time_steps": [
         {
             "coords": {
-                "node_id": 40,
-                "node_value": 6.0,
-                "node_x": 0.7,
-                "node_y": 0.3,
-                "node_z": 0.0
+                "node_id": [
+                    36,
+                    37,
+                    38,
+                    39,
+                    39,
+                    40
+                ],
+                "node_value": [
+                    1.0,
+                    2.0,
+                    3.0,
+                    4.0,
+                    5.0,
+                    6.0
+                ],
+                "node_x": [
+                    0.3,
+                    0.4,
+                    0.5,
+                    0.6,
+                    0.6,
+                    0.7
+                ],
+                "node_y": [
+                    0.3,
+                    0.3,
+                    0.3,
+                    0.3,
+                    0.3,
+                    0.3
+                ],
+                "node_z": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ]
             },
             "node": {
-                "node_id": 40,
-                "node_x": 0.7,
-                "node_y": 0.3,
-                "node_z": 0.0
-            },
-            "pt": {
-                "pt_value": 6.0,
-                "pt_x": 0.7,
-                "pt_y": 0.3,
-                "pt_z": -0.1
+                "node_id": [
+                    36,
+                    37,
+                    38,
+                    39,
+                    39,
+                    40
+                ],
+                "node_x": [
+                    0.3,
+                    0.4,
+                    0.5,
+                    0.6,
+                    0.6,
+                    0.7
+                ],
+                "node_y": [
+                    0.3,
+                    0.3,
+                    0.3,
+                    0.3,
+                    0.3,
+                    0.3
+                ],
+                "node_z": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ]
             },
             "time": 0.0,
             "time_step": 0
         },
         {
             "coords": {
-                "node_id": 40,
-                "node_value": 6.0,
-                "node_x": 0.7,
-                "node_y": 0.3,
-                "node_z": 0.0
+                "node_id": [
+                    36,
+                    37,
+                    38,
+                    39,
+                    39,
+                    40
+                ],
+                "node_value": [
+                    1.0,
+                    2.0,
+                    3.0,
+                    4.0,
+                    5.0,
+                    6.0
+                ],
+                "node_x": [
+                    0.3,
+                    0.4,
+                    0.5,
+                    0.6,
+                    0.6,
+                    0.7
+                ],
+                "node_y": [
+                    0.3,
+                    0.3,
+                    0.3,
+                    0.3,
+                    0.3,
+                    0.3
+                ],
+                "node_z": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ]
             },
             "node": {
-                "node_id": 40,
-                "node_x": 0.7,
-                "node_y": 0.3,
-                "node_z": 0.0
-            },
-            "pt": {
-                "pt_value": 6.0,
-                "pt_x": 0.7,
-                "pt_y": 0.3,
-                "pt_z": -0.1
+                "node_id": [
+                    36,
+                    37,
+                    38,
+                    39,
+                    39,
+                    40
+                ],
+                "node_x": [
+                    0.3,
+                    0.4,
+                    0.5,
+                    0.6,
+                    0.6,
+                    0.7
+                ],
+                "node_y": [
+                    0.3,
+                    0.3,
+                    0.3,
+                    0.3,
+                    0.3,
+                    0.3
+                ],
+                "node_z": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ]
             },
             "time": 1.0,
             "time_step": 1

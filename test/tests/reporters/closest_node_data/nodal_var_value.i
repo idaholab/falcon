@@ -105,23 +105,23 @@
 [Reporters]
   [pt12]
     type=ConstantReporter
-    real_names = 'pt_x pt_y pt_z'
-    real_values = '0.5 0.5 0'
+    real_vector_names = 'pt_x pt_y pt_z'
+    real_vector_values = '0.5; 0.5; 0'
   []
   [pt12p]
     type=ConstantReporter
-    real_names = 'pt_x pt_y pt_z'
-    real_values = '0.55 0.45 0.05'
+    real_vector_names = 'pt_x pt_y pt_z'
+    real_vector_values = '0.55; 0.45; 0.05'
   []
   [pt18]
     type=ConstantReporter
-    real_names = 'pt_x pt_y pt_z'
-    real_values = '0.75 0.75 0'
+    real_vector_names = 'pt_x pt_y pt_z'
+    real_vector_values = '0.75; 0.75; 0'
   []
   [pt18p]
     type=ConstantReporter
-    real_names = 'pt_x pt_y pt_z'
-    real_values = '0.76 0.76 0.3'
+    real_vector_names = 'pt_x pt_y pt_z'
+    real_vector_values = '0.76; 0.76; 0.3'
   []
 
   [node12]

@@ -21,6 +21,6 @@ public:
   virtual void execute() override {}
 
 protected:
-  const Real & _point_value;
-  Real & _node_value;
+  const std::vector<Real> & _point_value;
+  std::vector<Real> & _node_value;
 };

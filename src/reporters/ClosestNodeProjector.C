@@ -25,8 +25,8 @@ ClosestNodeProjector::validParams()
 
 ClosestNodeProjector::ClosestNodeProjector(const InputParameters & parameters)
   : ClosestNode(parameters),
-    _point_value(getReporterValue<Real>("point_value", REPORTER_MODE_REPLICATED)),
-    _node_value(declareValueByName<Real>("node_value", REPORTER_MODE_REPLICATED))
+    _point_value(getReporterValue<std::vector<Real>>("point_value", REPORTER_MODE_REPLICATED)),
+    _node_value(declareValueByName<std::vector<Real>>("node_value", REPORTER_MODE_REPLICATED))
 {
-  _node_value = _point_value;
+  std::copy(_point_value.begin(), _point_value.end(), back_inserter(_node_value));
 }

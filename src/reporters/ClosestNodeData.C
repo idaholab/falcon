@@ -24,17 +24,21 @@ ClosestNodeData::validParams()
 ClosestNodeData::ClosestNodeData(const InputParameters & parameters)
   : ClosestNode(parameters),
     _var_name(parameters.get<VariableName>("variable")),
-    _var(declareValueByName<Real>(_var_name, REPORTER_MODE_REPLICATED))
+    _var(declareValueByName<std::vector<Real>>(_var_name, REPORTER_MODE_REPLICATED))
 {
 }
 
 void
 ClosestNodeData::execute()
 {
-  Real value = 0;
-  if (_node_ptr && _node_ptr->processor_id() == processor_id())
-    value = _subproblem.getStandardVariable(_tid, _var_name).getNodalValue(*_node_ptr);
+  _var.clear();
+  for (auto & node : _node_ptrs)
+  {
+    Real value = 0;
+    if (node && node->processor_id() == processor_id())
+      value = _subproblem.getStandardVariable(_tid, _var_name).getNodalValue(*node);
 
-  gatherSum(value);
-  _var = value;
+    gatherSum(value);
+    _var.push_back(value);
+  }
 }

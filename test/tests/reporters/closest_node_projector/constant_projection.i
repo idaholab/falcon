@@ -17,8 +17,12 @@
 [Reporters]
   [pt]
     type=ConstantReporter
-    real_names = 'pt_value pt_x pt_y pt_z'
-    real_values = '6 .7 .3 -.1'
+    real_vector_names = 'pt_value pt_x pt_y pt_z'
+    real_vector_values = '1 2 3 4 5 6;
+                          .3 .41 .49 .55 .62 .7;
+                          .3 .31 .31 .29 .29 .3;
+                          0 0 0.2 0.1 0.1 -0.1'
+    outputs = none
   []
 
   [node]
@@ -42,6 +46,7 @@
 []
 
 [Outputs]
+  csv = true
   [out]
     type = JSON
     execute_system_information_on = none

@@ -35,50 +35,52 @@ ClosestNode::validParams()
 
 ClosestNode::ClosestNode(const InputParameters & parameters)
   : GeneralReporter(parameters),
-    _point_x(getReporterValue<Real>("point_x", REPORTER_MODE_REPLICATED)),
-    _point_y(getReporterValue<Real>("point_y", REPORTER_MODE_REPLICATED)),
-    _point_z(getReporterValue<Real>("point_z", REPORTER_MODE_REPLICATED)),
+    _point_x(getReporterValue<std::vector<Real>>("point_x", REPORTER_MODE_REPLICATED)),
+    _point_y(getReporterValue<std::vector<Real>>("point_y", REPORTER_MODE_REPLICATED)),
+    _point_z(getReporterValue<std::vector<Real>>("point_z", REPORTER_MODE_REPLICATED)),
     _tolerance(getParam<Real>("projection_tolerance")),
-    _nid(declareValueByName<dof_id_type>("node_id", REPORTER_MODE_REPLICATED)),
-    _node_x(declareValueByName<Real>("node_x", REPORTER_MODE_REPLICATED)),
-    _node_y(declareValueByName<Real>("node_y", REPORTER_MODE_REPLICATED)),
-    _node_z(declareValueByName<Real>("node_z", REPORTER_MODE_REPLICATED))
+    _nid(declareValueByName<std::vector<dof_id_type>>("node_id", REPORTER_MODE_REPLICATED)),
+    _node_x(declareValueByName<std::vector<Real>>("node_x", REPORTER_MODE_REPLICATED)),
+    _node_y(declareValueByName<std::vector<Real>>("node_y", REPORTER_MODE_REPLICATED)),
+    _node_z(declareValueByName<std::vector<Real>>("node_z", REPORTER_MODE_REPLICATED))
 {
-  Point pt(_point_x, _point_y, _point_z);
-
-  MooseMesh & mesh = _subproblem.mesh();
-
-  Point pmax(pt(0) + _tolerance, pt(1) + _tolerance, pt(2) + _tolerance);
-  Point pmin(pt(0) - _tolerance, pt(1) - _tolerance, pt(2) - _tolerance);
-  BoundingBox bbox(pmin, pmax);
-
-  const Node * closest_node;
-  Real nearest_distance = std::numeric_limits<Real>::max();
-  for (const auto & node : mesh.getMesh().node_ptr_range())
+  for (size_t i = 0; i < _point_x.size(); ++i)
   {
-    if (bbox.contains_point(*node))
+    Point pt(_point_x[i], _point_y[i], _point_z[i]);
+    MooseMesh & mesh = _subproblem.mesh();
+
+    Point pmax(pt(0) + _tolerance, pt(1) + _tolerance, pt(2) + _tolerance);
+    Point pmin(pt(0) - _tolerance, pt(1) - _tolerance, pt(2) - _tolerance);
+    BoundingBox bbox(pmin, pmax);
+
+    const Node * closest_node;
+    Real nearest_distance = std::numeric_limits<Real>::max();
+    for (const auto & node : mesh.getMesh().node_ptr_range())
     {
-      Real distance = (pt - *node).norm();
-      if (distance < nearest_distance)
+      if (bbox.contains_point(*node))
       {
-        nearest_distance = distance;
-        closest_node = node;
+        Real distance = (pt - *node).norm();
+        if (distance < nearest_distance)
+        {
+          nearest_distance = distance;
+          closest_node = node;
+        }
       }
     }
-  }
-  if (nearest_distance < _tolerance)
-  {
-    _node_ptr = closest_node;
-    _node_x = (*closest_node)(0);
-    _node_y = (*closest_node)(1);
-    _node_z = (*closest_node)(2);
-    _nid = closest_node->id();
-  }
-  else
-  {
-    std::ostringstream errMsg;
-    errMsg << "No node located within projection_tolerance= " << _tolerance << " of reporter point "
-           << pt;
-    mooseError(errMsg.str());
+    if (nearest_distance < _tolerance)
+    {
+      _node_ptrs.push_back(closest_node);
+      _node_x.push_back((*closest_node)(0));
+      _node_y.push_back((*closest_node)(1));
+      _node_z.push_back((*closest_node)(2));
+      _nid.push_back(closest_node->id());
+    }
+    else
+    {
+      std::ostringstream errMsg;
+      errMsg << "No node located within projection_tolerance= " << _tolerance
+             << " of reporter point " << pt;
+      mooseError(errMsg.str());
+    }
   }
 }

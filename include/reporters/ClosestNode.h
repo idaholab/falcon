@@ -23,14 +23,14 @@ public:
   virtual void finalize() override {}
 
 protected:
-  const Real & _point_x;
-  const Real & _point_y;
-  const Real & _point_z;
+  const std::vector<Real> & _point_x;
+  const std::vector<Real> & _point_y;
+  const std::vector<Real> & _point_z;
   const Real _tolerance;
 
-  dof_id_type & _nid;
-  Real & _node_x;
-  Real & _node_y;
-  Real & _node_z;
-  const Node * _node_ptr;
+  std::vector<dof_id_type> & _nid;
+  std::vector<Real> & _node_x;
+  std::vector<Real> & _node_y;
+  std::vector<Real> & _node_z;
+  std::vector<const Node *> _node_ptrs;
 };

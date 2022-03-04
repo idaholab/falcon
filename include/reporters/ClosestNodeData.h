@@ -22,5 +22,5 @@ public:
 
 protected:
   std::string _var_name;
-  Real & _var;
+  std::vector<Real> & _var;
 };

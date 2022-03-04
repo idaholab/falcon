@@ -177,67 +177,81 @@ z_out=39.5722
 []
 
 [Reporters]
-  [inject_coords]
-    type=ClosestNodeProjector
-    value_name = weight
-    xcoord_name = x
-    ycoord_name = y
-    zcoord_name = z
-    points = '${x_in} ${y_in} ${z_in}'
-    values = '-1111' #not used
-    projection_tolerance = 10
+  [inject_pt]
+    type=ConstantReporter
+    real_names = 'pt_x pt_y pt_z'
+    real_values = '${x_in} ${y_in} ${z_in}'
+  []
+  [inject_node]
+    type=ClosestNode
+    point_x = inject_pt/pt_x
+    point_y = inject_pt/pt_y
+    point_z = inject_pt/pt_z
+    projection_tolerance = 1
     outputs = none
   []
-  [prod_coords]
+  [TK_in]
+    type=ClosestNodeData
+    variable=frac_T
+    point_x = inject_pt/pt_x
+    point_y = inject_pt/pt_y
+    point_z = inject_pt/pt_z
+    projection_tolerance = 1
+    outputs = none
+  []
+  [P_in]
+    type=ClosestNodeData
+    variable=frac_P
+    point_x = inject_pt/pt_x
+    point_y = inject_pt/pt_y
+    point_z = inject_pt/pt_z
+    projection_tolerance = 1
+    outputs = none
+  []
+  [var_in]
+    type = AccumulateReporter
+    reporters = 'TK_in/node_id TK_in/node_x TK_in/node_y TK_in/node_z TK_in/frac_T P_in/frac_P'
+    outputs = var_in
+  []
+
+  [prod_pt]
+    type=ConstantReporter
+    real_names = 'pt_val pt_x pt_y pt_z'
+    real_values = '0.01 ${x_out} ${y_out} ${z_out}'
+  []
+  [prod_node]
     #production.xyz
     type=ClosestNodeProjector
-    value_name = weight
-    xcoord_name = x
-    ycoord_name = y
-    zcoord_name = z
-    points = '${x_out} ${y_out} ${z_out}'
-    values = '0.01'
-    projection_tolerance = 10
+    point_value =  prod_pt/pt_value
+    point_x = prod_pt/pt_x
+    point_y = prod_pt/pt_y
+    point_z = prod_pt/pt_z
+    projection_tolerance = 1
     outputs = none
   []
 
   [TK_out]
     type=ClosestNodeData
     variable=frac_T
-    points = '${x_out} ${y_out} ${z_out}'
-    projection_tolerance = 1.0
+    point_x = prod_pt/pt_x
+    point_y = prod_pt/pt_y
+    point_z = prod_pt/pt_z
+    projection_tolerance = 1
     outputs = none
   []
   [P_out]
     type=ClosestNodeData
     variable=frac_P
-    points = '${x_out} ${y_out} ${z_out}'
-    projection_tolerance = 1.0
+    point_x = prod_pt/pt_x
+    point_y = prod_pt/pt_y
+    point_z = prod_pt/pt_z
+    projection_tolerance = 1
     outputs = none
   []
   [var_out]
     type = AccumulateReporter
-    reporters = 'TK_out/node_id TK_out/xcoord TK_out/ycoord TK_out/zcoord TK_out/frac_T P_out/frac_P'
+    reporters = 'TK_out/node_id TK_out/node_x TK_out/node_y TK_out/node_z TK_out/frac_T P_out/frac_P'
     outputs = var_out
-  []
-  [TK_in]
-    type=ClosestNodeData
-    variable=frac_T
-    points = '${x_in} ${y_in} ${z_in}'
-    projection_tolerance = 1.0
-    outputs = none
-  []
-  [P_in]
-    type=ClosestNodeData
-    variable=frac_P
-    points = '${x_in} ${y_in} ${z_in}'
-    projection_tolerance = 1.0
-    outputs = none
-  []
-  [var_in]
-    type = AccumulateReporter
-    reporters = 'TK_in/node_id TK_in/xcoord TK_in/ycoord TK_in/zcoord TK_in/frac_T P_in/frac_P'
-    outputs = var_in
   []
 []
 
@@ -245,18 +259,18 @@ z_out=39.5722
   [inject_fluid_mass]
     type = PorousFlowReporterPointSourcePP
     mass_flux = inject_mass_flux
-    x_coord_reporter = 'inject_coords/x'
-    y_coord_reporter = 'inject_coords/y'
-    z_coord_reporter = 'inject_coords/z'
+    x_coord_reporter = 'inject_node/node_x'
+    y_coord_reporter = 'inject_node/node_y'
+    z_coord_reporter = 'inject_node/node_z'
     variable = frac_P
   []
   [inject_fluid_h]
     type = PorousFlowReporterPointEnthalpySourcePP
     variable = frac_T
     mass_flux = inject_mass_flux
-    x_coord_reporter = 'inject_coords/x'
-    y_coord_reporter = 'inject_coords/y'
-    z_coord_reporter = 'inject_coords/z'
+    x_coord_reporter = 'inject_node/node_x'
+    y_coord_reporter = 'inject_node/node_y'
+    z_coord_reporter = 'inject_node/node_z'
     T_in = 'inject_T'
     pressure = frac_P_Pa
     fp = water
@@ -267,10 +281,10 @@ z_out=39.5722
     bottom_p_or_t = insitu_pp_borehole
     character = 1
     line_length = 1
-    x_coord_reporter = 'prod_coords/x'
-    y_coord_reporter = 'prod_coords/y'
-    z_coord_reporter = 'prod_coords/z'
-    weight_reporter = 'prod_coords/weight'
+    x_coord_reporter = 'prod_node/node_x'
+    y_coord_reporter = 'prod_node/node_y'
+    z_coord_reporter = 'prod_node/node_z'
+    weight_reporter = 'prod_node/node_value'
     unit_weight = '0 0 0'
     fluid_phase = 0
     use_mobility = true
@@ -282,10 +296,10 @@ z_out=39.5722
     bottom_p_or_t = insitu_pp_borehole
     character = 1
     line_length = 1
-    weight_reporter = 'prod_coords/weight'
-    x_coord_reporter = 'prod_coords/x'
-    y_coord_reporter = 'prod_coords/y'
-    z_coord_reporter = 'prod_coords/z'
+    x_coord_reporter = 'prod_node/node_x'
+    y_coord_reporter = 'prod_node/node_y'
+    z_coord_reporter = 'prod_node/node_z'
+    weight_reporter = 'prod_node/node_value'
     unit_weight = '0 0 0'
     fluid_phase = 0
     use_mobility = true
@@ -441,7 +455,7 @@ z_out=39.5722
   # The system doesn't change much once it is pressurized so the residual can't change much either
   steady_state_detection = true
   steady_state_start_time = 7000  #this should start after the system has pressurized
-  steady_state_tolerance = 1e-6   #fixme should be smaller than nl_resid
+  steady_state_tolerance = 1e-5   #fixme should be smaller than nl_resid
 
   dtmin = 1e-3
   dtmax = 1000 #courant condition Peclet number (advection versus diffusion) limits dtmax
