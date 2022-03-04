@@ -24,11 +24,11 @@ public:
 
 protected:
   std::string _var_name;
-  std::vector<Real> & _xcoord;
-  std::vector<Real> & _ycoord;
-  std::vector<Real> & _zcoord;
+  Real & _xcoord;
+  Real & _ycoord;
+  Real & _zcoord;
   const Real _tolerance;
-  std::vector<Real> & _var;
-  std::vector<const Node *> _node_ptrs;
-  std::vector<dof_id_type> & _nid;
+  Real & _var;
+  const Node * _node_ptr;
+  dof_id_type & _nid;
 };

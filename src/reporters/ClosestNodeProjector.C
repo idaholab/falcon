@@ -15,11 +15,9 @@ InputParameters
 ClosestNodeProjector::validParams()
 {
   InputParameters params = GeneralReporter::validParams();
-  params.addClassDescription("Reporter that moves points with their values onto closest node");
-  params.addRequiredParam<std::vector<Point>>("points",
-                                              "Point locations to project onto closest node");
-  params.addRequiredParam<std::vector<Real>>(
-      "values", "Values at point locations to project onto closest node");
+  params.addClassDescription("Reporter that moves a point and value to the closets node");
+  params.addRequiredParam<Point>("point", "Point location to project onto closest node");
+  params.addRequiredParam<Real>("value", "Values at point locations to project onto closest node");
   params.addParam<ReporterValueName>(
       "xcoord_name", "x", "Reporter value to create containing x coordinate of point");
   params.addParam<ReporterValueName>(
@@ -37,48 +35,45 @@ ClosestNodeProjector::validParams()
 
 ClosestNodeProjector::ClosestNodeProjector(const InputParameters & parameters)
   : GeneralReporter(parameters),
-    _xcoord(declareValue<std::vector<Real>>("xcoord_name", REPORTER_MODE_REPLICATED)),
-    _ycoord(declareValue<std::vector<Real>>("ycoord_name", REPORTER_MODE_REPLICATED)),
-    _zcoord(declareValue<std::vector<Real>>("zcoord_name", REPORTER_MODE_REPLICATED)),
-    _values(declareValue<std::vector<Real>>(
-        "value_name", REPORTER_MODE_REPLICATED, getParam<std::vector<Real>>("values"))),
+    _xcoord(declareValue<Real>("xcoord_name", REPORTER_MODE_REPLICATED)),
+    _ycoord(declareValue<Real>("ycoord_name", REPORTER_MODE_REPLICATED)),
+    _zcoord(declareValue<Real>("zcoord_name", REPORTER_MODE_REPLICATED)),
+    _value(declareValue<Real>("value_name", REPORTER_MODE_REPLICATED, getParam<Real>("value"))),
     _tolerance(getParam<Real>("projection_tolerance"))
 {
-  std::vector<Point> points = getParam<std::vector<Point>>("points");
+  Point pt = getParam<Point>("point");
   MooseMesh & mesh = _subproblem.mesh();
-  for (auto & pt : points)
-  {
-    Point pmax(pt(0) + _tolerance, pt(1) + _tolerance, pt(2) + _tolerance);
-    Point pmin(pt(0) - _tolerance, pt(1) - _tolerance, pt(2) - _tolerance);
-    BoundingBox bbox(pmin, pmax);
 
-    Point closest_node;
-    Real nearest_distance = std::numeric_limits<Real>::max();
-    for (const auto & node : mesh.getMesh().node_ptr_range())
+  Point pmax(pt(0) + _tolerance, pt(1) + _tolerance, pt(2) + _tolerance);
+  Point pmin(pt(0) - _tolerance, pt(1) - _tolerance, pt(2) - _tolerance);
+  BoundingBox bbox(pmin, pmax);
+
+  Point closest_node;
+  Real nearest_distance = std::numeric_limits<Real>::max();
+  for (const auto & node : mesh.getMesh().node_ptr_range())
+  {
+    if (bbox.contains_point(*node))
     {
-      if (bbox.contains_point(*node))
+      Real distance = (pt - *node).norm();
+      if (distance < nearest_distance)
       {
-        Real distance = (pt - *node).norm();
-        if (distance < nearest_distance)
-        {
-          nearest_distance = distance;
-          closest_node = *node;
-        }
+        nearest_distance = distance;
+        closest_node = *node;
       }
     }
-    if (nearest_distance < _tolerance)
-    {
-      _xcoord.push_back(closest_node(0));
-      _ycoord.push_back(closest_node(1));
-      _zcoord.push_back(closest_node(2));
-    }
-    else
-    {
-      std::ostringstream errMsg;
-      errMsg << "No nodes located within projection_tolerance= " << _tolerance
-             << " of reporter point " << pt;
-      mooseError(errMsg.str());
-    }
+  }
+  if (nearest_distance < _tolerance)
+  {
+    _xcoord = closest_node(0);
+    _ycoord = closest_node(1);
+    _zcoord = closest_node(2);
+  }
+  else
+  {
+    std::ostringstream errMsg;
+    errMsg << "No node located within projection_tolerance= " << _tolerance << " of reporter point "
+           << pt;
+    mooseError(errMsg.str());
   }
 }
 

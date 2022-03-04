@@ -1,8 +1,8 @@
 [Tests]
   issues='48'
   [./constant_projection]
-    type = 'CSVDiff'
+    type = 'JSONDiff'
     input    = 'constant_projection.i'
-    csvdiff = 'constant_projection_out_coords_0001.csv'
+    jsondiff = 'constant_projection_out.json'
   [../]
 []

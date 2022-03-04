@@ -106,28 +106,28 @@
   [node12]
     type=ClosestNodeData
     variable=v
-    points = '0.5 0.5 0'
+    point = '0.5 0.5 0'
     projection_tolerance = 0.1
     outputs = none
   []
   [node12p]
     type=ClosestNodeData
     variable=u
-    points = '0.55 0.45 0.05'
+    point = '0.55 0.45 0.05'
     projection_tolerance = 0.1
     outputs = none
   []
   [node18]
     type=ClosestNodeData
     variable=v
-    points = '0.75 0.75 0'
+    point = '0.75 0.75 0'
     projection_tolerance = 0.1
     outputs = none
   []
   [node18p]
     type=ClosestNodeData
     variable=u
-    points = '0.76 0.76 0.3'
+    point = '0.76 0.76 0.3'
     projection_tolerance = 1.0
     outputs = none
   []

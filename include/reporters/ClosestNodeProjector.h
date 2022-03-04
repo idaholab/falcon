@@ -23,9 +23,9 @@ public:
   virtual void finalize() override {}
 
 protected:
-  std::vector<Real> & _xcoord;
-  std::vector<Real> & _ycoord;
-  std::vector<Real> & _zcoord;
-  const std::vector<Real> & _values;
+  Real & _xcoord;
+  Real & _ycoord;
+  Real & _zcoord;
+  const Real & _value;
   const Real _tolerance;
 };

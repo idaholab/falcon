@@ -1,0 +1,43 @@
+{
+    "reporters": {
+        "coords": {
+            "type": "ClosestNodeProjector",
+            "values": {
+                "value": {
+                    "type": "double"
+                },
+                "x": {
+                    "type": "double"
+                },
+                "y": {
+                    "type": "double"
+                },
+                "z": {
+                    "type": "double"
+                }
+            }
+        }
+    },
+    "time_steps": [
+        {
+            "coords": {
+                "value": 6.0,
+                "x": 0.7,
+                "y": 0.3,
+                "z": 0.0
+            },
+            "time": 0.0,
+            "time_step": 0
+        },
+        {
+            "coords": {
+                "value": 6.0,
+                "x": 0.7,
+                "y": 0.3,
+                "z": 0.0
+            },
+            "time": 1.0,
+            "time_step": 1
+        }
+    ]
+}
