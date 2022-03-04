@@ -14,17 +14,17 @@ registerMooseObject("FalconApp", ClosestNodeProjector);
 InputParameters
 ClosestNodeProjector::validParams()
 {
-  InputParameters params = ClosestNodeBase::validParams();
+  InputParameters params = ClosestNode::validParams();
   params.addClassDescription("Reporter that moves a point and value to the closets node");
   params.addRequiredParam<ReporterName>(
       "point_value",
-      "input reporter of value to project onto closets node.  This uses "
+      "input reporter of value to project onto closest node.  This uses "
       "the reporter syntax <reporter>/<name>.");
   return params;
 }
 
 ClosestNodeProjector::ClosestNodeProjector(const InputParameters & parameters)
-  : ClosestNodeBase(parameters),
+  : ClosestNode(parameters),
     _point_value(getReporterValue<Real>("point_value", REPORTER_MODE_REPLICATED)),
     _node_value(declareValueByName<Real>("node_value", REPORTER_MODE_REPLICATED))
 {

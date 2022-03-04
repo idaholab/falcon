@@ -14,7 +14,7 @@ registerMooseObject("FalconApp", ClosestNodeData);
 InputParameters
 ClosestNodeData::validParams()
 {
-  InputParameters params = ClosestNodeBase::validParams();
+  InputParameters params = ClosestNode::validParams();
   params.addClassDescription("Reports variable data from the closest node to some point");
   params.addRequiredParam<VariableName>("variable", "The variable to be monitored at the node");
 
@@ -22,7 +22,7 @@ ClosestNodeData::validParams()
 }
 
 ClosestNodeData::ClosestNodeData(const InputParameters & parameters)
-  : ClosestNodeBase(parameters),
+  : ClosestNode(parameters),
     _var_name(parameters.get<VariableName>("variable")),
     _var(declareValueByName<Real>(_var_name, REPORTER_MODE_REPLICATED))
 {

@@ -21,6 +21,15 @@
     real_values = '6 .7 .3 -.1'
   []
 
+  [node]
+    type=ClosestNode
+    point_x = pt/pt_x
+    point_y = pt/pt_y
+    point_z = pt/pt_z
+    projection_tolerance = 1
+    outputs = out
+  []
+
   [coords]
     type=ClosestNodeProjector
     point_value =  pt/pt_value

@@ -6,13 +6,17 @@
 //*
 //* Licensed under LGPL 2.1, please see LICENSE for details
 //* https://www.gnu.org/licenses/lgpl-2.1.html
-#include "ClosestNodeBase.h"
+#include "ClosestNode.h"
 #include "MooseUtils.h"
 
+registerMooseObject("FalconApp", ClosestNode);
+
 InputParameters
-ClosestNodeBase::validParams()
+ClosestNode::validParams()
 {
   InputParameters params = GeneralReporter::validParams();
+  params.addClassDescription(
+      "Reports coordinates and node id of the node closest to the input point");
   params.addRequiredParam<ReporterName>("point_x",
                                         "input reporter of x-coordinate name for point.  This uses "
                                         "the reporter syntax <reporter>/<name>.");
@@ -29,7 +33,7 @@ ClosestNodeBase::validParams()
   return params;
 }
 
-ClosestNodeBase::ClosestNodeBase(const InputParameters & parameters)
+ClosestNode::ClosestNode(const InputParameters & parameters)
   : GeneralReporter(parameters),
     _point_x(getReporterValue<Real>("point_x", REPORTER_MODE_REPLICATED)),
     _point_y(getReporterValue<Real>("point_y", REPORTER_MODE_REPLICATED)),

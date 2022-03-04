@@ -20,6 +20,23 @@
                 }
             }
         },
+        "node": {
+            "type": "ClosestNode",
+            "values": {
+                "node_id": {
+                    "type": "unsigned long long"
+                },
+                "node_x": {
+                    "type": "double"
+                },
+                "node_y": {
+                    "type": "double"
+                },
+                "node_z": {
+                    "type": "double"
+                }
+            }
+        },
         "pt": {
             "type": "ConstantReporter",
             "values": {
@@ -47,6 +64,12 @@
                 "node_y": 0.3,
                 "node_z": 0.0
             },
+            "node": {
+                "node_id": 40,
+                "node_x": 0.7,
+                "node_y": 0.3,
+                "node_z": 0.0
+            },
             "pt": {
                 "pt_value": 6.0,
                 "pt_x": 0.7,
@@ -60,6 +83,12 @@
             "coords": {
                 "node_id": 40,
                 "node_value": 6.0,
+                "node_x": 0.7,
+                "node_y": 0.3,
+                "node_z": 0.0
+            },
+            "node": {
+                "node_id": 40,
                 "node_x": 0.7,
                 "node_y": 0.3,
                 "node_z": 0.0

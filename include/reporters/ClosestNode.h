@@ -11,12 +11,12 @@
 
 #include "GeneralReporter.h"
 
-class ClosestNodeBase : public GeneralReporter
+class ClosestNode : public GeneralReporter
 {
 public:
   static InputParameters validParams();
 
-  ClosestNodeBase(const InputParameters & parameters);
+  ClosestNode(const InputParameters & parameters);
 
   virtual void initialize() override {}
   virtual void execute() override {}

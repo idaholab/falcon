@@ -9,9 +9,9 @@
 
 #pragma once
 
-#include "ClosestNodeBase.h"
+#include "ClosestNode.h"
 
-class ClosestNodeProjector : public ClosestNodeBase
+class ClosestNodeProjector : public ClosestNode
 {
 public:
   static InputParameters validParams();
