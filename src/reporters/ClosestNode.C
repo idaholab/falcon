@@ -44,6 +44,17 @@ ClosestNode::ClosestNode(const InputParameters & parameters)
     _node_y(declareValueByName<std::vector<Real>>("node_y", REPORTER_MODE_REPLICATED)),
     _node_z(declareValueByName<std::vector<Real>>("node_z", REPORTER_MODE_REPLICATED))
 {
+}
+
+void
+ClosestNode::initialize()
+{
+  _node_ptrs.clear();
+  _node_x.clear();
+  _node_y.clear();
+  _node_z.clear();
+  _nid.clear();
+
   for (size_t i = 0; i < _point_x.size(); ++i)
   {
     Point pt(_point_x[i], _point_y[i], _point_z[i]);

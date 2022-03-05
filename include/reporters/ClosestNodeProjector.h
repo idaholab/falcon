@@ -19,6 +19,7 @@ public:
   ClosestNodeProjector(const InputParameters & parameters);
 
   virtual void execute() override {}
+  virtual void initialize() override;
 
 protected:
   const std::vector<Real> & _point_value;
