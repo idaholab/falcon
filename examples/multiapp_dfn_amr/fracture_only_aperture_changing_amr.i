@@ -1,6 +1,17 @@
 # Cold water injection into one side of the fracture network, and production from the other side
 injection_rate = 10 # kg/s
 
+#dummy values
+#injection coordinates
+x_in=0 #-1000000  #58.8124
+y_in=0 #-1000000  #0.50384
+z_in=0 #-1000000  #74.7838
+#production coordinates
+x_out=0 #1000000  #101.705
+y_out=0 #1000000  #160.459
+z_out=0 #1000000  #39.5722
+
+
 [Mesh]
   uniform_refine = 0
   [cluster34]
@@ -179,7 +190,8 @@ injection_rate = 10 # kg/s
     point_x = inject_pt/pt_x
     point_y = inject_pt/pt_y
     point_z = inject_pt/pt_z
-    projection_tolerance = 1
+    projection_tolerance = 100
+    execute_on = TIMESTEP_BEGIN
     outputs = none
   []
   [TK_in]
@@ -188,7 +200,8 @@ injection_rate = 10 # kg/s
     point_x = inject_pt/pt_x
     point_y = inject_pt/pt_y
     point_z = inject_pt/pt_z
-    projection_tolerance = 1
+    projection_tolerance = 100
+    execute_on = TIMESTEP_BEGIN
     outputs = none
   []
   [P_in]
@@ -197,7 +210,8 @@ injection_rate = 10 # kg/s
     point_x = inject_pt/pt_x
     point_y = inject_pt/pt_y
     point_z = inject_pt/pt_z
-    projection_tolerance = 1
+    projection_tolerance = 100
+    execute_on = TIMESTEP_BEGIN
     outputs = none
   []
   [var_in]
@@ -218,7 +232,8 @@ injection_rate = 10 # kg/s
     point_x = prod_pt/pt_x
     point_y = prod_pt/pt_y
     point_z = prod_pt/pt_z
-    projection_tolerance = 1
+    projection_tolerance = 100
+    execute_on = TIMESTEP_BEGIN
     outputs = none
   []
 
@@ -228,7 +243,8 @@ injection_rate = 10 # kg/s
     point_x = prod_pt/pt_x
     point_y = prod_pt/pt_y
     point_z = prod_pt/pt_z
-    projection_tolerance = 1
+    projection_tolerance = 100
+    execute_on = TIMESTEP_BEGIN
     outputs = none
   []
   [P_out]
@@ -237,7 +253,8 @@ injection_rate = 10 # kg/s
     point_x = prod_pt/pt_x
     point_y = prod_pt/pt_y
     point_z = prod_pt/pt_z
-    projection_tolerance = 1
+    projection_tolerance = 100
+    execute_on = TIMESTEP_BEGIN
     outputs = none
   []
   [var_out]
