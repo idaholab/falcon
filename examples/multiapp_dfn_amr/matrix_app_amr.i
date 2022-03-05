@@ -1,6 +1,15 @@
 # 3D matrix app doing thermo-hydro PorousFlow and receiving heat energy via a VectorPostprocessor from the 2D fracture App
 intial_temperature=473
-endTime = 3 #1e8
+endTime = 3# 1e6 #1e8
+#injection coordinates
+x_in=58.8124
+y_in=0.50384
+z_in=74.7838
+#production coordinates
+x_out=101.705
+y_out=160.459
+z_out=39.5722
+
 [Mesh]
   uniform_refine = 0
   [generate]
@@ -111,7 +120,19 @@ endTime = 3 #1e8
     compute = 'sum'
     outputs = var_all
   []
-  [frac_in]
+  [pt_frac_in]
+    type = ConstantReporter
+    real_vector_names = 'xcoord ycoord zcoord'
+    real_vector_values = '${x_in}; ${y_in}; ${z_in}'
+    outputs = none #var_all
+  []
+  [pt_frac_out]
+    type = ConstantReporter
+    real_vector_names = 'xcoord ycoord zcoord'
+    real_vector_values = '${x_out}; ${y_out}; ${z_out}'
+    outputs = none #var_all
+  []
+  [node_frac_in]
     type = ConstantReporter
     # integer_vector_names = 'node_id'  #node id is not an int it is int64?
     # integer_vector_values = '0'
@@ -119,7 +140,7 @@ endTime = 3 #1e8
     real_vector_values = '0; 0; 0; 0; 0'
     outputs = none #var_all
   []
-  [frac_out]
+  [node_frac_out]
     type = ConstantReporter
     # integer_vector_names = 'node_id'
     # integer_vector_values = '0'
@@ -129,12 +150,12 @@ endTime = 3 #1e8
   []
   [acc_frac_in]
     type = AccumulateReporter
-    reporters = 'time/value frac_in/xcoord frac_in/ycoord frac_in/zcoord frac_in/frac_T frac_in/frac_P'
+    reporters = 'time/value node_frac_in/xcoord node_frac_in/ycoord node_frac_in/zcoord node_frac_in/frac_T node_frac_in/frac_P'
     outputs = var_in
   []
   [acc_frac_out]
     type = AccumulateReporter
-    reporters = 'time/value frac_out/xcoord frac_out/ycoord frac_out/zcoord frac_out/frac_T frac_out/frac_P'
+    reporters = 'time/value node_frac_out/xcoord node_frac_out/ycoord node_frac_out/zcoord node_frac_out/frac_T node_frac_out/frac_P'
     outputs = var_out
   []
 []
@@ -398,18 +419,32 @@ endTime = 3 #1e8
     from_reporters = 'heat_transfer_rate/joules_per_s heat_transfer_rate/x heat_transfer_rate/y heat_transfer_rate/z'
     to_reporters = 'heat_transfer_rate/transferred_joules_per_s heat_transfer_rate/x heat_transfer_rate/y heat_transfer_rate/z'
   []
+  [frac_coord_in]
+    type = MultiAppReporterTransfer
+    direction = to_multiapp
+    multi_app = fracture_app
+    from_reporters = 'pt_frac_in/xcoord pt_frac_in/ycoord pt_frac_in/zcoord'
+    to_reporters = 'inject_pt/pt_x inject_pt/pt_y inject_pt/pt_z'
+  []
+  [frac_coord_out]
+    type = MultiAppReporterTransfer
+    direction = to_multiapp
+    multi_app = fracture_app
+    from_reporters = 'pt_frac_out/xcoord pt_frac_out/ycoord pt_frac_out/zcoord'
+    to_reporters = 'prod_pt/pt_x prod_pt/pt_y prod_pt/pt_z'
+  []
   [frac_var_in]
     type = MultiAppReporterTransfer
     direction = from_multiapp
     multi_app = fracture_app
     from_reporters = 'TK_in/node_x TK_in/node_y TK_in/node_z TK_in/frac_T P_in/frac_P'
-    to_reporters = 'frac_in/xcoord frac_in/ycoord frac_in/zcoord frac_in/frac_T frac_in/frac_P'
+    to_reporters = 'node_frac_in/xcoord node_frac_in/ycoord node_frac_in/zcoord node_frac_in/frac_T node_frac_in/frac_P'
   []
   [frac_var_out]
     type = MultiAppReporterTransfer
     direction = from_multiapp
     multi_app = fracture_app
     from_reporters = 'TK_out/node_x TK_out/node_y TK_out/node_z TK_out/frac_T P_out/frac_P'
-    to_reporters = 'frac_out/xcoord frac_out/ycoord frac_out/zcoord frac_out/frac_T frac_out/frac_P'
+    to_reporters = 'node_frac_out/xcoord node_frac_out/ycoord node_frac_out/zcoord node_frac_out/frac_T node_frac_out/frac_P'
   []
 []

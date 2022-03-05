@@ -1,13 +1,5 @@
 # Cold water injection into one side of the fracture network, and production from the other side
 injection_rate = 10 # kg/s
-#injection coordinates
-x_in=58.8124
-y_in=0.50384
-z_in=74.7838
-#production coordinates
-x_out=101.705
-y_out=160.459
-z_out=39.5722
 
 [Mesh]
   uniform_refine = 0

@@ -44,6 +44,7 @@ ClosestNode::ClosestNode(const InputParameters & parameters)
     _node_y(declareValueByName<std::vector<Real>>("node_y", REPORTER_MODE_REPLICATED)),
     _node_z(declareValueByName<std::vector<Real>>("node_z", REPORTER_MODE_REPLICATED))
 {
+  initialize();
 }
 
 void
