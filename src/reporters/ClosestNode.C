@@ -44,11 +44,10 @@ ClosestNode::ClosestNode(const InputParameters & parameters)
     _node_y(declareValueByName<std::vector<Real>>("node_y", REPORTER_MODE_REPLICATED)),
     _node_z(declareValueByName<std::vector<Real>>("node_z", REPORTER_MODE_REPLICATED))
 {
-  initialize();
 }
 
 void
-ClosestNode::initialize()
+ClosestNode::initialSetup()
 {
   _node_ptrs.clear();
   _node_x.clear();
@@ -79,6 +78,8 @@ ClosestNode::initialize()
         }
       }
     }
+    Real global_nearest_distance = nearest_distance;
+    gatherMax(global_nearest_distance);
     if (nearest_distance < _tolerance)
     {
       _node_ptrs.push_back(closest_node);
