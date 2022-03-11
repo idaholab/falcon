@@ -1,17 +1,37 @@
 # Cold water injection into one side of the fracture network, and production from the other side
 injection_rate = 0.1 #25 # kg/s
 endTime = 3.16e8
+
+
 [Mesh]
   uniform_refine = 0
-  [single_frac]
-    type = FileMeshGenerator
-    file = 'rect_100_10_medium.e'
+  [generate]
+    type = GeneratedMeshGenerator
+    dim = 2
+    nx = 10
+    xmin = -5
+    xmax = 5
+    ny = 50
+    ymin = -50
+    ymax = 50
+  []
+  [./rotate]
+    type = TransformGenerator
+    input = generate
+    transform = ROTATE
+    vector_value = '90 90 90'
+  []
+  [./offset]
+    type = TransformGenerator
+    input = rotate
+    transform = TRANSLATE
+    vector_value = '0.1 0 0'
   []
   [injection_node]
     type = BoundingBoxNodeSetGenerator
-    input = single_frac
-    bottom_left = '-5 -55 -5'
-    top_right = '5 -45 5'
+    input = offset
+    bottom_left = '0.05 -51 -5.1'
+    top_right = '0.15  -49.9 5.1'
     new_boundary = injection_node
   []
 []
@@ -179,7 +199,7 @@ endTime = 3.16e8
   [inject_fluid]
     type = PorousFlowPointSourceFromPostprocessor
     mass_flux = ${injection_rate}
-    point = '0 -50 0'
+    point = '0.1 -50 0'
     variable = frac_P
   []
   [withdraw_fluid]
@@ -188,7 +208,7 @@ endTime = 3.16e8
     bottom_p_or_t = 30.6e6
     character = 1
     line_length = 1
-    point_file = production_single_fracture.xyz
+    point_file = production_single_fracture_amr.xyz
     unit_weight = '0 0 0'
     fluid_phase = 0
     use_mobility = true
@@ -200,7 +220,7 @@ endTime = 3.16e8
     bottom_p_or_t = 30.6e6
     character = 1
     line_length = 1
-    point_file = production_single_fracture.xyz
+    point_file = production_single_fracture_amr.xyz
     unit_weight = '0 0 0'
     fluid_phase = 0
     use_mobility = true
@@ -298,22 +318,22 @@ endTime = 3.16e8
   [TK_in]
     type = PointValue
     variable = frac_T
-    point = '0 -50 0'
+    point = '0.1 -50 0'
   []
   [TK_out]
     type = PointValue
     variable = frac_T
-    point = '0 50 0'
-  []
-  [P_out]
-    type = PointValue
-    variable = frac_P
-    point = '0 50 0'
+    point = '0.1 50 0'
   []
   [P_in]
     type = PointValue
     variable = frac_P
-    point = '0 -50 0'
+    point = '0.1 -50 0'
+  []
+  [P_out]
+    type = PointValue
+    variable = frac_P
+    point = '0.1 50 0'
   []
 []
 

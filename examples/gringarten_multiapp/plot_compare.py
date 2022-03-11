@@ -18,6 +18,7 @@ import math
 df = pd.read_csv('mrect1_out_fracture_app0.csv')
 print('fracture dataframe description: ',df.columns.values)
 ['time' 'J_out' 'P_in' 'P_out' 'TK_in' 'TK_out' 'kg_out' 'kg_per_s']
+df_amr = pd.read_csv('mrect1_amr_out_fracture_app0.csv')
 #analytic solution from Koenradd and Gringarten paper, 1975
 timevector = np.logspace(1, 9, 50, base=10)
 print(timevector)
@@ -47,6 +48,7 @@ for i in range(len(timevector)):
 fig1=plt.figure()
 plt.plot(timevector/3600/24/365,Twater,'b', linestyle = '-',marker = 'o',fillstyle='none',label='Gringarten 1975')
 plt.plot(df['time']/3600/24/365,df['TK_out']-273.15,'r', linestyle = '--',label='Falcon')
+plt.plot(df_amr['time']/3600/24/365,df_amr['TK_out']-273.15,'g', linestyle = '-.',label='Falcon amr')
 plt.ylim([50, 100])
 plt.xlim([0, 10])
 plt.ylabel("T (degC)")
