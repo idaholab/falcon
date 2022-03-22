@@ -62,10 +62,6 @@ ReporterVectorComponents::declareComponentHelper(const ReporterName & rname)
 
   for (auto & id : _vector_indices)
   {
-
-    std::cout << "rname.getObjectName():  " << rname.getObjectName()
-              << "    rname.getValueName(): " << rname.getValueName() << std::endl;
-
     typename T::value_type & scalar_val = declareValueByName<typename T::value_type>(
         rname.getObjectName() + ":" + rname.getValueName() + "[" + std::to_string(id) + "]", rmode);
 
