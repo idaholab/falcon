@@ -1,0 +1,17 @@
+[Tests]
+  [reporterPoint_hfrompps]
+    type = 'CSVDiff'
+    input = 'reporter_vector_components.i'
+    csvdiff = 'reporter_vector_components_out.csv'
+    requirement = 'The system shall take compoenents out of vector reporters and place them into a seperate reporter containing only components'
+    issues = '#89'
+  []
+  [wrong_of_range]
+    type = 'RunException'
+    input = 'reporter_vector_components.i'
+    cli_args = "Reporters/components/indices='0 99'"
+    expect_err = "index = 99    vector_size = 6"
+    requirement = 'The system shall error when the reporter has more than one set of coordinates'
+    issues = '#89'
+  []
+[]

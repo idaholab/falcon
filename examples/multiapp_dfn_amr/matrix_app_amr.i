@@ -1,6 +1,15 @@
 # 3D matrix app doing thermo-hydro PorousFlow and receiving heat energy via a VectorPostprocessor from the 2D fracture App
 intial_temperature=473
-endTime = 3     #1e8
+endTime = 3# 1e6 #1e8
+#injection coordinates
+x_in=58.8124
+y_in=0.50384
+z_in=74.7838
+#production coordinates
+x_out=101.705
+y_out=160.459
+z_out=39.5722
+
 [Mesh]
   uniform_refine = 0
   [generate]
@@ -109,6 +118,45 @@ endTime = 3     #1e8
     type = StatisticsReporter
     reporters = 'heat_transfer_rate/transferred_joules_per_s'
     compute = 'sum'
+    outputs = var_all
+  []
+  [pt_frac_in]
+    type = ConstantReporter
+    real_vector_names = 'xcoord ycoord zcoord'
+    real_vector_values = '${x_in}; ${y_in}; ${z_in}'
+    outputs = none #var_all
+  []
+  [pt_frac_out]
+    type = ConstantReporter
+    real_vector_names = 'xcoord ycoord zcoord'
+    real_vector_values = '${x_out}; ${y_out}; ${z_out}'
+    outputs = none #var_all
+  []
+  [node_frac_in]
+    type = ConstantReporter
+    # integer_vector_names = 'node_id'  #node id is not an int it is int64?
+    # integer_vector_values = '0'
+    real_vector_names = 'xcoord ycoord zcoord frac_T frac_P'
+    real_vector_values = '0; 0; 0; 0; 0'
+    outputs = none #var_all
+  []
+  [node_frac_out]
+    type = ConstantReporter
+    # integer_vector_names = 'node_id'
+    # integer_vector_values = '0'
+    real_vector_names = 'xcoord ycoord zcoord frac_T frac_P'
+    real_vector_values = '0; 0; 0; 0; 0'
+    outputs = none #var_all
+  []
+  [acc_frac_in]
+    type = AccumulateReporter
+    reporters = 'time/value node_frac_in/xcoord node_frac_in/ycoord node_frac_in/zcoord node_frac_in/frac_T node_frac_in/frac_P'
+    outputs = var_in
+  []
+  [acc_frac_out]
+    type = AccumulateReporter
+    reporters = 'time/value node_frac_out/xcoord node_frac_out/ycoord node_frac_out/zcoord node_frac_out/frac_T node_frac_out/frac_P'
+    outputs = var_out
   []
 []
 
@@ -188,17 +236,24 @@ endTime = 3     #1e8
     type = IterationAdaptiveDT
     dt = 1
     growth_factor = 1.1
-    optimal_iterations = 6
+    optimal_iterations = 20
   []
   end_time = ${endTime}
   line_search = 'none'
-  automatic_scaling = true
-  l_max_its = 60
+  automatic_scaling = false
+  # l_max_its = 60
+  # l_tol = 8e-3
+  # nl_forced_its = 1
+  # nl_max_its = 40
+  # nl_rel_tol = 5e-05
+  # nl_abs_tol = 1e-10
+
+  l_max_its = 20
   l_tol = 8e-3
   nl_forced_its = 1
-  nl_max_its = 40
-  nl_rel_tol = 5e-05
-  nl_abs_tol = 1e-10
+  nl_max_its = 20
+  nl_rel_tol = 5e-3 #fixme these are imprecise
+  nl_abs_tol = 5e-5
 []
 
 [Postprocessors]
@@ -209,6 +264,7 @@ endTime = 3     #1e8
   []
   [nelems]
     type = NumElems
+    #outputs = none
   []
   [nl_its]
     type = NumNonlinearIterations
@@ -238,6 +294,10 @@ endTime = 3     #1e8
     data_type = total
     outputs = none
   []
+  [time]
+    type = TimePostprocessor
+    outputs = none
+  []
 []
 
 
@@ -257,12 +317,11 @@ endTime = 3     #1e8
   []
 []
 
-#this is suppressing some output and
+#this is suppressing some output
 [Outputs]
   print_linear_residuals = false
-  #file_base = 'amr2/matrix'
-  csv=True
   exodus=False
+  csv = true
   [matrix]
     type = Exodus
     sync_times = '1 10 100 200 300 400 500 600 700 800 900 1000 1100 1200 1300
@@ -277,6 +336,24 @@ endTime = 3     #1e8
     1800000 1900000 2000000 2100000 2200000 2300000 2400000 2500000 2600000
     2700000 2800000 2900000 3e6 1e7 1e8'
     sync_only = true
+  []
+  [var_all]
+    type = JSON
+    execute_system_information_on = none
+    execute_on = 'TIMESTEP_END'
+    #file_base = 'var_in'
+  []
+  [var_in]
+    type = JSON
+    execute_system_information_on = none
+    execute_on = 'FINAL'
+    #file_base = 'var_in'
+  []
+  [var_out]
+    type = JSON
+    execute_system_information_on = none
+    execute_on = 'FINAL'
+    #file_base = 'var_out'
   []
 []
 
@@ -341,5 +418,33 @@ endTime = 3     #1e8
     multi_app = fracture_app
     from_reporters = 'heat_transfer_rate/joules_per_s heat_transfer_rate/x heat_transfer_rate/y heat_transfer_rate/z'
     to_reporters = 'heat_transfer_rate/transferred_joules_per_s heat_transfer_rate/x heat_transfer_rate/y heat_transfer_rate/z'
+  []
+  [frac_coord_in]
+    type = MultiAppReporterTransfer
+    direction = to_multiapp
+    multi_app = fracture_app
+    from_reporters = 'pt_frac_in/xcoord pt_frac_in/ycoord pt_frac_in/zcoord'
+    to_reporters = 'inject_pt/pt_x inject_pt/pt_y inject_pt/pt_z'
+  []
+  [frac_coord_out]
+    type = MultiAppReporterTransfer
+    direction = to_multiapp
+    multi_app = fracture_app
+    from_reporters = 'pt_frac_out/xcoord pt_frac_out/ycoord pt_frac_out/zcoord'
+    to_reporters = 'prod_pt/pt_x prod_pt/pt_y prod_pt/pt_z'
+  []
+  [frac_var_in]
+    type = MultiAppReporterTransfer
+    direction = from_multiapp
+    multi_app = fracture_app
+    from_reporters = 'TK_in/node_x TK_in/node_y TK_in/node_z TK_in/frac_T P_in/frac_P'
+    to_reporters = 'node_frac_in/xcoord node_frac_in/ycoord node_frac_in/zcoord node_frac_in/frac_T node_frac_in/frac_P'
+  []
+  [frac_var_out]
+    type = MultiAppReporterTransfer
+    direction = from_multiapp
+    multi_app = fracture_app
+    from_reporters = 'TK_out/node_x TK_out/node_y TK_out/node_z TK_out/frac_T P_out/frac_P'
+    to_reporters = 'node_frac_out/xcoord node_frac_out/ycoord node_frac_out/zcoord node_frac_out/frac_T node_frac_out/frac_P'
   []
 []
