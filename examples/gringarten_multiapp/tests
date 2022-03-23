@@ -6,5 +6,6 @@
     csvdiff = 'mrect1_out_fracture_app0.csv'
     cli_args = 'endTime=6e7'
     requirement = 'Run Gringarten multiapp for a few timesteps.'
+    skip = 'long time'
   [../]
 []

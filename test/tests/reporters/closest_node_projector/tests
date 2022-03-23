@@ -1,8 +1,10 @@
 [Tests]
   issues='48'
   [./constant_projection]
-    type = 'CSVDiff'
+    type = 'JSONDiff'
     input    = 'constant_projection.i'
-    csvdiff = 'constant_projection_out_coords_0001.csv'
+    jsondiff = 'constant_projection_out.json'
+    skip_keys = 'type'
+    requirement = 'The system shall be able to report the coordinates of the closest node and hold a value for that node that can be consumed other objects'
   [../]
 []

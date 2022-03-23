@@ -11,16 +11,16 @@
 
 #include "ClosestNode.h"
 
-class ClosestNodeProjector : public ClosestNode
+class ClosestNodeData : public ClosestNode
 {
 public:
   static InputParameters validParams();
 
-  ClosestNodeProjector(const InputParameters & parameters);
+  ClosestNodeData(const InputParameters & parameters);
 
-  virtual void initialSetup() override;
+  virtual void execute() override;
 
 protected:
-  const std::vector<Real> & _point_value;
-  std::vector<Real> & _node_value;
+  std::string _var_name;
+  std::vector<Real> & _var;
 };

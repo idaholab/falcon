@@ -1,0 +1,10 @@
+[Tests]
+    [test_nodal_aux_var_value]
+      type = 'JSONDiff'
+      input = 'nodal_var_value.i'
+      jsondiff = 'nodal_var_value_out.json'
+      skip_keys = 'type'
+      requirement = 'The reporter shall output the nodal data from the closest node to the input coordiantes.'
+      issues = '#2281'
+    []
+[]
