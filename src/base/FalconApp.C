@@ -20,7 +20,10 @@ Baseline dependencies (do NOT touch)
 #include "AppFactory.h"
 #include "ModulesApp.h"
 #include "MooseSyntax.h"
-
+#ifdef IAPWS95_ENABLED
+#include "IAPWS95App.h"
+#endif
+#include "ThermalHydraulicsApp.h"
 /*******************************************************************************
 Input template (do NOT touch)
 *******************************************************************************/
@@ -51,8 +54,19 @@ FalconApp::registerAll(Factory & f, ActionFactory & af, Syntax & syntax)
   ModulesApp::registerAll(f, af, syntax);
   Registry::registerObjectsTo(f, {"FalconApp"});
   Registry::registerActionsTo(af, {"FalconApp"});
+  Registry::registerObjectsTo(f, {"THMTestApp"});
 
   /* register custom execute flags, action syntax, etc. here */
+  ThermalHydraulicsApp::registerAll(f, af, syntax);
+
+
+#ifdef IAPWS95_ENABLED
+  IAPWS95App::registerAll(f, af, syntax);
+#endif
+
+// built-in closure types
+ThermalHydraulicsApp::registerClosuresOption("falcon", "Closures1PhaseFalcon", THM::FM_SINGLE_PHASE);
+
 }
 
 // External entry point for object registration
@@ -69,6 +83,10 @@ void
 FalconApp::registerApps()
 {
   registerApp(FalconApp);
+
+#ifdef IAPWS95_ENABLED
+  registerApp(IAPWS95App);
+#endif
 }
 
 extern "C" void
