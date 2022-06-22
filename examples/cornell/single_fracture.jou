@@ -1,0 +1,13 @@
+reset
+create surface ellipse major radius 150 minor radius 500 zplane
+#move Surface 1  location 0 0 -3000 include_merged 
+surface 1 scheme trimesh
+surface 1 size 10
+mesh surface 1
+nodeset 1 add node 2004
+nodeset 1 name "injection_ns"
+sideset 1 add tri 3908
+sideset 1 name "injection_ss"
+block 1 add surface 1
+export mesh "/Users/mundlb/projects/falcon/examples/cornell/single_fracture.exo" overwrite
+
