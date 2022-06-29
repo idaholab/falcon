@@ -24,7 +24,7 @@ public:
 
   ClosestNodeToLine(const InputParameters & parameters);
 
-  virtual void initialSetup() override{};
+  virtual void initialSetup() override;
 
   virtual void initialize() override{};
   virtual void execute() override;
@@ -66,9 +66,9 @@ protected:
   std::vector<Real> & _pt_z;
   std::vector<Real> _dist;
   std::unordered_map<int, LocData> _dom_map;
-  const Point _p1;
-  const Point _p2;
-  const Point _line;
+  Point _p1;
+  Point _p2;
+  Point _line;
 
   std::string _dom_name;
   // std::vector<Real> &_var;

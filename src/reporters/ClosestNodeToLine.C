@@ -57,13 +57,17 @@ ClosestNodeToLine::ClosestNodeToLine(const InputParameters & parameters)
     _pt_x(declareValueByName<std::vector<Real>>("point_x", REPORTER_MODE_REPLICATED)),
     _pt_y(declareValueByName<std::vector<Real>>("point_y", REPORTER_MODE_REPLICATED)),
     _pt_z(declareValueByName<std::vector<Real>>("point_z", REPORTER_MODE_REPLICATED)),
-    _p1(Point(_point_x1[0], _point_y1[0], _point_z1[0])),
-    _p2(Point(_point_x2[0], _point_y2[0], _point_z2[0])),
-    _line(_p2 - _p1),
     _dom_name(parameters.get<VariableName>("domain_name"))
 {
 }
 
+void
+ClosestNodeToLine::initialSetup()
+{
+  _p1 = Point(_point_x1[0], _point_y1[0], _point_z1[0]);
+  _p2 = Point(_point_x2[0], _point_y2[0], _point_z2[0]);
+  _line = _p2 - _p1;
+}
 void
 ClosestNodeToLine::execute()
 {
