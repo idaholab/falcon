@@ -1,12 +1,18 @@
 Content:
     - ${ROOT_DIR}/doc/content
     - ${MOOSE_DIR}/framework/doc/content
-    - ${MOOSE_DIR}/modules/geochemistry/doc/content
-    - ${MOOSE_DIR}/modules/porous_flow/doc/content
     - ${MOOSE_DIR}/modules/chemical_reactions/doc/content
     - ${MOOSE_DIR}/modules/fluid_properties/doc/content
+    - ${MOOSE_DIR}/modules/geochemistry/doc/content
+    - ${MOOSE_DIR}/modules/heat_conduction/doc/content
+    - ${MOOSE_DIR}/modules/misc/doc/content
+    - ${MOOSE_DIR}/modules/navier_stokes/doc/content
+    - ${MOOSE_DIR}/modules/porous_flow/doc/content
+    - ${MOOSE_DIR}/modules/ray_tracing/doc/content
+    - ${MOOSE_DIR}/modules/rdg/doc/content
     - ${MOOSE_DIR}/modules/stochastic_tools/doc/content
     - ${MOOSE_DIR}/modules/tensor_mechanics/doc/content
+    - ${MOOSE_DIR}/modules/thermal_hydraulics/doc/content
     - moose:
           root_dir: ${MOOSE_DIR}/modules/doc/content
           content:
@@ -15,6 +21,7 @@ Content:
               - getting_started/installation/uninstall_conda.md
               - getting_started/installation/wsl.md
               - application_usage/peacock.md
+              - application_usage/command_line_usage.md
               - media/**
               - bib/**
 
@@ -36,16 +43,27 @@ Extensions:
             Help:
                 FAQ: help/faq/index.md
                 Contact: help/contact_us.md
-
+    MooseDocs.extensions.bibtex:
+        duplicates: 
+            - hales15homogenization # referenced in both Tensor Mechanics and Heat Conduction
     MooseDocs.extensions.appsyntax:
         executable: ${ROOT_DIR}
         remove: !include ${MOOSE_DIR}/framework/doc/remove.yml
         includes:
             - include
             - ${MOOSE_DIR}/framework/include
+            - ${MOOSE_DIR}/modules/chemical_reactions/include
+            - ${MOOSE_DIR}/modules/fluid_properties/include
             - ${MOOSE_DIR}/modules/geochemistry/include
+            - ${MOOSE_DIR}/modules/heat_conduction/include
+            - ${MOOSE_DIR}/modules/misc/include
+            - ${MOOSE_DIR}/modules/navier_stokes/include
             - ${MOOSE_DIR}/modules/porous_flow/include
+            - ${MOOSE_DIR}/modules/ray_tracing/include
+            - ${MOOSE_DIR}/modules/rdg/include
+            - ${MOOSE_DIR}/modules/stochastic_tools/include
             - ${MOOSE_DIR}/modules/tensor_mechanics/include
+            - ${MOOSE_DIR}/modules/thermal_hydraulics/include
 
     MooseDocs.extensions.common:
         shortcuts: !include ${MOOSE_DIR}/framework/doc/globals.yml
@@ -63,9 +81,18 @@ Extensions:
         repos:
              default: https://github.com/idaholab/falcon
         reports: !include ${ROOT_DIR}/doc/sqa_reports.yml
-        categories:
+        categories: # commented categories in this section are for module dependencies that do not yet have this file available
             falcon: !include ${ROOT_DIR}/doc/sqa_falcon.yml
             framework: !include ${MOOSE_DIR}/framework/doc/sqa_framework.yml
-            tensor_mechanics: !include ${MOOSE_DIR}/modules/tensor_mechanics/doc/sqa_tensor_mechanics.yml
+            # chemical_reactions: !include ${MOOSE_DIR}/modules/chemical_reactions/doc/sqa_chemical_reactions.yml
+            fluid_properties: !include ${MOOSE_DIR}/modules/fluid_properties/doc/sqa_fluid_properties.yml
+            # geochemistry: !include ${MOOSE_DIR}/modules/geochemistry/doc/sqa_geochemistry.yml
+            heat_conduction: !include ${MOOSE_DIR}/modules/heat_conduction/doc/sqa_heat_conduction.yml
+            misc: !include ${MOOSE_DIR}/modules/misc/doc/sqa_misc.yml
+            navier_stokes: !include ${MOOSE_DIR}/modules/navier_stokes/doc/sqa_navier_stokes.yml
+            porous_flow: !include ${MOOSE_DIR}/modules/porous_flow/doc/sqa_porous_flow.yml
+            ray_tracing: !include ${MOOSE_DIR}/modules/ray_tracing/doc/sqa_ray_tracing.yml
+            rdg: !include ${MOOSE_DIR}/modules/rdg/doc/sqa_rdg.yml
             stochastic_tools: !include ${MOOSE_DIR}/modules/stochastic_tools/doc/sqa_stochastic_tools.yml
-            # porous_flow: !include ${MOOSE_DIR}/modules/porous_flow/doc/sqa_porous_flow.yml
+            tensor_mechanics: !include ${MOOSE_DIR}/modules/tensor_mechanics/doc/sqa_tensor_mechanics.yml
+            thermal_hydraulics: !include ${MOOSE_DIR}/modules/thermal_hydraulics/doc/sqa_thermal_hydraulics.yml

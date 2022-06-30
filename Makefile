@@ -46,16 +46,18 @@ include $(FRAMEWORK_DIR)/build.mk
 include $(FRAMEWORK_DIR)/moose.mk
 
 ################################## MODULES ####################################
-GEOCHEMISTRY      	:= yes
-POROUS_FLOW       	:= yes
-STOCHASTIC_TOOLS  	:= yes
-TENSOR_MECHANICS  	:= yes
-THERMAL_HYDRAULICS 	:= yes
+CHEMICAL_REACTIONS      := yes
 FLUID_PROPERTIES        := yes
+GEOCHEMISTRY            := yes
 HEAT_CONDUCTION         := yes
 MISC                    := yes
 NAVIER_STOKES           := yes
+POROUS_FLOW             := yes
+RAY_TRACING             := yes
 RDG                     := yes
+STOCHASTIC_TOOLS        := yes
+TENSOR_MECHANICS        := yes
+THERMAL_HYDRAULICS      := yes
 USE_TEST_LIBS           := yes
 include           $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
