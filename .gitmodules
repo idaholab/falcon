@@ -1,3 +1,7 @@
 [submodule "moose"]
 	path = moose
 	url = https://github.com/idaholab/moose.git
+[submodule "iapws95"]
+        path = iapws95
+        url = git@hpcgitlab.hpc.inl.gov:idaholab/iapws95.git
+        update = none

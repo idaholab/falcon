@@ -1,0 +1,46 @@
+[Tests]
+  [./phy.f]
+    type = 'CSVDiff'
+    input = 'phy.f.i'
+    csvdiff = 'phy.f_out_f_0002.csv'
+    required_submodule = 'iapws95'
+  [../]
+
+  [./phy.whtc_liquid.T_wall]
+    type = 'CSVDiff'
+    input = 'phy.whtc.i'
+    csvdiff = 'phy.whtc_liquid.T_wall_Hw_0002.csv'
+    cli_args = '
+      Modules/FluidProperties/fp/type=IAPWS95LiquidFluidProperties
+      Components/ht_pipe/type=HeatTransferFromSpecifiedTemperature1Phase
+      Components/ht_pipe/T_wall=372.8
+      Outputs/file_base=phy.whtc_liquid.T_wall'
+      required_submodule = 'iapws95'
+  [../]
+
+  [./phy.whtc_liquid.q_wall]
+    type = 'RunException'
+    input = 'phy.whtc.i'
+    cli_args = '
+      Modules/FluidProperties/fp/type=IAPWS95LiquidFluidProperties
+      Components/ht_pipe/type=HeatTransferFromHeatFlux1Phase
+      Components/ht_pipe/q_wall=1000
+      Outputs/file_base=phy.whtc_liquid.q_wall'
+    expect_err = 'pipe: Heat transfer from heat flux is currently not available. Please, contact developers if you have a need for it.'
+    required_submodule = 'iapws95'
+  [../]
+
+  [./phy.whtc_liquid.const]
+    type = 'CSVDiff'
+    input = 'phy.whtc.i'
+    csvdiff = 'phy.whtc_liquid.const_Hw_0002.csv'
+    cli_args = '
+      Modules/FluidProperties/fp/type=IAPWS95LiquidFluidProperties
+      Components/ht_pipe/type=HeatTransferFromSpecifiedTemperature1Phase
+      Components/ht_pipe/T_wall=372.8
+      Components/ht_pipe/Hw=1234
+      Outputs/file_base=phy.whtc_liquid.const'
+    rel_err = 1e-15
+    required_submodule = 'iapws95'
+  [../]
+[]
