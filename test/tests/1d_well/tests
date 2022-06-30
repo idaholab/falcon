@@ -1,0 +1,16 @@
+[Tests]
+  [./1d_well]
+    type = 'Exodiff'
+    input = '1d_well.i'
+    exodiff = '1d_well_out.e'
+    required_submodule = 'iapws95'
+  [../]
+
+  [./1d_well_w_hs.syntax_check]
+    type = RunApp
+    input = '1d_well_w_hs.i'
+    check_input = true
+    recover = false
+    required_submodule = 'iapws95'
+  [../]
+[]
