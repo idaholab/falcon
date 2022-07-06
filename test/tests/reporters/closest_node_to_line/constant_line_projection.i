@@ -99,7 +99,7 @@
     point_x2 =  pt/pt2_x
     point_y2 =  pt/pt2_y
     point_z2 =  pt/pt2_z
-    domain_name = oneID
+    domain_var = oneID
     outputs = out
   []
   [differentID_out]
@@ -111,7 +111,7 @@
     point_x2 = pt/pt2_x
     point_y2 = pt/pt2_y
     point_z2 = pt/pt2_z
-    domain_name = differentID
+    domain_var = differentID
     outputs = out
   []
 []

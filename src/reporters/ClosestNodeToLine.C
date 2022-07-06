@@ -17,7 +17,7 @@ ClosestNodeToLine::validParams()
 {
   InputParameters params = GeneralReporter::validParams();
   params.addClassDescription("Reports coordinates and element ids of the closest nodes to a line "
-                             "with unique domain_name values. ");
+                             "with unique domain_var values. ");
   params.addRequiredParam<ReporterName>("point_x1",
                                         "input reporter of x-coordinate name for point.  This uses "
                                         "the reporter syntax <reporter>/<name>.");
@@ -36,7 +36,7 @@ ClosestNodeToLine::validParams()
   params.addRequiredParam<ReporterName>("point_z2",
                                         "input reporter of z-coordinate name for point.  This uses "
                                         "the reporter syntax <reporter>/<name>.");
-  params.addRequiredParam<VariableName>("domain_name",
+  params.addRequiredParam<VariableName>("domain_var",
                                         "Name for the variable in domain to determine uniqueness");
   params.addParam<Real>("projection_tolerance",
                         libMesh::TOLERANCE,
@@ -58,7 +58,7 @@ ClosestNodeToLine::ClosestNodeToLine(const InputParameters & parameters)
     _pt_x(declareValueByName<std::vector<Real>>("point_x", REPORTER_MODE_REPLICATED)),
     _pt_y(declareValueByName<std::vector<Real>>("point_y", REPORTER_MODE_REPLICATED)),
     _pt_z(declareValueByName<std::vector<Real>>("point_z", REPORTER_MODE_REPLICATED)),
-    _dom_name(parameters.get<VariableName>("domain_name"))
+    _dom_name(parameters.get<VariableName>("domain_var"))
 {
 }
 
