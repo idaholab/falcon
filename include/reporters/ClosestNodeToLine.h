@@ -66,13 +66,12 @@ protected:
   std::vector<Real> & _pt_y;
   std::vector<Real> & _pt_z;
   std::vector<Real> _dist;
-  std::unordered_map<int, LocData> _dom_map;
+  std::map<int, LocData> _dom_map;
   Point _p1;
   Point _p2;
   Point _line;
 
   std::string _dom_name;
-  // std::vector<Real> &_var;
 };
 
 namespace TIMPI
