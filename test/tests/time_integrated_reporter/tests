@@ -1,0 +1,10 @@
+[Tests]
+    [timeintegratedreporter]
+      type = 'CSVDiff'
+      input = 'main.i'
+      csvdiff = 'main_out.csv'
+      abs_zero = 1.0e-07
+      rel_err  = 1.0e-04
+    []
+  []
+  
