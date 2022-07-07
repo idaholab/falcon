@@ -7,7 +7,6 @@
 //* Licensed under LGPL 2.1, please see LICENSE for details
 //* https://www.gnu.org/licenses/lgpl-2.1.html
 
-
 #pragma once
 
 #include "GeneralReporter.h"
@@ -28,8 +27,8 @@ public:
   virtual void initialSetup() override;
 
   virtual void initialize() override{};
-  virtual void execute() override;
-  virtual void finalize() override;
+  virtual void execute() override{};
+  virtual void finalize() override{};
 
   struct LocData
   {

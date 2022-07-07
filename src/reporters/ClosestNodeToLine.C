@@ -7,7 +7,6 @@
 //* Licensed under LGPL 2.1, please see LICENSE for details
 //* https://www.gnu.org/licenses/lgpl-2.1.html
 
-
 #include "ClosestNodeToLine.h"
 
 registerMooseObject("FalconApp", ClosestNodeToLine);
@@ -36,8 +35,8 @@ ClosestNodeToLine::validParams()
   params.addRequiredParam<ReporterName>("point_z2",
                                         "input reporter of z-coordinate name for point.  This uses "
                                         "the reporter syntax <reporter>/<name>.");
-  params.addRequiredParam<VariableName>("domain_var",
-                                        "Name for the variable in domain to determine uniqueness");
+  params.addParam<VariableName>("domain_var",
+                                "Name for the variable in domain to determine uniqueness");
   params.addParam<Real>("projection_tolerance",
                         libMesh::TOLERANCE,
                         "Search tolerance between line and the closest node.  If a node is not "
@@ -58,7 +57,7 @@ ClosestNodeToLine::ClosestNodeToLine(const InputParameters & parameters)
     _pt_x(declareValueByName<std::vector<Real>>("point_x", REPORTER_MODE_REPLICATED)),
     _pt_y(declareValueByName<std::vector<Real>>("point_y", REPORTER_MODE_REPLICATED)),
     _pt_z(declareValueByName<std::vector<Real>>("point_z", REPORTER_MODE_REPLICATED)),
-    _dom_name(parameters.get<VariableName>("domain_var"))
+    _dom_name(isParamValid("domain_var") ? getParam<VariableName>("domain_var") : "")
 {
 }
 
@@ -68,10 +67,7 @@ ClosestNodeToLine::initialSetup()
   _p1 = Point(_point_x1[0], _point_y1[0], _point_z1[0]);
   _p2 = Point(_point_x2[0], _point_y2[0], _point_z2[0]);
   _line = _p2 - _p1;
-}
-void
-ClosestNodeToLine::execute()
-{
+
   const MooseMesh & mesh = _subproblem.mesh();
   for (const auto & elem : as_range(mesh.getMesh().active_local_elements_begin(),
                                     mesh.getMesh().active_local_elements_end()))
@@ -82,13 +78,8 @@ ClosestNodeToLine::execute()
       addPoint(*elem, curr_dist);
     }
   }
-}
 
-void
-ClosestNodeToLine::finalize()
-{
   std::vector<LocData> loc_datas;
-
   for (const auto & l_d : _dom_map)
     loc_datas.push_back(l_d.second);
   if (_app.n_processors() > 1)
@@ -113,9 +104,13 @@ ClosestNodeToLine::getDistance(const Elem & elem)
 void
 ClosestNodeToLine::addPoint(const Elem & elem, Real dist)
 {
-  auto value = _subproblem.getStandardVariable(_tid, _dom_name).getElementalValue(&elem);
+  int value_int = (int)elem.id();
+  if (!_dom_name.empty())
+  {
+    auto value = _subproblem.getStandardVariable(_tid, _dom_name).getElementalValue(&elem);
+    value_int = (int)std::round(value);
+  }
 
-  int value_int = (int)std::round(value);
   if (!_dom_map.count(value_int))
     // if this subdomain has not been added yet
     _dom_map[value_int] = LocData(value_int, elem.id(), dist, elem.vertex_average());
