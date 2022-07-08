@@ -99,7 +99,7 @@
   []
 
   [oneID_out]
-    type = ClosestNodeToLine
+    type = ClosestElemsToLine
     projection_tolerance = 1
     point_x1 = pt/pt1_x
     point_y1 = pt/pt1_y
@@ -111,7 +111,7 @@
     outputs = out
   []
   [differentID_out]
-    type = ClosestNodeToLine
+    type = ClosestElemsToLine
     projection_tolerance = 1
     point_x1 = pt/pt1_x
     point_y1 = pt/pt1_y
@@ -123,7 +123,7 @@
     outputs = out
   []
   [noID_out]
-    type = ClosestNodeToLine
+    type = ClosestElemsToLine
     projection_tolerance = 0.2
     point_x1 = pt/pt1_x
     point_y1 = pt/pt1_y

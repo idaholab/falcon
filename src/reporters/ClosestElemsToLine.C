@@ -7,12 +7,12 @@
 //* Licensed under LGPL 2.1, please see LICENSE for details
 //* https://www.gnu.org/licenses/lgpl-2.1.html
 
-#include "ClosestNodeToLine.h"
+#include "ClosestElemsToLine.h"
 
-registerMooseObject("FalconApp", ClosestNodeToLine);
+registerMooseObject("FalconApp", ClosestElemsToLine);
 
 InputParameters
-ClosestNodeToLine::validParams()
+ClosestElemsToLine::validParams()
 {
   InputParameters params = GeneralReporter::validParams();
   params.addClassDescription("Reports coordinates and element ids of the closest nodes to a line "
@@ -44,7 +44,7 @@ ClosestNodeToLine::validParams()
   return params;
 }
 
-ClosestNodeToLine::ClosestNodeToLine(const InputParameters & parameters)
+ClosestElemsToLine::ClosestElemsToLine(const InputParameters & parameters)
   : GeneralReporter(parameters),
     _point_x1(getReporterValue<std::vector<Real>>("point_x1", REPORTER_MODE_REPLICATED)),
     _point_y1(getReporterValue<std::vector<Real>>("point_y1", REPORTER_MODE_REPLICATED)),
@@ -62,7 +62,7 @@ ClosestNodeToLine::ClosestNodeToLine(const InputParameters & parameters)
 }
 
 void
-ClosestNodeToLine::initialSetup()
+ClosestElemsToLine::initialSetup()
 {
   _p1 = Point(_point_x1[0], _point_y1[0], _point_z1[0]);
   _p2 = Point(_point_x2[0], _point_y2[0], _point_z2[0]);
@@ -92,7 +92,7 @@ ClosestNodeToLine::initialSetup()
 }
 
 Real
-ClosestNodeToLine::getDistance(const Elem & elem)
+ClosestElemsToLine::getDistance(const Elem & elem)
 {
   // distance between node and line. This assumes the line goes on forever.
   Point term1 = elem.vertex_average() - _p1;
@@ -102,7 +102,7 @@ ClosestNodeToLine::getDistance(const Elem & elem)
 }
 
 void
-ClosestNodeToLine::addPoint(const Elem & elem, Real dist)
+ClosestElemsToLine::addPoint(const Elem & elem, Real dist)
 {
   int value_int = (int)elem.id();
   if (!_dom_name.empty())
@@ -119,7 +119,7 @@ ClosestNodeToLine::addPoint(const Elem & elem, Real dist)
     _dom_map[value_int] = LocData(value_int, elem.id(), dist, elem.vertex_average());
 }
 void
-ClosestNodeToLine::convertVecs()
+ClosestElemsToLine::convertVecs()
 {
   for (auto & [frac_num, loc_data] : _dom_map)
   {
@@ -139,7 +139,7 @@ ClosestNodeToLine::convertVecs()
 }
 
 void
-ClosestNodeToLine::convertToMap(std::vector<LocData> & data)
+ClosestElemsToLine::convertToMap(std::vector<LocData> & data)
 {
   _dom_map.clear();
 
@@ -155,9 +155,9 @@ ClosestNodeToLine::convertToMap(std::vector<LocData> & data)
 
 namespace TIMPI
 {
-StandardType<ClosestNodeToLine::LocData>::StandardType(const ClosestNodeToLine::LocData * example)
+StandardType<ClosestElemsToLine::LocData>::StandardType(const ClosestElemsToLine::LocData * example)
 {
-  static const ClosestNodeToLine::LocData p;
+  static const ClosestElemsToLine::LocData p;
   if (!example)
     example = &p;
 
@@ -172,7 +172,7 @@ StandardType<ClosestNodeToLine::LocData>::StandardType(const ClosestNodeToLine::
   MPI_Datatype types[] = {(data_type)d1, (data_type)d2, (data_type)d3, (data_type)d4};
   int blocklengths[] = {1, 1, 1, 1};
   MPI_Aint displs[4], start;
-  libmesh_call_mpi(MPI_Get_address(const_cast<ClosestNodeToLine::LocData *>(example), &start));
+  libmesh_call_mpi(MPI_Get_address(const_cast<ClosestElemsToLine::LocData *>(example), &start));
   libmesh_call_mpi(MPI_Get_address(const_cast<int *>(&example->frac_num), &displs[0]));
   libmesh_call_mpi(MPI_Get_address(const_cast<dof_id_type *>(&example->elem_id), &displs[1]));
   libmesh_call_mpi(MPI_Get_address(const_cast<Real *>(&example->distance), &displs[2]));
@@ -187,7 +187,7 @@ StandardType<ClosestNodeToLine::LocData>::StandardType(const ClosestNodeToLine::
 
   // resize the structure type to account for padding, if any
   libmesh_call_mpi(
-      MPI_Type_create_resized(tmptype, 0, sizeof(ClosestNodeToLine::LocData), &_datatype));
+      MPI_Type_create_resized(tmptype, 0, sizeof(ClosestElemsToLine::LocData), &_datatype));
   libmesh_call_mpi(MPI_Type_free(&tmptype));
 
   this->commit();
@@ -195,8 +195,8 @@ StandardType<ClosestNodeToLine::LocData>::StandardType(const ClosestNodeToLine::
 }
 } // namespace TIMPI
 
-StandardType<ClosestNodeToLine::LocData>::StandardType(
-    const StandardType<ClosestNodeToLine::LocData> & t)
+StandardType<ClosestElemsToLine::LocData>::StandardType(
+    const StandardType<ClosestElemsToLine::LocData> & t)
 {
 #ifdef LIBMESH_HAVE_MPI
   libmesh_call_mpi(MPI_Type_dup(t._datatype, &_datatype));

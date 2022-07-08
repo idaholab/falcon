@@ -17,12 +17,12 @@
 
 using namespace TIMPI;
 
-class ClosestNodeToLine : public GeneralReporter
+class ClosestElemsToLine : public GeneralReporter
 {
 public:
   static InputParameters validParams();
 
-  ClosestNodeToLine(const InputParameters & parameters);
+  ClosestElemsToLine(const InputParameters & parameters);
 
   virtual void initialSetup() override;
 
@@ -77,11 +77,11 @@ namespace TIMPI
 {
 
 template <>
-class StandardType<ClosestNodeToLine::LocData> : public DataType
+class StandardType<ClosestElemsToLine::LocData> : public DataType
 {
 public:
-  explicit StandardType(const ClosestNodeToLine::LocData * example = nullptr);
-  StandardType(const StandardType<ClosestNodeToLine::LocData> & t);
+  explicit StandardType(const ClosestElemsToLine::LocData * example = nullptr);
+  StandardType(const StandardType<ClosestElemsToLine::LocData> & t);
   ~StandardType() { this->free(); }
 };
 } // namespace TIMPI

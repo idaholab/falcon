@@ -1,7 +1,7 @@
 {
     "reporters": {
         "differentID_out": {
-            "type": "ClosestNodeToLine",
+            "type": "ClosestElemsToLine",
             "values": {
                 "elem_id": {
                     "type": "std::vector<unsigned long long>"
@@ -18,7 +18,7 @@
             }
         },
         "noID_out": {
-            "type": "ClosestNodeToLine",
+            "type": "ClosestElemsToLine",
             "values": {
                 "elem_id": {
                     "type": "std::vector<unsigned long long>"
@@ -35,7 +35,7 @@
             }
         },
         "oneID_out": {
-            "type": "ClosestNodeToLine",
+            "type": "ClosestElemsToLine",
             "values": {
                 "elem_id": {
                     "type": "std::vector<unsigned long long>"
