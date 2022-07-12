@@ -1,0 +1,10 @@
+[Tests]
+  issues='97'
+  [./dfn]
+    type = 'JSONDiff'
+    input    = 'dfn_test.i'
+    jsondiff = 'dfn_test_out.json'
+    skip_keys = 'type'
+    requirement = 'The system shall be able to report the coordinates of all the locations where a line intersects an element and append a value onto each element in a realistic DFN'
+  [../]
+[]

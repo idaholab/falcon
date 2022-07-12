@@ -1,0 +1,10 @@
+[Tests]
+  issues='97'
+  [./constant_projection]
+    type = 'JSONDiff'
+    input    = 'constant_line_projection.i'
+    jsondiff = 'constant_line_projection_out.json'
+    skip_keys = 'type'
+    requirement = 'The system shall be able to report the coordinates of all the locations where a line intersects an element'
+  [../]
+[]

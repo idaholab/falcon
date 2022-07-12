@@ -6,4 +6,9 @@
     csvdiff = 'matrix_app_amr_out.csv'
     requirement = 'Run multiapp matrix DFN simulation with AMR in matrix around fracture'
   [../]
+  [lineSink]
+    method = '!dbg'
+    type     = RunApp
+    input    = 'matrix_app_lineSource_amr.i'
+  [../]
 []
