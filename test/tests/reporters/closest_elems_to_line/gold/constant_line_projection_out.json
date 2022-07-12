@@ -1,0 +1,261 @@
+{
+    "reporters": {
+        "differentID_out": {
+            "type": "ClosestElemsToLine",
+            "values": {
+                "elem_id": {
+                    "type": "std::vector<unsigned long long>"
+                },
+                "point_x": {
+                    "type": "std::vector<double>"
+                },
+                "point_y": {
+                    "type": "std::vector<double>"
+                },
+                "point_z": {
+                    "type": "std::vector<double>"
+                }
+            }
+        },
+        "noID_out": {
+            "type": "ClosestElemsToLine",
+            "values": {
+                "elem_id": {
+                    "type": "std::vector<unsigned long long>"
+                },
+                "point_x": {
+                    "type": "std::vector<double>"
+                },
+                "point_y": {
+                    "type": "std::vector<double>"
+                },
+                "point_z": {
+                    "type": "std::vector<double>"
+                }
+            }
+        },
+        "oneID_out": {
+            "type": "ClosestElemsToLine",
+            "values": {
+                "elem_id": {
+                    "type": "std::vector<unsigned long long>"
+                },
+                "point_x": {
+                    "type": "std::vector<double>"
+                },
+                "point_y": {
+                    "type": "std::vector<double>"
+                },
+                "point_z": {
+                    "type": "std::vector<double>"
+                }
+            }
+        }
+    },
+    "time_steps": [
+        {
+            "differentID_out": {
+                "elem_id": [
+                    25,
+                    12,
+                    68
+                ],
+                "point_x": [
+                    0.1,
+                    0.5,
+                    0.7000000000000001
+                ],
+                "point_y": [
+                    0.1,
+                    0.5,
+                    0.7
+                ],
+                "point_z": [
+                    -4.0,
+                    0.0,
+                    2.0
+                ]
+            },
+            "noID_out": {
+                "elem_id": [
+                    7,
+                    11,
+                    12,
+                    13,
+                    17,
+                    25,
+                    26,
+                    30,
+                    63,
+                    67,
+                    68,
+                    69,
+                    73
+                ],
+                "point_x": [
+                    0.5,
+                    0.3,
+                    0.5,
+                    0.7000000000000001,
+                    0.5,
+                    0.1,
+                    0.3,
+                    0.1,
+                    0.7000000000000001,
+                    0.5,
+                    0.7000000000000001,
+                    0.8999999999999999,
+                    0.7000000000000001
+                ],
+                "point_y": [
+                    0.30000000000000004,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.7,
+                    0.1,
+                    0.1,
+                    0.30000000000000004,
+                    0.5,
+                    0.7,
+                    0.7,
+                    0.7,
+                    0.9
+                ],
+                "point_z": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    -4.0,
+                    -4.0,
+                    -4.0,
+                    2.0,
+                    2.0,
+                    2.0,
+                    2.0,
+                    2.0
+                ]
+            },
+            "oneID_out": {
+                "elem_id": [
+                    12
+                ],
+                "point_x": [
+                    0.5
+                ],
+                "point_y": [
+                    0.5
+                ],
+                "point_z": [
+                    0.0
+                ]
+            },
+            "time": 0.0,
+            "time_step": 0
+        },
+        {
+            "differentID_out": {
+                "elem_id": [
+                    25,
+                    12,
+                    68
+                ],
+                "point_x": [
+                    0.1,
+                    0.5,
+                    0.7000000000000001
+                ],
+                "point_y": [
+                    0.1,
+                    0.5,
+                    0.7
+                ],
+                "point_z": [
+                    -4.0,
+                    0.0,
+                    2.0
+                ]
+            },
+            "noID_out": {
+                "elem_id": [
+                    7,
+                    11,
+                    12,
+                    13,
+                    17,
+                    25,
+                    26,
+                    30,
+                    63,
+                    67,
+                    68,
+                    69,
+                    73
+                ],
+                "point_x": [
+                    0.5,
+                    0.3,
+                    0.5,
+                    0.7000000000000001,
+                    0.5,
+                    0.1,
+                    0.3,
+                    0.1,
+                    0.7000000000000001,
+                    0.5,
+                    0.7000000000000001,
+                    0.8999999999999999,
+                    0.7000000000000001
+                ],
+                "point_y": [
+                    0.30000000000000004,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.7,
+                    0.1,
+                    0.1,
+                    0.30000000000000004,
+                    0.5,
+                    0.7,
+                    0.7,
+                    0.7,
+                    0.9
+                ],
+                "point_z": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    -4.0,
+                    -4.0,
+                    -4.0,
+                    2.0,
+                    2.0,
+                    2.0,
+                    2.0,
+                    2.0
+                ]
+            },
+            "oneID_out": {
+                "elem_id": [
+                    12
+                ],
+                "point_x": [
+                    0.5
+                ],
+                "point_y": [
+                    0.5
+                ],
+                "point_z": [
+                    0.0
+                ]
+            },
+            "time": 1.0,
+            "time_step": 1
+        }
+    ]
+}
