@@ -15,6 +15,7 @@ InputParameters
 ClosestElemsToLine::validParams()
 {
   InputParameters params = GeneralReporter::validParams();
+  params += BlockRestrictable::validParams();
   params.addClassDescription("Reports coordinates and element ids of the closest nodes to a line "
                              "with unique domain_var values. ");
   params.addRequiredParam<ReporterName>("point_x1",
@@ -35,7 +36,7 @@ ClosestElemsToLine::validParams()
   params.addRequiredParam<ReporterName>("point_z2",
                                         "input reporter of z-coordinate name for point.  This uses "
                                         "the reporter syntax <reporter>/<name>.");
-  params.addParam<VariableName>("domain_var",
+  params.addParam<VariableName>("variable",
                                 "Name for the variable in domain to determine uniqueness");
   params.addParam<Real>("projection_tolerance",
                         libMesh::TOLERANCE,
@@ -46,6 +47,7 @@ ClosestElemsToLine::validParams()
 
 ClosestElemsToLine::ClosestElemsToLine(const InputParameters & parameters)
   : GeneralReporter(parameters),
+    BlockRestrictable(this),
     _point_x1(getReporterValue<std::vector<Real>>("point_x1", REPORTER_MODE_REPLICATED)),
     _point_y1(getReporterValue<std::vector<Real>>("point_y1", REPORTER_MODE_REPLICATED)),
     _point_z1(getReporterValue<std::vector<Real>>("point_z1", REPORTER_MODE_REPLICATED)),
@@ -57,7 +59,7 @@ ClosestElemsToLine::ClosestElemsToLine(const InputParameters & parameters)
     _pt_x(declareValueByName<std::vector<Real>>("point_x", REPORTER_MODE_REPLICATED)),
     _pt_y(declareValueByName<std::vector<Real>>("point_y", REPORTER_MODE_REPLICATED)),
     _pt_z(declareValueByName<std::vector<Real>>("point_z", REPORTER_MODE_REPLICATED)),
-    _dom_name(isParamValid("domain_var") ? getParam<VariableName>("domain_var") : "")
+    _var(isParamValid("variable") ? getParam<VariableName>("variable") : "")
 {
 }
 
@@ -72,10 +74,13 @@ ClosestElemsToLine::initialSetup()
   for (const auto & elem : as_range(mesh.getMesh().active_local_elements_begin(),
                                     mesh.getMesh().active_local_elements_end()))
   {
-    Real curr_dist = getDistance(*elem);
-    if (curr_dist < _tolerance)
+    if (this->hasBlocks(elem->subdomain_id()))
     {
-      addPoint(*elem, curr_dist);
+      Real curr_dist = getDistance(*elem);
+      if (curr_dist < _tolerance)
+      {
+        addPoint(*elem, curr_dist);
+      }
     }
   }
 
@@ -105,9 +110,9 @@ void
 ClosestElemsToLine::addPoint(const Elem & elem, Real dist)
 {
   int value_int = (int)elem.id();
-  if (!_dom_name.empty())
+  if (!_var.empty())
   {
-    auto value = _subproblem.getStandardVariable(_tid, _dom_name).getElementalValue(&elem);
+    auto value = _subproblem.getStandardVariable(_tid, _var).getElementalValue(&elem);
     value_int = (int)std::round(value);
   }
 

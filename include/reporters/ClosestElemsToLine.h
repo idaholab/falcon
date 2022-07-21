@@ -8,16 +8,18 @@
 //* https://www.gnu.org/licenses/lgpl-2.1.html
 
 #pragma once
-
 #include "GeneralReporter.h"
+#include "BlockRestrictable.h"
 #include "MooseTypes.h"
 #include "libmesh/parallel_algebra.h"
 #include <unordered_map>
 #include <vector>
 
+class MooseMesh;
+
 using namespace TIMPI;
 
-class ClosestElemsToLine : public GeneralReporter
+class ClosestElemsToLine : public GeneralReporter, public BlockRestrictable
 {
 public:
   static InputParameters validParams();
@@ -70,7 +72,7 @@ protected:
   Point _p2;
   Point _line;
 
-  std::string _dom_name;
+  std::string _var;
 };
 
 namespace TIMPI
