@@ -8,4 +8,4 @@ FALCON is a finite-element geothermal reservoir simulation and analysis code for
 
 # Citing FALCON
 
-Yidong Xia, Mitchell Plummer, Earl Mattson, Robert Podgorney, and Ahmad Ghassemi. "Design, modeling, and evaluation of a doublet heat extraction model in enhanced geothermal systems." Renewable Energy, 105 (2017): 232-247, DOI: 10.1016/j.renene.2016.12.064.
+Podgorney R., Finnila, A., Simmons, S., and McLennan, J. (2021). A Reference Thermal-Hydrologic-Mechanical Native State Model of the Utah FORGE Enhanced Geothermal Site. Energies, 14(16):4758. https://doi.org/10.3390/en14164758
