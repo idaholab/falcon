@@ -1,0 +1,17 @@
+[Tests]
+  [./mandel]
+    type = CSVDiff
+    input = EG_Mandel.i
+    csvdiff = EG_Mandel.csv
+  [../]
+  [./terzaghi]
+    type = CSVDiff
+    input = EG_Terzaghi.i
+    csvdiff = EG_Terzaghi.csv
+  [../]
+  [./tides]
+    type = CSVDiff
+    input = EG_Tides.i
+    csvdiff = EG_Tides.csv
+  [../]
+[]
