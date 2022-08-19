@@ -3,14 +3,14 @@
 pp_ini_bc = 3e+7   # Pa
 T_ini_bc = 399.15   # K
 
-well_length = 1.2  #lower two-thirds of the formation
+well_length = 15.6  #lower two-thirds of the formation
 inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4 sysmentrical model
 
 # Darcy flow with heat advection and conduction
 [Mesh]
   [./fmg]
     type = FileMeshGenerator
-    file = Cranfield_caps_new_coarse.e
+    file = Cranfield_caps_old_coarse.e
   []
 []
 #############################################################
@@ -126,7 +126,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     fluid_phase = 0
     variable = porepressure
     SumQuantityUO = fluid_mass_in_inc
-    line_base = '1 -9.99 -9.99 3.6'
+    line_base = '1 -9.99 -9.99 -10.8'
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -138,7 +138,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_in_inc
-    line_base = '1 -9.99 -9.99 3.6'
+    line_base = '1 -9.99 -9.99 -10.8'
     line_length = ${well_length}
     line_direction = '0 0 1'
     pressure = porepressure
@@ -152,7 +152,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     fluid_phase = 0
     variable = porepressure
     SumQuantityUO = fluid_mass_out_inc
-    line_base = '1 9.99 9.99 3.6'
+    line_base = '1 9.99 9.99 -10.8'
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -164,7 +164,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_out_inc
-    line_base = '1 9.99 9.99 3.6'
+    line_base = '1 9.99 9.99 -10.8'
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -177,7 +177,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     fluid_phase = 0
     variable = porepressure
     SumQuantityUO = fluid_mass_in_inc
-    line_base = '1 -9.99 -9.99 3.6'
+    line_base = '1 -9.99 -9.99 -10.8'
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -189,7 +189,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_in_inc
-    line_base = '1 -9.99 -9.99 3.6'
+    line_base = '1 -9.99 -9.99 -10.8'
     line_length = ${well_length}
     line_direction = '0 0 1'
     pressure = porepressure
@@ -203,7 +203,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     fluid_phase = 0
     variable = porepressure
     SumQuantityUO = fluid_mass_out_inc
-    line_base = '1 9.99 9.99 3.6'
+    line_base = '1 9.99 9.99 -10.8'
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -215,7 +215,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_out_inc
-    line_base = '1 9.99 9.99 3.6'
+    line_base = '1 9.99 9.99 -10.8'
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -273,22 +273,12 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     type = PorousFlowMatrixInternalEnergy
     specific_heat_capacity = 920.0 
     density = 2600.0
-    block = 'inj_well ext_well caps layer_1 layer_2 layer_3 layer_4 layer_5 layer_6 layer_7 layer_8 layer_9 layer_10 layer_11 layer_12 layer_13 layer_14 layer_15 layer_16 layer_17 layer_18 layer_19 layer_20'
+    block = 'caps layer_1 layer_2 layer_3 layer_4 layer_5 layer_6 layer_7 layer_8 layer_9 layer_10 layer_11 layer_12 layer_13 layer_14 layer_15 layer_16 layer_17 layer_18 layer_19 layer_20'
   [../]
   [./thermal_conductivity_aquifer]
     type = PorousFlowThermalConductivityIdeal
     dry_thermal_conductivity = '2.51 0 0  0 2.51 0  0 0 2.51'
-    block = 'inj_well ext_well caps layer_1 layer_2 layer_3 layer_4 layer_5 layer_6 layer_7 layer_8 layer_9 layer_10 layer_11 layer_12 layer_13 layer_14 layer_15 layer_16 layer_17 layer_18 layer_19 layer_20'
-  [../]
-  [./porosity_well]
-    type = PorousFlowPorosityConst
-    block = 'inj_well ext_well'
-    porosity = 0.299
-  [../]
-  [./permeability_well]
-    type = PorousFlowPermeabilityConst
-    block = 'inj_well ext_well'
-    permeability = '.2660E-12 0 0   0 .2660E-12 0   0 0 .2330E-09'
+    block = 'caps layer_1 layer_2 layer_3 layer_4 layer_5 layer_6 layer_7 layer_8 layer_9 layer_10 layer_11 layer_12 layer_13 layer_14 layer_15 layer_16 layer_17 layer_18 layer_19 layer_20'
   [../]
 
   [./porosity_caps]

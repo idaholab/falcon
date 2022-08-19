@@ -3,14 +3,14 @@
 pp_ini_bc = 3e+7   # Pa
 T_ini_bc = 399.15   # K
 
-well_length = 1.2  #lower two-thirds of the formation
+well_length = 15.6  #lower two-thirds of the formation
 inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4 sysmentrical model
 
 # Darcy flow with heat advection and conduction
 [Mesh]
   [./fmg]
     type = FileMeshGenerator
-    file = Cranfield_caps_new_coarse.e
+    file = Cranfield_caps_old_coarse.e
   []
 []
 #############################################################
@@ -126,7 +126,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     fluid_phase = 0
     variable = porepressure
     SumQuantityUO = fluid_mass_in_inc
-    line_base = '1 -9.99 -9.99 3.6'
+    line_base = '1 -9.99 -9.99 -10.8'
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -138,7 +138,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_in_inc
-    line_base = '1 -9.99 -9.99 3.6'
+    line_base = '1 -9.99 -9.99 -10.8'
     line_length = ${well_length}
     line_direction = '0 0 1'
     pressure = porepressure
@@ -152,7 +152,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     fluid_phase = 0
     variable = porepressure
     SumQuantityUO = fluid_mass_out_inc
-    line_base = '1 9.99 9.99 3.6'
+    line_base = '1 9.99 9.99 -10.8'
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -164,7 +164,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_out_inc
-    line_base = '1 9.99 9.99 3.6'
+    line_base = '1 9.99 9.99 -10.8'
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -177,7 +177,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     fluid_phase = 0
     variable = porepressure
     SumQuantityUO = fluid_mass_in_inc
-    line_base = '1 -9.99 -9.99 3.6'
+    line_base = '1 -9.99 -9.99 -10.8'
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -189,7 +189,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_in_inc
-    line_base = '1 -9.99 -9.99 3.6'
+    line_base = '1 -9.99 -9.99 -10.8'
     line_length = ${well_length}
     line_direction = '0 0 1'
     pressure = porepressure
@@ -203,7 +203,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     fluid_phase = 0
     variable = porepressure
     SumQuantityUO = fluid_mass_out_inc
-    line_base = '1 9.99 9.99 3.6'
+    line_base = '1 9.99 9.99 -10.8'
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -215,7 +215,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     fluid_phase = 0
     variable = temperature
     SumQuantityUO = heat_enthalpy_out_inc
-    line_base = '1 9.99 9.99 3.6'
+    line_base = '1 9.99 9.99 -10.8'
     line_length = ${well_length}
     line_direction = '0 0 1'
     use_mobility = false
@@ -273,43 +273,29 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     type = PorousFlowMatrixInternalEnergy
     specific_heat_capacity = 920.0 
     density = 2600.0
-    block = 'inj_well ext_well caps layer_1 layer_2 layer_3 layer_4 layer_5 layer_6 layer_7 layer_8 layer_9 layer_10 layer_11 layer_12 layer_13 layer_14 layer_15 layer_16 layer_17 layer_18 layer_19 layer_20'
+    block = 'caps layer_1 layer_2 layer_3 layer_4 layer_5 layer_6 layer_7 layer_8 layer_9 layer_10 layer_11 layer_12 layer_13 layer_14 layer_15 layer_16 layer_17 layer_18 layer_19 layer_20'
   [../]
   [./thermal_conductivity_aquifer]
     type = PorousFlowThermalConductivityIdeal
     dry_thermal_conductivity = '2.51 0 0  0 2.51 0  0 0 2.51'
-    block = 'inj_well ext_well caps layer_1 layer_2 layer_3 layer_4 layer_5 layer_6 layer_7 layer_8 layer_9 layer_10 layer_11 layer_12 layer_13 layer_14 layer_15 layer_16 layer_17 layer_18 layer_19 layer_20'
-  [../]
-  [./porosity_well]
-    type = PorousFlowPorosityConst
-    block = 'inj_well ext_well'
-    porosity = 0.299
-  [../]
-  [./permeability_well]
-    type = PorousFlowPermeabilityConst
-    block = 'inj_well ext_well'
-    permeability = '.2660E-12 0 0   0 .2660E-12 0   0 0 .2330E-09'
+    block = 'caps layer_1 layer_2 layer_3 layer_4 layer_5 layer_6 layer_7 layer_8 layer_9 layer_10 layer_11 layer_12 layer_13 layer_14 layer_15 layer_16 layer_17 layer_18 layer_19 layer_20'
   [../]
 
   [./porosity_caps]
     type = PorousFlowPorosityConst
     block = caps
-    porosity = 0.01
+    porosity = 0.1
   [../]
   [./permeability_caps]
     type = PorousFlowPermeabilityConst
     block = caps
-    permeability = '1E-18 0 0   0 1E-18 0   0 0 1E-18'
+    permeability = '1.0E-18 0 0   0 1.0E-18 0   0 0 1.0E-18'
   [../]
 
   [./porosity_layer_1]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_1
-    porosity_zero = 0.143
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8  
+    porosity = 0.143
   [../]
   [./permeability_layer_1]
     type = PorousFlowPermeabilityConst
@@ -318,13 +304,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_2]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_2
-    porosity_zero = 0.158
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8  
+    porosity = 0.158
   [../]
   [./permeability_layer_2]
     type = PorousFlowPermeabilityConst
@@ -333,13 +315,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_3]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_3
-    porosity_zero = 0.176
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8  
+    porosity = 0.176
   [../]
   [./permeability_layer_3]
     type = PorousFlowPermeabilityConst
@@ -348,13 +326,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_4]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_4
-    porosity_zero = 0.188
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8
+    porosity = 0.188
   [../]
   [./permeability_layer_4]
     type = PorousFlowPermeabilityConst
@@ -363,13 +337,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_5]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_5
-    porosity_zero = 0.166
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8
+    porosity = 0.166
   [../]
   [./permeability_layer_5]
     type = PorousFlowPermeabilityConst
@@ -378,13 +348,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_6]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_6
-    porosity_zero = 0.185
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8
+    porosity = 0.185
   [../]
   [./permeability_layer_6]
     type = PorousFlowPermeabilityConst
@@ -393,13 +359,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_7]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_7
-    porosity_zero = 0.24
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8
+    porosity = 0.24
   [../]
   [./permeability_layer_7]
     type = PorousFlowPermeabilityConst
@@ -408,13 +370,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_8]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_8
-    porosity_zero = 0.26
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8
+    porosity = 0.26
   [../]
   [./permeability_layer_8]
     type = PorousFlowPermeabilityConst
@@ -423,13 +381,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_9]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_9
-    porosity_zero = 0.285
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8
+    porosity = 0.285
   [../]
   [./permeability_layer_9]
     type = PorousFlowPermeabilityConst
@@ -438,13 +392,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_10]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_10
-    porosity_zero = 0.27
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8
+    porosity = 0.27
   [../]
   [./permeability_layer_10]
     type = PorousFlowPermeabilityConst
@@ -453,9 +403,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_11]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_11
-    porosity_zero = 0.23
+    porosity = 0.23
   [../]
   [./permeability_layer_11]
     type = PorousFlowPermeabilityConst
@@ -464,13 +414,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_12]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_12
-    porosity_zero = 0.306
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8
+    porosity = 0.306
   [../]
   [./permeability_layer_12]
     type = PorousFlowPermeabilityConst
@@ -479,13 +425,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_13]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_13
-    porosity_zero = .285
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8
+    porosity = .285
   [../]
   [./permeability_layer_13]
     type = PorousFlowPermeabilityConst
@@ -494,13 +436,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_14]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_14
-    porosity_zero = .155
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8
+    porosity = .155
   [../]
   [./permeability_layer_14]
     type = PorousFlowPermeabilityConst
@@ -509,13 +447,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_15]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_15
-    porosity_zero = .299
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8
+    porosity = .299
   [../]
   [./permeability_layer_15]
     type = PorousFlowPermeabilityConst
@@ -524,13 +458,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_16]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_16
-    porosity_zero = .334
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8
+    porosity = .334
   [../]
   [./permeability_layer_16]
     type = PorousFlowPermeabilityConst
@@ -538,14 +468,11 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     permeability = '.4230E-12 0 0   0 .4230E-12 0   0 0 .4110E-12'
   [../]
 
+
   [./porosity_layer_17]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_17
-    porosity_zero = .32
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8
+    porosity = .32
   [../]
   [./permeability_layer_17]
     type = PorousFlowPermeabilityConst
@@ -554,13 +481,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_18]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_18
-    porosity_zero = .294
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8
+    porosity = .294
   [../]
   [./permeability_layer_18]
     type = PorousFlowPermeabilityConst
@@ -569,13 +492,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_19]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_19
-    porosity_zero = .279
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8
+    porosity = .279
   [../]
   [./permeability_layer_19]
     type = PorousFlowPermeabilityConst
@@ -584,13 +503,9 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
 
   [./porosity_layer_20]
-    type = PorousFlowPorosity
+    type = PorousFlowPorosityConst
     block = layer_20
-    porosity_zero = .071
-    fluid = true
-    biot_coefficient = 0.8
-    reference_porepressure = ${pp_ini_bc}
-    solid_bulk = 1.5E8
+    porosity = .071
   [../]
   [./permeability_layer_20]
     type = PorousFlowPermeabilityConst
