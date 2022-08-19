@@ -1,4 +1,4 @@
-# Examples:  Discrete Fracture Network Multiapp
+# Discrete Fracture Network Multiapp
 
 Example models of discrete fracture networks (DFN) loosely coupled with the surrounding matrix using the Multiapps system are given in this section.  These examples are based on the multiapp fracture flow example given in [porous_flow module](/porous_flow/index.md).  The first example provides a comparison to an analytic solution by [!cite](gringarten1975) for a single infinite crack in an infinite domain.  The second example demonstrates the use of automatic mesh refinement to refine the matrix mesh around the region containing the DFN from the [porous_flow](/porous_flow/index.md) multiapp fracture flow example.  
 
