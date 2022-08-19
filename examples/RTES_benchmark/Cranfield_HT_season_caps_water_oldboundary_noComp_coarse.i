@@ -236,7 +236,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     type = ConditionalFunctionEnableControl
     conditional_function = inj_function_winter
     enable_objects  = 'DiracKernels::winter_injection_P DiracKernels::winter_injection_T DiracKernels::winter_production_P DiracKernels::winter_production_T'
-  [] 
+  []
 []
 
 [Functions]
@@ -271,7 +271,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
 [Materials]
   [./internal_energy_aquifer]
     type = PorousFlowMatrixInternalEnergy
-    specific_heat_capacity = 920.0 
+    specific_heat_capacity = 920.0
     density = 2600.0
     block = 'caps layer_1 layer_2 layer_3 layer_4 layer_5 layer_6 layer_7 layer_8 layer_9 layer_10 layer_11 layer_12 layer_13 layer_14 layer_15 layer_16 layer_17 layer_18 layer_19 layer_20'
   [../]
@@ -520,7 +520,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [./is_summer]
     type = FunctionValuePostprocessor
     function = inj_function_summer
-  [../]				
+  [../]
   [./is_winter]
     type = FunctionValuePostprocessor
     function = inj_function_winter
@@ -567,7 +567,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     mem_units = 'bytes'
     execute_on = 'INITIAL TIMESTEP_END'
   []
-[] 
+[]
 
 ############################################################
 [Preconditioning]
