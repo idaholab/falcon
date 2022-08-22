@@ -12,8 +12,6 @@ This page is currently under development and does not yet serve as general docum
 A number of example FALCON simulations are provided below that can be used to help demonstrate code capabilities and as starting points for simulating similar scenarios. If you'd like to see a particular example, please [Contact Us](mailto:robert.podgorney@inl.gov) about your needs.
 
 A list of simulations using FALCON is provided below.
-
-## Table of Contents id=contents
-
-- [Example 1](examples/example01.md): Discrete Fracture Network Multiapp
-- [Example 2](examples/example02.md): Placeholder for Stress Porous flow Multiapp example
+- [Discrete Fracture Network Multiapp](examples/example01.md)
+- [HT-coupled RTES Benchmark between FALCON and TOUGH](examples/rtes_HT.md)
+- [RTES THM problem](example:rtes_HTM.md)
