@@ -1,11 +1,13 @@
 tpl/tetgen/tetgen
 .failed_tests
 .libs
+.vscode
 *.la
 *.lo
 *.d
 *.o
 *.a
+*.zip
 *-opt
 *-dbg
 *-oprof
@@ -33,6 +35,7 @@ tpl/tetgen/tetgen
 *.lbd.*
 *.nem
 *.spd
+*.json
 *.pex
 *.pdf
 *.plist*
@@ -254,3 +257,10 @@ include/FalconRevision.h
 include/base/FalconRevision.h
 .previous_test_results.json
 build/
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
