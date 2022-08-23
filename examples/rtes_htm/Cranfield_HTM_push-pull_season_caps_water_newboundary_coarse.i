@@ -433,7 +433,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   [../]
   [./ini_strain]
     type = ComputeEigenstrainFromInitialStress
-    initial_stress = '-${sigmaH_ini_bc} 0 0  0 -${sigmaH_ini_bc} 0  0 0 -${sigmaV_ini_bc}' 
+    initial_stress = '-${sigmaH_ini_bc} 0 0  0 -${sigmaH_ini_bc} 0  0 0 -${sigmaV_ini_bc}'
     eigenstrain_name = ini_stress
   [../]
   [./thermal_contribution]
@@ -455,7 +455,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
 
   [./internal_energy_aquifer]
     type = PorousFlowMatrixInternalEnergy
-    specific_heat_capacity = 920.0 
+    specific_heat_capacity = 920.0
     density = 2600.0
     block = 'inj_well ext_well caps layer_1 layer_2 layer_3 layer_4 layer_5 layer_6 layer_7 layer_8 layer_9 layer_10 layer_11 layer_12 layer_13 layer_14 layer_15 layer_16 layer_17 layer_18 layer_19 layer_20'
   [../]
@@ -1007,7 +1007,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     mem_units = 'bytes'
     execute_on = 'INITIAL TIMESTEP_END'
   []
-[] 
+[]
 [Functions]
   [./Fiss_Function]
     type = PiecewiseLinear

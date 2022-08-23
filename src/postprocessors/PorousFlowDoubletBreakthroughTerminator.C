@@ -57,5 +57,5 @@ PorousFlowDoubletBreakthroughTerminator::getValue()
     return 1;
 
   // return temp_diff;
-  
+
 }

@@ -50,7 +50,7 @@ PorousFlowRecoveryRateSeason::execute()
   }else if(_pps_pro == 1 ){
     _accumulator_ext += (_pps_hot + _pps_cold);
   }
-    
+
 }
 
 Real

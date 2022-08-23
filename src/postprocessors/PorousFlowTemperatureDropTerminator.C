@@ -34,7 +34,7 @@ PorousFlowTemperatureDropTerminator::PorousFlowTemperatureDropTerminator(const I
     _temperature_inj(getParam<Real>("T_inj")),
     _temperature_init(getParam<Real>("T_init")),
     // _temperature_detection_cap_time(getParam<Real>("Cap_time")),
-    _percentile_drop(getParam<Real>("P_drop"))    
+    _percentile_drop(getParam<Real>("P_drop"))
 {
 }
 

@@ -65,7 +65,7 @@ PorousFlowDoubletSwitch::getValue()
     if ( check < 0.6666667 )
       return 1;
     else
-      return 0; 
+      return 0;
   }
 }
 

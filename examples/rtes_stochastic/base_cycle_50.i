@@ -1,7 +1,7 @@
 #---geothermal battery project - looking for sweet spot
 #---Define two scalar variables to sweep consistently
 
-depth =  2000 
+depth =  2000
 pp_ini_bc = ${fparse if(depth<=2000, 1000*9.8*depth, 1000*9.8*depth+(depth-2000)*9.8*1000)}
 T_ini_bc  = ${fparse (80+3.28084*depth*1.1/100-32)*5/9 + 273.15}
 
@@ -12,7 +12,7 @@ well_length = 50  #fixed number in accordance with the mesh
 aquifer_mid= ${fparse 0 + 0}
 aquifer_top= ${fparse 0 + well_length/2}
 aquifer_bot= ${fparse 0 - well_length/2}
-#---Define a scalar variable to sweep 
+#---Define a scalar variable to sweep
 inj_ext_exponent = 1.5
 inj_ext_flux= ${fparse 10^inj_ext_exponent / well_length / 2 }
 
@@ -363,7 +363,7 @@ perm_aquifer = ${fparse 10^perm_exponent}
   [./porosity_aquifer]
     type = PorousFlowPorosityConst
     block = 'aquifer_HEX8 aquifer_WEDGE'
-    porosity = 0.01 
+    porosity = 0.01
   [../]
   [./permeability_aquifer]
     type = PorousFlowPermeabilityConst
@@ -498,7 +498,7 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
     T_inj = ${injection_temp}
     T_init = ${T_ini_bc}
     P_drop = 80
-    timepostprocessor = time 
+    timepostprocessor = time
   [../]
 
   [./recovery_rate]
@@ -540,7 +540,7 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
     point = '${pro_well_x} 0 ${aquifer_mid}'
     variable = temperature
   [../]
-[] 
+[]
 
 ##########################################################
 [Executioner]
@@ -561,7 +561,7 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
 #  timestep_limiting_postprocessor = timestep_pp
  [../]
 # controls for linear iterations
-  l_max_its = 50  
+  l_max_its = 50
   l_tol = 1e-3
 # controls for nonlinear iterations
   nl_max_its = 20
