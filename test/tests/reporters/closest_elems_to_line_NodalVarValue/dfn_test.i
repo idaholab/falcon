@@ -17,6 +17,11 @@
     initial_from_file_var = z_id
     initial_from_file_timestep = 'LATEST'
   []
+  [one]
+    order = FIRST
+    family = LAGRANGE
+    initial_condition = 1
+  []
 []
 
 [Executioner]
@@ -33,8 +38,7 @@
 
   [no_var]
     block = "9 10"
-    type = ClosestElemsToLineWithValues
-    value = 33
+    type = ClosestElemsToLineNodalVarValue
     projection_tolerance = 5
     point_x1 = pt/pt1_x
     point_y1 = pt/pt1_y
@@ -42,11 +46,11 @@
     point_x2 = pt/pt2_x
     point_y2 = pt/pt2_y
     point_z2 = pt/pt2_z
+    variable_to_sample = one
     outputs = out
   []
   [domain_var]
-    type = ClosestElemsToLineWithValues
-    value = 22
+    type = ClosestElemsToLineNodalVarValue
     projection_tolerance = 5
     point_x1 = pt/pt1_x
     point_y1 = pt/pt1_y
@@ -55,6 +59,7 @@
     point_y2 = pt/pt2_y
     point_z2 = pt/pt2_z
     variable_filter = z_id
+    variable_to_sample = one
     outputs = out
   []
 []
