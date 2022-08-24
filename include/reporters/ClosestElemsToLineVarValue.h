@@ -10,24 +10,21 @@
 #pragma once
 
 #include "ClosestElemsToLine.h"
-#include "MooseVariableInterface.h"
 
-class ClosestElemsToLineNodalVarValue : public ClosestElemsToLine,
-                                        public MooseVariableInterface<Real>
+class ClosestElemsToLineVarValue : public ClosestElemsToLine
 {
 public:
   static InputParameters validParams();
 
-  ClosestElemsToLineNodalVarValue(const InputParameters & parameters);
+  ClosestElemsToLineVarValue(const InputParameters & parameters);
 
   virtual void initialSetup() override;
 
   virtual void initialize() override{};
-  virtual void execute() override;
+  virtual void execute() override{};
   virtual void finalize() override;
 
 private:
   std::string _var_name;
-  MooseVariable & _var;
   std::vector<Real> & _value;
 };
