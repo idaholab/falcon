@@ -38,7 +38,7 @@
 
   [no_var]
     block = "9 10"
-    type = ClosestElemsToLineNodalVarValue
+    type = ClosestElemsToLineVarValue
     projection_tolerance = 5
     point_x1 = pt/pt1_x
     point_y1 = pt/pt1_y
@@ -50,7 +50,7 @@
     outputs = out
   []
   [domain_var]
-    type = ClosestElemsToLineNodalVarValue
+    type = ClosestElemsToLineVarValue
     projection_tolerance = 5
     point_x1 = pt/pt1_x
     point_y1 = pt/pt1_y
