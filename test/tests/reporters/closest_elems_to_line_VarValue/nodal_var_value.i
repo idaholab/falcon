@@ -21,6 +21,12 @@
     order = SECOND
     family = LAGRANGE
   [../]
+
+  [./v2]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+
 []
 
 [AuxKernels]
@@ -29,6 +35,12 @@
     use_xyzt = true
     variable = v
     function = 't*x*y'
+  []
+  [v2]
+    type = ParsedAux
+    use_xyzt = true
+    variable = v2
+    function = '-t*x*y'
   []
 []
 
@@ -63,6 +75,19 @@
     point_z2 = pt/pt2_z
     variable_filter = v
     variable_to_sample = v
+    outputs = out
+  []
+  [elem_var]
+    type = ClosestElemsToLineVarValue
+    projection_tolerance = 5
+    point_x1 = pt/pt1_x
+    point_y1 = pt/pt1_y
+    point_z1 = pt/pt1_z
+    point_x2 = pt/pt2_x
+    point_y2 = pt/pt2_y
+    point_z2 = pt/pt2_z
+    variable_filter = v
+    variable_to_sample = v2
     outputs = out
   []
 []
