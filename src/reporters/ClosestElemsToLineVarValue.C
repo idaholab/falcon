@@ -21,8 +21,8 @@ ClosestElemsToLineVarValue::validParams()
 {
   InputParameters params = ClosestElemsToLine::validParams();
   params.addClassDescription("Creates a real_vector_names reporter that has each "
-                             "elements average nodal variable value.");
-  params.addRequiredParam<VariableName>("variable_to_sample", "The nodal variable to monitor.");
+                             "elements average variable value.");
+  params.addRequiredParam<VariableName>("variable_to_sample", "The variable to sample.");
   return params;
 }
 
@@ -50,6 +50,8 @@ ClosestElemsToLineVarValue::finalize()
     const Elem * elem = mesh.getMesh().query_elem_ptr(_eid[i]);
     if (elem->processor_id() == processor_id())
     {
+      // The element average is computed this way because the reporter system
+      //  does not have a base class that derives off the nodal or element userobject
       _fe_problem.setCurrentSubdomainID(elem, 0);
       _subproblem.prepare(elem, _tid);
       _subproblem.reinitElem(elem, _tid);
