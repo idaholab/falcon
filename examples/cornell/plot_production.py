@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 
 
 inputs=['0']
-labels = {inputs[0]: 25kg/s'}
+labels = {inputs[0]: '25kg/s'}
 colours = {inputs[0]: 'r'}
 lines = {inputs[0]: '-'}
 

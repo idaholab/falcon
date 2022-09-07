@@ -13,7 +13,8 @@ A number of example FALCON simulations are provided below that can be used to he
 
 A list of simulations using FALCON is provided below.
 - [Discrete Fracture Network](example01.md)
-- [HT-coupled RTES Benchmark between FALCON and TOUGH](rtes_ht.md)
+- [HT-coupled RTES benchmark between FALCON and TOUGH](rtes_ht.md)
 - [RTES THM problem](rtes_htm.md)
-- [RTES Stochastic Simulation](rtes_stochastic.md)
+- [RTES stochastic Simulation](rtes_stochastic.md)
+- [Utah FORGE THM native state simulation](forge.md)
 
