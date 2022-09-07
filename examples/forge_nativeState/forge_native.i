@@ -8,6 +8,7 @@
   PorousFlowDictator = dictator
   displacements = 'disp_i disp_j disp_k'
 []
+
 ############################################################
 [Variables]
   [./pressure]
