@@ -9,7 +9,6 @@
 
 #pragma once
 
-// #include "FunctionDiracKernel.h"
 #include "PorousFlowPolyLineSink.h"
 
 class SinglePhaseFluidProperties;
