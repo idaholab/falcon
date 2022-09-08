@@ -46,7 +46,6 @@ include $(FRAMEWORK_DIR)/build.mk
 include $(FRAMEWORK_DIR)/moose.mk
 
 ################################## MODULES ####################################
-<<<<<<< HEAD
 CHEMICAL_REACTIONS      := yes
 FLUID_PROPERTIES        := yes
 GEOCHEMISTRY            := yes
@@ -60,11 +59,6 @@ STOCHASTIC_TOOLS        := yes
 TENSOR_MECHANICS        := yes
 THERMAL_HYDRAULICS      := yes
 USE_TEST_LIBS           := yes
-=======
-#PHASE_FIELD       := yes
-POROUS_FLOW       := yes
-STOCHASTIC_TOOLS  := yes
->>>>>>> sweep
 include           $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
 

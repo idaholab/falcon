@@ -15,82 +15,60 @@
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Baseline dependencies (do NOT touch)
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-#include "FalconApp.h"
 #include "Moose.h"
+#include "FalconApp.h"
 #include "AppFactory.h"
+#include "ActionFactory.h"
+#include "Syntax.h"
 #include "ModulesApp.h"
 #include "MooseSyntax.h"
-#ifdef IAPWS95_ENABLED
-#include "IAPWS95App.h"
-#endif
-#include "ThermalHydraulicsApp.h"
+
 /*******************************************************************************
 Input template (do NOT touch)
 *******************************************************************************/
-InputParameters
-FalconApp::validParams()
+InputParameters FalconApp::validParams()
 {
   InputParameters params = MooseApp::validParams();
-
-  // Do not use legacy material output, i.e., output properties on INITIAL as well as TIMESTEP_END
-  params.set<bool>("use_legacy_material_output") = false;
-
+  params.set<bool>("use_legacy_uo_initialization") = false;
+  params.set<bool>("use_legacy_uo_aux_computation") = false;
+  params.set<bool>("use_legacy_dirichlet_bc") = false;
   return params;
 }
+
+
+registerKnownLabel("FalconApp");
 
 /*******************************************************************************
 Routine: FalconApp -- constructor
 *******************************************************************************/
-FalconApp::FalconApp(InputParameters parameters) : MooseApp(parameters)
+FalconApp::FalconApp(InputParameters parameters) :
+    MooseApp(parameters)
 {
   FalconApp::registerAll(_factory, _action_factory, _syntax);
 }
 
-FalconApp::~FalconApp() {}
-
-void
-FalconApp::registerAll(Factory & f, ActionFactory & af, Syntax & syntax)
-{
-  ModulesApp::registerAll(f, af, syntax);
-  Registry::registerObjectsTo(f, {"FalconApp"});
-  Registry::registerActionsTo(af, {"FalconApp"});
-  Registry::registerObjectsTo(f, {"THMTestApp"});
-
-  /* register custom execute flags, action syntax, etc. here */
-  ThermalHydraulicsApp::registerAll(f, af, syntax);
-
-
-#ifdef IAPWS95_ENABLED
-  IAPWS95App::registerAll(f, af, syntax);
-#endif
-
-// built-in closure types
-ThermalHydraulicsApp::registerClosuresOption("falcon", "Closures1PhaseFalcon", THM::FM_SINGLE_PHASE);
-
-}
-
 // External entry point for object registration
 extern "C" void
-FalconApp__registerAll(Factory & f, ActionFactory & af, Syntax & s)
+FalconApp__registerAll(Factory & factory, ActionFactory & action_factory, Syntax & syntax)
 {
-  FalconApp::registerAll(f, af, s);
+  FalconApp::registerAll(factory, action_factory, syntax);
 }
+
+void
+FalconApp::registerAll(Factory & factory, ActionFactory & action_factory, Syntax & syntax)
+{
+  Registry::registerObjectsTo(factory, {"FalconApp"});
+  Registry::registerActionsTo(action_factory, {"FalconApp"});
+  ModulesApp::registerAll(factory, action_factory, syntax);
+}
+
 
 /*******************************************************************************
 Routine: registerApps (no NOT touch)
 *******************************************************************************/
+extern "C" void FalconApp__registerApps() { FalconApp::registerApps(); }
 void
 FalconApp::registerApps()
 {
   registerApp(FalconApp);
-
-#ifdef IAPWS95_ENABLED
-  registerApp(IAPWS95App);
-#endif
-}
-
-extern "C" void
-FalconApp__registerApps()
-{
-  FalconApp::registerApps();
 }
