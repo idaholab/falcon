@@ -12,24 +12,19 @@
 [Variables]
   [./pressure]
   [../]
-
   [./temperature]
     scaling = 1E-8
   [../]
-
   [./disp_i]
     scaling = 1E-10
   [../]
-
   [./disp_j]
     scaling = 1E-10
   [../]
-
   [./disp_k]
     scaling = 1E-10
   [../]
 []
-
 ############################################################
 [ICs]
   [temperature]
@@ -37,15 +32,12 @@
     variable = temperature
     function = '616 - ((2360+z)*7.615e-2)'
   []
-
   [pressure]
     type = FunctionIC
     variable = pressure
     function = '3.5317e7 - ((2360+z)*8455)'
   []
 []
-
-
 ############################################################
 [Kernels]
   [./Darcy_flow]
@@ -54,52 +46,44 @@
     variable = pressure
     gravity = '0 0 -9.8'
   [../]
-
   [./heat_conduction]
     type = PorousFlowHeatConduction
     variable = temperature
   [../]
-
   [./grad_stress_i]
     type = StressDivergenceTensors
     variable = disp_i
     component = 0
   [../]
-
   [./grad_stress_j]
     type = StressDivergenceTensors
     variable = disp_j
     component = 1
   [../]
-
   [./grad_stress_k]
     type = StressDivergenceTensors
     variable = disp_k
     component = 2
    # displacements = 'disp_i disp_j disp_k'
   [../]
-
   [./poro_i]
     type = PoroMechanicsCoupling
     variable = disp_i
     porepressure = pressure
     component = 0
   [../]
-
   [./poro_j]
     type = PoroMechanicsCoupling
     variable = disp_j
     porepressure = pressure
     component = 1
   [../]
-
   [./poro_k]
     type = PoroMechanicsCoupling
     variable = disp_k
     porepressure = pressure
     component = 2
   [../]
-
   [./weight]
     type = Gravity
     variable = disp_k
@@ -112,74 +96,58 @@
     order = CONSTANT
     family = MONOMIAL
   [../]
-
   [./stress_ij]
     order = CONSTANT
     family = MONOMIAL
   [../]
-
   [./stress_ik]
     order = CONSTANT
     family = MONOMIAL
   [../]
-
   [./stress_ji]
     order = CONSTANT
     family = MONOMIAL
   [../]
-
   [./stress_jj]
     order = CONSTANT
     family = MONOMIAL
   [../]
-
   [./stress_jk]
     order = CONSTANT
     family = MONOMIAL
   [../]
-
   [./stress_ki]
     order = CONSTANT
     family = MONOMIAL
   [../]
-
   [./stress_kj]
     order = CONSTANT
     family = MONOMIAL
   [../]
-
   [./stress_kk]
     order = CONSTANT
     family = MONOMIAL
   [../]
-
    [./vonmises]
      order = CONSTANT
      family = MONOMIAL
    [../]
-
    [./hydrostatic]
      order = CONSTANT
      family = MONOMIAL
    [../]
-
   [./density]
     order = CONSTANT
     family = MONOMIAL
   [../]
-
   [./viscosity]
     order = CONSTANT
     family = MONOMIAL
   [../]
-
 []
-
-
 #********************************************************
 [Functions]
 # temperature on boundary surfaces
-
   [./T_on_face_Z_Minus]
     type = PiecewiseBilinear0
     data_file = bottom_2021_11_10_plus_50.csv
@@ -187,8 +155,6 @@
     yaxis = 0
   [../]
 []
-
-
 ##############################################################
 [AuxKernels]
   [./stress_ii]
@@ -198,7 +164,6 @@
     index_i = 0
     index_j = 0
   [../]
-
   [./stress_ij]
     type = RankTwoAux
     rank_two_tensor = stress
@@ -206,7 +171,6 @@
     index_i = 0
     index_j = 1
   [../]
-
   [./stress_ik]
     type = RankTwoAux
     rank_two_tensor = stress
@@ -214,7 +178,6 @@
     index_i = 0
     index_j = 2
   [../]
-
   [./stress_ji]
     type = RankTwoAux
     rank_two_tensor = stress
@@ -222,7 +185,6 @@
     index_i = 1
     index_j = 0
   [../]
-
   [./stress_jj]
     type = RankTwoAux
     rank_two_tensor = stress
@@ -230,7 +192,6 @@
     index_i = 1
     index_j = 1
   [../]
-
   [./stress_jk]
     type = RankTwoAux
     rank_two_tensor = stress
@@ -238,7 +199,6 @@
     index_i = 1
     index_j = 2
   [../]
-
   [./stress_ki]
     type = RankTwoAux
     rank_two_tensor = stress
@@ -246,7 +206,6 @@
     index_i = 2
     index_j = 0
   [../]
-
   [./stress_kj]
     type = RankTwoAux
     rank_two_tensor = stress
@@ -254,7 +213,6 @@
     index_i = 2
     index_j = 1
   [../]
-
   [./stress_kk]
     type = RankTwoAux
     rank_two_tensor = stress
@@ -262,14 +220,12 @@
     index_i = 2
     index_j = 2
   [../]
-
   [./density]
     type = MaterialRealAux
     variable = density
     property = PorousFlow_fluid_phase_density_qp0
     execute_on = TIMESTEP_END
   [../]
-
   [./viscosity]
     type = MaterialRealAux
     variable = viscosity
@@ -282,7 +238,6 @@
     variable = vonmises
     scalar_type = VonMisesStress
   [../]
-
   [./hydrostatic]
     type = RankTwoScalarAux
     rank_two_tensor = stress
@@ -298,7 +253,6 @@
     number_fluid_phases = 1
     number_fluid_components = 1
   [../]
-
   [./pc]
     type = PorousFlowCapillaryPressureVG
     alpha = 1
@@ -308,10 +262,8 @@
 []
 ############################################################
 [BCs]
-
- # B.C. for solid field
-   # Prescribed displacements at three boundary surfaces
-
+# B.C. for solid field
+# Prescribed displacements at three boundary surfaces
   [./roller_sigma_h_min]
     type = DirichletBC
     preset = true
@@ -319,7 +271,6 @@
     value = 0
     boundary = 'bottom_40m_granitoid_40m_front granitoid_40m_surface_40m_front'
   [../]
-
   [./roller_sigma_h_max]
     type = DirichletBC
     preset = true
@@ -327,7 +278,6 @@
     value = 0
     boundary = 'bottom_40m_granitoid_40m_right granitoid_40m_surface_40m_right'
   [../]
-
   [./bottom_z]
     type = DirichletBC
     preset = true
@@ -335,10 +285,8 @@
     value = 0
     boundary = 'bottom_40m'
   [../]
-
    # Prescribed traction for two side surfaces
    # repeately defined for each traction component on each surface
-
   [./S_h_min_normal]
     type = FunctionNeumannBC
     variable = disp_i
@@ -346,7 +294,6 @@
     #function  = '-4210*(1785-z)'
     function  = '-15709*(1785-z)'
   [../]
-
   [./Side_Y_Plus_normal]
     type = FunctionNeumannBC
     variable = disp_j
@@ -354,36 +301,30 @@
     #function  = '-7786.2*(1785-z)'
     function  = '-19640*(1785-z)'
   [../]
-
   [./Side_Z_Plus_traction_Z]
     type = NeumannBC
     variable = disp_k
     boundary = 'surface_40m'
     value = -101325
   [../]
-
-  #B.C. for Darcy's flow field
+  #B.C. for Darcys flow field
   # Apply zero pore pressure on top surface
   # and no flow on the bottome and two side surfaces(no action)
-
   [./pore_pressure_top]
     type = DirichletBC
     variable = pressure
     boundary = 'surface_40m'
     value = 101325 #atmospheric pressure in Pa-assumes water level at ground surface
   [../]
-
   [./pore_pressure_bottom]
     type = DirichletBC
     variable = pressure
     boundary = 'bottom_40m'
     value = 34000000
   [../]
-
  #B.C. Temperature field
   # Apply prescibed temperature on top and bottom surfaces
   # and no heat flux on the two side surfaces(no action)
-
   [./Side_Z_Minus_T]
     type = FunctionDirichletBC
     #type = DirichletBC
@@ -392,7 +333,6 @@
     function = T_on_face_Z_Minus
     #value = 580
   [../]
-
   [./Side_Z_Plus_T]
     type = DirichletBC
     variable = temperature
@@ -406,7 +346,6 @@
   [./true_water]
     type = Water97FluidProperties
   [../]
-
   [./tabulated_water]
     type = TabulatedFluidProperties
     fp = true_water
@@ -422,38 +361,32 @@
     permeability = '1e-14 0 0  0 1e-14 0  0 0 1e-14'
     block = granitoid_40m_surface_40m
   [../]
-
   [./permeability_granite]
     type = PorousFlowPermeabilityConst
     permeability = '1e-18 0 0  0 1e-18 0  0 0 1e-18'
     block = bottom_40m_granitoid_40m
   [../]
-
   [./fluid_props]
     type = PorousFlowSingleComponentFluid
     fp = tabulated_water
     phase = 0
     at_nodes = true
   [../]
-
   [./fluid_props_qp]
     type = PorousFlowSingleComponentFluid
     phase = 0
     fp = tabulated_water
   [../]
-
   [./porosity_sediment]
     type = PorousFlowPorosityConst
     porosity = 0.12
     block = granitoid_40m_surface_40m
   [../]
-
   [./porosity_granite]
     type = PorousFlowPorosityConst
     porosity = 0.001
     block = bottom_40m_granitoid_40m
   [../]
-
 #rkp addition
   [./ppss]
     type = PorousFlow1PhaseP
@@ -461,27 +394,22 @@
     porepressure = pressure
     capillary_pressure = pc
   [../]
-
   [./ppss_qp]
     type = PorousFlow1PhaseP
     porepressure = pressure
     capillary_pressure = pc
   [../]
-
   [./massfrac]
     type = PorousFlowMassFraction
     at_nodes = true
   [../]
-
   [./eff_fluid_pressure]
     type = PorousFlowEffectiveFluidPressure
     at_nodes = true
   [../]
-
   [./eff_fluid_pressure_qp]
     type = PorousFlowEffectiveFluidPressure
   [../]
-
   [./relperm]
     type = PorousFlowRelativePermeabilityCorey
     at_nodes = true
@@ -489,21 +417,18 @@
     phase = 0
   [../]
 #end rkp addition
-
 #energy transport
 #need to discuss with Rob  *************
 [./temperature]
   type = PorousFlowTemperature
   temperature = temperature
 [../]
-
 #need to discuss with Rob  *************
 [./temperature_nodal]
   type = PorousFlowTemperature
   at_nodes = true
   temperature = temperature
 [../]
-
 [./rock_heat_sediments]
    type = PorousFlowMatrixInternalEnergy
    specific_heat_capacity = 830.0
@@ -511,7 +436,6 @@
    block = granitoid_40m_surface_40m
    #density from Rick allis analysis, specific heat per tabulated values
 [../]
-
 [./rock_heat_granitoid]
   type = PorousFlowMatrixInternalEnergy
   specific_heat_capacity = 790.0
@@ -519,19 +443,16 @@
   block = bottom_40m_granitoid_40m
   #density from Rick allis analysis, specific heat per tabulated values
 [../]
-
 [./thermal_conductivity_sediments]
   type = PorousFlowThermalConductivityIdeal
   dry_thermal_conductivity = '2.8 0 0  0 2.8 0  0 0 2.8'
   block = granitoid_40m_surface_40m
 [../]
-
 [./thermal_conductivity_granitoid]
   type = PorousFlowThermalConductivityIdeal
   dry_thermal_conductivity = '3.05 0 0  0 3.05 0  0 0 3.05'
   block = bottom_40m_granitoid_40m
 [../]
-
 #mechanics
 [./density_sediment]
   type = GenericConstantMaterial
@@ -539,20 +460,17 @@
   block = granitoid_40m_surface_40m
   prop_values = 2500.0
 [../]
-
 [./density_granitoid]
     type = GenericConstantMaterial
     prop_names = density
     block = bottom_40m_granitoid_40m
     prop_values = 2750.0
 [../]
-
   [./biot]
     type = GenericConstantMaterial
     prop_names = biot_coefficient
     prop_values = 0.47
   [../]
-
   [./elasticity_sediment]
     type = ComputeIsotropicElasticityTensor
     youngs_modulus = 3.0e+10
@@ -567,7 +485,6 @@
     block = bottom_40m_granitoid_40m
     #block = 2
   [../]
-
   [./thermal_expansion_strain]
     type = ComputeThermalExpansionEigenstrain
     stress_free_temperature = 293
@@ -575,11 +492,9 @@
     temperature = temperature
     eigenstrain_name = eigenstrain
   [../]
-
   [./strain]
     type = ComputeSmallStrain
   [../]
-
   [./stress]
     type = ComputeLinearElasticStress
   [../]
@@ -589,7 +504,6 @@
 active = 'ilu_may_use_less_mem'
 #active = 'preferred'
 #active = 'superlu'
-
   [./ilu_may_use_less_mem]
     type = SMP
     full = true
@@ -597,7 +511,6 @@ active = 'ilu_may_use_less_mem'
     petsc_options_iname = '-ksp_type -pc_type -sub_pc_type -sub_pc_factor_shift_type'
     petsc_options_value = 'gmres asm ilu NONZERO'
   [../]
-
   [./superlu]
     type = SMP
     full = true
@@ -605,7 +518,6 @@ active = 'ilu_may_use_less_mem'
     petsc_options_iname = '-ksp_type -pc_type -pc_factor_mat_solver_package'
     petsc_options_value = 'gmres lu superlu_dist'
   [../]
-
   [./preferred]
     #per Andy
     type = SMP
@@ -614,7 +526,6 @@ active = 'ilu_may_use_less_mem'
     petsc_options_value = ' lu       mumps'
   [../]
 []
-
 [VectorPostprocessors]
   [./16A]
      type = PointValueSampler
@@ -900,7 +811,6 @@ active = 'ilu_may_use_less_mem'
   2327.3	1795.9	679.59'
   sort_by = z
   [../]
-
   [./78B_32]
     type = PointValueSampler
     variable = 'temperature pressure hydrostatic vonmises stress_ii stress_ij stress_ik stress_jj stress_jk stress_kk'
@@ -1012,8 +922,6 @@ active = 'ilu_may_use_less_mem'
   2410	1822.8	-915.62'
   sort_by = z
   [../]
-
-
   [./56_32]
     type = PointValueSampler
     variable = 'temperature pressure hydrostatic vonmises stress_ii stress_ij stress_ik stress_jj stress_jk stress_kk'
@@ -1132,8 +1040,7 @@ active = 'ilu_may_use_less_mem'
   1718.5	2120.5	-1129.23'
   sort_by = z
   [../]
-  []
-
+[]
 ###########################################################
 [Executioner]
   type = Steady
@@ -1145,19 +1052,16 @@ active = 'ilu_may_use_less_mem'
    nl_abs_tol = 1e-4
    nl_rel_tol = 1e-4
 []
-
 ############################################################
 [Outputs]
   execute_on = 'timestep_end'
   exodus  = true
-
   [./console]
     type = Console
     output_linear = true
     output_nonlinear = true
     verbose = true
   [../]
-
   [pgraph]
     type = PerfGraphOutput
     execute_on = 'final'  # Default is "final"
@@ -1165,7 +1069,6 @@ active = 'ilu_may_use_less_mem'
     heaviest_branch = true        # Default is false
     heaviest_sections = 5         # Default is 0
   [../]
-
   [./point_data]
     type = CSV
   [../]
