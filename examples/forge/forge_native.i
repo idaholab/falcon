@@ -362,7 +362,7 @@
     value = -101325
   [../]
 
- #B.C. for Darcy's flow field
+  #B.C. for Darcy's flow field
   # Apply zero pore pressure on top surface
   # and no flow on the bottome and two side surfaces(no action)
 
@@ -400,7 +400,6 @@
     value= 299
   [../]
 []
-
 ############################################################
 [Modules]
 [./FluidProperties]
@@ -415,8 +414,6 @@
   [../]
 [../]
 []
-
-
 ############################################################
 [Materials]
 #fluid properties and flow
