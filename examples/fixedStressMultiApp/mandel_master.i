@@ -178,9 +178,9 @@
 
   #fixed_point_algorithm = 'secant'
 
-  accept_on_max_picard_iteration = true
-  picard_max_its = 2
-  picard_rel_tol = 1e-20
+  accept_on_max_fixed_point_iteration = true
+  fixed_point_max_its = 3
+  fixed_point_rel_tol = 1e-5
 
   relaxation_factor = 0.5
   relaxed_variables = 'disp_x disp_y disp_z'
@@ -298,7 +298,6 @@
 [MultiApps]
   [./sub]
     type = TransientMultiApp
-    app_type =FalconApp
     execute_on = TIMESTEP_END
     input_files = mandel_sub.i
   [../]

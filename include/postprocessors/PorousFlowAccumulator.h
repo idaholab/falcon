@@ -37,8 +37,8 @@ protected:
   /// current time value
   const PostprocessorValue & _pps_t;
 
-  Real _accumulator_start_time;
-  Real _accumulator_end_time;
+  // Real _accumulator_start_time;
+  // Real _accumulator_end_time;
   Real _accumulator;
 
 };

@@ -17,4 +17,5 @@ A list of simulations using FALCON is provided below.
 - [RTES THM problem](rtes_htm.md)
 - [RTES stochastic Simulation](rtes_stochastic.md)
 - [Utah FORGE THM native state simulation](forge.md)
+- [Fixed stress split - Mandel's consolidation](mandel.md)
 

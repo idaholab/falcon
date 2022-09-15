@@ -34,8 +34,6 @@ protected:
   const PostprocessorValue & _mass_flux;
   /// Pressure
   const VariableValue & _pressure;
-  /// Specified inlet temperature (K)
-  //const Real & _T_in;
   /// Quadpoint temperature
   const MaterialProperty<Real> * const _temperature;
 
