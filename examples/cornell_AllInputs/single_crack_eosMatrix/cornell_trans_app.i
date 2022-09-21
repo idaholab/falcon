@@ -178,7 +178,6 @@ endTime=63e6 #31.54e6
   [../]
 []
 ############################################################
-[Modules]
 [./FluidProperties]
   [./water]
     type = Water97FluidProperties
@@ -194,7 +193,6 @@ endTime=63e6 #31.54e6
     fluid_property_file = water97_tabulated.csv
   [../]
 [../]
-[]
 ############################################################
 [Materials]
   [./temperature]

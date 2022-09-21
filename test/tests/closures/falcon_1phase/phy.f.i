@@ -15,12 +15,10 @@
   []
 []
 
-[Modules]
-  [FluidProperties]
-    [./fp]
-      type = IAPWS95LiquidFluidProperties
-    [../]
-  []
+[FluidProperties]
+  [./fp]
+    type = IAPWS95LiquidFluidProperties
+  [../]
 []
 
 [Components]

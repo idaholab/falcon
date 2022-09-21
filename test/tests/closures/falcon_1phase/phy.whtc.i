@@ -16,11 +16,9 @@
   []
 []
 
-[Modules]
-  [FluidProperties]
-    [./fp]
-    [../]
-  []
+[FluidProperties]
+  [./fp]
+  [../]
 []
 
 [Components]
