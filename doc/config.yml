@@ -13,6 +13,7 @@ Content:
     - ${MOOSE_DIR}/modules/stochastic_tools/doc/content
     - ${MOOSE_DIR}/modules/tensor_mechanics/doc/content
     - ${MOOSE_DIR}/modules/thermal_hydraulics/doc/content
+    - ${MOOSE_DIR}/modules/solid_properties/doc/content
     - moose:
           root_dir: ${MOOSE_DIR}/modules/doc/content
           content:
@@ -44,7 +45,7 @@ Extensions:
                 FAQ: help/faq/index.md
                 Contact: help/contact_us.md
     MooseDocs.extensions.bibtex:
-        duplicates: 
+        duplicates:
             - hales15homogenization # referenced in both Tensor Mechanics and Heat Conduction
     MooseDocs.extensions.appsyntax:
         executable: ${ROOT_DIR}
@@ -64,6 +65,7 @@ Extensions:
             - ${MOOSE_DIR}/modules/stochastic_tools/include
             - ${MOOSE_DIR}/modules/tensor_mechanics/include
             - ${MOOSE_DIR}/modules/thermal_hydraulics/include
+            - ${MOOSE_DIR}/modules/solid_properties/include
 
     MooseDocs.extensions.common:
         shortcuts: !include ${MOOSE_DIR}/framework/doc/globals.yml
@@ -96,3 +98,4 @@ Extensions:
             stochastic_tools: !include ${MOOSE_DIR}/modules/stochastic_tools/doc/sqa_stochastic_tools.yml
             tensor_mechanics: !include ${MOOSE_DIR}/modules/tensor_mechanics/doc/sqa_tensor_mechanics.yml
             thermal_hydraulics: !include ${MOOSE_DIR}/modules/thermal_hydraulics/doc/sqa_thermal_hydraulics.yml
+            solid_properties: !include ${MOOSE_DIR}/modules/solid_properties/doc/sqa_solid_properties.yml
