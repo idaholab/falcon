@@ -12,12 +12,10 @@
   []
 []
 
-[Modules]
-  [FluidProperties]
-    [./eos]
-      type = IAPWS95LiquidFluidProperties
-    [../]
-  []
+[FluidProperties]
+  [./eos]
+    type = IAPWS95LiquidFluidProperties
+  [../]
 []
 
 [Components]

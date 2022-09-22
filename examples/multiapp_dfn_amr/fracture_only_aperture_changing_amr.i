@@ -326,19 +326,17 @@ z_out=0 #1000000  #39.5722
   []
 []
 
-[Modules]
-  [FluidProperties]
-    [true_water]
-      type = Water97FluidProperties
-    []
-    [water]
-      type = TabulatedFluidProperties
-      fp = true_water
-      temperature_min = 275 # K
-      temperature_max = 600
-      interpolated_properties = 'density viscosity enthalpy internal_energy'
-      fluid_property_file = water97_tabulated.csv
-    []
+[FluidProperties]
+  [true_water]
+    type = Water97FluidProperties
+  []
+  [water]
+    type = TabulatedFluidProperties
+    fp = true_water
+    temperature_min = 275 # K
+    temperature_max = 600
+    interpolated_properties = 'density viscosity enthalpy internal_energy'
+    fluid_property_file = water97_tabulated.csv
   []
 []
 

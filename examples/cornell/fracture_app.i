@@ -294,19 +294,17 @@ injection_rate = 25 # kg/s
 
 #these are the equations of state userObject used for the fluid.  A more complicated one is
 #used in the fracture because of the pressure and temperature changes.
-[Modules]
-  [FluidProperties]
-    [true_water]
-      type = Water97FluidProperties
-    []
-    [water]
-      type = TabulatedFluidProperties
-      fp = true_water
-      temperature_min = 275 # K
-      temperature_max = 600
-      interpolated_properties = 'density viscosity enthalpy internal_energy'
-      fluid_property_file = water97_tabulated.csv
-    []
+[FluidProperties]
+  [true_water]
+    type = Water97FluidProperties
+  []
+  [water]
+    type = TabulatedFluidProperties
+    fp = true_water
+    temperature_min = 275 # K
+    temperature_max = 600
+    interpolated_properties = 'density viscosity enthalpy internal_energy'
+    fluid_property_file = water97_tabulated.csv
   []
 []
 

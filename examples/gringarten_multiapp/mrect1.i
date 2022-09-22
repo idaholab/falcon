@@ -56,12 +56,10 @@ endTime = 3.16e8
   pressure_unit = Pa
 []
 
-[Modules]
-  [FluidProperties]
-    [water]
-      type = SimpleFluidProperties
-      thermal_expansion = 0
-    []
+[FluidProperties]
+  [water]
+    type = SimpleFluidProperties
+    thermal_expansion = 0
   []
 []
 

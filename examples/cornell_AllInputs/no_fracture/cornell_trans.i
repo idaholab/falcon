@@ -178,7 +178,6 @@
   [../]
 []
 ############################################################
-[Modules]
 [./FluidProperties]
   [./water]
     type = Water97FluidProperties
@@ -194,7 +193,6 @@
     fluid_property_file = water97_tabulated.csv
   [../]
 [../]
-[]
 ############################################################
 [Materials]
   [./temperature]
