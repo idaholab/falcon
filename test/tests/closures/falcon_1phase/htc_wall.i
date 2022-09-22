@@ -11,11 +11,9 @@
   ad = true
 []
 
-[Modules]
-  [FluidProperties]
-    [fp_1phase]
-      type = IAPWS95LiquidFluidProperties
-    []
+[FluidProperties]
+  [fp_1phase]
+    type = IAPWS95LiquidFluidProperties
   []
 []
 

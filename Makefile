@@ -58,6 +58,7 @@ RDG                     := yes
 STOCHASTIC_TOOLS        := yes
 TENSOR_MECHANICS        := yes
 THERMAL_HYDRAULICS      := yes
+SOLID_PROPERTIES        := yes
 USE_TEST_LIBS           := yes
 include           $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################

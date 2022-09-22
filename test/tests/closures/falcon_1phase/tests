@@ -11,7 +11,7 @@
     input = 'phy.whtc.i'
     csvdiff = 'phy.whtc_liquid.T_wall_Hw_0002.csv'
     cli_args = '
-      Modules/FluidProperties/fp/type=IAPWS95LiquidFluidProperties
+      FluidProperties/fp/type=IAPWS95LiquidFluidProperties
       Components/ht_pipe/type=HeatTransferFromSpecifiedTemperature1Phase
       Components/ht_pipe/T_wall=372.8
       Outputs/file_base=phy.whtc_liquid.T_wall'
@@ -22,7 +22,7 @@
     type = 'RunException'
     input = 'phy.whtc.i'
     cli_args = '
-      Modules/FluidProperties/fp/type=IAPWS95LiquidFluidProperties
+      FluidProperties/fp/type=IAPWS95LiquidFluidProperties
       Components/ht_pipe/type=HeatTransferFromHeatFlux1Phase
       Components/ht_pipe/q_wall=1000
       Outputs/file_base=phy.whtc_liquid.q_wall'
@@ -35,7 +35,7 @@
     input = 'phy.whtc.i'
     csvdiff = 'phy.whtc_liquid.const_Hw_0002.csv'
     cli_args = '
-      Modules/FluidProperties/fp/type=IAPWS95LiquidFluidProperties
+      FluidProperties/fp/type=IAPWS95LiquidFluidProperties
       Components/ht_pipe/type=HeatTransferFromSpecifiedTemperature1Phase
       Components/ht_pipe/T_wall=372.8
       Components/ht_pipe/Hw=1234

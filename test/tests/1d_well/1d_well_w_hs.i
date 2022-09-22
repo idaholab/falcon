@@ -29,12 +29,10 @@ well_P_hf = ${fparse 2 * pi * well_radius}
   []
 []
 
-[Modules]
-  [FluidProperties]
-    [./water]
-      type = IAPWS95LiquidFluidProperties
-    [../]
-  []
+[FluidProperties]
+  [./water]
+    type = IAPWS95LiquidFluidProperties
+  [../]
 []
 
 [HeatStructureMaterials]

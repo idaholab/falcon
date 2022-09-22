@@ -334,18 +334,16 @@
   [../]
 []
 ############################################################
-[Modules]
-  [./FluidProperties]
-    [./fluid]
-      type = SimpleFluidProperties
-      density0 = 999.526
-      bulk_modulus = 2E9
-      viscosity = 0.001
-      cv = 4180
-      thermal_expansion = 0
-    [../]
+[./FluidProperties]
+  [./fluid]
+    type = SimpleFluidProperties
+    density0 = 999.526
+    bulk_modulus = 2E9
+    viscosity = 0.001
+    cv = 4180
+    thermal_expansion = 0
   [../]
-[]
+[../]
 ############################################################
 [Materials]
   [./temperature]

@@ -11,12 +11,10 @@
   output = 'f_F'
 []
 
-[Modules]
-  [FluidProperties]
-    [./fp_1phase]
-      type = IAPWS95LiquidFluidProperties
-    [../]
-  []
+[FluidProperties]
+  [./fp_1phase]
+    type = IAPWS95LiquidFluidProperties
+  [../]
 []
 
 [Materials]
