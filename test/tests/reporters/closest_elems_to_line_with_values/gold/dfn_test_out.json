@@ -4,7 +4,7 @@
             "type": "ClosestElemsToLineWithValues",
             "values": {
                 "elem_id": {
-                    "type": "std::vector<unsigned long long>"
+                    "type": "std::vector<unsigned long>"
                 },
                 "point_x": {
                     "type": "std::vector<double>"
@@ -24,7 +24,7 @@
             "type": "ClosestElemsToLineWithValues",
             "values": {
                 "elem_id": {
-                    "type": "std::vector<unsigned long long>"
+                    "type": "std::vector<unsigned long>"
                 },
                 "point_x": {
                     "type": "std::vector<double>"
