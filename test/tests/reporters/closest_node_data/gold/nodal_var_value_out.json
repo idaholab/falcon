@@ -7,7 +7,7 @@
                     "type": "std::vector<std::vector<double>>"
                 },
                 "node12p:node_id": {
-                    "type": "std::vector<std::vector<unsigned long long>>"
+                    "type": "std::vector<std::vector<unsigned long>>"
                 },
                 "node12p:node_x": {
                     "type": "std::vector<std::vector<double>>"
@@ -25,7 +25,7 @@
                     "type": "std::vector<std::vector<double>>"
                 },
                 "node18p:node_id": {
-                    "type": "std::vector<std::vector<unsigned long long>>"
+                    "type": "std::vector<std::vector<unsigned long>>"
                 },
                 "node18p:node_x": {
                     "type": "std::vector<std::vector<double>>"

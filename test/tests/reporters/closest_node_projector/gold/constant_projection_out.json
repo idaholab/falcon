@@ -4,7 +4,7 @@
             "type": "ClosestNodeProjector",
             "values": {
                 "node_id": {
-                    "type": "std::vector<unsigned long long>"
+                    "type": "std::vector<unsigned long>"
                 },
                 "node_value": {
                     "type": "std::vector<double>"
@@ -24,7 +24,7 @@
             "type": "ClosestNode",
             "values": {
                 "node_id": {
-                    "type": "std::vector<unsigned long long>"
+                    "type": "std::vector<unsigned long>"
                 },
                 "node_x": {
                     "type": "std::vector<double>"
