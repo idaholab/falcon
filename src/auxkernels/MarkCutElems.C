@@ -30,12 +30,14 @@ MarkCutElems::validParams()
   return params;
 }
 
-MarkCutElems::MarkCutElems(const InputParameters &parameters) : AuxKernel(parameters), _cutter_mesh(loadCutterMesh(getParam<MeshFileName>("mesh_file"))), _cutter_bboxes(buildCutterMeshBoundingBoxes(*_cutter_mesh))
+MarkCutElems::MarkCutElems(const InputParameters &parameters) : AuxKernel(parameters), _cutter_mesh(loadCutterMesh(getParam<MeshFileName>("mesh_file")))
 {
   if (isNodal())
     paramError("variable", "The variable must be elemental");
   if (_mesh.dimension() != 3)
     mooseError("The mesh dimension must be 3D");
+
+  buildCutterBoundingBoxes();
 }
 
 std::unique_ptr<const ReplicatedMesh> MarkCutElems::loadCutterMesh(const MeshFileName &filename) const
@@ -53,23 +55,26 @@ std::unique_ptr<const ReplicatedMesh> MarkCutElems::loadCutterMesh(const MeshFil
   return std::unique_ptr<const ReplicatedMesh>(std::move(mesh));
 }
 
-std::vector<std::pair<const Elem *, BoundingBox>> MarkCutElems::buildCutterMeshBoundingBoxes(const MeshBase &mesh) const
+void MarkCutElems::buildCutterBoundingBoxes()
 {
-  std::vector<std::pair<const Elem *, BoundingBox>> bboxes;
+  _cutter_bboxes.clear();
 
   // Get the bounding box of this processor
-  const auto pid_bbox = MeshTools::create_local_bounding_box(mesh);
+  const auto pid_bbox = MeshTools::create_local_bounding_box(*_cutter_mesh);
 
   // Build the list of cut elems that may intersect this processor,
   // and store their bounding boxes
-  for (const auto &elem : mesh.element_ptr_range())
+  for (const auto &elem : _cutter_mesh->element_ptr_range())
   {
     const auto bbox = elem->loose_bounding_box();
     if (pid_bbox.intersects(bbox))
-      bboxes.emplace_back(elem, bbox);
+      _cutter_bboxes.emplace_back(elem, bbox);
   }
+}
 
-  return bboxes;
+void MarkCutElems::meshChanged()
+{
+  buildCutterBoundingBoxes();
 }
 
 Real MarkCutElems::computeValue()
