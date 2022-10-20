@@ -117,7 +117,7 @@ Real MarkCutElems::computeValue()
                                            /* hmax = */ 1.))
         return 1;
 
-      // check edge1 -> edge0
+      // check edge0 -> edge1
       if (TraceRayTools::intersectTriangle(edge0,
                                            -direction,
                                            cut_elem,
