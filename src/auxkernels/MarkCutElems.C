@@ -17,7 +17,7 @@
 
 #include "MarkCutElems.h"
 #include "TraceRayTools.h"
-#include "libmesh/enum_to_string.h"
+#include "libmesh/mesh_tools.h"
 
 registerMooseObject("FalconApp", MarkCutElems);
 
@@ -30,64 +30,101 @@ MarkCutElems::validParams()
   return params;
 }
 
-MarkCutElems::MarkCutElems(const InputParameters & parameters) : AuxKernel(parameters)
+MarkCutElems::MarkCutElems(const InputParameters &parameters) : AuxKernel(parameters), _cutter_mesh(loadCutterMesh(getParam<MeshFileName>("mesh_file"))), _cutter_bboxes(buildCutterMeshBoundingBoxes(*_cutter_mesh))
 {
   if (isNodal())
-    mooseError("MarkCutElems only works on elemental fields.");
-
-  MeshFileName xfem_cutter_mesh_file = getParam<MeshFileName>("mesh_file");
-  _cutter_mesh = std::make_shared<ReplicatedMesh>(_communicator);
-  _cutter_mesh->read(xfem_cutter_mesh_file);
-  for (const auto & elem : _cutter_mesh->element_ptr_range())
-    if (elem->type() != TRI3)
-      mooseError("MarkCutElems currently only supports TRI3 elements in the "
-                 "cutting mesh.");
+    paramError("variable", "The variable must be elemental");
+  if (_mesh.dimension() != 3)
+    mooseError("The mesh dimension must be 3D");
 }
 
-Real
-MarkCutElems::computeValue()
+std::unique_ptr<const ReplicatedMesh> MarkCutElems::loadCutterMesh(const MeshFileName &filename) const
 {
-  mooseAssert(_current_elem->dim() == 3, "Dimension of element to be cut must be 3");
+  // Load the mesh from file
+  std::unique_ptr<ReplicatedMesh> mesh = std::make_unique<ReplicatedMesh>(_communicator);
+  mesh->read(filename);
 
-  for (unsigned int i = 0; i < _current_elem->n_sides(); ++i)
+  // Make sure it's 2D TRI3 elems
+  for (const auto &elem : mesh->element_ptr_range())
+    if (elem->type() != TRI3)
+      paramError("mesh_file", "The provided mesh does not contain all TRI3 elements");
+
+  // This lets us return a const mesh
+  return std::unique_ptr<const ReplicatedMesh>(std::move(mesh));
+}
+
+std::vector<std::pair<const Elem *, BoundingBox>> MarkCutElems::buildCutterMeshBoundingBoxes(const MeshBase &mesh) const
+{
+  std::vector<std::pair<const Elem *, BoundingBox>> bboxes;
+
+  // Get the bounding box of this processor
+  const auto pid_bbox = MeshTools::create_local_bounding_box(mesh);
+
+  // Build the list of cut elems that may intersect this processor,
+  // and store their bounding boxes
+  for (const auto &elem : mesh.element_ptr_range())
   {
-    // This returns the lowest-order type of side.
-    std::unique_ptr<const Elem> curr_side = _current_elem->side_ptr(i);
+    const auto bbox = elem->loose_bounding_box();
+    if (pid_bbox.intersects(bbox))
+      bboxes.emplace_back(elem, bbox);
+  }
 
-    mooseAssert(curr_side->dim() == 2, "Side dimension must be 2");
+  return bboxes;
+}
 
-    unsigned int n_edges = curr_side->n_sides();
+Real MarkCutElems::computeValue()
+{
+  // The bounding box of the current element
+  const auto bbox = _current_elem->loose_bounding_box();
 
-    for (unsigned int j = 0; j < n_edges; j++)
+  // Temproraries for doing things below
+  std::unique_ptr<const Elem> edge;
+  Real intersection_distance;
+  ElemExtrema intersected_extrema;
+
+  // Check intersection with each cut elem that intersects our local bbox
+  for (const auto &[cut_elem, cut_bbox] : _cutter_bboxes)
+  {
+    // Bounding box of the cut elem doesn't intersect the current elem bbox
+    // ...nothing to do here!
+    if (!cut_bbox.intersects(bbox))
+      continue;
+
+    // Check for an intersection with each edge and the cut tri
+    // We have to check the intersection with each orientation of the edge
+    for (const auto e : _current_elem->edge_index_range())
     {
-      std::unique_ptr<const Elem> curr_edge = curr_side->side_ptr(j);
-      if (curr_edge->type() != EDGE2)
-        mooseError("In cutElementByGeometry face edge must be EDGE2, but type is: ",
-                   libMesh::Utility::enum_to_string(curr_edge->type()),
-                   " base element type is: ",
-                   libMesh::Utility::enum_to_string(_current_elem->type()));
-      const Node * node1 = curr_edge->node_ptr(0);
-      const Node * node2 = curr_edge->node_ptr(1);
-      Real edgeLength = curr_edge->volume();
-      for (const auto & cut_elem : _cutter_mesh->element_ptr_range())
-      {
-        Real intersection_distance = -1;
-        ElemExtrema intersected_extrema;
-        const Real hmax = 1.0;
-        bool intersects = TraceRayTools::intersectTriangle(*node1,
-                                                           (*node2 - *node1) / edgeLength,
-                                                           cut_elem,
-                                                           (const unsigned short)0,
-                                                           (const unsigned short)1,
-                                                           (const unsigned short)2,
-                                                           intersection_distance,
-                                                           intersected_extrema,
-                                                           hmax);
+      _current_elem->build_edge_ptr(edge, e);
 
-        if (intersects && intersection_distance < edgeLength)
-          return 1;
-      }
+      const auto &edge0 = edge->point(0);
+      const auto &edge1 = edge->point(1);
+      const auto direction = (edge0 - edge1) / edge->volume();
+
+      // check edge1 -> edge0
+      if (TraceRayTools::intersectTriangle(edge1,
+                                           direction,
+                                           cut_elem,
+                                           0,
+                                           1,
+                                           2,
+                                           intersection_distance,
+                                           intersected_extrema,
+                                           /* hmax = */ 1.))
+        return 1;
+
+      // check edge1 -> edge0
+      if (TraceRayTools::intersectTriangle(edge0,
+                                           -direction,
+                                           cut_elem,
+                                           0,
+                                           1,
+                                           2,
+                                           intersection_distance,
+                                           intersected_extrema,
+                                           /* hmax = */ 1.))
+        return 1;
     }
   }
+
   return 0;
 }
