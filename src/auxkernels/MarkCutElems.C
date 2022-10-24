@@ -66,7 +66,8 @@ void MarkCutElems::buildCutterBoundingBoxes()
   // and store their bounding boxes
   for (const auto &elem : _cutter_mesh->element_ptr_range())
   {
-    const auto bbox = elem->loose_bounding_box();
+    auto bbox = elem->loose_bounding_box();
+    bbox.scale(1.01); // scale by a little for wiggle room in comparison
     if (pid_bbox.intersects(bbox))
       _cutter_bboxes.emplace_back(elem, bbox);
   }
