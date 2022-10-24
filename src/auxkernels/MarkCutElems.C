@@ -60,7 +60,7 @@ void MarkCutElems::buildCutterBoundingBoxes()
   _cutter_bboxes.clear();
 
   // Get the bounding box of this processor
-  const auto pid_bbox = MeshTools::create_local_bounding_box(*_cutter_mesh);
+  const auto pid_bbox = MeshTools::create_local_bounding_box(_mesh.getMesh());
 
   // Build the list of cut elems that may intersect this processor,
   // and store their bounding boxes
