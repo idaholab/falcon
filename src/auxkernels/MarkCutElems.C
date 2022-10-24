@@ -12,9 +12,6 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-//! Authors: Yidong Xia (Yidong.Xia@inl.gov)
-//! Created: 09/07/2014
-
 #include "MarkCutElems.h"
 #include "TraceRayTools.h"
 #include "libmesh/mesh_tools.h"
