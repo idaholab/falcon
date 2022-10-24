@@ -104,30 +104,32 @@ Real MarkCutElems::computeValue()
 
       const auto &edge0 = edge->point(0);
       const auto &edge1 = edge->point(1);
-      const auto direction = (edge0 - edge1) / edge->volume();
+      const auto edge_length = edge->volume();
+      const auto direction = (edge0 - edge1) / edge_length;
 
-      // check edge1 -> edge0
-      if (TraceRayTools::intersectTriangle(edge1,
-                                           direction,
-                                           cut_elem,
-                                           0,
-                                           1,
-                                           2,
-                                           intersection_distance,
-                                           intersected_extrema,
-                                           /* hmax = */ 1.))
-        return 1;
+      // Check for an intersection
+      // We need to check both "directions" of the edge due to the
+      // intersection algorithm
+      if ((TraceRayTools::intersectTriangle(edge1,
+                                            direction,
+                                            cut_elem,
+                                            0,
+                                            1,
+                                            2,
+                                            intersection_distance,
+                                            intersected_extrema,
+                                            /* hmax = */ 1.) ||
+           TraceRayTools::intersectTriangle(edge0,
+                                            -direction,
+                                            cut_elem,
+                                            0,
+                                            1,
+                                            2,
+                                            intersection_distance,
+                                            intersected_extrema,
+                                            /* hmax = */ 1.)) &&
+          intersection_distance <= edge_length)
 
-      // check edge0 -> edge1
-      if (TraceRayTools::intersectTriangle(edge0,
-                                           -direction,
-                                           cut_elem,
-                                           0,
-                                           1,
-                                           2,
-                                           intersection_distance,
-                                           intersected_extrema,
-                                           /* hmax = */ 1.))
         return 1;
     }
   }
