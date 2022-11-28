@@ -38,7 +38,8 @@ EGDiffusion::EGDiffusion(const InputParameters & parameters)
 {
 }
 
-// This kernel is based on the DG Diffusion Kernel and It is recommended to rewrite the averging through the interface for the diffusion coeff to be harmonic not arithmetic average.
+// This kernel is based on the DG Diffusion Kernel and It is recommended to rewrite the averging
+// through the interface for the diffusion coeff to be harmonic not arithmetic average.
 
 Real
 EGDiffusion::computeQpResidual(Moose::DGResidualType type)
@@ -46,19 +47,18 @@ EGDiffusion::computeQpResidual(Moose::DGResidualType type)
   Real r = 0;
 
   const unsigned int elem_b_order = _var.order();
-  double h_elem =
-      _current_elem_volume / _current_side_volume * 1. / Utility::pow<2>(elem_b_order);
-
-  if (elem_b_order == 0)
+  Real h_elem = _current_elem->hmin();
+  if (elem_b_order != 0)
   {
-      h_elem = _current_elem->hmin();;
+    h_elem = _current_elem_volume / _current_side_volume * 1. / Utility::pow<2>(elem_b_order);
   }
 
   switch (type)
   {
     case Moose::Element:
-      r -= 0.5 * (_diff[_qp] * _grad_v[_qp] * _normals[_qp] +
-                  _diff_neighbor[_qp] * _grad_v_neighbor[_qp] * _normals[_qp]) *
+      r -= 0.5 *
+           (_diff[_qp] * _grad_v[_qp] * _normals[_qp] +
+            _diff_neighbor[_qp] * _grad_v_neighbor[_qp] * _normals[_qp]) *
            _test[_i][_qp];
       r += _epsilon * 0.5 * (_v[_qp] - _v_neighbor[_qp]) * _diff[_qp] * _grad_test[_i][_qp] *
            _normals[_qp];
@@ -66,18 +66,24 @@ EGDiffusion::computeQpResidual(Moose::DGResidualType type)
       break;
 
     case Moose::Neighbor:
-      r += 0.5 * (_diff[_qp] * _grad_v[_qp] * _normals[_qp] +
-                  _diff_neighbor[_qp] * _grad_v_neighbor[_qp] * _normals[_qp]) *
-          _test_neighbor[_i][_qp];
+      r += 0.5 *
+           (_diff[_qp] * _grad_v[_qp] * _normals[_qp] +
+            _diff_neighbor[_qp] * _grad_v_neighbor[_qp] * _normals[_qp]) *
+           _test_neighbor[_i][_qp];
       r += _epsilon * 0.5 * (_v[_qp] - _v_neighbor[_qp]) * _diff_neighbor[_qp] *
            _grad_test_neighbor[_i][_qp] * _normals[_qp];
-      r -= _sigma_neighbor[_qp] * _diff_neighbor[_qp] / h_elem * (_v[_qp] - _v_neighbor[_qp]) * _test_neighbor[_i][_qp];
+      r -= _sigma_neighbor[_qp] * _diff_neighbor[_qp] / h_elem * (_v[_qp] - _v_neighbor[_qp]) *
+           _test_neighbor[_i][_qp];
       break;
   }
 
   return r;
 }
-Real EGDiffusion::computeQpJacobian(Moose::DGJacobianType /*type*/) { return 0; }
+Real
+EGDiffusion::computeQpJacobian(Moose::DGJacobianType /*type*/)
+{
+  return 0;
+}
 Real
 EGDiffusion::computeQpOffDiagJacobian(Moose::DGJacobianType type, unsigned int jvar)
 {
@@ -87,12 +93,10 @@ EGDiffusion::computeQpOffDiagJacobian(Moose::DGJacobianType type, unsigned int j
   Real r = 0;
 
   const unsigned int elem_b_order = _var.order();
-  double h_elem =
-      _current_elem_volume / _current_side_volume * 1. / Utility::pow<2>(elem_b_order);
-
-  if (elem_b_order == 0)
+  Real h_elem = _current_elem->hmin();
+  if (elem_b_order != 0)
   {
-      h_elem = _current_elem->hmin();;
+    h_elem = _current_elem_volume / _current_side_volume * 1. / Utility::pow<2>(elem_b_order);
   }
 
   if (jvar == _v_id)
@@ -106,7 +110,8 @@ EGDiffusion::computeQpOffDiagJacobian(Moose::DGJacobianType type, unsigned int j
         break;
 
       case Moose::ElementNeighbor:
-        r -= 0.5 * _diff_neighbor[_qp] * _grad_phi_neighbor[_j][_qp] * _normals[_qp] * _test[_i][_qp];
+        r -= 0.5 * _diff_neighbor[_qp] * _grad_phi_neighbor[_j][_qp] * _normals[_qp] *
+             _test[_i][_qp];
         r += _epsilon * 0.5 * -_phi_neighbor[_j][_qp] * _diff[_qp] * _grad_test[_i][_qp] *
              _normals[_qp];
         r += _sigma[_qp] * _diff[_qp] / h_elem * -_phi_neighbor[_j][_qp] * _test[_i][_qp];
@@ -116,7 +121,8 @@ EGDiffusion::computeQpOffDiagJacobian(Moose::DGJacobianType type, unsigned int j
         r += 0.5 * _diff[_qp] * _grad_phi[_j][_qp] * _normals[_qp] * _test_neighbor[_i][_qp];
         r += _epsilon * 0.5 * _phi[_j][_qp] * _diff_neighbor[_qp] * _grad_test_neighbor[_i][_qp] *
              _normals[_qp];
-        r -= _sigma_neighbor[_qp] * _diff_neighbor[_qp] / h_elem * _phi[_j][_qp] *_test_neighbor[_i][_qp];
+        r -= _sigma_neighbor[_qp] * _diff_neighbor[_qp] / h_elem * _phi[_j][_qp] *
+             _test_neighbor[_i][_qp];
         break;
 
       case Moose::NeighborNeighbor:
@@ -124,7 +130,8 @@ EGDiffusion::computeQpOffDiagJacobian(Moose::DGJacobianType type, unsigned int j
              _test_neighbor[_i][_qp];
         r += _epsilon * 0.5 * -_phi_neighbor[_j][_qp] * _diff_neighbor[_qp] *
              _grad_test_neighbor[_i][_qp] * _normals[_qp];
-        r -= _sigma_neighbor[_qp] * _diff_neighbor[_qp] / h_elem * -_phi_neighbor[_j][_qp] * _test_neighbor[_i][_qp];
+        r -= _sigma_neighbor[_qp] * _diff_neighbor[_qp] / h_elem * -_phi_neighbor[_j][_qp] *
+             _test_neighbor[_i][_qp];
         break;
     }
   }
