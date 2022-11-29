@@ -3,8 +3,6 @@
 #include "DerivativeMaterialInterface.h"
 #include "TimeDerivative.h"
 
-// Forward Declarations
-
 /**
  * Kernel = biot_coefficient*d(volumetric_strain)/dt + (1/biot_modulus)*d(porepressure)/dt
  * this is the time-derivative for poromechanics for a single-phase,
