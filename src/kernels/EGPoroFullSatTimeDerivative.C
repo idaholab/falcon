@@ -1,6 +1,6 @@
 #include "EGPoroFullSatTimeDerivative.h"
 
-registerMooseObject("MooseApp", EGPoroFullSatTimeDerivative);
+registerMooseObject("FalconApp", EGPoroFullSatTimeDerivative);
 
 InputParameters
 EGPoroFullSatTimeDerivative::validParams()

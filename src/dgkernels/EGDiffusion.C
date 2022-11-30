@@ -5,7 +5,7 @@
 
 #include "libmesh/utility.h"
 
-registerMooseObject("MooseApp", EGDiffusion);
+registerMooseObject("FalconApp", EGDiffusion);
 
 InputParameters
 EGDiffusion::validParams()
