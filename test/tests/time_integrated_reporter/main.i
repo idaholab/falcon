@@ -49,6 +49,5 @@
 [Outputs]
   [out]
     type = CSV
-    execute_system_information_on = none
   []
 []
