@@ -254,7 +254,6 @@ z2_out = 1 #50.6
     point_y2 = prod_line/pt2_y
     point_z2 = prod_line/pt2_z
     value = 0.1
-    domain_var = z_id
     outputs = none
   []
 
