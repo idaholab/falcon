@@ -37,4 +37,3 @@ protected:
   /// constant input
 
 };
-

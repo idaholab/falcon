@@ -44,4 +44,3 @@ protected:
   Real _percentile_drop;
 
 };
-

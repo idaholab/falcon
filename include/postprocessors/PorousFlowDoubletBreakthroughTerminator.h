@@ -39,4 +39,3 @@ protected:
   Real _keep_constant;
 
 };
-

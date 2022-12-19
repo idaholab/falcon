@@ -41,4 +41,3 @@ protected:
   Real _accumulator_ext;
 
 };
-

@@ -42,4 +42,3 @@ protected:
   Real _steady_state_relative_diff;
 
 };
-
