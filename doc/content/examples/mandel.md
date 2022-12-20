@@ -36,7 +36,7 @@ are run:
 
 1. FullSat.  This uses the FullySaturated versions of the fluid mass time derivative and the fluid flux.  In this case the Biot modulus is kept fixed, so it is expected to agree with the analytical solutions.
 
-!listing examples/fixedStressMultiApp/mandel_fully_saturated.i
+!listing examples/fixedStressMultiApp/mandel_master.i
 
 !media media/mandel_results.png
   id=fig:mandelresults
