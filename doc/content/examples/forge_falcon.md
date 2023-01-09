@@ -2,7 +2,7 @@
 
 ## Problem Statement
 
-The Frontier Observatory for Research in Geothermal Energy (FORGE) site is a multi-year initiative funded by the U.S. Department of Energy for enhanced geothermal system research and development. This example demonstartes that the MOOSE-based FALCON can simulate the native state distribution (i.e., pore pressure, stress, and temperature) of the FORGE site with various in-situ data constraints. A detailed description can be found in [!cite](liu2022forge).
+The Frontier Observatory for Research in Geothermal Energy (FORGE) site is a multi-year initiative funded by the U.S. Department of Energy for enhanced geothermal system research and development. This example presents the development of the native state simulation (i.e., pore pressure, stress, and temperature) of the FORGE site using material property values obtained from the site characterization activities. A detailed description can be found in [!cite](liu2022forge).
 
 !media media/forge_geometry.png
   id=fig:forgemesh
