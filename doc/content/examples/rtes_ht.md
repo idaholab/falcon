@@ -2,7 +2,7 @@
 
 ## Problem Statement
 
-Reservoir Thermal Energy Storage (RTES), also called Geological Thermal Energy Storage (GeoTES) or Aquifer Thermal Energy Storage (ATES), is the concept of injecting hot fluid into the subsurface formation for energy storage and extracting it for later use. This example demonstartes the MOOSE-based FALCON can obtain the same quantitative results as compared to the [TOUGH3](https://tough.lbl.gov/software/new-release-tough3/) code for the heat transfer and fluid flow coupled problems. 
+Reservoir Thermal Energy Storage (RTES), also called Geological Thermal Energy Storage (GeoTES) or Aquifer Thermal Energy Storage (ATES), is the concept of injecting hot fluid into the subsurface formation for energy storage and extracting it for later use. This example provides a comparison between FALCON and the [TOUGH3](https://tough.lbl.gov/software/new-release-tough3/) code for the heat transfer and fluid flow coupled problems and can be used as an example for TOUGH users on how to setup FALCON simulations
 
 !media media/TOUGH_benchmark.png
   id=fig:benchmark
