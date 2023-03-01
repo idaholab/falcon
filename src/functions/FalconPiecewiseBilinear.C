@@ -7,21 +7,21 @@
 //* Licensed under LGPL 2.1, please see LICENSE for details
 //* https://www.gnu.org/licenses/lgpl-2.1.html
 
-#include "PiecewiseBilinear.h"
+#include "FalconPiecewiseBilinear.h"
 #include "ColumnMajorMatrix.h"
 #include "BilinearInterpolation.h"
 #include "MooseUtils.h"
 
 #include <fstream>
 
-registerMooseObject("MooseApp", PiecewiseBilinear);
+registerMooseObject("FalconApp", FalconPiecewiseBilinear);
 
 InputParameters
-PiecewiseBilinear::validParams()
+FalconPiecewiseBilinear::validParams()
 {
   InputParameters params = Function::validParams();
   params.addParam<FileName>(
-      "data_file", "", "File holding csv data for use with PiecewiseBilinear-FALCON");
+      "data_file", "", "File holding csv data for use with FalconPiecewiseBilinear-FALCON");
   params.addParam<std::vector<Real>>("x", "The x abscissa values");
   params.addParam<std::vector<Real>>("y", "The y abscissa values");
   params.addParam<std::vector<Real>>("z", "The ordinate values");
@@ -41,7 +41,7 @@ PiecewiseBilinear::validParams()
   return params;
 }
 
-PiecewiseBilinear::PiecewiseBilinear(const InputParameters & parameters)
+FalconPiecewiseBilinear::FalconPiecewiseBilinear(const InputParameters & parameters)
   : Function(parameters),
     _data_file_name(getParam<FileName>("data_file")),
     _axis(getParam<int>("axis")),
@@ -55,16 +55,16 @@ PiecewiseBilinear::PiecewiseBilinear(const InputParameters & parameters)
 {
 
   if (!_axisValid && !_yaxisValid && !_xaxisValid)
-    mooseError("In PiecewiseBilinear-FALCON ",
+    mooseError("In FalconPiecewiseBilinear-FALCON ",
                _name,
                ": None of axis, yaxis, or xaxis properly defined.  Allowable range is 0-2");
 
   if (_axisValid && (_yaxisValid || _xaxisValid))
-    mooseError("In PiecewiseBilinear-FALCON ", _name, ": Cannot define axis with either yaxis or xaxis");
+    mooseError("In FalconPiecewiseBilinear-FALCON ", _name, ": Cannot define axis with either yaxis or xaxis");
 
   if (_radial && (!_yaxisValid || !_xaxisValid))
     mooseError(
-        "In PiecewiseBilinear-FALCON ", _name, ": yaxis and xaxis must be defined when radial = true");
+        "In FalconPiecewiseBilinear-FALCON ", _name, ": yaxis and xaxis must be defined when radial = true");
 
   std::vector<Real> x;
   std::vector<Real> y;
@@ -75,14 +75,14 @@ PiecewiseBilinear::PiecewiseBilinear(const InputParameters & parameters)
   {
     if (parameters.isParamValid("x") || parameters.isParamValid("y") ||
         parameters.isParamValid("z"))
-      mooseError("In PiecewiseBilinear-FALCON: Cannot specify 'data_file' and 'x', 'y', or 'z' together.");
+      mooseError("In FalconPiecewiseBilinear-FALCON: Cannot specify 'data_file' and 'x', 'y', or 'z' together.");
     else
       parse(x, y, z);
   }
 
   else if (!(parameters.isParamValid("x") && parameters.isParamValid("y") &&
              parameters.isParamValid("z")))
-    mooseError("In PiecewiseBilinear-FALCON: 'x' and 'y' and 'z' must be specified if any one is "
+    mooseError("In FalconPiecewiseBilinear-FALCON: 'x' and 'y' and 'z' must be specified if any one is "
                "specified or no 'data_file' is specified.");
 
   else
@@ -93,7 +93,7 @@ PiecewiseBilinear::PiecewiseBilinear(const InputParameters & parameters)
 
     // check that size of z = (size of x)*(size of y)
     if (z_vec.size() != x.size() * y.size())
-      mooseError("In PiecewiseBilinear-FALCON: Size of z should be the size of x times the size of y.");
+      mooseError("In FalconPiecewiseBilinear-FALCON: Size of z should be the size of x times the size of y.");
 
     // reshape and populate z matrix
     z.reshape(y.size(), x.size());
@@ -109,23 +109,23 @@ PiecewiseBilinear::PiecewiseBilinear(const InputParameters & parameters)
   _bilinear_interp = std::make_unique<BilinearInterpolation>(x, y, z);
 }
 
-PiecewiseBilinear::~PiecewiseBilinear() {}
+FalconPiecewiseBilinear::~FalconPiecewiseBilinear() {}
 
 Real
-PiecewiseBilinear::value(Real t, const Point & p) const
+FalconPiecewiseBilinear::value(Real t, const Point & p) const
 {
   return valueInternal(t, p);
 }
 
 ADReal
-PiecewiseBilinear::value(const ADReal & t, const ADPoint & p) const
+FalconPiecewiseBilinear::value(const ADReal & t, const ADPoint & p) const
 {
   return valueInternal(t, p);
 }
 
 template <typename T, typename P>
 T
-PiecewiseBilinear::valueInternal(T t, const P & p) const
+FalconPiecewiseBilinear::valueInternal(T t, const P & p) const
 {
   T retVal = 0.0;
   if (_yaxisValid && _xaxisValid && _radial)
@@ -151,7 +151,7 @@ PiecewiseBilinear::valueInternal(T t, const P & p) const
 }
 
 void
-PiecewiseBilinear::parse(std::vector<Real> & x, std::vector<Real> & y, ColumnMajorMatrix & z)
+FalconPiecewiseBilinear::parse(std::vector<Real> & x, std::vector<Real> & y, ColumnMajorMatrix & z)
 {
   std::ifstream file(_data_file_name.c_str());
   if (!file.good())

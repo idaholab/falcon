@@ -17,7 +17,7 @@ typedef ColumnMajorMatrixTempl<Real> ColumnMajorMatrix;
 class BilinearInterpolation;
 
 /**
- * PiecewiseBilinear reads from a file the information necessary to build the vectors x and y and
+ * FalconPiecewiseBilinear reads from a file the information necessary to build the vectors x and y and
  * the ColumnMajorMatrix z, and then sends those (along with a sample point) to
  * BilinearInterpolation.
  * See BilinearInterpolation in moose/src/utils for a description of how that works...it is a 2D
@@ -46,15 +46,15 @@ class BilinearInterpolation;
  * has to be included
  * in the function block of the inpute file like this...data_file = example.csv.
  */
-class PiecewiseBilinear : public Function
+class FalconPiecewiseBilinear : public Function
 {
 public:
   static InputParameters validParams();
 
-  PiecewiseBilinear(const InputParameters & parameters);
+  FalconPiecewiseBilinear(const InputParameters & parameters);
 
   // Necessary for using forward declaration of BilinearInterpolation in std::unique_ptr
-  virtual ~PiecewiseBilinear();
+  virtual ~FalconPiecewiseBilinear();
 
   using Function::value;
   /**
