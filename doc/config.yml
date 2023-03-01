@@ -21,9 +21,10 @@ Content:
               - getting_started/installation/install_miniconda.md
               - getting_started/installation/install_conda_moose.md
               - getting_started/installation/uninstall_conda.md
+              - getting_started/installation/install_peacock.md
               - getting_started/installation/wsl.md
-              - application_usage/peacock.md
               - application_usage/command_line_usage.md
+              - ../../../python/doc/content/python/peacock.md
               - media/**
               - bib/**
 
@@ -40,7 +41,7 @@ Extensions:
                 Running FALCON: getting_started/running_falcon.md
                 #Tutorial: getting_started/tutorial/index.md
             Documentation: documentation.menu.md
-            Examples: examples/index.md
+            Examples: examples/example_index.md
             #News: news/index.md
             Help:
                 FAQ: help/faq/index.md

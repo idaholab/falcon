@@ -13,7 +13,7 @@
 ## Usage
 
 - [Syntax](syntax/index.md)
-- [application_usage/peacock.md]
+- [python/peacock.md]
 !col-end!
 
 !col! small=12 medium=6 large=4
