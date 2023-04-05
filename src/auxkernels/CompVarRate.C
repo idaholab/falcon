@@ -1,5 +1,5 @@
 /*
-AuxKernel of Passing Variable Time Derivative 
+AuxKernel of Passing Variable Time Derivative
 */
 
 #include "CompVarRate.h"
@@ -18,7 +18,7 @@ CompVarRate::validParams()
 
 CompVarRate::CompVarRate(const InputParameters & parameters)
   : AuxKernel(parameters),
-  
+
   //Compute the time derivative of the given variable using "coupledDot"
   _coupled_val(coupledDot("coupled"))
 

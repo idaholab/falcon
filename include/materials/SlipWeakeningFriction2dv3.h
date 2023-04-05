@@ -1,4 +1,4 @@
-/* 
+/*
 Material Description of Slip Weakening Friction v3
 Generalize the computation of sticking traction using consistent displacement jump and nodal reaction forces
 */
@@ -42,5 +42,5 @@ protected:
   const VariableValue & _disp_slipweakening_neighbor_x_old;
   const VariableValue & _disp_slipweakening_y_old;
   const VariableValue & _disp_slipweakening_neighbor_y_old;
- 
+
 };

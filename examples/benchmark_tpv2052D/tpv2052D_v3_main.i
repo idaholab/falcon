@@ -43,7 +43,7 @@
         new_boundary = 'secondary_interface'
     []
   []
-    
+
   [GlobalParams]
     displacements = 'disp_x disp_y'
     q = 0.1
@@ -51,7 +51,7 @@
     T2_o = 120e6
     mu_d = 0.525
   []
-  
+
   [AuxVariables]
     [./resid_x]
         order = FIRST
@@ -90,7 +90,7 @@
         family = LAGRANGE
     []
   []
-  
+
   [Modules/TensorMechanics/CohesiveZoneMaster]
     [./czm_ik]
       boundary = 'Block0_Block1'
@@ -98,8 +98,8 @@
       generate_output='traction_x traction_y jump_x jump_y normal_traction tangent_traction normal_jump tangent_jump'
     [../]
   []
-    
-    
+
+
   [Modules]
     [./TensorMechanics]
       [./Master]
@@ -112,7 +112,7 @@
       [../]
     [../]
   []
-  
+
   [AuxKernels]
     [Vel_x]
       type = CompVarRate
@@ -151,7 +151,7 @@
       execute_on = 'TIMESTEP_BEGIN'
     []
   []
-  
+
   [Kernels]
     [./inertia_x]
       type = InertialForce
@@ -174,7 +174,7 @@
       component = '1'
     []
   []
-  
+
   [Materials]
     [elasticity]
         type = ComputeIsotropicElasticityTensor
@@ -200,7 +200,7 @@
         boundary = 'Block0_Block1'
     [../]
   []
-  
+
   [UserObjects]
     [./nodal_area]
       type = NodalArea
@@ -209,7 +209,7 @@
       execute_on = 'initial TIMESTEP_BEGIN'
     [../]
   []
-  
+
   [Executioner]
     type = Transient
     dt = 0.0025
@@ -219,7 +219,7 @@
       solve_type = lumped
     []
   []
-  
+
   [Outputs]
     exodus = true
     interval = 10

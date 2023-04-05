@@ -18,7 +18,7 @@ CompVar::validParams()
 
 CompVar::CompVar(const InputParameters & parameters)
   : AuxKernel(parameters),
-  
+
   _coupled_val(coupledValue("coupled"))
 
 {

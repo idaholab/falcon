@@ -1,5 +1,5 @@
 /*
-Kernel of Stiffness Proportional Damping 
+Kernel of Stiffness Proportional Damping
 */
 
 #include "StiffPropDamping.h"
@@ -21,14 +21,14 @@ StiffPropDamping::validParams()
 
 StiffPropDamping::StiffPropDamping(const InputParameters & parameters)
   : StressDivergenceTensors(parameters),
-  
+
   //Get stress tensor from previous time step (older == previous time step in Explicit Time Integration Scheme)
   _stress_older(getMaterialPropertyOlderByName<RankTwoTensor>(_base_name + "stress")),
-  
+
   //Get stress tensor from current time step
   _stress(getMaterialPropertyByName<RankTwoTensor>(_base_name + "stress")),
-  
-  //Ratio factor 
+
+  //Ratio factor
   _q(getParam<Real>("q"))
 
 {
