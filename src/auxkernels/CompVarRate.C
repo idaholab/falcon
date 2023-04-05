@@ -4,7 +4,7 @@ AuxKernel of Passing Variable Time Derivative
 
 #include "CompVarRate.h"
 
-registerMooseObject("farmsApp", CompVarRate);
+registerMooseObject("FalconApp", CompVarRate);
 
 InputParameters
 CompVarRate::validParams()

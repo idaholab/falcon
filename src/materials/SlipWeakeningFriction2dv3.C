@@ -6,7 +6,7 @@ Generalize the computation of sticking traction using consistent displacement ju
 #include "SlipWeakeningFriction2dv3.h"
 #include "InterfaceKernel.h"
 
-registerMooseObject("farmsApp", SlipWeakeningFriction2dv3);
+registerMooseObject("FalconApp", SlipWeakeningFriction2dv3);
 
 InputParameters
 SlipWeakeningFriction2dv3::validParams()

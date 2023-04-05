@@ -4,7 +4,7 @@ AuxKernel of Passing Variable
 
 #include "CompVar.h"
 
-registerMooseObject("farmsApp", CompVar);
+registerMooseObject("FalconApp", CompVar);
 
 InputParameters
 CompVar::validParams()
