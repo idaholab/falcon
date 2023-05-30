@@ -151,14 +151,12 @@ z2_out = 50.6
   []
   [acc_frac_in]
     type = AccumulateReporter
-    reporters = 'time/value node_frac_in/xcoord node_frac_in/ycoord node_frac_in/zcoord '
-                'node_frac_in/frac_T node_frac_in/frac_P'
+    reporters = 'time/value node_frac_in/xcoord node_frac_in/ycoord node_frac_in/zcoord node_frac_in/frac_T node_frac_in/frac_P'
     outputs = var_in
   []
   [acc_frac_out]
     type = AccumulateReporter
-    reporters = 'time/value node_frac_out/xcoord node_frac_out/ycoord node_frac_out/zcoord '
-                'node_frac_out/frac_T node_frac_out/frac_P'
+    reporters = 'time/value node_frac_out/xcoord node_frac_out/ycoord node_frac_out/zcoord node_frac_out/frac_T node_frac_out/frac_P'
     outputs = var_out
   []
 []
@@ -209,7 +207,7 @@ z2_out = 50.6
     direction = 'fracture_normal_x fracture_normal_y fracture_normal_z'
   []
   [T_elem]
-    type = SelfAux
+    type = ProjectionAux
     variable = T_elem
     v = matrix_T
   []
@@ -327,26 +325,16 @@ z2_out = 50.6
   [matrix]
     type = Exodus
     sync_times = '1 10 100 200 300 400 500 600 700 800 900 1000 1100 1200 1300
-    1400 1500 1600 '
-                 '1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 2700 2800
-    2900 3000 3100 '
-                 '3200 3300 3400 3500 3600 3700 3800 3900 4000 4100 4200 4300
-    4400 4500 4600 '
-                 '4700 4800 4900 5000 5100 5200 5300 5400 5500 5600 5700 5800
-    5900 6000 6100 '
-                 '6200 6300 6400 6500 6600 6700 6800 6900 7000 7100 7200 7300
-    7400 7500 7600 '
-                 '7700 7800 7900 8000 8100 8200 8300 8400 8500 8600 8700 8800
-    8900 9000 10000 '
-                 '11000 12000 13000 14000 15000 16000 17000 18000 19000 20000
-    30000 50000 70000 '
-                 '100000 200000 300000 400000 500000 600000 700000 800000
-    900000 1000000 1100000 '
-                 '1200000 1300000 1400000 1500000 1600000 1700000
-    1800000 1900000 2000000 '
-                 '2100000 2200000 2300000 2400000 2500000 2600000
-    2700000 2800000 2900000 3e6 '
-                 '1e7 1e8'
+    1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 2700 2800
+    2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 3900 4000 4100 4200 4300
+    4400 4500 4600 4700 4800 4900 5000 5100 5200 5300 5400 5500 5600 5700 5800
+    5900 6000 6100 6200 6300 6400 6500 6600 6700 6800 6900 7000 7100 7200 7300
+    7400 7500 7600 7700 7800 7900 8000 8100 8200 8300 8400 8500 8600 8700 8800
+    8900 9000 10000 11000 12000 13000 14000 15000 16000 17000 18000 19000 20000
+    30000 50000 70000 100000 200000 300000 400000 500000 600000 700000 800000
+    900000 1000000 1100000 1200000 1300000 1400000 1500000 1600000 1700000
+    1800000 1900000 2000000 2100000 2200000 2300000 2400000 2500000 2600000
+    2700000 2800000 2900000 3e6 1e7 1e8'
     sync_only = true
   []
   [var_all]
@@ -421,10 +409,8 @@ z2_out = 50.6
   [heat_from_fracture]
     type = MultiAppReporterTransfer
     from_multi_app = fracture_app
-    from_reporters = 'heat_transfer_rate/joules_per_s heat_transfer_rate/x heat_transfer_rate/y '
-                     'heat_transfer_rate/z'
-    to_reporters = 'heat_transfer_rate/transferred_joules_per_s heat_transfer_rate/x '
-                   'heat_transfer_rate/y heat_transfer_rate/z'
+    from_reporters = 'heat_transfer_rate/joules_per_s heat_transfer_rate/x heat_transfer_rate/y heat_transfer_rate/z'
+    to_reporters = 'heat_transfer_rate/transferred_joules_per_s heat_transfer_rate/x heat_transfer_rate/y heat_transfer_rate/z'
   []
   [frac_coord_in]
     type = MultiAppReporterTransfer
@@ -435,23 +421,19 @@ z2_out = 50.6
   [frac_coord_out]
     type = MultiAppReporterTransfer
     to_multi_app = fracture_app
-    from_reporters = 'pt_frac_out/xcoord1 pt_frac_out/ycoord1 pt_frac_out/zcoord1 '
-                     'pt_frac_out/xcoord2 pt_frac_out/ycoord2 pt_frac_out/zcoord2'
-    to_reporters = 'prod_line/pt1_x prod_line/pt1_y prod_line/pt1_z prod_line/pt2_x prod_line/pt2_y '
-                   'prod_line/pt2_z'
+    from_reporters = 'pt_frac_out/xcoord1 pt_frac_out/ycoord1 pt_frac_out/zcoord1 pt_frac_out/xcoord2 pt_frac_out/ycoord2 pt_frac_out/zcoord2'
+    to_reporters = 'prod_line/pt1_x prod_line/pt1_y prod_line/pt1_z prod_line/pt2_x prod_line/pt2_y prod_line/pt2_z'
   []
   [frac_var_in]
     type = MultiAppReporterTransfer
     from_multi_app = fracture_app
     from_reporters = 'TK_in/node_x TK_in/node_y TK_in/node_z TK_in/frac_T P_in/frac_P'
-    to_reporters = 'node_frac_in/xcoord node_frac_in/ycoord node_frac_in/zcoord node_frac_in/frac_T '
-                   'node_frac_in/frac_P'
+    to_reporters = 'node_frac_in/xcoord node_frac_in/ycoord node_frac_in/zcoord node_frac_in/frac_T node_frac_in/frac_P'
   []
   [frac_var_out]
     type = MultiAppReporterTransfer
     from_multi_app = fracture_app
     from_reporters = 'TK_out/node_x TK_out/node_y TK_out/node_z TK_out/frac_T P_out/frac_P'
-    to_reporters = 'node_frac_out/xcoord node_frac_out/ycoord node_frac_out/zcoord '
-                   'node_frac_out/frac_T node_frac_out/frac_P'
+    to_reporters = 'node_frac_out/xcoord node_frac_out/ycoord node_frac_out/zcoord node_frac_out/frac_T node_frac_out/frac_P'
   []
 []

@@ -1,14 +1,14 @@
 # 3D matrix app doing thermo-hydro PorousFlow and receiving heat energy via a VectorPostprocessor from the 2D fracture App
-intial_temperature=473
-endTime = 3# 1e6 #1e8
+intial_temperature = 473
+endTime = 3 # 1e6 #1e8
 #injection coordinates
-x_in=58.8124
-y_in=0.50384
-z_in=74.7838
+x_in = 58.8124
+y_in = 0.50384
+z_in = 74.7838
 #production coordinates
-x_out=101.705
-y_out=160.459
-z_out=39.5722
+x_out = 101.705
+y_out = 160.459
+z_out = 39.5722
 
 [Mesh]
   uniform_refine = 0
@@ -204,10 +204,10 @@ z_out=39.5722
     direction = 'fracture_normal_x fracture_normal_y fracture_normal_z'
   []
   [T_elem]
-    type = SelfAux
+    type = ProjectionAux
     variable = T_elem
     v = matrix_T
-  [../]
+  []
   [increase_10deg]
     type = ParsedAux
     variable = increase_10deg
@@ -219,12 +219,12 @@ z_out=39.5722
 []
 
 [Preconditioning]
-  [./superlu]
+  [superlu]
     type = SMP
     full = true
     petsc_options_iname = '-ksp_type -pc_type -pc_factor_mat_solver_package'
     petsc_options_value = 'gmres lu superlu_dist'
-  [../]
+  []
 []
 
 [Executioner]
@@ -298,7 +298,6 @@ z_out=39.5722
   []
 []
 
-
 [Adaptivity]
   marker = points
   max_h_level = 2
@@ -318,7 +317,7 @@ z_out=39.5722
 #this is suppressing some output
 [Outputs]
   print_linear_residuals = false
-  exodus=False
+  exodus = False
   csv = true
   [matrix]
     type = Exodus
@@ -362,8 +361,8 @@ z_out=39.5722
     #cli_args = 'Outputs/file_base=amr2/frac'
     execute_on = TIMESTEP_BEGIN
     sub_cycling = true
-### catch_up = true
-### max_catch_up_steps = 100
+    ### catch_up = true
+    ### max_catch_up_steps = 100
   []
 []
 
