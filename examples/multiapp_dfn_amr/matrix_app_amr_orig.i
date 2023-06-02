@@ -1,5 +1,5 @@
 # 3D matrix app doing thermo-hydro PorousFlow and receiving heat energy via a VectorPostprocessor from the 2D fracture App
-intial_temperature=473
+intial_temperature = 473
 endTime = 1e6 #1e8
 [Mesh]
   uniform_refine = 0
@@ -156,10 +156,10 @@ endTime = 1e6 #1e8
     direction = 'fracture_normal_x fracture_normal_y fracture_normal_z'
   []
   [T_elem]
-    type = SelfAux
+    type = ProjectionAux
     variable = T_elem
     v = matrix_T
-  [../]
+  []
   [increase_10deg]
     type = ParsedAux
     variable = increase_10deg
@@ -171,12 +171,12 @@ endTime = 1e6 #1e8
 []
 
 [Preconditioning]
-  [./superlu]
+  [superlu]
     type = SMP
     full = true
     petsc_options_iname = '-ksp_type -pc_type -pc_factor_mat_solver_package'
     petsc_options_value = 'gmres lu superlu_dist'
-  [../]
+  []
 []
 
 [Executioner]
@@ -243,7 +243,6 @@ endTime = 1e6 #1e8
   []
 []
 
-
 [Adaptivity]
   marker = points
   max_h_level = 1
@@ -264,8 +263,8 @@ endTime = 1e6 #1e8
 [Outputs]
   print_linear_residuals = false
   #file_base = 'amr2/matrix'
-  csv=True
-  exodus=False
+  csv = True
+  exodus = False
   [matrix]
     type = Exodus
     sync_times = '1 10 100 200 300 400 500 600 700 800 900 1000 1100 1200 1300
@@ -290,8 +289,8 @@ endTime = 1e6 #1e8
     #cli_args = 'Outputs/file_base=amr2/frac'
     execute_on = TIMESTEP_BEGIN
     sub_cycling = true
-### catch_up = true
-### max_catch_up_steps = 100
+    ### catch_up = true
+    ### max_catch_up_steps = 100
   []
 []
 
