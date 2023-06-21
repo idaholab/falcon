@@ -17,10 +17,10 @@ git submodule update --init moose
 
 ## Compile and Test FALCON
 
-After cloning, FALCON should be compiled and tested before use. 
+After cloning, FALCON should be compiled and tested before use.
 
 ```bash
-conda activate moose
+mamba activate moose
 cd ~/projects/falcon
 make -j 4
 ./run_tests -j 4
@@ -43,8 +43,8 @@ latest features. Following are the steps to update FALCON.
 First update the MOOSE environment:
 
 ```bash
-conda activate moose
-conda update --all
+mamba activate moose
+mamba update --all
 ```
 
 Then, update FALCON using the following commands:
