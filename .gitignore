@@ -254,3 +254,6 @@ include/FalconRevision.h
 include/base/FalconRevision.h
 .previous_test_results.json
 build/
+
+# resource file
+falcon.yaml
