@@ -51,7 +51,7 @@ FalconApp::~FalconApp() {}
 void
 FalconApp::registerAll(Factory & f, ActionFactory & af, Syntax & syntax)
 {
-  ModulesApp::registerAll(f, af, syntax);
+  ModulesApp::registerAllObjects<FalconApp>(f, af, syntax);
   Registry::registerObjectsTo(f, {"FalconApp"});
   Registry::registerActionsTo(af, {"FalconApp"});
   Registry::registerObjectsTo(f, {"THMTestApp"});
