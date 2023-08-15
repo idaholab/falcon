@@ -6,15 +6,15 @@ import pandas as pd
 import numpy as np
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--falcon_input', default='FORGE_NS_Ph3_2022.07.25.i', help='input file of the native state model')
-parser.add_argument('--falcon_run', default='../falcon/falcon-opt', help='path to falcon')
-parser.add_argument('--n_cores', type=int, default = 6, help='cpu cores')
-parser.add_argument('--max_iter', type=int, default = 10, help='max iterations')
+parser.add_argument('--falcon_input', default='FORGE_NS_Ph3_coarse.i', help='input file of the native state model')
+parser.add_argument('--falcon_run', default='~/projects/falcon/falcon-opt', help='path to falcon')
+parser.add_argument('--n_cores', type=int, default = 2, help='cpu cores')
+parser.add_argument('--max_iter', type=int, default = 1, help='max iterations')
 parser.add_argument('--nK', type=int, default = 2, help='number of parameters')
-parser.add_argument('--line_perm', type=int, default = 495, help='line number of permeability in the input file')
-parser.add_argument('--line_cond', type=int, default = 594, help='line number of thermal conductivity in the input file')
+parser.add_argument('--line_perm', type=int, default = 631, help='line number of permeability in the input file.  First line is 0.')
+parser.add_argument('--line_cond', type=int, default = 730, help='line number of thermal conductivity in the input file.  First line is 0.')
 parser.add_argument('--precision', type=float, default = 1.e-5, help='precision')
-parser.add_argument('--alpha', type=float, default = 0.5, help='line search step length')
+parser.add_argument('--alpha', type=float, default = 0.01, help='line search step length')
 parser.add_argument('--K_Perm', type=float, default = -16.0, help='initial permeability')
 parser.add_argument('--K_Cond', type=float, default = 1.0, help='initial thermal conductivity')
 parser.add_argument('--folder_ref', default='./Ref/', help="path to reference data")
@@ -42,11 +42,11 @@ num_file = 7      # number of simulation time steps
 ## Define a function to read data
 def Read_data(folder,num_file):
     # data comes from GDR repository https://gdr.openei.org/submissions/1397
-    well_16A = 'FORGE_NS_Ph3_2022.07.25_point_data_16A_'
-    well_56 = 'FORGE_NS_Ph3_2022.07.25_point_data_56_32_'
-    well_58 = 'FORGE_NS_Ph3_2022.07.25_point_data_58_32_'
-    well_78 = 'FORGE_NS_Ph3_2022.07.25_point_data_78_32_'
-    well_78B = 'FORGE_NS_Ph3_2022.07.25_point_data_78B_32_'
+    well_16A = 'FORGE_NS_Ph3_coarse_point_data_16A_'
+    well_56 = 'FORGE_NS_Ph3_coarse_point_data_56_32_'
+    well_58 = 'FORGE_NS_Ph3_coarse_point_data_58_32_'
+    well_78 = 'FORGE_NS_Ph3_coarse_point_data_78_32_'
+    well_78B = 'FORGE_NS_Ph3_coarse_point_data_78B_32_'
 
     data_pressure_16A, data_temper_16A, data_dispi_16A, data_dispj_16A, data_dispk_16A = [], [], [], [], []
     data_pressure_56, data_temper_56, data_dispi_56, data_dispj_56, data_dispk_56 = [], [], [], [], []

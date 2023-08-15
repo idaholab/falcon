@@ -1,13 +1,12 @@
-#REVISED VERSION
-# This file uses a smaller mesh
-# original mesh has 406K nodes and 2402 elements
+#Revisions made to the original FORGE native state model
+# NS mesh replaced with mesh generator to create a coarser mesh
+# Transient simulation to reach equilibration with sources.
+# Dirac kernel source for temperature and mass injection at the bottom of well 78
+# 3 levels of mesh refinement around sources to increase sensitivity
+# vectorpostprocessor Output along wells includes displacment and does not include stress
 
-#FORGE Native State Model, Phase 3 revision
-#last modified 2022.07.25
-#Created by R. Liu and R. Podgorney @ Idaho National Laboratory
-#This input will runs a steady-state simulation for the FORGE reservoir
-#using the FALCON code (https://mooseframework.inl.gov/falcon/)
-#Execution time was ~8 minutes on a MacPro Laptop using 8 cores
+# original FORGE native state model can downloaded from the GDR website:
+# https://gdr.openei.org/submissions/1397
 
 [Mesh]
   [generate]
@@ -144,12 +143,14 @@
 
 [DiracKernels]
   [source]
+    #placed at the bottom of well 78_32
     type = PorousFlowPointSourceFromPostprocessor
     variable = pressure
     mass_flux = mass_flux_in
     point = '2327.3 1795.9 679.59'
   []
   [source_h]
+    #placed at the bottom of well 78_32
     type = PorousFlowPointEnthalpySourceFromPostprocessor
     variable = temperature
     mass_flux = mass_flux_in
@@ -157,6 +158,23 @@
     T_in = T_in
     pressure = pressure
     fp = true_water
+  []
+[]
+
+[Adaptivity]
+  #refine around DiracKernels sources
+  # should refine more than one level but this should run fast
+  initial_steps = 2
+  max_h_level = 1
+  marker = box
+  [Markers]
+    [box]
+      type = BoxMarker
+      bottom_left = '2027 1495 379'
+      top_right = '2527 2095 879'
+      inside = refine
+      outside = do_nothing
+    []
   []
 []
 
@@ -172,8 +190,9 @@
   l_max_its = 1000
   nl_max_its = 100
   l_tol = 1e-6
-  nl_abs_tol = 1E-8
+  nl_abs_tol = 1e-7
   nl_rel_tol = 1e-6
+  reuse_preconditioner = true
 []
 
 #############################################################
@@ -767,7 +786,7 @@
 
 ############################################################
 [Preconditioning]
-  active = 'ilu_may_use_less_mem'
+  active = 'preferred'
 
   [ilu_may_use_less_mem]
     type = SMP
@@ -1311,18 +1330,6 @@
   []
 []
 
-###########################################################
-# [Executioner]
-#   type = Steady
-#   solve_type = Newton
-#   l_tol = 1e-3
-#   l_max_its = 2000
-#   nl_max_its = 200
-
-#   nl_abs_tol = 1e-6
-#   nl_rel_tol = 1e-8
-# []
-
 ############################################################
 [Outputs]
   execute_on = 'timestep_end'
@@ -1330,7 +1337,7 @@
 
   [console]
     type = Console
-    output_linear = true
+    output_linear = false #true
     output_nonlinear = true
     verbose = true
   []
