@@ -1,11 +1,16 @@
 [Tests]
   issues = '#135'
   design = 'examples/forge_effective_parameter_inversion_THM.md'
-  [plotting]
-    requirement = 'The system shall run an optimizatino script .'
+  [opt]
+    requirement = "The system shall run a python optimization script to calibrate permeability and "
+                  "thermal conductivity to match synthetic data produced by the FORGE native state "
+                  "model."
     type = RunCommand
     method = opt
-    command = "python3 temp_plots.py"
-    required_python_packages = 'matplotlib'
+    heavy = true
+    command = "python3 optimization_script.py"
+    recover = False
+    # min_parallel = 2
+    required_python_packages = 'os time argparse pandas numpy'
   []
 []
