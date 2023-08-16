@@ -6,11 +6,9 @@ This example is prepared for the Year 1 Milestone 3.4.3 from the Utah FORGE proj
 
 This example uses the synthetic data set generated from the FORGE site model to infer the hydrogeological and geomechanical properties. In this initial study, the effective permeability and thermal conductivity values for pressure and temperature data are identified. Spatially distributed heterogeneous fields will be tested in the next updates. The details for the scalable site characterization can be found in [!cite](lee2018fast,kadeethum2021framework).
 
-For the joint inversion example, 17,010 pressure, temperature, and displacement data points were created at the wells of 16A-32, 56-32, 58-32, 78-32, and 78B-32 from the native state model (Phase 3 updated in July 2022). Input files used here can be download from the [GDR website](https://gdr.openei.org/submissions/1397). For testing purposes, the native state model was modified to use a coarser mesh.  A Gauss-Newton solver with a line search is used to find the effective parameters.
+For the joint inversion example, 17,010 pressure, temperature, and displacement data points were created at the wells of 16A-32, 56-32, 58-32, 78-32, and 78B-32 from the native state model (Phase 3 updated in July 2022). Input files used here can be download from the [GDR website](https://gdr.openei.org/submissions/1397). For testing purposes, the native state model was modified in this example to create a coarser mesh using the MOOSE [MeshGenerator.md] system.  A Gauss-Newton solver with a line search is used to find the effective parameters.
 
 ## Input File
-
-### Materials
 
 [tab:materialParams] shows the material parameters, assuming that the materials of the two layers are isotropic and homogeneous.
 
@@ -29,41 +27,45 @@ For the joint inversion example, 17,010 pressure, temperature, and displacement 
 | Biot Coefficient | — | 0.47 | 0.47 |
 | Thermal expansion Coefficient | — | 6e-6 | 6e-6 |
 
-The two materials being calibrated are shown below material section of the input file is as follows:
+The two materials being calibrated for the granitoid layer are shown in the below material section of the input file:
 
 !listing examples/forge_native_state_parameter_calibration/FORGE_NS_Ph3_coarse.i
          block=Materials/permeability_granite Materials/thermal_conductivity_granitoid
          caption=Materials being calibrated.
+         id=input:materials
 
-### Initial and Boundary Conditions
+The FORGE native state model has the following boundary conditions.
 
-#### For the solid field, the boundary conditions are:
+Solid field boundary conditions:
 
 - fixed displacement of the bottom and three side surfaces
 - z coordinate dependent functions applied for the normal traction of the right surface and shear traction of the right and left surfaces
 - constant traction applied to the top and bottom surfaces
 
-#### For the fluid flow field, the boundary conditions are:
+Fluid flow field boundary conditions:
 
 - atmospheric pore pressure on the top surface
 - 34 $MPa$ pore pressure on the bottom surface
 
-#### For heat transfer, the boundary conditions are:
+Heat transfer boundary conditions:
 
 - 299 $K$ temperature on the top surface
 - distributed temperature on the bottom surface using a defined function
-#### Initial Condition
 
-The pore pressure and temperature were initialized using the z dependent functions:
+Initial conditions for the pore pressure and temperature in the FORGE native state model are initialized using the following functions that are linearly dependent on depth (z):
 
+\begin{equation}
+T=616-7.615\mathrm{e}{-2}(2360+z)\\
+P=3.5317\mathrm{e}{7}-8455(2360+z)
+\end{equation}
 
 ### Transient Simulation
 
-Transient simulation was performed by setting a point source at the toe of well 78-32 (\[2327.3, 1795.9, 679.59\] in the native state model mesh coordinate). The injection rate was increased from 0 $kg/s$  to 0.1 $kg/s$ for the first 50 seconds and maintained at the same rate of 0.1 $kg/s$ until $t$ = 100 s. The injection temperature was constant at 323.15 $K$.
+Material calibration was performed using a transient simulation with a point source at the toe of well 78-32 (\[2327.3, 1795.9, 679.59\] in the native state model mesh coordinate). The injection rate was increased from 0 $kg/s$  to 0.1 $kg/s$ for the first 50 seconds and maintained at the same rate of 0.1 $kg/s$ until $t$ = 100 s. The injection temperature was constant at 323.15 $K$.
 
 !listing examples/forge_native_state_parameter_calibration/FORGE_NS_Ph3_coarse.i
-         block=DiracKernels/source DiracKernels/source_h
-         caption=Point sources placed at the bottom of well 78-32 to provide sensitivity to calibrated materials.
+         block=DiracKernels
+         caption=Point source at the toe of well 78-32
 
 Pressure, temperature, and displacement data were extracted every 10s from well 16A-32, 56-32, 58-32, 78-32, and 78B-32. The simulation reached steady state at 70s.
 
@@ -77,9 +79,11 @@ K^{i+1}=K^{i}+\alpha \left( \sigma^{-1} + J^{T}_i R^{-1} J_i \right)^{-1} \left(
 
 where $K_{i}$ is the unknown variable log-permeabilty or log-conductivity at $i$-th iteration, $\sigma$ is the parameter error matrix, $R$ is the observation error matrix, $J_{i}$ is the Jacobian matrix, $y$ is the observed data, and $g(K^i)$ is the simulated data. $\alpha$ is the step length set to $0.5$ in this example.
 
-### !listing! id=local caption=Script for effective parameter inversion. language=python
+!listing examples/forge_native_state_parameter_calibration/optimization_script.py
+         caption=Script for effective parameter inversion.
+         id=local
 
-
+The input parameters in the python optimization script shown in [local] include the [MOOSE] input file line numbers for permeability and thermal conductivity shown [input:materials] which use zero based line numbers.
 
 [fig:forge_effective_inv_iters] shows the estimation results of permeability and thermal conductivity for 8 iterations. [fig:forge_effective_inv_fitting] presents the pressure, temperature, and displacement fits, with the fitting error shown as root mean square error (RMSE).
 
