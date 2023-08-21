@@ -6,58 +6,28 @@ This example is prepared for the Year 1 Milestone 3.4.3 from the Utah FORGE proj
 
 This example uses the synthetic data set generated from the FORGE site model to infer the hydrogeological and geomechanical properties. In this initial study, the effective permeability and thermal conductivity values for pressure and temperature data are identified. Spatially distributed heterogeneous fields will be tested in the next updates. The details for the scalable site characterization can be found in [!cite](lee2018fast,kadeethum2021framework).
 
-For the joint inversion example, 17,010 pressure, temperature, and displacement data points were created at the wells of 16A-32, 56-32, 58-32, 78-32, and 78B-32 from the native state model (Phase 3 updated in July 2022). Input files used here can be download from the [GDR website](https://gdr.openei.org/submissions/1397). For testing purposes, the native state model was modified in this example to create a coarser mesh using the MOOSE [MeshGenerator.md] system.  A Gauss-Newton solver with a line search is used to find the effective parameters.
+For the joint inversion example, 17,010 pressure, temperature, and displacement data points were created at the wells of 16A-32, 56-32, 58-32, 78-32, and 78B-32 from the native state model (Phase 3 updated in July 2022)[!cite](liu2022forge). A summary of the FALCON FORGE native statement model is available [here](examples/forge_falcon.md) with input and mesh available for down load from the [GDR website](https://gdr.openei.org/submissions/1397). A Gauss-Newton solver with a line search is used to find the effective parameters.
 
 ## Input File
 
-[tab:materialParams] shows the material parameters, assuming that the materials of the two layers are isotropic and homogeneous.
+The FORGE native state model assumes a two layer domain of isotropic and homogenous materials.  For testing purposes, the native state model was modified in this example to create a coarser 1000 element mesh using the following MOOSE [MeshGenerator.md]
 
-!table
-  id=tab:materialParams
-  caption=Material parameter values for observation generation from the FORGE native state simulation
-| Parameter | Unit | Sedimentary Layer | Granitoid Layer |
-| :-------: | :--: | :---------------: | :-------------: |
-| Permeability | $m^2$ | 1e-14 | 1e-18 |
-| Porosity | — | 0.12 | 0.001 |
-| Grain density | $kg/m^3$ | 2500 | 2750 |
-| Specific heat | $J/kg \cdot K$ | 830 | 790 |
-| Thermal conductivity | $W/m \cdot K$ | 2.8 | 3.05 |
-| Young’s modulus | $GPa$ | 30 | 62 |
-| Poisson’s ratio | — | 0.3 | 0.3 |
-| Biot Coefficient | — | 0.47 | 0.47 |
-| Thermal expansion Coefficient | — | 6e-6 | 6e-6 |
+!listing examples/forge_native_state_parameter_calibration/FORGE_NS_Ph3_coarse.i
+         block=Mesh
+         caption=[MeshGenerator.md] used for creating coarse FORGE native state model.
 
-The two materials being calibrated for the granitoid layer are shown in the below material section of the input file:
+In order to increase the sensitity of the measurement data to changes in material parameters, the mesh was locally refined around the toe of well 78-32 using the following [Adaptivity](syntax/Adaptivity/index.md) block
+
+!listing examples/forge_native_state_parameter_calibration/FORGE_NS_Ph3_coarse.i
+         block=Adaptivity
+         caption=Mesh refinement around the toe of well 78-32.
+
+Material properties for the granitoid and sedimentary layers given in [!ref](examples/forge_falcon.md#tab:materialParams).  The thermal conductivity and permeability being calibrated for the granitoid layer are shown in the below material section of the input file:
 
 !listing examples/forge_native_state_parameter_calibration/FORGE_NS_Ph3_coarse.i
          block=Materials/permeability_granite Materials/thermal_conductivity_granitoid
          caption=Materials being calibrated.
          id=input:materials
-
-The FORGE native state model has the following boundary conditions.
-
-Solid field boundary conditions:
-
-- fixed displacement of the bottom and three side surfaces
-- z coordinate dependent functions applied for the normal traction of the right surface and shear traction of the right and left surfaces
-- constant traction applied to the top and bottom surfaces
-
-Fluid flow field boundary conditions:
-
-- atmospheric pore pressure on the top surface
-- 34 $MPa$ pore pressure on the bottom surface
-
-Heat transfer boundary conditions:
-
-- 299 $K$ temperature on the top surface
-- distributed temperature on the bottom surface using a defined function
-
-Initial conditions for the pore pressure and temperature in the FORGE native state model are initialized using the following functions that are linearly dependent on depth (z):
-
-\begin{equation}
-T=616-7.615\mathrm{e}{-2}(2360+z)\\
-P=3.5317\mathrm{e}{7}-8455(2360+z)
-\end{equation}
 
 ### Transient Simulation
 
