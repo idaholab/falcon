@@ -65,18 +65,22 @@ PTMassSideFluxAverage::execute()
 }
 
 
+void
+PTMassSideFluxAverage::finalize()
+{
+  PTMassSideFluxIntegral::finalize();
+  gatherSum(_volume);
+}
+
+
 /*******************************************************************************
 Routine: PTMassSideFluxAverage --- getValue
 Authors: Yidong Xia
 *******************************************************************************/
 Real
-PTMassSideFluxAverage::getValue()
+PTMassSideFluxAverage::getValue() const
 {
-  Real integral = PTMassSideFluxIntegral::getValue();
-
-  gatherSum(_volume);
-
-  return integral / _volume;
+  return _integral_value / _volume;
 }
 
 
