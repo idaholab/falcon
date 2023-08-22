@@ -46,7 +46,7 @@ TimeIntegratedReporterValue::execute()
 }
 
 Real
-TimeIntegratedReporterValue::getValue()
+TimeIntegratedReporterValue::getValue() const
 {
   return _use_negative_value ? (-_value) : _value;
 }
