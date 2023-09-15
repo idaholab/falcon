@@ -1,11 +1,10 @@
 [Tests]
   [shortTest]
-    method = '!dbg'
     type     = CSVDiff
     input    = 'mrect1.i'
     csvdiff = 'mrect1_out_fracture_app0.csv'
-    cli_args = 'endTime=6e7'
-    requirement = 'Run Gringarten multiapp for a few timesteps.'
-    skip = 'long time'
+    cli_args = 'endTime=6e6'
+requirement = 'The system shall match the Gringarten analytic solution for a set of parallel fracturs seperated by a finite distance using a multi-app to transfer heat between a 2D fracture and 3D matrix.'
+    heavy = true
   [../]
 []
