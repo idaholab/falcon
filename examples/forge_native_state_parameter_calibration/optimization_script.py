@@ -259,7 +259,7 @@ for i in range(max_iter):
     remove_data(folder='./')
     simul_K_cur = Forward(K_cur)
 
-    Para[i,0] = K_cur[0]
+    Para[i,0] = K_cur[0][0]
     Para[i,1:nK] = K_cur[1:nK].squeeze()
     np.save(data_f+'/Simul_Data_Iter_'+str(i)+'.npy', simul_K_cur)
     np.save(data_f+'/Parameters.npy', Para)
@@ -293,7 +293,7 @@ for i in range(max_iter):
 remove_data(folder='./')
 simul_K_cur = Forward(K_cur)
 
-Para[max_iter,0] = K_cur[0]
+Para[max_iter,0] = K_cur[0][0]
 Para[max_iter,1:nK] = K_cur[1:nK].squeeze()
 np.save(data_f+'/Simul_Data_Iter_'+str(max_iter)+'.npy', simul_K_cur)
 np.save(data_f+'/Parameters.npy', Para)
