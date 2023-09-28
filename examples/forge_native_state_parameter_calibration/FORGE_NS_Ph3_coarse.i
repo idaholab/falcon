@@ -8,6 +8,10 @@
 # original FORGE native state model can downloaded from the GDR website:
 # https://gdr.openei.org/submissions/1397
 
+#parameters being inverted for
+K_Cond = 2.8
+K_Perm = 1e-14
+
 [Mesh]
   [generate]
     type = GeneratedMeshGenerator
@@ -623,7 +627,7 @@
   #fluid properties and flow
   [permeability_sediment]
     type = PorousFlowPermeabilityConst
-    permeability = '1e-14 0 0  0 1e-14 0  0 0 1e-14'
+    permeability = '${K_Perm} 0 0  0 ${K_Perm} 0  0 0 ${K_Perm}'
     block = granitoid_40m_surface_40m
   []
 
@@ -722,7 +726,7 @@
 
   [thermal_conductivity_sediments]
     type = PorousFlowThermalConductivityIdeal
-    dry_thermal_conductivity = '2.8 0 0  0 2.8 0  0 0 2.8'
+    dry_thermal_conductivity = '${K_Cond} 0 0  0 ${K_Cond} 0  0 0 ${K_Cond}'
     block = granitoid_40m_surface_40m
   []
 
@@ -1333,25 +1337,7 @@
 ############################################################
 [Outputs]
   execute_on = 'timestep_end'
-  exodus = true
-
-  [console]
-    type = Console
-    output_linear = false #true
-    output_nonlinear = true
-    verbose = true
-  []
-
-  [pgraph]
-    type = PerfGraphOutput
-    execute_on = 'final' # Default is "final"
-    level = 2 # Default is 1
-    heaviest_branch = true # Default is false
-    heaviest_sections = 5 # Default is 0
-  []
-
-  [point_data]
-    type = CSV
-  []
+  csv = true
+  file_base = FORGE_NS_Ph3_coarse_point_data
 []
 ############################################################
