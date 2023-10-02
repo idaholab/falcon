@@ -1,0 +1,29 @@
+[Tests]
+  issues = '#135'
+  design = 'examples/forge_effective_parameter_inversion_THM.md'
+  requirement = "The system shall run a python optimization script "
+  [data]
+    detail = "by first creating the synthetic measurement data from the FORGE Native state model; "
+    type = CheckFiles
+    input = FORGE_NS_Ph3_coarse.i
+    cli_args = 'Outputs/file_base=Ref/FORGE_NS_Ph3_coarse_point_data'
+    check_files = Ref/FORGE_NS_Ph3_coarse_point_data_16A_0007.csv
+    method = opt
+    heavy = true
+    recover = False
+    # min_parallel = 2
+    required_python_packages = 'os time argparse pandas numpy'
+  []
+  [opt]
+    detail = "and then calibrating the permeability and thermal conductivity to match the synthetic "
+             "data."
+    prereq = 'data'
+    type = RunCommand
+    method = opt
+    heavy = true
+    command = "python3 optimization_script.py"
+    recover = False
+    # min_parallel = 2
+    required_python_packages = 'os time argparse pandas numpy'
+  []
+[]
