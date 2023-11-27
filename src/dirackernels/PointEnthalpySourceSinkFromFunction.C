@@ -59,6 +59,21 @@ PointEnthalpySourceSinkFromFunction::addPoints()
 {
   _total_outflow_enthalpy.zero();
   addPoint(_p, 0);
+  Real _mass_flux = _func_mass_flux.value(_t, _q_point[_qp]);
+  Real _T_input = _func_temperature.value(_t, _q_point[_qp]);
+  // printf("_mass_flux=%f",_mass_flux);
+  // printf("_T_input=%f",_T_input);
+  Real h =0;
+  if ((_mass_flux>=0) && (_T_input<=0)){ //extraction
+    h = _fp.h_from_p_T(_pressure[_qp], (*_temperature)[_qp]);
+    // printf("check_extraction");
+  }else if((_mass_flux<=0) && (_T_input>0)){ //injection
+    h = _fp.h_from_p_T(_pressure[_qp], _T_input);
+    // printf("check_injection");
+  }else{
+    mooseError(name(), "The functions of mass flux and temperature are not coordinated for injection and extraction");
+  }
+  _total_outflow_enthalpy.add(_mass_flux * h * _dt);
 }
 
 Real
@@ -79,7 +94,6 @@ PointEnthalpySourceSinkFromFunction::computeQpResidual()
   }else{
     mooseError(name(), "The functions of mass flux and temperature are not coordinated for injection and extraction");
   }
-  _total_outflow_enthalpy.add(_mass_flux * h * _dt);
   // negative sign means source, while positive sign means sink
   return _test[_i][_qp] * _mass_flux * h;
 }
@@ -88,6 +102,15 @@ Real
 PointEnthalpySourceSinkFromFunction::computeQpJacobian()
 {
   return 0.;
+  // Real h, dh_dp, dh_dT;
+  // Real _mass_flux = _func_mass_flux.value(_t, _q_point[_qp]);
+  // Real _T_input = _func_temperature.value(_t, _q_point[_qp]);
+  // if ((_mass_flux>=0) && (_T_input<=0)){ //extraction
+  //   _fp.h_from_p_T(_pressure[_qp], (*_temperature)[_qp], h, dh_dp, dh_dT);
+  // }else if((_mass_flux<=0) && (_T_input>0)){ //injection
+  //   _fp.h_from_p_T(_pressure[_qp], _T_input, h, dh_dp, dh_dT);
+  // }
+  // return _test[_i][_qp] * _phi[_j][_qp]* _mass_flux * dh_dT;
 }
 
 Real
@@ -101,10 +124,10 @@ PointEnthalpySourceSinkFromFunction::computeQpOffDiagJacobian(unsigned int jvar)
     Real _T_input = _func_temperature.value(_t, _q_point[_qp]);
     if ((_mass_flux>=0) && (_T_input<=0)){ //extraction
       _fp.h_from_p_T(_pressure[_qp], (*_temperature)[_qp], h, dh_dp, dh_dT);
-      return -_test[_i][_qp] * _phi[_j][_qp]* _mass_flux * dh_dp;
+      return _test[_i][_qp] * _phi[_j][_qp]* _mass_flux * dh_dp;
     }else if((_mass_flux<=0) && (_T_input>0)){ //injection
       _fp.h_from_p_T(_pressure[_qp], _T_input, h, dh_dp, dh_dT);
-      return -_test[_i][_qp] * _phi[_j][_qp]* _mass_flux * dh_dp;
+      return _test[_i][_qp] * _phi[_j][_qp]* _mass_flux * dh_dp;
     }else{
     mooseError(name(), "The functions of mass flux and temperature are not coordinated for injection and extraction");
     }

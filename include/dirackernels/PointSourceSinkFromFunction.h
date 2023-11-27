@@ -24,6 +24,8 @@ public:
 
   virtual void addPoints() override;
   virtual Real computeQpResidual() override;
+  // virtual Real computeQpJacobian() override;
+  // virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
 
 protected:
   /// The function being used for evaluation mass flux
