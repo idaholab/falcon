@@ -42,31 +42,14 @@ PointSourceSinkFromFunction::addPoints()
 {
   _total_outflow_mass.zero();
   addPoint(_p, 0);
-  Real _mass_flux = _func.value(_t, _q_point[_qp]);
-  _total_outflow_mass.add(_mass_flux * _dt) ;
-  // printf("_mass_flux %f",_mass_flux);
 }
 
 Real
 PointSourceSinkFromFunction::computeQpResidual()
 {
-  Real _mass_flux = _func.value(_t, _q_point[_qp]);
-  // _total_outflow_mass.add(_mass_flux * _dt) ;
-  // printf("_mass_flux %f",_mass_flux);
+  Real _mass_flux = _func.value(_t, _p);
+  // The test function is used here to account for all quadrature points
+  _total_outflow_mass.add(_test[_i][_qp]*_mass_flux * _dt) ;
   // Negative sign to make a positive mass_flux in the input file a source
   return _test[_i][_qp] * _mass_flux;
 }
-
-// Real
-// PointSourceSinkFromFunction::computeQpJacobian()
-// {
-//   // Real _mass_flux = _func.value(_t, _q_point[_qp]);
-//   // return _test[_i][_qp] * _phi[_j][_qp]* _mass_flux;
-//   return 0.;
-// }
-
-// Real
-// PointSourceSinkFromFunction::computeQpOffDiagJacobian(unsigned int jvar)
-// {
-//   return 0.;
-// }
