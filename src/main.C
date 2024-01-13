@@ -33,7 +33,7 @@
 int
 main(int argc, char * argv[])
 {
-  moose::main<FalconTestApp>(argc, argv);
+  Moose::main<FalconTestApp>(argc, argv);
 
   return 0;
 }
