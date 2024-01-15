@@ -62,7 +62,7 @@ FalconTestApp::registerAll(Factory & f, ActionFactory & af, Syntax & s, bool use
 void
 FalconTestApp::registerApps()
 {
-  registerApp(FalconApp);
+  FalconApp::registerApps();
   registerApp(FalconTestApp);
 }
 
