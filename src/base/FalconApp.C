@@ -83,6 +83,7 @@ void
 FalconApp::registerApps()
 {
   registerApp(FalconApp);
+  ModulesApp::registerApps();
 
 #ifdef IAPWS95_ENABLED
   registerApp(IAPWS95App);
