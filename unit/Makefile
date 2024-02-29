@@ -27,7 +27,7 @@ include $(FRAMEWORK_DIR)/moose.mk
 ################################## MODULES ####################################
 GEOCHEMISTRY      := yes
 POROUS_FLOW       := yes
-TENSOR_MECHANICS  := yes
+SOLID_MECHANICS   := yes
 include           $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
 
