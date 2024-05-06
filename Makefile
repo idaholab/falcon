@@ -49,7 +49,7 @@ include $(FRAMEWORK_DIR)/moose.mk
 CHEMICAL_REACTIONS      := yes
 FLUID_PROPERTIES        := yes
 GEOCHEMISTRY            := yes
-HEAT_CONDUCTION         := yes
+HEAT_TRANSFER           := yes
 MISC                    := yes
 NAVIER_STOKES           := yes
 POROUS_FLOW             := yes
