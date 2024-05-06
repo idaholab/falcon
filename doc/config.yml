@@ -4,7 +4,7 @@ Content:
     - ${MOOSE_DIR}/modules/chemical_reactions/doc/content
     - ${MOOSE_DIR}/modules/fluid_properties/doc/content
     - ${MOOSE_DIR}/modules/geochemistry/doc/content
-    - ${MOOSE_DIR}/modules/heat_conduction/doc/content
+    - ${MOOSE_DIR}/modules/heat_transfer/doc/content
     - ${MOOSE_DIR}/modules/misc/doc/content
     - ${MOOSE_DIR}/modules/navier_stokes/doc/content
     - ${MOOSE_DIR}/modules/porous_flow/doc/content
@@ -60,7 +60,7 @@ Extensions:
             - ${MOOSE_DIR}/modules/chemical_reactions/include
             - ${MOOSE_DIR}/modules/fluid_properties/include
             - ${MOOSE_DIR}/modules/geochemistry/include
-            - ${MOOSE_DIR}/modules/heat_conduction/include
+            - ${MOOSE_DIR}/modules/heat_transfer/include
             - ${MOOSE_DIR}/modules/misc/include
             - ${MOOSE_DIR}/modules/navier_stokes/include
             - ${MOOSE_DIR}/modules/porous_flow/include
@@ -94,7 +94,7 @@ Extensions:
             # chemical_reactions: !include ${MOOSE_DIR}/modules/chemical_reactions/doc/sqa_chemical_reactions.yml
             fluid_properties: !include ${MOOSE_DIR}/modules/fluid_properties/doc/sqa_fluid_properties.yml
             # geochemistry: !include ${MOOSE_DIR}/modules/geochemistry/doc/sqa_geochemistry.yml
-            heat_conduction: !include ${MOOSE_DIR}/modules/heat_conduction/doc/sqa_heat_conduction.yml
+            heat_transfer: !include ${MOOSE_DIR}/modules/heat_transfer/doc/sqa_heat_transfer.yml
             misc: !include ${MOOSE_DIR}/modules/misc/doc/sqa_misc.yml
             navier_stokes: !include ${MOOSE_DIR}/modules/navier_stokes/doc/sqa_navier_stokes.yml
             porous_flow: !include ${MOOSE_DIR}/modules/porous_flow/doc/sqa_porous_flow.yml
