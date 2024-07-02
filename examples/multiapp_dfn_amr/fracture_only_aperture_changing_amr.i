@@ -333,10 +333,11 @@ z_out=0 #1000000  #39.5722
   [water]
     type = TabulatedFluidProperties
     fp = true_water
+    fluid_property_file = water97_tabulated.csv
+    allow_fp_and_tabulation = true
     temperature_min = 275 # K
     temperature_max = 600
     interpolated_properties = 'density viscosity enthalpy internal_energy'
-    fluid_property_file = water97_tabulated.csv
   []
 []
 
