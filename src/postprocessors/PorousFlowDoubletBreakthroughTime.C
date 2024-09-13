@@ -42,7 +42,7 @@ PorousFlowDoubletBreakthroughTime::execute()
 }
 
 Real
-PorousFlowDoubletBreakthroughTime::getValue()
+PorousFlowDoubletBreakthroughTime::getValue()  const
 {
   return _keep_constant;
 }

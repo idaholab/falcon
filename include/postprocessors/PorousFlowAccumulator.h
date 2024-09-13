@@ -28,7 +28,7 @@ public:
 
   virtual void initialize() override;
   virtual void execute() override;
-  virtual Real getValue() override;
+  virtual Real getValue() const override;
 
 protected:
   /// current post-processor value

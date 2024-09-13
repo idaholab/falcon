@@ -49,7 +49,7 @@ PorousFlowAccumulator::execute()
 }
 
 Real
-PorousFlowAccumulator::getValue()
+PorousFlowAccumulator::getValue() const
 {
   return abs(_accumulator);
 }

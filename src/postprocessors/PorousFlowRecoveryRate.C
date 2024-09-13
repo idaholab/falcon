@@ -51,7 +51,7 @@ PorousFlowRecoveryRate::execute()
 }
 
 Real
-PorousFlowRecoveryRate::getValue()
+PorousFlowRecoveryRate::getValue()  const
 {
   if (_accumulator_ext == 0)
     return 0;

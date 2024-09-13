@@ -52,7 +52,7 @@ PorousFlowDoubletSwitch::execute()
 }
 
 Real
-PorousFlowDoubletSwitch::getValue()
+PorousFlowDoubletSwitch::getValue()  const
 {
   if (_charge_time == 0)
     return 0;

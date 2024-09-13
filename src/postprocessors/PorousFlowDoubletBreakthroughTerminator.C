@@ -39,23 +39,15 @@ PorousFlowDoubletBreakthroughTerminator::initialize()
 void
 PorousFlowDoubletBreakthroughTerminator::execute()
 {
+  Real temp_diff = abs(_pps_value-_temp_init_value);
+  if (temp_diff >= _pps_relative_diff)
+    _keep_constant = 1;
+  else
+    _keep_constant = 0;
 }
 
 Real
-PorousFlowDoubletBreakthroughTerminator::getValue()
+PorousFlowDoubletBreakthroughTerminator::getValue()  const
 {
-  Real temp_diff = abs(_pps_value-_temp_init_value);
-  if ( _keep_constant == 0)
-    if (temp_diff >= _pps_relative_diff )
-    {
-      _keep_constant = 1;
-      return 1;
-      }
-    else
-      return 0;
-  else
-    return 1;
-
-  // return temp_diff;
-
+  return _keep_constant;
 }

@@ -42,7 +42,7 @@ PorousFlowRecoveryTimeAccumulator::execute()
 }
 
 Real
-PorousFlowRecoveryTimeAccumulator::getValue()
+PorousFlowRecoveryTimeAccumulator::getValue()  const
 {
   return abs(_accumulator/3600/24);
 }

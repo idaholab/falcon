@@ -49,7 +49,7 @@ timestepPostprocessor::execute()
 }
 
 Real
-timestepPostprocessor::getValue()
+timestepPostprocessor::getValue() const
 {
   if (_charge_time == 0)
     return 2592000; /// 1 months 3600*24*30

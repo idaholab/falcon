@@ -42,7 +42,7 @@ PorousFlowSteadyStateDetection::execute()
 }
 
 Real
-PorousFlowSteadyStateDetection::getValue()
+PorousFlowSteadyStateDetection::getValue()  const
 {
   // copy initial value in case difference is measured against initial value
   Real change;

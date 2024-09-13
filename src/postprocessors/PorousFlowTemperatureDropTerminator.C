@@ -48,7 +48,7 @@ PorousFlowTemperatureDropTerminator::execute()
 }
 
 Real
-PorousFlowTemperatureDropTerminator::getValue()
+PorousFlowTemperatureDropTerminator::getValue()  const
 {
   if (((_pps_value_J/_pps_value_kg/4186 + 273.15)-_temperature_init)/(_temperature_inj-_temperature_init) < _percentile_drop/100)
     return 1;

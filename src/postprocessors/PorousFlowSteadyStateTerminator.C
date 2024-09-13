@@ -51,7 +51,7 @@ PorousFlowSteadyStateTerminator::execute()
 }
 
 Real
-PorousFlowSteadyStateTerminator::getValue()
+PorousFlowSteadyStateTerminator::getValue()  const
 {
   if ((_pps_value <= _steady_state_relative_diff && _pps_t > _steady_state_start_time)|| _pps_t > _steady_state_end_time )
     return 1;

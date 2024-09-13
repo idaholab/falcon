@@ -39,7 +39,7 @@ PorousFlowRecoveryTime::execute()
 }
 
 Real
-PorousFlowRecoveryTime::getValue()
+PorousFlowRecoveryTime::getValue()  const
 {
   return (_pps_time/3600/24 - _pps_value);
 }
