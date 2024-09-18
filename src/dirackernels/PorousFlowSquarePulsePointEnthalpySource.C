@@ -21,10 +21,10 @@ PorousFlowSquarePulsePointEnthalpySource::validParams()
       "The mass flux at this point in kg/s (positive is flux in, negative is flux out)");
   params.addRequiredParam<UserObjectName>(
       "fp",
-      "The name of the user object used to calculate the fluid properties of the injected fluid");  
+      "The name of the user object used to calculate the fluid properties of the injected fluid");
     params.addRequiredCoupledVar(
       "pressure", "Pressure used to calculate the injected fluid enthalpy (measured in Pa)");
-  params.addRequiredParam<Real>("T_in", "The incoming fluid temperature");    
+  params.addRequiredParam<Real>("T_in", "The incoming fluid temperature");
   params.addRequiredParam<Point>("point", "The x,y,z coordinates of the point source (sink)");
   params.addParam<Real>(
       "start_time", 0.0, "The time at which the source will start (Default is 0)");

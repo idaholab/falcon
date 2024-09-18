@@ -21,12 +21,12 @@ PointEnthalpySourceSinkFromFunction::validParams()
       "SumQuantityUO",
       "User Object of type=PorousFlowSumQuantity in which to place the total "
       "outflow from the line sink for each time step.");
-  params.addRequiredParam<FunctionName>("mass_flux_function", 
+  params.addRequiredParam<FunctionName>("mass_flux_function",
       "The function holding the mass flux at this point in kg/s (positive is flux in,"
       "negative is flux out)");
-  params.addRequiredParam<FunctionName>("temperature_function", 
+  params.addRequiredParam<FunctionName>("temperature_function",
       "The function holding the temperature (K) of the injected fluid,"
-      "Function value is 0 if the fluid is extracted"); 
+      "Function value is 0 if the fluid is extracted");
   params.addRequiredCoupledVar(
       "pressure", "Pressure used to calculate the injected fluid enthalpy (measured in Pa)");
   params.addRequiredParam<UserObjectName>(
