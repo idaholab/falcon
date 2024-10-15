@@ -17,6 +17,8 @@
 
 #include <fstream>
 
+using namespace libMesh;
+
 StochasticField::StochasticField(std::string fname)
 {
   std::ifstream file(fname.c_str());
