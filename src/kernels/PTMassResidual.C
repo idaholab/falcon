@@ -23,61 +23,59 @@ Descriptions: compute the residual & Jacobian of
 
 #include "PTMassResidual.h"
 
+using namespace libMesh;
+
 registerMooseObject("FalconApp", PTMassResidual);
 
 InputParameters PTMassResidual::validParams()
 {
   InputParameters params = Kernel::validParams();
   params.addCoupledVar("coupled_temperature",
-  "This coupled variable will be used as temperature");
+                       "This coupled variable will be used as temperature");
   return params;
 }
-
 
 /*******************************************************************************
 Routine: PTMassResidual -- constructor
 Authors: Yidong Xia
 *******************************************************************************/
-PTMassResidual::PTMassResidual(const InputParameters & parameters):
-  Kernel(parameters),
-  _has_coupled_temp(isCoupled("coupled_temperature")),
-  _wrho(getMaterialProperty<Real>("density_water")),
-  _wtau(getMaterialProperty<Real>("tau_water")),
-  _gfor(getMaterialProperty<Real>("gravity")),
-  _drot(getMaterialProperty<Real>("partial_rho_over_partial_temp")),
-  _perm(getMaterialProperty<Real>("permeability")),
-  _dkdp(getMaterialProperty<Real>("partial_perm_over_partial_pres")),
-  _guvec(getMaterialProperty<RealGradient>("gravity_direction")),
-  _wdmfx(getMaterialProperty<RealGradient>("darcy_mass_flux_water")),
-  _temp_var(_has_coupled_temp ? coupled("coupled_temperature") : zero)
-{}
-
+PTMassResidual::PTMassResidual(const InputParameters &parameters) : Kernel(parameters),
+                                                                    _has_coupled_temp(isCoupled("coupled_temperature")),
+                                                                    _wrho(getMaterialProperty<Real>("density_water")),
+                                                                    _wtau(getMaterialProperty<Real>("tau_water")),
+                                                                    _gfor(getMaterialProperty<Real>("gravity")),
+                                                                    _drot(getMaterialProperty<Real>("partial_rho_over_partial_temp")),
+                                                                    _perm(getMaterialProperty<Real>("permeability")),
+                                                                    _dkdp(getMaterialProperty<Real>("partial_perm_over_partial_pres")),
+                                                                    _guvec(getMaterialProperty<RealGradient>("gravity_direction")),
+                                                                    _wdmfx(getMaterialProperty<RealGradient>("darcy_mass_flux_water")),
+                                                                    _temp_var(_has_coupled_temp ? coupled("coupled_temperature") : zero)
+{
+}
 
 /*******************************************************************************
 Routine: computeQpResidual -- compute residual at quadrature point
 Authors: Yidong Xia
 *******************************************************************************/
-Real
-PTMassResidual::
-computeQpResidual()
+Real PTMassResidual::
+    computeQpResidual()
 {
-  return -_wdmfx[_qp]*_grad_test[_i][_qp];
+  return -_wdmfx[_qp] * _grad_test[_i][_qp];
 }
-
 
 /*******************************************************************************
 Routine: computeQpJacobian -- compute Jacobian at quadrature point
 Authors: Yidong Xia
 *******************************************************************************/
-Real
-PTMassResidual::
-computeQpJacobian()
+Real PTMassResidual::
+    computeQpJacobian()
 {
   Real r = 0.0;
 
   // contribution from Darcy mass flux due to pressure gradient
-  r += (_wtau[_qp]*_wrho[_qp]*_grad_phi[_j][_qp] +
-        _dkdp[_qp]/_perm[_qp]*_wdmfx[_qp])*_grad_test[_i][_qp];
+  r += (_wtau[_qp] * _wrho[_qp] * _grad_phi[_j][_qp] +
+        _dkdp[_qp] / _perm[_qp] * _wdmfx[_qp]) *
+       _grad_test[_i][_qp];
 
   // contribution from Darcy mass flux due to elevation
   // omitted
@@ -85,15 +83,13 @@ computeQpJacobian()
   return r;
 }
 
-
 /*******************************************************************************
 Routine: computeQpOffDiagJacobian
          -- compute off-diagonal entries of Jacobian at quadrature point
 Authors: Yidong Xia
 *******************************************************************************/
-Real
-PTMassResidual::
-computeQpOffDiagJacobian(unsigned int jvar)
+Real PTMassResidual::
+    computeQpOffDiagJacobian(unsigned int jvar)
 {
   Real r = 0.0;
 
@@ -102,8 +98,8 @@ computeQpOffDiagJacobian(unsigned int jvar)
 
   // contribution from Darcy mass flux due to elevation
   if (jvar == _temp_var && _has_coupled_temp)
-    r += 2.0*_wtau[_qp]*_wrho[_qp]*_drot[_qp]*_phi[_j][_qp]*
-         _gfor[_qp]*(_guvec[_qp]*_grad_test[_i][_qp]);
+    r += 2.0 * _wtau[_qp] * _wrho[_qp] * _drot[_qp] * _phi[_j][_qp] *
+         _gfor[_qp] * (_guvec[_qp] * _grad_test[_i][_qp]);
 
   return r;
 }

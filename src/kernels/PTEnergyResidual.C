@@ -23,6 +23,8 @@ Descriptions: compute the residual & Jacobian of
 
 #include "PTEnergyResidual.h"
 
+using namespace libMesh;
+
 registerMooseObject("FalconApp", PTEnergyResidual);
 
 InputParameters PTEnergyResidual::validParams()
