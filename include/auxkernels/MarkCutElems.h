@@ -38,6 +38,15 @@ private:
   /// The mesh we want to cut with
   const std::unique_ptr<const ReplicatedMesh> _cutter_mesh;
 
+  /// return value for an element not cut by the cutter mesh
+  const Real _uncut_value;
+
+  /// return value for an element cut by the cutter mesh
+  const Real _cut_value;
+
+  /// Should the value returned for the cut element be the block_id of the cutter mesh element
+  const bool _use_block_ids;
+
   /// The elem:bbox pairs from the cut mesh that intersect our processor
   std::vector<std::pair<const Elem *, BoundingBox>> _cutter_bboxes;
 };
