@@ -26,32 +26,18 @@
   []
 []
 
-[AuxKernels]
-  [ls]
-    type = MarkCutElems
-    mesh_file = Cluster_34.exo
-    variable = c
-  []
-[]
-
 [Adaptivity]
   initial_steps = 4
   steps = 4
   marker = marker
   initial_marker = marker
   max_h_level = 4
-  [Indicators]
-    [indicator]
-      type = ValueJumpIndicator #GradientJumpIndicator
-      variable = c
-    []
-  []
   [Markers]
     [marker]
-      type = ErrorFractionMarker
-      indicator = indicator
-      coarsen = 0.1
-      refine = 0.9
+      type = ValueThresholdMarker
+      variable = c
+      coarsen = 0.09
+      refine = 0.11
     []
   []
 []
