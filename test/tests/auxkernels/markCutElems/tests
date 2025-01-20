@@ -1,17 +1,27 @@
 [Tests]
-  issues = '#115'
-  requirement = 'The system shall produce an auxkernel marking elements '
-                'intersected by a lower dimensional cutting mesh '
+  issues = '#115 #151'
   [simple]
     type = 'CSVDiff'
     input = 'markCutElemsSimple.i'
     csvdiff = 'markCutElemsSimple_out.csv'
-    detail = 'for a simple plane.'
+    requirement = 'The system shall produce an auxkernel marking elements with a value given by '
+             'the block id of the cutter element mesh intersecting the element for a '
+             'simple rectangle lower dimensional cutter mesh.'
   []
-  [DFN]
+  [basic_mark_DFN]
     type = 'CSVDiff'
-    input = 'markCutElems.i'
-    csvdiff = 'markCutElems_out.csv'
-    detail = ' for a semi relistic DFN with refinement.'
+    input = 'markCutElems.i basic_markCutElems.i'
+    csvdiff = 'basic_markCutElems_out.csv'
+    requirement = 'The system shall produce an auxkernel marking elements as intersected or not '
+             'intersected by a lower dimensional cutting mesh for a small DFN with '
+             'refinement.'
+  []
+  [blockid_mark_DFN]
+    type = 'CSVDiff'
+    input = 'markCutElems.i blockid_markCutElems.i'
+    csvdiff = 'blockid_markCutElems_out.csv'
+    requirement = 'The system shall produce an auxkernel marking elements with a value given by '
+             'the block id of the cutter element mesh intersecting the element for a '
+             'small DFN with refinement.'
   []
 []

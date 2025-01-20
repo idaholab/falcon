@@ -1,7 +1,12 @@
 #each element has length = 4/5
 #each element volume is 64/125
 #rectangle.e cuts into 9 elements
-#pp ElementIntegralVariablePostprocessor outputs 64*9/125=4.608
+# volume of original mesh = 4x4x4=64
+# volume of marked elements = (64*9/125)=4.608
+# volume of unmarked element = 64-(64*9/125)=59.392
+# rectangle.e cutter mesh block_id is 10
+# uncut_value is -1
+#pp ElementIntegralVariablePostprocessor outputs (64*9/125)*10 - 59.392 = -13.312
 [Mesh]
   [gen]
     type = GeneratedMeshGenerator
@@ -31,6 +36,8 @@
     type = MarkCutElems
     mesh_file = rectangle.e
     variable = c
+    uncut_value = -1
+    use_block_ids = true
   []
 []
 
@@ -41,7 +48,6 @@
 [Executioner]
   type = Transient #Steady
   solve_type = PJFNK
-
   num_steps = 1
 []
 
