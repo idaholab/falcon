@@ -107,7 +107,7 @@
     point_x2 = pt/pt2_x
     point_y2 = pt/pt2_y
     point_z2 = pt/pt2_z
-    variable = oneID
+    variable_filter = oneID
     outputs = out
   []
   [differentID_out]
@@ -119,7 +119,7 @@
     point_x2 = pt/pt2_x
     point_y2 = pt/pt2_y
     point_z2 = pt/pt2_z
-    variable = differentID
+    variable_filter = differentID
     outputs = out
   []
   [noID_out]
