@@ -1,11 +1,51 @@
-endTime = 3.16e8
-
+endTime = 3e8
+frac_half_space = 20 #50
+n_elem_x = 7 #10
 
 [Mesh]
-  uniform_refine = 0
-  [matrixmesh]
-    type = FileMeshGenerator  # reading mesh from file
-    file = 'gringartenbrickdomain100by100by10.e'  #mesh created in cubit
+  # [matrixmesh]
+  #   type = FileMeshGenerator # reading mesh from file
+  #   file = 'gringartenbrickdomain100by100by10.e' #mesh created in cubit
+  # []
+  [left_side]
+    type = GeneratedMeshGenerator
+    dim = 3
+    nx = ${n_elem_x}
+    xmin = '${fparse -frac_half_space}'
+    xmax = 0
+    bias_x = 0.8
+    ny = 50
+    ymin = -50
+    ymax = 50
+    nz = 1
+    zmin = -5
+    zmax = 5
+  []
+  [right_side]
+    type = GeneratedMeshGenerator
+    dim = 3
+    nx = 7
+    xmin = 0
+    xmax = '${fparse frac_half_space}'
+    bias_x = 1.2
+    ny = 50
+    ymin = -50
+    ymax = 50
+    nz = 1
+    zmin = -5
+    zmax = 5
+  []
+  [right_side_rename]
+    type = RenameBoundaryGenerator
+    input = right_side
+    old_boundary = 'top bottom front back'
+    new_boundary = 'rtop rbottom rfront rback'
+  []
+  [smg]
+    type = StitchedMeshGenerator
+    inputs = 'left_side right_side_rename'
+    clear_stitched_boundary_ids = true
+    stitch_boundaries_pairs = 'right left'
   []
 []
 
@@ -39,11 +79,11 @@ endTime = 3.16e8
 [Functions]
   [insitu_pp]
     type = ParsedFunction
-    value = '9.81*1000*(3000 - z)'
+    expression = '9.81*1000*(3000 - z)'
   []
   [insitu_T]
     type = ParsedFunction
-    value = '363'
+    expression = '363'
   []
 []
 
@@ -84,18 +124,26 @@ endTime = 3.16e8
 []
 
 [Preconditioning]
-  [./superlu]
+  [superlu]
     type = SMP
     full = true
     petsc_options_iname = '-ksp_type -pc_type -pc_factor_mat_solver_package'
     petsc_options_value = 'gmres lu superlu_dist'
-  [../]
+  []
 []
 
+[Functions]
+  [dts]
+    type = ParsedFunction
+    expression = if(t<1e6,t*t,1e6)
+  []
+[]
 [Executioner]
   type = Transient
   solve_type = NEWTON
-  dt = 0.1e7
+  # dt = 1e6
+  dtmin = 1
+  dtmax = 1e6
   end_time = ${endTime}
   line_search = 'none'
   automatic_scaling = true
@@ -105,6 +153,11 @@ endTime = 3.16e8
   nl_max_its = 20
   nl_rel_tol = 5e-04
   nl_abs_tol = 1e-09
+  [TimeStepper]
+    type = FunctionDT
+    function = dts
+    min_dt = 2
+  []
 []
 
 [Outputs]
@@ -184,50 +237,43 @@ endTime = 3.16e8
 [Transfers]
   [normal_x_from_fracture]
     type = MultiAppNearestNodeTransfer
-    direction = from_multiapp
-    multi_app = fracture_app
+    from_multi_app = fracture_app
     source_variable = normal_dirn_x
     variable = fracture_normal_x
   []
   [normal_y_from_fracture]
     type = MultiAppNearestNodeTransfer
-    direction = from_multiapp
-    multi_app = fracture_app
+    from_multi_app = fracture_app
     source_variable = normal_dirn_y
     variable = fracture_normal_y
   []
   [normal_z_from_fracture]
     type = MultiAppNearestNodeTransfer
-    direction = from_multiapp
-    multi_app = fracture_app
+    from_multi_app = fracture_app
     source_variable = normal_dirn_z
     variable = fracture_normal_z
   []
   [element_normal_length_to_fracture]
     type = MultiAppNearestNodeTransfer
-    direction = to_multiapp
-    multi_app = fracture_app
+    to_multi_app = fracture_app
     source_variable = element_normal_length
     variable = enclosing_element_normal_length
   []
   [element_normal_thermal_cond_to_fracture]
     type = MultiAppNearestNodeTransfer
-    direction = to_multiapp
-    multi_app = fracture_app
+    to_multi_app = fracture_app
     source_variable = normal_thermal_conductivity
     variable = enclosing_element_normal_thermal_cond
   []
   [T_to_fracture]
-    type = MultiAppInterpolationTransfer
-    direction = to_multiapp
-    multi_app = fracture_app
+    type = MultiAppGeometricInterpolationTransfer
+    to_multi_app = fracture_app
     source_variable = matrix_T
     variable = transferred_matrix_T
   []
   [heat_from_fracture]
     type = MultiAppReporterTransfer
-    direction = from_multiapp
-    multi_app = fracture_app
+    from_multi_app = fracture_app
     from_reporters = 'heat_transfer_rate/joules_per_s heat_transfer_rate/x heat_transfer_rate/y heat_transfer_rate/z'
     to_reporters = 'heat_transfer_rate/transferred_joules_per_s heat_transfer_rate/x heat_transfer_rate/y heat_transfer_rate/z'
   []
