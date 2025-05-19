@@ -12,8 +12,7 @@
 #include "MeshGenerator.h"
 
 /**
- * MeshGenerator for deleting duplicate sidesets in meshes created by a gmsh DFN
- * mesher
+ * MeshGenerator for deleting duplicate faces from sidesets in mesh
  */
 class RemoveDuplicateFacesFromSidesets : public MeshGenerator {
 public:

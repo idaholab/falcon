@@ -23,8 +23,8 @@ RemoveDuplicateFacesFromSidesets::validParams()
 {
   InputParameters params = MeshGenerator::validParams();
 
-  params.addClassDescription("Mesh generator which removes duplicate sidesets "
-                             "from meshes created with a gmsh script for");
+  params.addClassDescription("Mesh generator which removes all duplicate faces "
+                             "from sidesets.");
   params.addRequiredParam<MeshGeneratorName>("input", "The mesh we want to modify");
 
   return params;
