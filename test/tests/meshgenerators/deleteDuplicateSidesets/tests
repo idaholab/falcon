@@ -1,0 +1,9 @@
+[Tests]
+  [simple]
+    issues = '#154'
+    design = 'source/constraints/ADEqualValueEmbeddedConstraint.md'
+    type = RunApp
+    input = 'msh_to_exodus_rm_duplicate_ss.i'
+    requirement = 'The system shall remove duplicate sidesets from meshes.'
+  []
+[]
