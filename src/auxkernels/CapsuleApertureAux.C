@@ -40,7 +40,7 @@ Real CapsuleApertureAux::computeValue(){
     Point x2x0 = x0 - _x2;
 
     Real distance_from_center_line;
-   
+
     /*
     If the current point does not lie between the two points of
     the line segment, then the distance to the line is the distance
@@ -62,5 +62,5 @@ Real CapsuleApertureAux::computeValue(){
     Real fracture_aperture =  (_aHi-_aLo) * sigmoid_scale + _aLo;
 
     return fracture_aperture;
-    
+
 }

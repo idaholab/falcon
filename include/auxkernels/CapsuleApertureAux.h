@@ -2,10 +2,10 @@
 
 #include "AuxKernel.h"
 
-/** 
+/**
  * AuxKernel for computing fracture apertures based
  * on the distance from the center line of the fracture.
- * The apertures are calculated and scaled according to 
+ * The apertures are calculated and scaled according to
  * a generalized sigmoid function
  */
 class CapsuleApertureAux : public AuxKernel
@@ -16,9 +16,9 @@ public:
   CapsuleApertureAux(const InputParameters & parameters);
 
 protected:
-  /** 
+  /**
    * Compute the value for the aperture
-   * This can be done either at the nodes, 
+   * This can be done either at the nodes,
    * or at the gauss point
    * @return fracture aperture at queried point
    */
