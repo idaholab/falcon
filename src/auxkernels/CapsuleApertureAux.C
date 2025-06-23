@@ -6,8 +6,7 @@ registerMooseObject("FalconApp", CapsuleApertureAux);
 InputParameters
 CapsuleApertureAux::validParams(){
     InputParameters params = AuxKernel::validParams();
-    params.addClassDescription("AuxKernel for computing fracture apertures based 
-        on the distance from the center line of the fracture.")
+    params.addClassDescription("AuxKernel for computing fracture apertures based on the distance from the center line of the fracture.");
     params.addRequiredParam<Point>("start_point","starting point of line segment");
     params.addRequiredParam<Point>("end_point","ending point of line segment");
     params.addRequiredParam<Real>("a_max","max initial aperture");
@@ -46,7 +45,7 @@ Real CapsuleApertureAux::computeValue(){
     If the current point does not lie between the two points of
     the line segment, then the distance to the line is the distance
     to the closest endpoint. Else it is the perpendicalar distance
-    from the linse
+    from the line
     */
 
     if(x1x2*x1x0 <= 0){
