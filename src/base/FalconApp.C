@@ -41,7 +41,7 @@ FalconApp::validParams()
 /*******************************************************************************
 Routine: FalconApp -- constructor
 *******************************************************************************/
-FalconApp::FalconApp(InputParameters parameters) : MooseApp(parameters)
+FalconApp::FalconApp(const InputParameters & parameters) : MooseApp(parameters)
 {
   FalconApp::registerAll(_factory, _action_factory, _syntax);
 }

@@ -40,7 +40,7 @@ FalconTestApp::validParams()
   return params;
 }
 
-FalconTestApp::FalconTestApp(InputParameters parameters) : MooseApp(parameters)
+FalconTestApp::FalconTestApp(const InputParameters & parameters) : MooseApp(parameters)
 {
   FalconTestApp::registerAll(
       _factory, _action_factory, _syntax, getParam<bool>("allow_test_objects"));
