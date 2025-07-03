@@ -35,7 +35,7 @@ class FalconTestApp : public MooseApp
 public:
   static InputParameters validParams();
 
-  FalconTestApp(InputParameters parameters);
+  FalconTestApp(const InputParameters & parameters);
   virtual ~FalconTestApp();
 
   static void registerApps();
