@@ -237,4 +237,4 @@ As shown in [fig:demoseaso], we simulate 10 years for the seasonal cycle scenari
   style=width:30%;
   caption= Histograms of the output parameters for all the realized simulations of the seasonal cycle operation.Note the performance metrics are all annual average values.
 
-  <!-- !bibtex bibliography -->
+  !! !bibtex bibliography
