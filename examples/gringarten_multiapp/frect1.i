@@ -1,17 +1,29 @@
 # Cold water injection into one side of the fracture network, and production from the other side
-injection_rate = 0.1 #25 # kg/s
-endTime = 3.16e8
+injection_rate = 0.1 # kg/s
+endTime = 3e8
 [Mesh]
   uniform_refine = 0
-  [single_frac]
-    type = FileMeshGenerator
-    file = 'rect_100_10_medium.e'
+  [generate]
+    type = GeneratedMeshGenerator
+    dim = 2
+    nx = 10
+    xmin = -5
+    xmax = 5
+    ny = 50
+    ymin = -50
+    ymax = 50
+  []
+  [rotate]
+    type = TransformGenerator
+    input = generate
+    transform = ROTATE
+    vector_value = '90 90 90'
   []
   [injection_node]
     type = BoundingBoxNodeSetGenerator
-    input = single_frac
-    bottom_left = '-5 -55 -5'
-    top_right = '5 -45 5'
+    input = rotate
+    bottom_left = '-0.05 -51 -5.1'
+    top_right = '0.05  -49.9 5.1'
     new_boundary = injection_node
   []
 []
@@ -45,8 +57,9 @@ endTime = 3.16e8
   coupling_type = ThermoHydro
   porepressure = frac_P
   temperature = frac_T
-  fp = water
+  fp = the_simple_fluid #water
   pressure_unit = Pa
+  # stabilization = full
 []
 
 [Kernels]
@@ -129,10 +142,10 @@ endTime = 3.16e8
   [heat_transfer_coefficient_auxk]
     type = ParsedAux
     variable = heat_transfer_coefficient
-    args = 'enclosing_element_normal_length enclosing_element_normal_thermal_cond'
+    coupled_variables = 'enclosing_element_normal_length enclosing_element_normal_thermal_cond'
     constant_names = h_s
     constant_expressions = 1E3 #This is the value being assigned to h_s.   Should be much bigger than thermal_conductivity / L ~ 1
-    function = 'if(enclosing_element_normal_length = 0, 0, h_s * enclosing_element_normal_thermal_cond * 2 * enclosing_element_normal_length / (h_s * enclosing_element_normal_length * enclosing_element_normal_length + enclosing_element_normal_thermal_cond * 2 * enclosing_element_normal_length))'
+    expression = 'if(enclosing_element_normal_length = 0, 0, h_s * enclosing_element_normal_thermal_cond * 2 * enclosing_element_normal_length / (h_s * enclosing_element_normal_length * enclosing_element_normal_length + enclosing_element_normal_thermal_cond * 2 * enclosing_element_normal_length))'
   []
   [insitu_pp]
     type = FunctionAux
@@ -219,11 +232,17 @@ endTime = 3.16e8
 []
 
 [FluidProperties]
+  [the_simple_fluid]
+    type = SimpleFluidProperties
+    bulk_modulus = 2E9
+    viscosity = 1.0E-3
+    density0 = 1000.0
+  []
   [true_water]
     type = Water97FluidProperties
   []
   [water]
-    type = TabulatedFluidProperties
+    type = TabulatedBicubicFluidProperties
     fp = true_water
     temperature_min = 275 # K
     temperature_max = 600
@@ -233,27 +252,21 @@ endTime = 3.16e8
 []
 
 [Materials]
-  [porosity]
-    type = PorousFlowPorosityLinear
-    porosity_ref = 1E-4
-    P_ref = insitu_pp
-    P_coeff = 3e-10
-    porosity_min = 1E-5
+  [porosity_frac]
+    type = PorousFlowPorosityConst
+    porosity = 0.01
   []
-  [permeability]
-    type = PorousFlowPermeabilityKozenyCarman
-    k0 = 1E-15
-    poroperm_function = kozeny_carman_phi0
-    m = 0
-    n = 3
-    phi0 = 1E-4
+  [permeability_frac]
+    type = PorousFlowPermeabilityConst
+    permeability = '1e-12 0 0   0 1e-12 0   0 0 1e-12'
   []
-  [internal_energy]
+
+  [internal_energy_frac]
     type = PorousFlowMatrixInternalEnergy
     density = 2700
     specific_heat_capacity = 0
   []
-  [aq_thermal_conductivity]
+  [aq_thermal_conductivity_frac]
     type = PorousFlowThermalConductivityIdeal
     dry_thermal_conductivity = '0.6E-4 0 0  0 0.6E-4 0  0 0 0.6E-4'
   []
@@ -262,17 +275,17 @@ endTime = 3.16e8
 [Functions]
   [kg_rate]
     type = ParsedFunction
-    vals = 'dt kg_out'
-    vars = 'dt kg_out'
-    value = 'kg_out/dt'
+    symbol_values = 'dt kg_out'
+    symbol_names = 'dt kg_out'
+    expression = 'kg_out/dt'
   []
   [insitu_pp]
     type = ParsedFunction
-    value = '9.81*1000*(3000 - z)'
+    expression = '9.81*1000*(3000 - z)'
   []
   [insitu_T]
     type = ParsedFunction
-    value = '363'
+    expression = '363'
   []
 []
 
@@ -284,19 +297,23 @@ endTime = 3.16e8
   [kg_out]
     type = PorousFlowPlotQuantity
     uo = kg_out_uo
+    outputs = none
   []
   [kg_per_s]
     type = FunctionValuePostprocessor
     function = kg_rate
+    outputs = none
   []
   [J_out]
     type = PorousFlowPlotQuantity
     uo = J_out_uo
+    outputs = none
   []
   [TK_in]
     type = PointValue
     variable = frac_T
     point = '0 -50 0'
+    outputs = none
   []
   [TK_out]
     type = PointValue
@@ -307,36 +324,46 @@ endTime = 3.16e8
     type = PointValue
     variable = frac_P
     point = '0 50 0'
+    outputs = none
   []
   [P_in]
     type = PointValue
     variable = frac_P
     point = '0 -50 0'
+    outputs = none
   []
 []
 
 [VectorPostprocessors]
   [heat_transfer_rate]
     type = NodalValueSampler
-    outputs = none
     sort_by = id
     variable = joules_per_s
+    outputs = none
   []
 []
 
 [Preconditioning]
-  [./superlu]
+  [superlu]
     type = SMP
     full = true
     petsc_options_iname = '-ksp_type -pc_type -pc_factor_mat_solver_package'
     petsc_options_value = 'gmres lu superlu_dist'
-  [../]
+  []
 []
 
+[Functions]
+  [dts]
+    type = ParsedFunction
+    expression = if(t<1e6,t*t,1e6)
+  []
+[]
 [Executioner]
   type = Transient
   solve_type = NEWTON
-  dt = 0.1e7
+  # dt = 1e6
+  dtmin = 1
+  dtmax = 1e6
   end_time = ${endTime}
   line_search = 'none'
   automatic_scaling = true
@@ -346,21 +373,14 @@ endTime = 3.16e8
   nl_max_its = 20
   nl_rel_tol = 5e-04
   nl_abs_tol = 1e-09
+  [TimeStepper]
+    type = FunctionDT
+    function = dts
+    min_dt = 2
+  []
 []
 
 [Outputs]
   print_linear_residuals = false
-  exodus = false
   csv = true
-  # [fracCSV]
-  #   type = CSV
-  #   sync_times = '100 200 300 400 500 600 700 800 900
-  #                 1000 2000 3000 4000 5000 6000 7000 8000 9000
-  #                 1000e1 2000e1 3000e1 4000e1 5000e1 6000e1 7000e1 8000e1 9000e1
-  #                 1000e2 2000e2 3000e2 4000e2 5000e2 6000e2 7000e2 8000e2 9000e2
-  #                 1000e3 2000e3 3000e3 4000e3 5000e3 6000e3 7000e3 8000e3 9000e3
-  #                 1000e4 2000e4 3000e4 4000e4 5000e4 6000e4 7000e4 8000e4 9000e4
-  #                 1000e5 2000e5 3000e5 4000e5 5000e5 6000e5 7000e5 8000e5 9000e5'
-  #   sync_only = true
-  # []
 []
