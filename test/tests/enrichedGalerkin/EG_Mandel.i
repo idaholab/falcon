@@ -156,16 +156,16 @@
   []
   [tot_force]
     type = ParsedAux
-    args = 'stress_yy EGpressure'
+    coupled_variables = 'stress_yy EGpressure'
     execute_on = timestep_end
     variable = tot_force
-    function = '-stress_yy+0.6*EGpressure'
+    expression = '-stress_yy+0.6*EGpressure'
   []
   [EGpressure]
     type = ParsedAux
-    args = 'CGpressure DGpressure'
+    coupled_variables = 'CGpressure DGpressure'
     variable = EGpressure
-    function = 'CGpressure + DGpressure'
+    expression = 'CGpressure + DGpressure'
   []
 []
 
@@ -410,7 +410,7 @@
   exodus = false
   perf_graph = false
   [csv]
-    interval = 3
+    time_step_interval = 3
     type = CSV
   []
 []

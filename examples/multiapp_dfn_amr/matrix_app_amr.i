@@ -213,8 +213,8 @@ z_out = 39.5722
     variable = increase_10deg
     constant_names = To
     constant_expressions = ${intial_temperature}
-    args = 'T_elem'
-    function = 'if( (To-T_elem)>10,1,0)'
+    coupled_variables = 'T_elem'
+    expression = 'if( (To-T_elem)>10,1,0)'
   []
 []
 

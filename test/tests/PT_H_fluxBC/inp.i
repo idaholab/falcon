@@ -89,9 +89,9 @@
 []
 ############################################################
 [Outputs]
-  file_base      = out
-  interval       = 1
-  exodus         = true
+  file_base          = out
+  time_step_interval = 1
+  exodus             = true
   [./Console]
     type = Console
     output_linear = true

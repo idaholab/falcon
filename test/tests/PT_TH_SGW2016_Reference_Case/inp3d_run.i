@@ -212,19 +212,19 @@
     type = Exodus
     file_base = out3d_run
     #use_problem_dimension = false
-    interval = 100
+    time_step_interval = 100
   [../]
   [./CSV]
     type = CSV
     file_base = out3d_run
-    interval = 10
+    time_step_interval = 10
   [../]
   [./CONSOLE]
     type = Console
     output_linear = true
     output_nonlinear = true
     execute_postprocessors_on = 'none'
-    interval = 1
+    time_step_interval = 1
   [../]
 []
 ############################################################
