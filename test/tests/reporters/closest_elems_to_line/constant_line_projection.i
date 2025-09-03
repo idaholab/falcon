@@ -47,7 +47,7 @@
 #   type = ParsedAux
 #   variable = differentID
 #   use_xyzt = true
-#   function = 'z'
+#   expression = 'z'
 #   execute_on = INITIAL
 # []
 # []

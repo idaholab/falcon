@@ -129,10 +129,10 @@ endTime = 3.16e8
   [heat_transfer_coefficient_auxk]
     type = ParsedAux
     variable = heat_transfer_coefficient
-    args = 'enclosing_element_normal_length enclosing_element_normal_thermal_cond'
+    coupled_variables = 'enclosing_element_normal_length enclosing_element_normal_thermal_cond'
     constant_names = h_s
     constant_expressions = 1E3 #This is the value being assigned to h_s.   Should be much bigger than thermal_conductivity / L ~ 1
-    function = 'if(enclosing_element_normal_length = 0, 0, h_s * enclosing_element_normal_thermal_cond * 2 * enclosing_element_normal_length / (h_s * enclosing_element_normal_length * enclosing_element_normal_length + enclosing_element_normal_thermal_cond * 2 * enclosing_element_normal_length))'
+    expression = 'if(enclosing_element_normal_length = 0, 0, h_s * enclosing_element_normal_thermal_cond * 2 * enclosing_element_normal_length / (h_s * enclosing_element_normal_length * enclosing_element_normal_length + enclosing_element_normal_thermal_cond * 2 * enclosing_element_normal_length))'
   []
   [insitu_pp]
     type = FunctionAux

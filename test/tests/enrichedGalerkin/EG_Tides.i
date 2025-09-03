@@ -76,9 +76,9 @@
 [AuxKernels]
   [EGpressure]
     type = ParsedAux
-    args = 'CGpressure DGpressure'
+    coupled_variables = 'CGpressure DGpressure'
     variable = EGpressure
-    function = 'CGpressure + DGpressure'
+    expression = 'CGpressure + DGpressure'
   []
 []
 
