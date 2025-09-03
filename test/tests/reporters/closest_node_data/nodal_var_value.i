@@ -24,7 +24,7 @@
     type = ParsedAux
     use_xyzt = true
     variable = v
-    function = 't*x*y'
+    expression = 't*x*y'
   []
 []
 

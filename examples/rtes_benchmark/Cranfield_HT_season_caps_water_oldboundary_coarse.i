@@ -730,7 +730,7 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
 #    elemental_as_nodal = true
 #    overwrite = true
 #    sequence = true
-    interval = 20
+    time_step_interval = 20
 [../]
 
 [./Console]
@@ -738,12 +738,12 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
   #perf_log = false
   #output_linear = false
   output_nonlinear = true
-  interval = 1
+  time_step_interval = 1
 [../]
 
 [./CSV]
   type = CSV
-  interval = 1
+  time_step_interval = 1
 [../]
 []
 ###########################################################
