@@ -344,15 +344,15 @@ injection_rate = 25 # kg/s
     type = ParsedFunction
     vals = 'dt kg_out'
     vars = 'dt kg_out'
-    value = 'kg_out/dt'
+    expression = 'kg_out/dt'
   []
   [insitu_pp]
     type = ParsedFunction
-    value = '9.81*1000*(3000 - z)'
+    expression = '9.81*1000*(3000 - z)'
   []
   [insitu_T]
     type = ParsedFunction
-    value = '363 - (0.025*z)'  #using cooling rate of 25K/km with T=90C at 3km
+    expression = '363 - (0.025*z)'  #using cooling rate of 25K/km with T=90C at 3km
   []
 []
 
