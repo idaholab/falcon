@@ -65,13 +65,13 @@
 [Functions]
   [insitu_pp]
     type = ParsedFunction
-    #value = '10 - 0.847E-2 * z' # Approximate hydrostatic in MPa
-    value = '30 - 0.847E-2 * z'#fixme I changed it to 30? because it is 3km down.
-                               #Andy had 1km depth.  I don't know where 0.847e-2 comes from
+    #expression = '10 - 0.847E-2 * z' # Approximate hydrostatic in MPa
+    expression = '30 - 0.847E-2 * z'  # fixme I changed it to 30? because it is 3km down.
+                                      # Andy had 1km depth.  I don't know where 0.847e-2 comes from
   []
   [insitu_T]
     type = ParsedFunction
-    value = '363 - (0.025*z)'  #fixme lynn 25K/km
+    expression = '363 - (0.025*z)'  #fixme lynn 25K/km
   []
 []
 
