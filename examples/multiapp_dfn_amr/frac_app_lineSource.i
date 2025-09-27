@@ -391,18 +391,18 @@ z2_out = 1 #50.6
 [Functions]
   [kg_rate]
     type = ParsedFunction
-    vals = 'dt kg_out'
-    vars = 'dt kg_out'
-    value = 'kg_out/dt'
+    symbol_values = 'dt kg_out'
+    symbol_names = 'dt kg_out'
+    expression = 'kg_out/dt'
   []
   [insitu_pp]
     type = ParsedFunction
-    value = '10 - 0.847E-2 * z' # Approximate hydrostatic in MPa
+    expression = '10 - 0.847E-2 * z' # Approximate hydrostatic in MPa
   []
   # approx insitu at production point, to prevent aperture closing due to low porepressures
   [insitu_pp_borehole]
     type = ParsedFunction
-    value = '10 - 0.847E-2 * z + 1' # Approximate hydrostatic in MPa + 1MPa
+    expression = '10 - 0.847E-2 * z + 1' # Approximate hydrostatic in MPa + 1MPa
   []
 []
 

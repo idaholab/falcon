@@ -45,19 +45,19 @@ perm_aquifer = ${fparse 10^perm_exponent}
 [Functions]
   [./inj_function_summer]
     type = ParsedFunction
-    value = '(t/24/3600/365.25-floor(t/24/3600/365.25))>0 & (t/24/3600/365.25-floor(t/24/3600/365.25))<=0.25'
+    expression = '(t/24/3600/365.25-floor(t/24/3600/365.25))>0 & (t/24/3600/365.25-floor(t/24/3600/365.25))<=0.25'
   [../]
   [./inj_function_winter]
     type = ParsedFunction
-    vals = 'termination'
-    vars = 'b_switch'
-    value = '((t/24/3600/365.25-floor(t/24/3600/365.25))>0.5 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=0.75) & b_switch <= 0'
+    symbol_values = 'termination'
+    symbol_names = 'b_switch'
+    expression = '((t/24/3600/365.25-floor(t/24/3600/365.25))>0.5 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=0.75) & b_switch <= 0'
   [../]
   [./rest_function]
     type = ParsedFunction
-    vals = 'termination'
-    vars = 'b_switch'
-    value = '(((t/24/3600/365.25-floor(t/24/3600/365.25))>0.25 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=0.5) | ((t/24/3600/365.25-floor(t/24/3600/365.25))>0.75 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=1)) | (((t/24/3600/365.25-floor(t/24/3600/365.25))>0.5 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=0.75) & b_switch >=1)'
+    symbol_values = 'termination'
+    symbol_names = 'b_switch'
+    expression = '(((t/24/3600/365.25-floor(t/24/3600/365.25))>0.25 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=0.5) | ((t/24/3600/365.25-floor(t/24/3600/365.25))>0.75 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=1)) | (((t/24/3600/365.25-floor(t/24/3600/365.25))>0.5 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=0.75) & b_switch >=1)'
   [../]
   [./Fiss_Function]
     type = PiecewiseLinear

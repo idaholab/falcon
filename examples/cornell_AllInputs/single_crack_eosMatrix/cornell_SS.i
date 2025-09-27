@@ -67,12 +67,12 @@
 [Functions]
   [./T_ic]
     type = ParsedFunction
-    value = (338.15-(0.025*z))
+    expression = (338.15-(0.025*z))
   [../]
 
   [./P_ic]
     type = ParsedFunction
-    value = (1000*9.8*(z*-1))
+    expression = (1000*9.8*(z*-1))
   [../]
 []
 ###########################################################
