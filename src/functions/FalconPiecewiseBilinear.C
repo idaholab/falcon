@@ -130,9 +130,10 @@ FalconPiecewiseBilinear::valueInternal(T t, const P & p) const
   T retVal = 0.0;
   if (_yaxisValid && _xaxisValid && _radial)
   {
+    using std::sqrt;
     const auto rx = p(_xaxis) * p(_xaxis);
     const auto ry = p(_yaxis) * p(_yaxis);
-    const auto r = std::sqrt(rx + ry);
+    const auto r = sqrt(rx + ry);
     retVal = _bilinear_interp->sample(r, t);
   }
   else if (_axisValid)
