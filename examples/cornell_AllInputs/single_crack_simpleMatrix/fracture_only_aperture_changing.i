@@ -264,11 +264,11 @@ endTime=63e6 #31.54e6
     type = ParsedFunction
     vals = 'dt kg_out'
     vars = 'dt kg_out'
-    value = 'kg_out/dt'
+    expression = 'kg_out/dt'
   []
   [insitu_pp]
     type = ParsedFunction
-    value = '30 - 0.847E-2 * z' # Approximate hydrostatic in MPa  #fixme lynn is 30 correct for 3000m depth?
+    expression = '30 - 0.847E-2 * z' # Approximate hydrostatic in MPa  #fixme lynn is 30 correct for 3000m depth?
   []
 []
 
