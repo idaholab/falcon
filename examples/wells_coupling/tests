@@ -1,0 +1,22 @@
+[Tests]
+  [wells_main]
+    type = RunApp
+    input = 'wells_main.i'
+    cli_args = 'Executioner/num_steps=1'
+    min_parallel = 4
+    required_submodule = 'iapws95'
+    capabilities = 'method!=dbg' # disable dbg to avoid timeouts
+    max_threads = 1 # solve fails for --n-threads=2
+    allow_warnings = True
+  []
+  [fracs_main]
+    type = RunApp
+    input = 'fracs_main.i'
+    cli_args = 'Executioner/num_steps=1'
+    min_parallel = 4
+    required_submodule = 'iapws95'
+    capabilities = 'method!=dbg' # disable dbg to avoid timeouts
+    max_threads = 1 # solve fails for --n-threads=2
+    allow_warnings = True
+  []
+[]
