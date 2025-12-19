@@ -51,27 +51,27 @@
   # grad(eff_stress) = grad(biot*porepressure) + solid_fluid_density*gravity
   [./weight_fcn]
     type = ParsedFunction
-    vars = 'g B p0 rho0 biot'
-    vals = '9.8 2.0E9 101325 999.526 1.0'
-    value = 'biot*(101325-rho0*g*z)+2386.0*g*z'
+    symbol_names = 'g B p0 rho0 biot'
+    symbol_values = '9.8 2.0E9 101325 999.526 1.0'
+    expression = 'biot*(101325-rho0*g*z)+2386.0*g*z'
   [../]
   [./kxx_fcn]
     type = ParsedFunction
-    vars = 'g B p0 rho0 biot'
-    vals = '9.8 2.0E9 101325 999.526 1.0'
-    value = '2.05*(biot*(101325-rho0*g*z)+2386.0*g*z)'
+    symbol_names = 'g B p0 rho0 biot'
+    symbol_values = '9.8 2.0E9 101325 999.526 1.0'
+    expression = '2.05*(biot*(101325-rho0*g*z)+2386.0*g*z)'
   [../]
   [./kxy_fcn]
     type = ParsedFunction
-    vars = 'g B p0 rho0 biot'
-    vals = '9.8 2.0E9 101325 999.526 1.0'
-    value = '0.16*(biot*(101325-rho0*g*z)+2386.0*g*z)'
+    symbol_names = 'g B p0 rho0 biot'
+    symbol_values = '9.8 2.0E9 101325 999.526 1.0'
+    expression = '0.16*(biot*(101325-rho0*g*z)+2386.0*g*z)'
   [../]
   [./kyy_fcn]
     type = ParsedFunction
-    vars = 'g B p0 rho0 biot'
-    vals = '9.8 2.0E9 101325 999.526 1.0'
-    value = '0.18*(biot*(101325-rho0*g*z)+2386.0*g*z)'  # plasticity=0.18 noplasticity=0.2.  should be 1.8
+    symbol_names = 'g B p0 rho0 biot'
+    symbol_values = '9.8 2.0E9 101325 999.526 1.0'
+    expression = '0.18*(biot*(101325-rho0*g*z)+2386.0*g*z)'  # plasticity=0.18 noplasticity=0.2.  should be 1.8
   [../]
 []
 ############################################################
