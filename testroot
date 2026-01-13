@@ -1,0 +1,4 @@
+app_name = falcon
+allow_warnings = false
+allow_override = false
+allow_unused = false
