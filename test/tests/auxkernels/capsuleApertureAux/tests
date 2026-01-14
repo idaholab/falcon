@@ -5,6 +5,7 @@
     type = 'CSVDiff'
     input = 'capsuleAperture.i'
     csvdiff = 'capsuleAperture_out_aperture_line_sampler_0001.csv'
+    allow_warnings = True # sampling discontinuous variable at a face
     requirement = 'The system shall produce an auxkernel that can describe a pill '
                   'shaped aperture between an injection and production point in a well.'
   []

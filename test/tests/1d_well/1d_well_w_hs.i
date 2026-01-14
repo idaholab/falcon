@@ -35,27 +35,27 @@ well_P_hf = ${fparse 2 * pi * well_radius}
   [../]
 []
 
-[HeatStructureMaterials]
-  [./mild_steel]
-    type = SolidMaterialProperties
+[SolidProperties]
+  [mild_steel]
+    type = ThermalFunctionSolidProperties
     rho = 7850
     cp = 510.8
     k = 60
-  [../]
+  []
 
-  [./cement]
-    type = SolidMaterialProperties
+  [cement]
+    type = ThermalFunctionSolidProperties
     rho = 2400
     cp = 920
     k = 0.29
-  [../]
+  []
 
-  [./rock]
-    type = SolidMaterialProperties
+  [rock]
+    type = ThermalFunctionSolidProperties
     rho = 2750
     cp = 830
     k = 3
-  [../]
+  []
 []
 
 [Functions]
@@ -109,7 +109,8 @@ well_P_hf = ${fparse 2 * pi * well_radius}
 
     names = 'wall cement rock'
     widths = '0.00635 5.10E-02 4.84265'
-    materials = 'mild_steel cement rock'
+    solid_properties = 'mild_steel cement rock'
+    solid_properties_T_ref = '${T_inj} ${T_inj} ${T_inj}'
     n_part_elems = '10 5 5'
     inner_radius = ${well_radius}
     initial_T = initial_T_fn

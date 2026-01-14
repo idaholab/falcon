@@ -199,7 +199,6 @@
   [./top_z]
     type = Pressure
     variable = disp_z
-    component = 2
     function = '-2386.0*9.8*z'
     use_displaced_mesh = false
     boundary = '1'
@@ -347,33 +346,33 @@
     number_fluid_components = 1
   [../]
   [./coh]
-    type = TensorMechanicsHardeningConstant
+    type = SolidMechanicsHardeningConstant
     value = 1E6
   [../]
   [./tanphi]
-    type = TensorMechanicsHardeningConstant
+    type = SolidMechanicsHardeningConstant
     value = 0.85
   [../]
   [./tanpsi]
-    type = TensorMechanicsHardeningConstant
+    type = SolidMechanicsHardeningConstant
     value = 0.01
   [../]
   [./t_strength]
-    type = TensorMechanicsHardeningConstant
+    type = SolidMechanicsHardeningConstant
     value = 1E16
   [../]
   [./c_strength]
-    type = TensorMechanicsHardeningConstant
+    type = SolidMechanicsHardeningConstant
     value = 1E16
   [../]
   [./ts]
     # large so that there is no plastic deformation
-    type = TensorMechanicsHardeningConstant
+    type = SolidMechanicsHardeningConstant
     value = 1E16
   [../]
   [./mc]
     # irrelevant for this simulation
-    type = TensorMechanicsPlasticTensile
+    type = SolidMechanicsPlasticTensile
     tensile_strength = ts
     yield_function_tolerance = 1E-6
     tensile_tip_smoother = 1.0
@@ -470,7 +469,7 @@
     eigenstrain_name = eigenstrain
   [../]
   [./strain]
-    type = ComputeIncrementalSmallStrain
+    type = ComputeIncrementalStrain
     eigenstrain_names = 'ini_stress'
   [../]
   [./strain_from_initial_stress]
