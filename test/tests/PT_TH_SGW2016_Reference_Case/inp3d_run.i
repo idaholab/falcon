@@ -12,7 +12,7 @@
 [Functions]
   [./initial_T_distribution]
     type = ParsedFunction
-    value = 493.15-0.065*z
+    expression = 493.15-0.065*z
   [../]
 []
 ############################################################

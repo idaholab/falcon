@@ -47,11 +47,11 @@ endTime = 3.16e8
 [Functions]
   [insitu_pp]
     type = ParsedFunction
-    value = '9.81*1000*(3000 - z)'
+    expression = '9.81*1000*(3000 - z)'
   []
   [insitu_T]
     type = ParsedFunction
-    value = '363'
+    expression = '363'
   []
 []
 

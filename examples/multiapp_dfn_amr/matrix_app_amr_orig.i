@@ -42,7 +42,7 @@ endTime = 1e6 #1e8
 [Functions]
   [insitu_pp]
     type = ParsedFunction
-    value = '10 - 0.847E-2 * z' # Approximate hydrostatic in MPa
+    expression = '10 - 0.847E-2 * z' # Approximate hydrostatic in MPa
   []
 []
 
