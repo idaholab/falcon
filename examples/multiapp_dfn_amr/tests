@@ -1,16 +1,16 @@
 [Tests]
   [refinement]
-    method = '!dbg'
-    type     = CSVDiff
-    input    = 'matrix_app_amr.i'
+    capabilities = 'method!=dbg'
+    type = CSVDiff
+    input = 'matrix_app_amr.i'
     csvdiff = 'matrix_app_amr_out.csv'
     requirement = 'Run multiapp matrix DFN simulation with AMR in matrix around fracture'
     allow_unused = true
   [../]
   [lineSink]
-    method = '!dbg'
-    type     = RunApp
-    input    = 'matrix_app_lineSource_amr.i'
+    capabilities = 'method!=dbg'
+    type = RunApp
+    input = 'matrix_app_lineSource_amr.i'
     allow_unused = true
   [../]
 []
