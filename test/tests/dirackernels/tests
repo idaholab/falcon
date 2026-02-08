@@ -3,7 +3,7 @@
     type = 'CSVDiff'
     input = 'reporterPoint_hfrompps.i'
     csvdiff = 'reporterPoint_hfrompps_out.csv'
-    threading = '!pthreads'
+    max_threads = 1
     requirement = 'The system shall provide an enthalphy point source computed by a postprocessor with the location of point source given by a reporter'
     issues = '#89'
   []
@@ -12,7 +12,7 @@
     input = 'reporterPoint_hfrompps.i'
     cli_args = "DiracKernels/active='source2'"
     expect_err = "y_coord size = 2"
-    threading = '!pthreads'
+    max_threads = 1
     requirement = 'The system shall error when the reporter has more than one set of coordinates'
     issues = '#89'
   []
@@ -21,7 +21,7 @@
     input = 'reporterPoint_hfrompps.i'
     cli_args = "DiracKernels/active='source2_h'"
     expect_err = "y_coord size = 2"
-    threading = '!pthreads'
+    max_threads = 1
     requirement = 'The system shall error when the reporter has more than one set of coordinates'
     issues = '#89'
   []
