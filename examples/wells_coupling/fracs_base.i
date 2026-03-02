@@ -1,3 +1,6 @@
+# Block 2000: injection points
+# Block 3000: production points
+
 !include params_base.i
 !include params_mdot.i
 
@@ -28,6 +31,7 @@ injection_temp = 323.15
   fp = fp_water
   pressure_unit = Pa
   stabilization = full
+  mass_fraction_vars = 'h2'
 []
 
 [Mesh]
@@ -48,6 +52,9 @@ injection_temp = 323.15
   []
   [temperature]
     scaling = 1e-6
+  []
+  [h2]
+    initial_condition = 1e-3
   []
 []
 
@@ -102,27 +109,53 @@ injection_temp = 323.15
 [AuxVariables]
   [porepressure_outflow]
   []
-  [porepressure_out_zmax]
-  []
   [temperature_outflow]
+  []
+  [h2_outflow]
+  []
+[]
+
+[BCs]
+  [porepressure_outflow_bc]
+    type = PorousFlowOutflowBC
+    variable = porepressure
+    boundary = 'xmin xmax ymin ymax zmin zmax'
+    flux_type = fluid
+    mass_fraction_component = 1
+    save_in = porepressure_outflow
+  []
+  [temperature_outflow_bc]
+    type = PorousFlowOutflowBC
+    variable = temperature
+    boundary = 'xmin xmax ymin ymax zmin zmax'
+    flux_type = heat
+    save_in = temperature_outflow
+  []
+  [h2_outflow_bc]
+    type = PorousFlowOutflowBC
+    variable = h2
+    boundary = 'xmin xmax ymin ymax zmin zmax'
+    flux_type = fluid
+    mass_fraction_component = 0
+    save_in = h2_outflow
   []
 []
 
 [Postprocessors]
-  [porepressure_kg_per_s]
+  [water_outflow]
     type = NodalSum
-    boundary = 'xmin xmax ymin ymax'
+    boundary = 'xmin xmax ymin ymax zmin zmax'
     variable = porepressure_outflow
   []
-  [porepressure_zmax_kg_per_s]
+  [energy_outflow]
     type = NodalSum
-    boundary = 'zmax'
-    variable = porepressure_out_zmax
-  []
-  [temperature_J_per_s]
-    type = NodalSum
-    boundary = 'xmin xmax ymin ymax'
+    boundary = 'xmin xmax ymin ymax zmin zmax'
     variable = temperature_outflow
+  []
+  [h2_outflow]
+    type = NodalSum
+    boundary = 'xmin xmax ymin ymax zmin zmax'
+    variable = h2_outflow
   []
 []
 
@@ -177,23 +210,23 @@ injection_temp = 323.15
   [porosity_matrix]
     type = PorousFlowPorosity
     porosity_zero = ${matrix_poro}
-    block = '1000'
+    block = 'matrix'
   []
   [permeability_matrix]
     type = PorousFlowPermeabilityConst
     permeability = '${matrix_perm} 0 0  0 ${matrix_perm} 0  0 0 ${matrix_perm}'
-    block = '1000'
+    block = 'matrix'
   []
   [rock_internal_energy_matrix]
     type = PorousFlowMatrixInternalEnergy
     density = 2750.0
     specific_heat_capacity = 790.0
-    block = '1000'
+    block = 'matrix'
   []
   [thermal_conductivity_matrix]
     type = PorousFlowThermalConductivityIdeal
     dry_thermal_conductivity = '3.05 0 0 0 3.05 0 0 0 3.05'
-    block = '1000'
+    block = 'matrix'
   []
 []
 

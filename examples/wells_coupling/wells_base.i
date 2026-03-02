@@ -12,6 +12,8 @@ n_elems_pro1 = 100
 n_elems_pro2 = 100
 n_elems_pro3 = 100
 
+h2_inlet = 1e-3
+
 radius = 0.09
 A_inj = ${fparse pi * radius^2}
 A_pro = ${A_inj}
@@ -44,6 +46,9 @@ A_pro3 = ${A_pro}
     inlet_temperature = insitu_T
     initial_pressure = initial_p_fn
     initial_temperature = insitu_T
+    passives_names = 'h2'
+    inlet_passives = '${h2_inlet}'
+    initial_passives = '0'
     fluid_properties = fp_water
   []
   [pro]
@@ -58,6 +63,8 @@ A_pro3 = ${A_pro}
     outlet_pressure = initial_p_fn
     initial_pressure = initial_p_fn
     initial_temperature = insitu_T
+    passives_names = 'h2'
+    initial_passives = '0'
     fluid_properties = fp_water
   []
 []
@@ -79,6 +86,13 @@ A_pro3 = ${A_pro}
     variable = p
     execute_on = 'INITIAL TIMESTEP_END'
   []
+  [h2_rate_inlet]
+    type = ADFlowBoundaryFlux1Phase
+    boundary = inj_inlet
+    equation = passive
+    passive_index = 0
+    execute_on = 'INITIAL TIMESTEP_END'
+  []
 
   [mass_rate_outlet]
     type = ADFlowBoundaryFlux1Phase
@@ -90,6 +104,13 @@ A_pro3 = ${A_pro}
     type = SideAverageValue
     boundary = pro_outlet
     variable = p
+    execute_on = 'INITIAL TIMESTEP_END'
+  []
+  [h2_rate_outlet]
+    type = ADFlowBoundaryFlux1Phase
+    boundary = pro_outlet
+    equation = passive
+    passive_index = 0
     execute_on = 'INITIAL TIMESTEP_END'
   []
 []

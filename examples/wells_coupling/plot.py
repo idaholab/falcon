@@ -24,21 +24,23 @@ def makePlot(output_dir, var, y_label, scale):
   ax.get_yaxis().get_major_formatter().set_useOffset(False)
   plt.xlabel("Time [s]")
   plt.ylabel(y_label)
-  inj1 = data_fracs['mass_rate_inj1']
-  inj2 = data_fracs['mass_rate_inj2']
-  inj3 = data_fracs['mass_rate_inj3']
+  inj1 = data_fracs[var + '_inj1']
+  inj2 = data_fracs[var + '_inj2']
+  inj3 = data_fracs[var + '_inj3']
   total_inj = inj1 + inj2 + inj3
-  pro1 = data_fracs['mass_rate_pro1']
-  pro2 = data_fracs['mass_rate_pro2']
-  pro3 = data_fracs['mass_rate_pro3']
+  pro1 = data_fracs[var + '_pro1']
+  pro2 = data_fracs[var + '_pro2']
+  pro3 = data_fracs[var + '_pro3']
   total_pro = pro1 + pro2 + pro3
   plt.plot(data_fracs['time'], total_inj,  linestyle='-', marker='', color='cornflowerblue', label="Total Injection, Fracs")
   plt.plot(data_fracs['time'], -total_pro,  linestyle='-', marker='', color='indianred', label="Total Production, Fracs")
-  plt.plot(data_wells['time'], data_wells['mass_rate_inlet'],  linestyle='--', marker='', color='cornflowerblue', label="Total Injection, Wells")
-  plt.plot(data_wells['time'], data_wells['mass_rate_outlet'],  linestyle='--', marker='', color='indianred', label="Total Production, Wells")
+  plt.plot(data_wells['time'], data_wells[var + '_inlet'],  linestyle='--', marker='', color='cornflowerblue', label="Total Injection, Wells")
+  plt.plot(data_wells['time'], data_wells[var + '_outlet'],  linestyle='--', marker='', color='indianred', label="Total Production, Wells")
   ax.legend()
   plt.tight_layout()
   plt.savefig(output_dir + '/' + var + '_transient.png', dpi=300)
 
-makePlot('outputs/fracs_main', 'mass_rate', 'Mass Flow Rate [kg/s]', 1)
+makePlot('outputs/fracs_main', 'mass_rate', 'Water Mass Flow Rate [kg/s]', 1)
+makePlot('outputs/fracs_main', 'h2_rate', 'H2 Mass Flow Rate [kg/s]', 1)
 makePlot('outputs/wells_main', 'mass_rate', 'Mass Flow Rate [kg/s]', 1)
+makePlot('outputs/wells_main', 'h2_rate', 'H2 Mass Flow Rate [kg/s]', 1)
