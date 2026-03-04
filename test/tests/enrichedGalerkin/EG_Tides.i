@@ -135,11 +135,11 @@
     porepressure = DGpressure
   [../]
   [./poro_timederiv]
-    type = PoroFullSatTimeDerivative
+    type = PoroMechanicsFullSatTimeDerivative
     variable = CGpressure
   [../]
   [./poro_timederiv2]
-    type = PoroFullSatTimeDerivative
+    type = PoroMechanicsFullSatTimeDerivative
     variable = DGpressure
   [../]
   [./darcy_flow]
@@ -212,7 +212,7 @@
     type = ComputeLinearElasticStress
   [../]
   [./poro_material]
-    type = PoroFullSatMaterial
+    type = PoroMechanicsFullSatMaterial
     porosity0 = 0.1
     biot_coefficient = 0.6
     solid_bulk_compliance = 1E-10

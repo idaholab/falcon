@@ -22,12 +22,12 @@
  * this is the time-derivative for poromechanics for a single-phase,
  * fully-saturated fluid with constant bulk modulus
  */
-class EGPoroFullSatTimeDerivative : public DerivativeMaterialInterface<TimeDerivative>
+class PoroMechanicsFullSatTimeDerivative : public DerivativeMaterialInterface<TimeDerivative>
 {
 public:
   static InputParameters validParams();
 
-  EGPoroFullSatTimeDerivative(const InputParameters & parameters);
+  PoroMechanicsFullSatTimeDerivative(const InputParameters & parameters);
 
 protected:
   virtual Real computeQpResidual();
@@ -36,12 +36,9 @@ protected:
 
   virtual Real computeQpOffDiagJacobian(unsigned int jvar);
 
-
 private:
-  MooseVariable & _v_var;
-  const VariableValue & _v;
-  const VariableValue & _v_vals_old;
-  const unsigned int _v_id;
+  /// old value of porepressure
+  const VariableValue & _u_old;
 
   /// volumetric strain
   const MaterialProperty<Real> & _volstrain;
