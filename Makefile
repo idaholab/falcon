@@ -60,7 +60,6 @@ SOLID_MECHANICS         := yes
 THERMAL_HYDRAULICS      := yes
 SOLID_PROPERTIES        := yes
 USE_TEST_LIBS           := yes
-RICHARDS                := yes
 include           $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
 

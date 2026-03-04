@@ -10,7 +10,6 @@ Content:
     - ${MOOSE_DIR}/modules/porous_flow/doc/content
     - ${MOOSE_DIR}/modules/ray_tracing/doc/content
     - ${MOOSE_DIR}/modules/rdg/doc/content
-    - ${MOOSE_DIR}/modules/richards/doc/content
     - ${MOOSE_DIR}/modules/stochastic_tools/doc/content
     - ${MOOSE_DIR}/modules/solid_mechanics/doc/content
     - ${MOOSE_DIR}/modules/thermal_hydraulics/doc/content
@@ -53,7 +52,6 @@ Extensions:
         executable: ${ROOT_DIR}
         remove:
             framework: !include ${MOOSE_DIR}/framework/doc/remove.yml
-            richards: !include ${MOOSE_DIR}/modules/richards/doc/remove.yml
         includes:
             - include
             - ${MOOSE_DIR}/framework/include
@@ -66,7 +64,6 @@ Extensions:
             - ${MOOSE_DIR}/modules/porous_flow/include
             - ${MOOSE_DIR}/modules/ray_tracing/include
             - ${MOOSE_DIR}/modules/rdg/include
-            - ${MOOSE_DIR}/modules/richards/include
             - ${MOOSE_DIR}/modules/stochastic_tools/include
             - ${MOOSE_DIR}/modules/solid_mechanics/include
             - ${MOOSE_DIR}/modules/thermal_hydraulics/include
@@ -100,7 +97,6 @@ Extensions:
             porous_flow: !include ${MOOSE_DIR}/modules/porous_flow/doc/sqa_porous_flow.yml
             ray_tracing: !include ${MOOSE_DIR}/modules/ray_tracing/doc/sqa_ray_tracing.yml
             rdg: !include ${MOOSE_DIR}/modules/rdg/doc/sqa_rdg.yml
-            # richards: !include ${MOOSE_DIR}/modules/richards/doc/sqa_richards.yml
             stochastic_tools: !include ${MOOSE_DIR}/modules/stochastic_tools/doc/sqa_stochastic_tools.yml
             solid_mechanics: !include ${MOOSE_DIR}/modules/solid_mechanics/doc/sqa_solid_mechanics.yml
             thermal_hydraulics: !include ${MOOSE_DIR}/modules/thermal_hydraulics/doc/sqa_thermal_hydraulics.yml
