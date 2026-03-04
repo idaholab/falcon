@@ -12,12 +12,12 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#include "EGPoroFullSatTimeDerivative.h"
+#include "PoroMechanicsFullSatTimeDerivative.h"
 
-registerMooseObject("FalconApp", EGPoroFullSatTimeDerivative);
+registerMooseObject("FalconApp", PoroMechanicsFullSatTimeDerivative);
 
 InputParameters
-EGPoroFullSatTimeDerivative::validParams()
+PoroMechanicsFullSatTimeDerivative::validParams()
 {
   InputParameters params = TimeDerivative::validParams();
   params.addRequiredCoupledVar(
@@ -27,16 +27,12 @@ EGPoroFullSatTimeDerivative::validParams()
                              "(1/biot_modulus)*d(porepressure)/dt.  This is the time-derivative "
                              "for poromechanics for a single-phase, fully-saturated fluid with "
                              "constant bulk modulus");
-  params.addRequiredCoupledVar("v", "Coupled variable");
   return params;
 }
 
-EGPoroFullSatTimeDerivative::EGPoroFullSatTimeDerivative(const InputParameters & parameters)
+PoroMechanicsFullSatTimeDerivative::PoroMechanicsFullSatTimeDerivative(const InputParameters & parameters)
   : DerivativeMaterialInterface<TimeDerivative>(parameters),
-    _v_var(dynamic_cast<MooseVariable &>(*getVar("v", 0))),
-    _v(_v_var.sln()),
-    _v_vals_old(coupledValueOld("v")),
-    _v_id(coupled("v")),
+    _u_old(valueOld()),
     _volstrain(getMaterialProperty<Real>("volumetric_strain")),
     _volstrain_old(getMaterialPropertyOld<Real>("volumetric_strain")),
 
@@ -56,25 +52,31 @@ EGPoroFullSatTimeDerivative::EGPoroFullSatTimeDerivative(const InputParameters &
 }
 
 Real
-EGPoroFullSatTimeDerivative::computeQpResidual()
+PoroMechanicsFullSatTimeDerivative::computeQpResidual()
 {
-    Real res = _one_over_biot_modulus[_qp] * (_v[_qp] - _v_vals_old[_qp]);
-    return _test[_i][_qp] * res / _dt;
+  // here, "_u" is the porepressure
+  Real res = _one_over_biot_modulus[_qp] * (_u[_qp] - _u_old[_qp]);
+  res += _alpha[_qp] * (_volstrain[_qp] - _volstrain_old[_qp]);
+  return _test[_i][_qp] * res / _dt;
 }
 
 Real
-EGPoroFullSatTimeDerivative::computeQpJacobian()
+PoroMechanicsFullSatTimeDerivative::computeQpJacobian()
 {
-  return 0.0;
+  Real jac = _one_over_biot_modulus[_qp] * _phi[_j][_qp];
+  jac += _done_over_biot_modulus_dP[_qp] * _phi[_j][_qp] * (_u[_qp] - _u_old[_qp]);
+  return _test[_i][_qp] * jac / _dt;
 }
 
 Real
-EGPoroFullSatTimeDerivative::computeQpOffDiagJacobian(unsigned int jvar)
+PoroMechanicsFullSatTimeDerivative::computeQpOffDiagJacobian(unsigned int jvar)
 {
   Real jac = 0;
-  if (jvar == _v_id)
-  {
-    jac = _one_over_biot_modulus[_qp] * _phi[_j][_qp];
-  }
+  for (unsigned i = 0; i < _ndisp; ++i)
+    if (jvar == _disp_var_num[i])
+      jac = _grad_phi[_j][_qp](i);
+
+  jac *= _done_over_biot_modulus_dep[_qp] * (_u[_qp] - _u_old[_qp]) + _alpha[_qp];
+
   return _test[_i][_qp] * jac / _dt;
 }
