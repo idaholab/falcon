@@ -242,11 +242,11 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
 [Functions]
   [./inj_function_summer]
     type = ParsedFunction
-    value = '(t/24/3600/365-floor(t/24/3600/365))<=0.25'
+    expression = '(t/24/3600/365-floor(t/24/3600/365))<=0.25'
   [../]
   [./inj_function_winter]
     type = ParsedFunction
-    value = '(t/24/3600/365-floor(t/24/3600/365))>0.5 & (t/24/3600/365-floor(t/24/3600/365)) <=0.75'
+    expression = '(t/24/3600/365-floor(t/24/3600/365))>0.5 & (t/24/3600/365-floor(t/24/3600/365)) <=0.75'
   [../]
 []
 
