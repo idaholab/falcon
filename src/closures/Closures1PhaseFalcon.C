@@ -81,8 +81,6 @@ Closures1PhaseFalcon::addMooseObjectsHeatTransfer(const HeatTransferBase & heat_
         heat_transfer_1phase.getWallHeatTransferCoefficient1PhaseName()};
     params.set<std::vector<FunctionName>>("prop_values") = {Hw_fn_name};
     _sim.addMaterial(class_name, genName(heat_transfer.name(), "Hw_material"), params);
-
-    heat_transfer.makeFunctionControllableIfConstant(Hw_fn_name, "Hw");
   }
   else
   {
