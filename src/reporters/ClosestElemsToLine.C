@@ -36,8 +36,9 @@ ClosestElemsToLine::validParams()
   params.addRequiredParam<ReporterName>("point_z2",
                                         "input reporter of z-coordinate name for point.  This uses "
                                         "the reporter syntax <reporter>/<name>.");
-  params.addParam<VariableName>("variable",
-                                "Name for the variable in domain to determine uniqueness");
+  params.addParam<VariableName>("variable_filter",
+                                "Variable name to filter elements by.  Only one element can be "
+                                "found for each integer value of this variable.");
   params.addParam<Real>("projection_tolerance",
                         libMesh::TOLERANCE,
                         "Search tolerance between line and the closest node.  If a node is not "
@@ -59,7 +60,7 @@ ClosestElemsToLine::ClosestElemsToLine(const InputParameters & parameters)
     _pt_x(declareValueByName<std::vector<Real>>("point_x", REPORTER_MODE_REPLICATED)),
     _pt_y(declareValueByName<std::vector<Real>>("point_y", REPORTER_MODE_REPLICATED)),
     _pt_z(declareValueByName<std::vector<Real>>("point_z", REPORTER_MODE_REPLICATED)),
-    _var(isParamValid("variable") ? getParam<VariableName>("variable") : "")
+    _var(isParamValid("variable_filter") ? getParam<VariableName>("variable_filter") : "")
 {
 }
 
