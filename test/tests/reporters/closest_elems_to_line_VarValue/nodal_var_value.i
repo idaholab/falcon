@@ -17,15 +17,15 @@
   []
 
 [AuxVariables]
-  [./v]
+  [v]
     order = SECOND
     family = LAGRANGE
-  [../]
+  []
 
-  [./v2]
+  [v2]
     order = CONSTANT
     family = MONOMIAL
-  [../]
+  []
 
 []
 
@@ -34,13 +34,13 @@
     type = ParsedAux
     use_xyzt = true
     variable = v
-    function = 't*x*y'
+    expression = 't*x*y'
   []
   [v2]
     type = ParsedAux
     use_xyzt = true
     variable = v2
-    function = '-t*x*y'
+    expression = '-t*x*y'
   []
 []
 
