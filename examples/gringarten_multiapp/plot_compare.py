@@ -16,16 +16,13 @@ from mpmath import *
 
 
 # -------------------------------------------------------------------------------
-df = pd.read_csv("mrect1_out_fracture_app0.csv")
+df = pd.read_csv("mrect1_out_fracture_app0_d20.csv")
 print("fracture dataframe description: ", df.columns.values)
 ["time" "J_out" "P_in" "P_out" "TK_in" "TK_out" "kg_out" "kg_per_s"]
-df_50 = pd.read_csv("mrect1_out_fracture_app0_d50.csv")
-# analytic solution from Koenradd and Gringarten paper, 1975
+# analytic solution from Gringarten paper, 1975
 timevector = np.logspace(6, 11, 50, base=10)
 
 # analytic solution for single fracture Gringarten 1975 eqn A18
-# from Beckers, Koenraad <Koenraad.Beckers@nrel.gov>
-
 # terms for infinite and finite space fractures
 Trock = 363 - 273.15
 Tinj = 303 - 273.15
@@ -100,14 +97,6 @@ plt.plot(
     alpha=0.5,
     fillstyle="none",
     label="Gringarten xe=20m",
-)
-plt.plot(
-    df_50["time"] / 3600 / 24 / 365,
-    df_50["TK_out"] - 273.15,
-    "r",
-    linestyle="--",
-    linewidth=2,
-    label="Falcon xe=50m",
 )
 plt.plot(
     df["time"] / 3600 / 24 / 365,
