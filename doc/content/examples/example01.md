@@ -25,14 +25,14 @@ This fracture-flow validation problem was created by Koenraad Beckers at NREL to
 | Water flow rate | 0.1 kg/s |
 | Water injection temperature | 30$^{\circ}$C |
 | Domain length | 100 m |
-| Domain width | 100 m |
+| Domain width | 20 or 100 m |
 | Domain height | 10 m |
 | Well spacing | 100 m |
 
 !media media/GringartenMatrix.png
   id=fig:GringartenMatrix
   style=width:60%;
-  caption=FALCON matrix domain for fracture-flow validation problem with temperature (in K) after 3 years of operation. A fracture is embedded in the center of this matrix domain.
+  caption=FALCON matrix domain for fracture-flow validation problem 20m spaced fractures with temperature (in K) after 3 years of operation. A fracture is embedded in the center of this matrix domain.
 !media media/GringartenFrac.png
   id=fig:GringartenFrac
   style=width:60%;
