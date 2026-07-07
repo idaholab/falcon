@@ -125,17 +125,17 @@ endTime = 3e8
 
 [AuxKernels]
   [normal_dirn_x_auxk]
-    type = PorousFlowElementNormal
+    type = ElementNormalAux
     variable = normal_dirn_x
     component = x
   []
   [normal_dirn_y]
-    type = PorousFlowElementNormal
+    type = ElementNormalAux
     variable = normal_dirn_y
     component = y
   []
   [normal_dirn_z]
-    type = PorousFlowElementNormal
+    type = ElementNormalAux
     variable = normal_dirn_z
     component = z
   []
@@ -243,7 +243,8 @@ endTime = 3e8
   []
   [water]
     type = TabulatedBicubicFluidProperties
-    fp = true_water
+    input_fp = true_water
+    allow_fp_and_tabulation = true
     temperature_min = 275 # K
     temperature_max = 600
     interpolated_properties = 'density viscosity enthalpy internal_energy'
