@@ -236,31 +236,31 @@ n_elem_x = 7 #10
 
 [Transfers]
   [normal_x_from_fracture]
-    type = MultiAppNearestNodeTransfer
+    type = MultiAppGeneralFieldNearestLocationTransfer
     from_multi_app = fracture_app
     source_variable = normal_dirn_x
     variable = fracture_normal_x
   []
   [normal_y_from_fracture]
-    type = MultiAppNearestNodeTransfer
+    type = MultiAppGeneralFieldNearestLocationTransfer
     from_multi_app = fracture_app
     source_variable = normal_dirn_y
     variable = fracture_normal_y
   []
   [normal_z_from_fracture]
-    type = MultiAppNearestNodeTransfer
+    type = MultiAppGeneralFieldNearestLocationTransfer
     from_multi_app = fracture_app
     source_variable = normal_dirn_z
     variable = fracture_normal_z
   []
   [element_normal_length_to_fracture]
-    type = MultiAppNearestNodeTransfer
+    type = MultiAppGeneralFieldNearestLocationTransfer
     to_multi_app = fracture_app
     source_variable = element_normal_length
     variable = enclosing_element_normal_length
   []
   [element_normal_thermal_cond_to_fracture]
-    type = MultiAppNearestNodeTransfer
+    type = MultiAppGeneralFieldNearestLocationTransfer
     to_multi_app = fracture_app
     source_variable = normal_thermal_conductivity
     variable = enclosing_element_normal_thermal_cond
