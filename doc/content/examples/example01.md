@@ -25,14 +25,14 @@ This fracture-flow validation problem was created by Koenraad Beckers at NREL to
 | Water flow rate | 0.1 kg/s |
 | Water injection temperature | 30$^{\circ}$C |
 | Domain length | 100 m |
-| Domain width | 20 m or 100 m |
+| Domain width | 40 m or 200 m |
 | Domain height | 10 m |
 | Well spacing | 100 m |
 
 !media media/GringartenMatrix.png
   id=fig:GringartenMatrix
   style=width:80%;
-  caption=FALCON matrix domain for fracture-flow validation problem with 20m spaced fractures with temperature (in K) after 3 years of operation. A fracture is embedded in the center of this matrix domain.
+  caption=FALCON matrix domain with temperature (in K) after 3 years of operation for fracture-flow validation problem.  The domain width is 40m where the fracture half width spacing is 20m . A fracture is embedded in the center of this matrix domain.
 
 !media media/GringartenFrac.png
   id=fig:GringartenFrac
@@ -42,4 +42,4 @@ This fracture-flow validation problem was created by Koenraad Beckers at NREL to
 !media media/compareGringarten.png
   id=fig:GringartenSoln
   style=width:60%;
-  caption=Production temperature of fracture-flow validation problem as simulated with FALCON is in good agreement with analytical solution by Gringarten for 20m finite spaced fractures.  The 100m spaced fracture simulation is in good agreement with the infinite spaced Gringarten solution.
+  caption=Production temperature of fracture-flow validation problem as simulated with FALCON is in good agreement with analytical solution by Gringarten for finite and infinitely spaced fractures.  The legend gives the fracture half width spacing.
