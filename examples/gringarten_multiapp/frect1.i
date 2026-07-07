@@ -1,8 +1,8 @@
 # Cold water injection into one side of the fracture network, and production from the other side
 injection_rate = 0.1 # kg/s
 endTime = 3e8
+frac_half_space = 20 #half space from main app
 [Mesh]
-  uniform_refine = 0
   [generate]
     type = GeneratedMeshGenerator
     dim = 2
@@ -57,9 +57,9 @@ endTime = 3e8
   coupling_type = ThermoHydro
   porepressure = frac_P
   temperature = frac_T
-  fp = the_simple_fluid #water
+  fp = the_simple_fluid
   pressure_unit = Pa
-  # stabilization = full
+  stabilization = full
 []
 
 [Kernels]
@@ -144,7 +144,8 @@ endTime = 3e8
     variable = heat_transfer_coefficient
     coupled_variables = 'enclosing_element_normal_length enclosing_element_normal_thermal_cond'
     constant_names = h_s
-    constant_expressions = 1E3 #This is the value being assigned to h_s.   Should be much bigger than thermal_conductivity / L ~ 1
+    #This is the value being assigned to h_s.   Should be much bigger than thermal_conductivity / L ~ 1
+    constant_expressions = 1E3
     expression = 'if(enclosing_element_normal_length = 0, 0, h_s * enclosing_element_normal_thermal_cond * 2 * enclosing_element_normal_length / (h_s * enclosing_element_normal_length * enclosing_element_normal_length + enclosing_element_normal_thermal_cond * 2 * enclosing_element_normal_length))'
   []
   [insitu_pp]
@@ -237,18 +238,6 @@ endTime = 3e8
     bulk_modulus = 2E9
     viscosity = 1.0E-3
     density0 = 1000.0
-  []
-  [true_water]
-    type = Water97FluidProperties
-  []
-  [water]
-    type = TabulatedBicubicFluidProperties
-    input_fp = true_water
-    allow_fp_and_tabulation = true
-    temperature_min = 275 # K
-    temperature_max = 600
-    interpolated_properties = 'density viscosity enthalpy internal_energy'
-    fluid_property_file = water97_tabulated.csv
   []
 []
 
@@ -382,6 +371,8 @@ endTime = 3e8
 []
 
 [Outputs]
+  file_base = mrect1_out_fracture_app0_d${frac_half_space}
   print_linear_residuals = false
+  checkpoint = false
   csv = true
 []

@@ -1,19 +1,17 @@
 endTime = 3e8
-frac_half_space = 20 #50
-n_elem_x = 7 #10
+
+frac_half_space = 20
+n_elem_x = 8
+x_grading = 1.2
 
 [Mesh]
-  # [matrixmesh]
-  #   type = FileMeshGenerator # reading mesh from file
-  #   file = 'gringartenbrickdomain100by100by10.e' #mesh created in cubit
-  # []
   [left_side]
     type = GeneratedMeshGenerator
     dim = 3
     nx = ${n_elem_x}
     xmin = '${fparse -frac_half_space}'
     xmax = 0
-    bias_x = 0.8
+    bias_x = '${fparse 1.0 / x_grading}'
     ny = 50
     ymin = -50
     ymax = 50
@@ -24,10 +22,10 @@ n_elem_x = 7 #10
   [right_side]
     type = GeneratedMeshGenerator
     dim = 3
-    nx = 7
+    nx = ${n_elem_x}
     xmin = 0
     xmax = '${fparse frac_half_space}'
-    bias_x = 1.2
+    bias_x = ${x_grading}
     ny = 50
     ymin = -50
     ymax = 50
@@ -42,7 +40,7 @@ n_elem_x = 7 #10
     new_boundary = 'rtop rbottom rfront rback'
   []
   [smg]
-    type = StitchedMeshGenerator
+    type = StitchMeshGenerator
     inputs = 'left_side right_side_rename'
     clear_stitched_boundary_ids = true
     stitch_boundaries_pairs = 'right left'
@@ -91,15 +89,17 @@ n_elem_x = 7 #10
   coupling_type = ThermoHydro
   porepressure = matrix_P
   temperature = matrix_T
-  fp = water
+  fp = the_simple_fluid
   gravity = '0 0 -9.81'
   pressure_unit = Pa
 []
 
 [FluidProperties]
-  [water]
+  [the_simple_fluid]
     type = SimpleFluidProperties
-    thermal_expansion = 0
+    bulk_modulus = 2E9
+    viscosity = 1.0E-3
+    density0 = 1000.0
   []
 []
 
@@ -141,7 +141,6 @@ n_elem_x = 7 #10
 [Executioner]
   type = Transient
   solve_type = NEWTON
-  # dt = 1e6
   dtmin = 1
   dtmax = 1e6
   end_time = ${endTime}
@@ -162,6 +161,7 @@ n_elem_x = 7 #10
 
 [Outputs]
   print_linear_residuals = false
+  checkpoint = false
 []
 
 [DiracKernels]
@@ -231,6 +231,7 @@ n_elem_x = 7 #10
     input_files = frect1.i
     execute_on = TIMESTEP_BEGIN
     sub_cycling = true
+    cli_args = 'frac_half_space=${frac_half_space};endTime=${endTime}'
   []
 []
 
