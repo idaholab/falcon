@@ -1,11 +1,49 @@
-endTime = 3.16e8
+endTime = 3e8
 
+frac_half_space = 20
+n_elem_x = 8
+x_grading = 1.2
 
 [Mesh]
-  uniform_refine = 0
-  [matrixmesh]
-    type = FileMeshGenerator  # reading mesh from file
-    file = 'gringartenbrickdomain100by100by10.e'  #mesh created in cubit
+  [left_side]
+    type = GeneratedMeshGenerator
+    dim = 3
+    nx = ${n_elem_x}
+    xmin = '${fparse -frac_half_space}'
+    xmax = 0
+    bias_x = '${fparse 1.0 / x_grading}'
+    ny = 50
+    ymin = -50
+    ymax = 50
+    nz = 1
+    zmin = -5
+    zmax = 5
+  []
+  [right_side]
+    type = GeneratedMeshGenerator
+    dim = 3
+    nx = ${n_elem_x}
+    xmin = 0
+    xmax = '${fparse frac_half_space}'
+    bias_x = ${x_grading}
+    ny = 50
+    ymin = -50
+    ymax = 50
+    nz = 1
+    zmin = -5
+    zmax = 5
+  []
+  [right_side_rename]
+    type = RenameBoundaryGenerator
+    input = right_side
+    old_boundary = 'top bottom front back'
+    new_boundary = 'rtop rbottom rfront rback'
+  []
+  [smg]
+    type = StitchMeshGenerator
+    inputs = 'left_side right_side_rename'
+    clear_stitched_boundary_ids = true
+    stitch_boundaries_pairs = 'right left'
   []
 []
 
@@ -51,15 +89,17 @@ endTime = 3.16e8
   coupling_type = ThermoHydro
   porepressure = matrix_P
   temperature = matrix_T
-  fp = water
+  fp = the_simple_fluid
   gravity = '0 0 -9.81'
   pressure_unit = Pa
 []
 
 [FluidProperties]
-  [water]
+  [the_simple_fluid]
     type = SimpleFluidProperties
-    thermal_expansion = 0
+    bulk_modulus = 2E9
+    viscosity = 1.0E-3
+    density0 = 1000.0
   []
 []
 
@@ -84,18 +124,25 @@ endTime = 3.16e8
 []
 
 [Preconditioning]
-  [./superlu]
+  [superlu]
     type = SMP
     full = true
     petsc_options_iname = '-ksp_type -pc_type -pc_factor_mat_solver_package'
     petsc_options_value = 'gmres lu superlu_dist'
-  [../]
+  []
 []
 
+[Functions]
+  [dts]
+    type = ParsedFunction
+    expression = if(t<1e6,t*t,1e6)
+  []
+[]
 [Executioner]
   type = Transient
   solve_type = NEWTON
-  dt = 0.1e7
+  dtmin = 1
+  dtmax = 1e6
   end_time = ${endTime}
   line_search = 'none'
   automatic_scaling = true
@@ -105,10 +152,16 @@ endTime = 3.16e8
   nl_max_its = 20
   nl_rel_tol = 5e-04
   nl_abs_tol = 1e-09
+  [TimeStepper]
+    type = FunctionDT
+    function = dts
+    min_dt = 2
+  []
 []
 
 [Outputs]
   print_linear_residuals = false
+  checkpoint = false
 []
 
 [DiracKernels]
@@ -178,56 +231,50 @@ endTime = 3.16e8
     input_files = frect1.i
     execute_on = TIMESTEP_BEGIN
     sub_cycling = true
+    cli_args = 'frac_half_space=${frac_half_space};endTime=${endTime}'
   []
 []
 
 [Transfers]
   [normal_x_from_fracture]
-    type = MultiAppNearestNodeTransfer
-    direction = from_multiapp
-    multi_app = fracture_app
+    type = MultiAppGeneralFieldNearestLocationTransfer
+    from_multi_app = fracture_app
     source_variable = normal_dirn_x
     variable = fracture_normal_x
   []
   [normal_y_from_fracture]
-    type = MultiAppNearestNodeTransfer
-    direction = from_multiapp
-    multi_app = fracture_app
+    type = MultiAppGeneralFieldNearestLocationTransfer
+    from_multi_app = fracture_app
     source_variable = normal_dirn_y
     variable = fracture_normal_y
   []
   [normal_z_from_fracture]
-    type = MultiAppNearestNodeTransfer
-    direction = from_multiapp
-    multi_app = fracture_app
+    type = MultiAppGeneralFieldNearestLocationTransfer
+    from_multi_app = fracture_app
     source_variable = normal_dirn_z
     variable = fracture_normal_z
   []
   [element_normal_length_to_fracture]
-    type = MultiAppNearestNodeTransfer
-    direction = to_multiapp
-    multi_app = fracture_app
+    type = MultiAppGeneralFieldNearestLocationTransfer
+    to_multi_app = fracture_app
     source_variable = element_normal_length
     variable = enclosing_element_normal_length
   []
   [element_normal_thermal_cond_to_fracture]
-    type = MultiAppNearestNodeTransfer
-    direction = to_multiapp
-    multi_app = fracture_app
+    type = MultiAppGeneralFieldNearestLocationTransfer
+    to_multi_app = fracture_app
     source_variable = normal_thermal_conductivity
     variable = enclosing_element_normal_thermal_cond
   []
   [T_to_fracture]
-    type = MultiAppInterpolationTransfer
-    direction = to_multiapp
-    multi_app = fracture_app
+    type = MultiAppGeometricInterpolationTransfer
+    to_multi_app = fracture_app
     source_variable = matrix_T
     variable = transferred_matrix_T
   []
   [heat_from_fracture]
     type = MultiAppReporterTransfer
-    direction = from_multiapp
-    multi_app = fracture_app
+    from_multi_app = fracture_app
     from_reporters = 'heat_transfer_rate/joules_per_s heat_transfer_rate/x heat_transfer_rate/y heat_transfer_rate/z'
     to_reporters = 'heat_transfer_rate/transferred_joules_per_s heat_transfer_rate/x heat_transfer_rate/y heat_transfer_rate/z'
   []
