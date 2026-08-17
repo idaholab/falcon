@@ -12,6 +12,8 @@
     ignore_columns = 'total'
     capabilities = 'method!=dbg'
     heavy = true
+    min_parallel = 4 # heavy RTES example: skipped unless run with >=4 MPI ranks
+    max_parallel = 4 # gold is generated at 4 ranks (IterationAdaptiveDT trajectory is rank-count dependent)
     recover = false
     requirement = 'The system shall run the Cranfield hydro-thermal (HT) RTES seasonal '
                   'push-pull benchmark, on the reference mesh with mesh-native inj_well/'
@@ -43,6 +45,8 @@
     ignore_columns = 'total'
     capabilities = 'method!=dbg'
     heavy = true
+    min_parallel = 4 # heavy RTES example: skipped unless run with >=4 MPI ranks
+    max_parallel = 4 # gold is generated at 4 ranks (IterationAdaptiveDT trajectory is rank-count dependent)
     recover = false
     requirement = 'The system shall run the oldboundary (full-formation-thickness well, '
                   'poromechanical porosity and permeability) variant of the Cranfield HT '
@@ -67,6 +71,8 @@
     ignore_columns = 'total'
     capabilities = 'method!=dbg'
     heavy = true
+    min_parallel = 4 # heavy RTES example: skipped unless run with >=4 MPI ranks
+    max_parallel = 4 # gold is generated at 4 ranks (IterationAdaptiveDT trajectory is rank-count dependent)
     recover = false
     requirement = 'The system shall run the oldboundary_noComp (full-formation-thickness '
                   'well, constant/incompressible porosity, no poromechanical coupling) '

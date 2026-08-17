@@ -10,6 +10,8 @@
     cli_args = '--allow-unused Executioner/num_steps=20'
     capabilities = 'method!=dbg'
     heavy = true
+    min_parallel = 4 # heavy RTES example: skipped unless run with >=4 MPI ranks
+    max_parallel = 4 # gold is generated at 4 ranks (IterationAdaptiveDT trajectory is rank-count dependent)
     recover = false
     requirement = 'The system shall run the single-realization generic doublet RTES physics '
                   'model (base_cycle_50.i, on base_final_50_blockid_fix.e) standalone, for a '
@@ -36,6 +38,8 @@
                "Executioner/num_steps=10'"
     capabilities = 'method!=dbg'
     heavy = true
+    min_parallel = 4 # heavy RTES example: skipped unless run with >=4 MPI ranks
+    max_parallel = 4 # gold is generated at 4 ranks (IterationAdaptiveDT trajectory is rank-count dependent)
     recover = false
     requirement = 'The system shall run the StochasticTools master (master_cycle_50.i), '
                   'which drives base_cycle_50.i as a SamplerFullSolveMultiApp sub-application '

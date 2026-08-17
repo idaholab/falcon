@@ -12,6 +12,8 @@
     ignore_columns = 'total'
     capabilities = 'method!=dbg'
     heavy = true
+    min_parallel = 4 # heavy RTES example: skipped unless run with >=4 MPI ranks
+    max_parallel = 4 # gold is generated at 4 ranks (IterationAdaptiveDT trajectory is rank-count dependent)
     recover = false
     max_time = 1800 # HTM coupled-mechanics steps are ~44s each; bounded heavy test
     requirement = 'The system shall run the hydro-thermo-mechanical (HTM) coupled Cranfield '
@@ -42,6 +44,8 @@
     ignore_columns = 'total'
     capabilities = 'method!=dbg'
     heavy = true
+    min_parallel = 4 # heavy RTES example: skipped unless run with >=4 MPI ranks
+    max_parallel = 4 # gold is generated at 4 ranks (IterationAdaptiveDT trajectory is rank-count dependent)
     recover = false
     max_time = 1800 # HTM coupled-mechanics steps are ~44s each; bounded heavy test
     requirement = 'The system shall run the HTM-coupled Cranfield RTES benchmark with a '
