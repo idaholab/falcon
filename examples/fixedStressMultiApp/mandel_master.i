@@ -124,10 +124,10 @@
   [../]
   [./tot_force]
     type = ParsedAux
-    args = 'stress_yy porepressure'
+    coupled_variables = 'stress_yy porepressure'
     execute_on = timestep_end
     variable = tot_force
-    function = '-stress_yy+0.6*porepressure'
+    expression = '-stress_yy+0.6*porepressure'
   [../]
 []
 
@@ -178,9 +178,9 @@
 
   #fixed_point_algorithm = 'secant'
 
-  accept_on_max_picard_iteration = true
-  picard_max_its = 2
-  picard_rel_tol = 1e-20
+  accept_on_max_fixed_point_iteration = true
+  fixed_point_max_its = 2
+  fixed_point_rel_tol = 1e-20
 
   relaxation_factor = 0.5
   relaxed_variables = 'disp_x disp_y disp_z'
@@ -290,7 +290,7 @@
   execute_on = 'timestep_end'
   file_base = mandel_master
   [csv]
-    interval = 3
+    time_step_interval = 3
     type = CSV
   []
 []
@@ -307,29 +307,25 @@
 [Transfers]
   [./disp_x_to_sub]
     type = MultiAppCopyTransfer
-    direction = to_multiapp
-    multi_app = sub
+    to_multi_app = sub
     source_variable = disp_x
     variable = disp_x
   [../]
   [./disp_y_to_sub]
     type = MultiAppCopyTransfer
-    direction = to_multiapp
-    multi_app = sub
+    to_multi_app = sub
     source_variable = disp_y
     variable = disp_y
   [../]
   [./disp_z_to_sub]
     type = MultiAppCopyTransfer
-    direction = to_multiapp
-    multi_app = sub
+    to_multi_app = sub
     source_variable = disp_z
     variable = disp_z
   [../]
   [./porepressure_from_sub]
     type = MultiAppCopyTransfer
-    direction = from_multiapp
-    multi_app = sub
+    from_multi_app = sub
     source_variable = porepressure
     variable = porepressure
   [../]

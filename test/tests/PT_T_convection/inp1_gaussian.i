@@ -10,7 +10,7 @@
 [Functions]
   [./gaussian_function]
     type = ParsedFunction
-    value = '1+exp(-200*(x-0.2)*(x-0.2))'
+    expression = '1+exp(-200*(x-0.2)*(x-0.2))'
   [../]
 []
 ############################################################
