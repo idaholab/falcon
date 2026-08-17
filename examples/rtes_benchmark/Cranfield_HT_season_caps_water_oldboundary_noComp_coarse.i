@@ -8,9 +8,11 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
 
 # Darcy flow with heat advection and conduction
 [Mesh]
+  # Cranfield_caps_old_coarse.e no longer exists; remapped onto the current
+  # reference mesh (see Cranfield_caps_new_coarse.e block/nodeset names below).
   [./fmg]
     type = FileMeshGenerator
-    file = Cranfield_caps_old_coarse.e
+    file = Cranfield_caps_new_coarse.e
   []
 []
 #############################################################
@@ -242,29 +244,28 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
 [Functions]
   [./inj_function_summer]
     type = ParsedFunction
-    value = '(t/24/3600/365-floor(t/24/3600/365))<=0.25'
+    expression = '(t/24/3600/365-floor(t/24/3600/365))<=0.25'
   [../]
   [./inj_function_winter]
     type = ParsedFunction
-    value = '(t/24/3600/365-floor(t/24/3600/365))>0.5 & (t/24/3600/365-floor(t/24/3600/365)) <=0.75'
+    expression = '(t/24/3600/365-floor(t/24/3600/365))>0.5 & (t/24/3600/365-floor(t/24/3600/365)) <=0.75'
   [../]
 []
 
 ############################################################
-[Modules]
-  [./FluidProperties]
-    [./true_water]
-      type = Water97FluidProperties
-    [../]
-    [./tabulated_water]
-      type = TabulatedFluidProperties
-      fp = true_water
-      temperature_min = 275
-      temperature_max = 600
-      pressure_max = 1E8
-      interpolated_properties = 'density viscosity enthalpy internal_energy'
-      fluid_property_file = water97_tabulated.csv
-    [../]
+[FluidProperties]
+  [./true_water]
+    type = Water97FluidProperties
+  [../]
+  [./tabulated_water]
+    type = TabulatedFluidProperties
+    fp = true_water
+    allow_fp_and_tabulation = true
+    temperature_min = 275
+    temperature_max = 600
+    pressure_max = 1E8
+    interpolated_properties = 'density viscosity enthalpy internal_energy'
+    fluid_property_file = water97_tabulated.csv
   [../]
 []
 ############################################################
@@ -273,12 +274,26 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     type = PorousFlowMatrixInternalEnergy
     specific_heat_capacity = 920.0
     density = 2600.0
-    block = 'caps layer_1 layer_2 layer_3 layer_4 layer_5 layer_6 layer_7 layer_8 layer_9 layer_10 layer_11 layer_12 layer_13 layer_14 layer_15 layer_16 layer_17 layer_18 layer_19 layer_20'
+    block = 'inj_well ext_well caps layer_1 layer_2 layer_3 layer_4 layer_5 layer_6 layer_7 layer_8 layer_9 layer_10 layer_11 layer_12 layer_13 layer_14 layer_15 layer_16 layer_17 layer_18 layer_19 layer_20'
   [../]
   [./thermal_conductivity_aquifer]
     type = PorousFlowThermalConductivityIdeal
     dry_thermal_conductivity = '2.51 0 0  0 2.51 0  0 0 2.51'
-    block = 'caps layer_1 layer_2 layer_3 layer_4 layer_5 layer_6 layer_7 layer_8 layer_9 layer_10 layer_11 layer_12 layer_13 layer_14 layer_15 layer_16 layer_17 layer_18 layer_19 layer_20'
+    block = 'inj_well ext_well caps layer_1 layer_2 layer_3 layer_4 layer_5 layer_6 layer_7 layer_8 layer_9 layer_10 layer_11 layer_12 layer_13 layer_14 layer_15 layer_16 layer_17 layer_18 layer_19 layer_20'
+  [../]
+  # inj_well/ext_well are separate blocks only in the new mesh (the old mesh had
+  # no dedicated well blocks, since its DiracKernel wells spanned the whole
+  # formation thickness). Borrowed verbatim from the newboundary input so every
+  # block in the (new) mesh has a defined porosity/permeability.
+  [./porosity_well]
+    type = PorousFlowPorosityConst
+    block = 'inj_well ext_well'
+    porosity = 0.299
+  [../]
+  [./permeability_well]
+    type = PorousFlowPermeabilityConst
+    block = 'inj_well ext_well'
+    permeability = '.2660E-12 0 0   0 .2660E-12 0   0 0 .2330E-09'
   [../]
 
   [./porosity_caps]
@@ -566,6 +581,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     type = MemoryUsage
     mem_units = 'bytes'
     execute_on = 'INITIAL TIMESTEP_END'
+    outputs = none # memory usage is not reproducible; excluded from regression CSV
   []
 []
 
@@ -655,7 +671,7 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
 #    elemental_as_nodal = true
 #    overwrite = true
 #    sequence = true
-    interval = 20
+    time_step_interval = 20
 [../]
 
 [./Console]
@@ -663,12 +679,12 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
   #perf_log = false
   #output_linear = false
   output_nonlinear = true
-  interval = 1
+  time_step_interval = 1
 [../]
 
 [./CSV]
   type = CSV
-  interval = 1
+  time_step_interval = 1
 [../]
 []
 ###########################################################

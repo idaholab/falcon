@@ -1,0 +1,50 @@
+[Tests]
+  issues = '#147'
+  design = 'examples/rtes_stochastic.md'
+  max_time = 1800 # stochastic MultiApp; heavy test
+
+  [base_cycle]
+    type = CSVDiff
+    input = 'base_cycle_50.i'
+    csvdiff = 'base_cycle_50_CSV.csv'
+    cli_args = '--allow-unused Executioner/num_steps=20'
+    capabilities = 'method!=dbg'
+    heavy = true
+    recover = false
+    requirement = 'The system shall run the single-realization generic doublet RTES physics '
+                  'model (base_cycle_50.i, on base_final_50_blockid_fix.e) standalone, for a '
+                  'bounded number of timesteps (not the full 10 year transient), and '
+                  'reproduce a self-baseline gold. This is a generic, parametrically-swept '
+                  'caprock-reservoir-bedrock formation (not the site-specific Cranfield '
+                  'geology), so no site-specific TOUGH reference dataset applies here; no '
+                  'TOUGH comparison is attempted for this example, only a self-baseline '
+                  'regression. The --allow-unused flag suppresses an unused-parameter error '
+                  'for the unreferenced aquifer_top command-line variable already present in '
+                  'the input. base_final_50_blockid_fix.e is base_final_50.e with its two '
+                  'element-block IDs renumbered from 200001/200002 to 3/4 (names, geometry, '
+                  'and connectivity unchanged) because those IDs overflow the unsigned-short '
+                  'block-ID field read by the current libMesh ExodusII_IO reader.'
+  []
+
+  [master_cycle]
+    type = CSVDiff
+    input = 'master_cycle_50.i'
+    csvdiff = 'master_cycle_50_out_results_0001.csv master_cycle_50_out_runner0_CSV.csv '
+              'master_cycle_50_out_runner1_CSV.csv'
+    cli_args = "--allow-unused Samplers/montecarlo/num_rows=2 "
+               "MultiApps/runner/cli_args='Executioner/error_on_dtmin=false;"
+               "Executioner/num_steps=10'"
+    capabilities = 'method!=dbg'
+    heavy = true
+    recover = false
+    requirement = 'The system shall run the StochasticTools master (master_cycle_50.i), '
+                  'which drives base_cycle_50.i as a SamplerFullSolveMultiApp sub-application '
+                  'in batch-reset mode, for a bounded number of Monte Carlo samples '
+                  '(num_rows overridden from the production default of 50000 down to 2) and '
+                  'a bounded number of sub-application timesteps, and reproduce a '
+                  'self-baseline gold of the per-sample results and the aggregated '
+                  'StochasticResults vector postprocessor. As with base_cycle above, this is '
+                  'a generic parametric sweep, not the site-specific Cranfield geology, so '
+                  'no TOUGH comparison is attempted.'
+  []
+[]

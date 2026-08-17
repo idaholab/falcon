@@ -1,0 +1,78 @@
+[Tests]
+  issues = '#147'
+  design = 'examples/rtes_ht.md'
+
+  [newboundary]
+    type = CSVDiff
+    input = 'Cranfield_HT_season_caps_water_newboundary_coarse.i'
+    csvdiff = 'Cranfield_HT_season_caps_water_newboundary_coarse_CSV.csv'
+    cli_args = 'Executioner/num_steps=20'
+    # "total" is a MemoryUsage postprocessor: process memory at report time,
+    # not a physics quantity, and not run-to-run reproducible.
+    ignore_columns = 'total'
+    capabilities = 'method!=dbg'
+    heavy = true
+    recover = false
+    requirement = 'The system shall run the Cranfield hydro-thermal (HT) RTES seasonal '
+                  'push-pull benchmark, on the reference mesh with mesh-native inj_well/'
+                  'ext_well completion blocks (Cranfield_caps_new_coarse.e), for a bounded '
+                  'number of timesteps (not the full approximately 1 year transient) and '
+                  'reproduce a self-baseline gold. A real TOUGH3 simulation of the same '
+                  'Lower Tuscaloosa (Cranfield) 5-spot/quarter-symmetry aquifer, run from the '
+                  'co-located tough.inp deck whose 20-layer porosity/permeability match this '
+                  'input layer_N Materials block for block, and whose FOFT observation '
+                  'elements 2FA99 and 2FB13 are the injection and production wells, is kept '
+                  'as gold/TOUGH_c10_FOFT_2FA99_injection.csv and '
+                  'gold/TOUGH_c10_FOFT_2FB13_production.csv (converted from the original '
+                  'Desktop/TOUGH/c10FOFT_2FA99.xlsx and c10FOFT_2FB13.xlsx) for manual, '
+                  'documented comparison. TOUGH (FDM) and FALCON (FEM) use different time '
+                  'discretizations so an automatic resampled CSVDiff against TOUGH is not '
+                  'done here; qualitative agreement in injection and production pressure and '
+                  'temperature trends should be checked by hand against these files, with an '
+                  'expected approximate (order 1 to 10 percent) discrepancy given the '
+                  'FDM-versus-FEM and 1/8-versus-1/4 symmetry model differences.'
+  []
+
+  [oldboundary]
+    type = CSVDiff
+    input = 'Cranfield_HT_season_caps_water_oldboundary_coarse.i'
+    csvdiff = 'Cranfield_HT_season_caps_water_oldboundary_coarse_CSV.csv'
+    cli_args = 'Executioner/num_steps=20'
+    # "total" is a MemoryUsage postprocessor: process memory at report time,
+    # not a physics quantity, and not run-to-run reproducible.
+    ignore_columns = 'total'
+    capabilities = 'method!=dbg'
+    heavy = true
+    recover = false
+    requirement = 'The system shall run the oldboundary (full-formation-thickness well, '
+                  'poromechanical porosity and permeability) variant of the Cranfield HT '
+                  'RTES benchmark, remapped from the no-longer-present '
+                  'Cranfield_caps_old_coarse.e mesh onto the current '
+                  'Cranfield_caps_new_coarse.e mesh. The injection and extraction nodesets '
+                  'and the caps/layer_1 through layer_20 blocks map cleanly onto the new '
+                  'mesh; the new mesh additionally carves out inj_well/ext_well blocks '
+                  'around the wells that the old mesh did not have, so this Materials block '
+                  'was extended with the newboundary input porosity_well/permeability_well '
+                  'definitions so every mesh block has a defined property. The input is run '
+                  'for a bounded number of timesteps and reproduces a self-baseline gold.'
+  []
+
+  [oldboundary_noComp]
+    type = CSVDiff
+    input = 'Cranfield_HT_season_caps_water_oldboundary_noComp_coarse.i'
+    csvdiff = 'Cranfield_HT_season_caps_water_oldboundary_noComp_coarse_CSV.csv'
+    cli_args = 'Executioner/num_steps=20'
+    # "total" is a MemoryUsage postprocessor: process memory at report time,
+    # not a physics quantity, and not run-to-run reproducible.
+    ignore_columns = 'total'
+    capabilities = 'method!=dbg'
+    heavy = true
+    recover = false
+    requirement = 'The system shall run the oldboundary_noComp (full-formation-thickness '
+                  'well, constant/incompressible porosity, no poromechanical coupling) '
+                  'variant of the Cranfield HT RTES benchmark, remapped onto '
+                  'Cranfield_caps_new_coarse.e with the same inj_well/ext_well Materials '
+                  'addition as the oldboundary case above, for a bounded number of '
+                  'timesteps, and reproduce a self-baseline gold.'
+  []
+[]

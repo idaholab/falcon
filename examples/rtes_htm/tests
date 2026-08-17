@@ -1,0 +1,57 @@
+[Tests]
+  issues = '#147'
+  design = 'examples/rtes_htm.md'
+
+  [continuous]
+    type = CSVDiff
+    input = 'Cranfield_HTM_continous_season_caps_water_newboundary_coarse.i'
+    csvdiff = 'Cranfield_HTM_continous_season_caps_water_newboundary_coarse_CSV.csv'
+    cli_args = 'Executioner/num_steps=10'
+    # "total" is a MemoryUsage postprocessor: process memory at report time,
+    # not a physics quantity, and not run-to-run reproducible.
+    ignore_columns = 'total'
+    capabilities = 'method!=dbg'
+    heavy = true
+    recover = false
+    max_time = 1800 # HTM coupled-mechanics steps are ~44s each; bounded heavy test
+    requirement = 'The system shall run the hydro-thermo-mechanical (HTM) coupled Cranfield '
+                  'RTES benchmark with a continuous seasonal injection schedule, on '
+                  'Cranfield_caps_new_coarse.e, for a bounded number of timesteps (not the '
+                  'full 10 year transient) and reproduce a self-baseline gold. The same '
+                  'Lower Tuscaloosa 20-layer aquifer is modeled by the TOUGH3 deck '
+                  '../rtes_benchmark/tough.inp; its GENER injection/production schedule at '
+                  'wells 2FA99/2FB13 spans the same 315576000 s (10 year) duration as this '
+                  'input end_time. The corresponding real TOUGH output (converted from '
+                  'Desktop/TOUGH/cs05rcFOFT_2FA99.xlsx and cs05rcFOFT_2FB13.xlsx, which cover '
+                  'the full 10 years) is kept as gold/TOUGH_cs05rc_FOFT_2FA99_injection.csv '
+                  'and gold/TOUGH_cs05rc_FOFT_2FB13_production.csv for manual, documented '
+                  'comparison; TOUGH (FDM, no mechanics) and this FEM HTM model use different '
+                  'time discretizations and TOUGH has no mechanical coupling, so an automatic '
+                  'resampled CSVDiff against TOUGH is not attempted, and only the hydraulic '
+                  'and thermal trends (not the mechanical response) are physically comparable, '
+                  'with an expected approximate (order 1 to 10 percent) discrepancy.'
+  []
+
+  [pushpull]
+    type = CSVDiff
+    input = 'Cranfield_HTM_push-pull_season_caps_water_newboundary_coarse.i'
+    csvdiff = 'Cranfield_HTM_push-pull_season_caps_water_newboundary_coarse_CSV.csv'
+    cli_args = 'Executioner/num_steps=10'
+    # "total" is a MemoryUsage postprocessor: process memory at report time,
+    # not a physics quantity, and not run-to-run reproducible.
+    ignore_columns = 'total'
+    capabilities = 'method!=dbg'
+    heavy = true
+    recover = false
+    max_time = 1800 # HTM coupled-mechanics steps are ~44s each; bounded heavy test
+    requirement = 'The system shall run the HTM-coupled Cranfield RTES benchmark with a '
+                  'push-pull (summer inject / winter extract / rest) seasonal schedule, on '
+                  'Cranfield_caps_new_coarse.e, for a bounded number of timesteps and '
+                  'reproduce a self-baseline gold. As with the continuous case above, the '
+                  'real 10 year TOUGH3 reference (gold/TOUGH_cs05rc_FOFT_2FA99_injection.csv, '
+                  'gold/TOUGH_cs05rc_FOFT_2FB13_production.csv) is kept for manual, '
+                  'documented hydraulic/thermal comparison rather than an automatic '
+                  'resampled CSVDiff, given the FDM-versus-FEM time discretization mismatch '
+                  'and the absence of mechanical coupling on the TOUGH side.'
+  []
+[]

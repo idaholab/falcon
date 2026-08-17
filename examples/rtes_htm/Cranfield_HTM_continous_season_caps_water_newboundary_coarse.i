@@ -29,7 +29,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
   gravity = '0 0 -9.8'
   porepressure = porepressure
   temperature = temperature
-  thermal_eigenstrain_name = thermal_contribution
+  eigenstrain_names = thermal_contribution
   fp = tabulated_water
   use_displaced_mesh = true
   biot_coefficient  = 0.9
@@ -330,33 +330,32 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
 [Functions]
   [./inj_function_summer_winter]
     type = ParsedFunction
-    value = '((t/24/3600/365.25-floor(t/24/3600/365.25))<=0.125) | ((t/24/3600/365.25-floor(t/24/3600/365.25))>0.375 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=0.625) | ((t/24/3600/365.25-floor(t/24/3600/365.25))>0.875)'
+    expression = '((t/24/3600/365.25-floor(t/24/3600/365.25))<=0.125) | ((t/24/3600/365.25-floor(t/24/3600/365.25))>0.375 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=0.625) | ((t/24/3600/365.25-floor(t/24/3600/365.25))>0.875)'
   [../]
   [./T_inj_function]
     type = ParsedFunction
-    value = '(453.15+399.15)/2+(453.15-399.15)/2*sin((-0.25+t/24/3600/365.25-floor(t/24/3600/365.25))*2*3.1415926535897932)'
+    expression = '(453.15+399.15)/2+(453.15-399.15)/2*sin((-0.25+t/24/3600/365.25-floor(t/24/3600/365.25))*2*3.1415926535897932)'
   [../]
   [./rest_function]
     type = ParsedFunction
-    value = '((t/24/3600/365.25-floor(t/24/3600/365.25))>0.125 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <= 0.375) | ((t/24/3600/365.25-floor(t/24/3600/365.25))>0.625 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=0.875) '
+    expression = '((t/24/3600/365.25-floor(t/24/3600/365.25))>0.125 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <= 0.375) | ((t/24/3600/365.25-floor(t/24/3600/365.25))>0.625 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=0.875) '
   [../]
 []
 
 ############################################################
-[Modules]
-  [./FluidProperties]
-    [./true_water]
-      type = Water97FluidProperties
-    [../]
-    [./tabulated_water]
-      type = TabulatedFluidProperties
-      fp = true_water
-      temperature_min = 275
-      temperature_max = 600
-      pressure_max = 1E8
-      interpolated_properties = 'density viscosity enthalpy internal_energy'
-      fluid_property_file = water97_tabulated.csv
-    [../]
+[FluidProperties]
+  [./true_water]
+    type = Water97FluidProperties
+  [../]
+  [./tabulated_water]
+    type = TabulatedFluidProperties
+    fp = true_water
+    allow_fp_and_tabulation = true
+    temperature_min = 275
+    temperature_max = 600
+    pressure_max = 1E8
+    interpolated_properties = 'density viscosity enthalpy internal_energy'
+    fluid_property_file = water97_tabulated.csv
   [../]
 []
 ############################################################
@@ -945,6 +944,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     type = MemoryUsage
     mem_units = 'bytes'
     execute_on = 'INITIAL TIMESTEP_END'
+    outputs = none # memory usage is not reproducible; excluded from regression CSV
   []
 []
 [Functions]
@@ -1079,12 +1079,12 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
   #perf_log = false
   output_linear = false
   output_nonlinear = true
-  interval = 1
+  time_step_interval = 1
 [../]
 
 [./CSV]
   type = CSV
-  interval = 1
+  time_step_interval = 1
 [../]
 []
 ###########################################################

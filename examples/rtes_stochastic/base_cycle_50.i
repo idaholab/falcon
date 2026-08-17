@@ -45,19 +45,19 @@ perm_aquifer = ${fparse 10^perm_exponent}
 [Functions]
   [./inj_function_summer]
     type = ParsedFunction
-    value = '(t/24/3600/365.25-floor(t/24/3600/365.25))>0 & (t/24/3600/365.25-floor(t/24/3600/365.25))<=0.25'
+    expression = '(t/24/3600/365.25-floor(t/24/3600/365.25))>0 & (t/24/3600/365.25-floor(t/24/3600/365.25))<=0.25'
   [../]
   [./inj_function_winter]
     type = ParsedFunction
-    vals = 'termination'
-    vars = 'b_switch'
-    value = '((t/24/3600/365.25-floor(t/24/3600/365.25))>0.5 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=0.75) & b_switch <= 0'
+    symbol_names = 'b_switch'
+    symbol_values = 'termination'
+    expression = '((t/24/3600/365.25-floor(t/24/3600/365.25))>0.5 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=0.75) & b_switch <= 0'
   [../]
   [./rest_function]
     type = ParsedFunction
-    vals = 'termination'
-    vars = 'b_switch'
-    value = '(((t/24/3600/365.25-floor(t/24/3600/365.25))>0.25 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=0.5) | ((t/24/3600/365.25-floor(t/24/3600/365.25))>0.75 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=1)) | (((t/24/3600/365.25-floor(t/24/3600/365.25))>0.5 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=0.75) & b_switch >=1)'
+    symbol_names = 'b_switch'
+    symbol_values = 'termination'
+    expression = '(((t/24/3600/365.25-floor(t/24/3600/365.25))>0.25 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=0.5) | ((t/24/3600/365.25-floor(t/24/3600/365.25))>0.75 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=1)) | (((t/24/3600/365.25-floor(t/24/3600/365.25))>0.5 & (t/24/3600/365.25-floor(t/24/3600/365.25)) <=0.75) & b_switch >=1)'
   [../]
   [./Fiss_Function]
     type = PiecewiseLinear
@@ -87,9 +87,17 @@ perm_aquifer = ${fparse 10^perm_exponent}
 
 # Darcy flow with heat advection and conduction
 [Mesh]
+  # base_final_50.e has element-block IDs 200001/200002 (aquifer_HEX8/aquifer_WEDGE),
+  # which overflow the unsigned-short block-ID field the current libMesh
+  # ExodusII_IO reader uses ("restrict_int failed: 200001 does not fit in type
+  # t"). base_final_50_blockid_fix.e is byte-identical apart from renumbering
+  # those two block IDs to 3/4 (via ncdump/ncgen); geometry, coordinates,
+  # connectivity, and block/nodeset/sideset NAMES (which is what this input
+  # and its Materials blocks reference) are unchanged. The original
+  # base_final_50.e is left untouched in this directory.
   [./fmg]
     type = FileMeshGenerator
-    file = base_final_50.e
+    file = base_final_50_blockid_fix.e
   []
 []
 #############################################################
@@ -331,20 +339,19 @@ perm_aquifer = ${fparse 10^perm_exponent}
 
 []
 ############################################################
-[Modules]
-  [./FluidProperties]
-    [./true_water]
-      type = Water97FluidProperties
-    [../]
-    [./tabulated_water]
-      type = TabulatedFluidProperties
-      fp = true_water
-      temperature_min = 275
-      temperature_max = 600
-      pressure_max = 1E8
-      interpolated_properties = 'density viscosity enthalpy internal_energy'
-      fluid_property_file = water97_tabulated.csv
-    [../]
+[FluidProperties]
+  [./true_water]
+    type = Water97FluidProperties
+  [../]
+  [./tabulated_water]
+    type = TabulatedFluidProperties
+    fp = true_water
+    allow_fp_and_tabulation = true
+    temperature_min = 275
+    temperature_max = 600
+    pressure_max = 1E8
+    interpolated_properties = 'density viscosity enthalpy internal_energy'
+    fluid_property_file = water97_tabulated.csv
   [../]
 []
 ############################################################
@@ -592,7 +599,7 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
 
 [./CSV]
   type = CSV
-  interval = 1
+  time_step_interval = 1
 [../]
 []
 ###########################################################

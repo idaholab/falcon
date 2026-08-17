@@ -242,29 +242,28 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
 [Functions]
   [./inj_function_summer]
     type = ParsedFunction
-    value = '(t/24/3600/365-floor(t/24/3600/365))<=0.25'
+    expression = '(t/24/3600/365-floor(t/24/3600/365))<=0.25'
   [../]
   [./inj_function_winter]
     type = ParsedFunction
-    value = '(t/24/3600/365-floor(t/24/3600/365))>0.5 & (t/24/3600/365-floor(t/24/3600/365)) <=0.75'
+    expression = '(t/24/3600/365-floor(t/24/3600/365))>0.5 & (t/24/3600/365-floor(t/24/3600/365)) <=0.75'
   [../]
 []
 
 ############################################################
-[Modules]
-  [./FluidProperties]
-    [./true_water]
-      type = Water97FluidProperties
-    [../]
-    [./tabulated_water]
-      type = TabulatedFluidProperties
-      fp = true_water
-      temperature_min = 275
-      temperature_max = 600
-      pressure_max = 1E8
-      interpolated_properties = 'density viscosity enthalpy internal_energy'
-      fluid_property_file = water97_tabulated.csv
-    [../]
+[FluidProperties]
+  [./true_water]
+    type = Water97FluidProperties
+  [../]
+  [./tabulated_water]
+    type = TabulatedFluidProperties
+    fp = true_water
+    allow_fp_and_tabulation = true
+    temperature_min = 275
+    temperature_max = 600
+    pressure_max = 1E8
+    interpolated_properties = 'density viscosity enthalpy internal_energy'
+    fluid_property_file = water97_tabulated.csv
   [../]
 []
 ############################################################
@@ -651,6 +650,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
     type = MemoryUsage
     mem_units = 'bytes'
     execute_on = 'INITIAL TIMESTEP_END'
+    outputs = none # memory usage is not reproducible; excluded from regression CSV
   []
 []
 
@@ -740,7 +740,7 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
 #    elemental_as_nodal = true
 #    overwrite = true
 #    sequence = true
-    interval = 20
+    time_step_interval = 20
 [../]
 
 [./Console]
@@ -748,12 +748,12 @@ petsc_options_value = ' asm      lu           NONZERO                   2'
   #perf_log = false
   #output_linear = false
   output_nonlinear = true
-  interval = 1
+  time_step_interval = 1
 [../]
 
 [./CSV]
   type = CSV
-  interval = 1
+  time_step_interval = 1
 [../]
 []
 ###########################################################
