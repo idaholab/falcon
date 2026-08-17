@@ -63,10 +63,6 @@ FalconApp::registerAll(Factory & f, ActionFactory & af, Syntax & syntax)
 #ifdef IAPWS95_ENABLED
   IAPWS95App::registerAll(f, af, syntax);
 #endif
-
-// built-in closure types
-ThermalHydraulicsApp::registerClosuresOption("falcon", "Closures1PhaseFalcon", THM::FM_SINGLE_PHASE);
-
 }
 
 // External entry point for object registration

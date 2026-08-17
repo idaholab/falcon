@@ -37,5 +37,5 @@ StochasticFieldAux::StochasticFieldAux(const InputParameters & parameters)
 Real
 StochasticFieldAux::computeValue()
 {
-  return _stoch_field.value(_current_elem->centroid());
+  return _stoch_field.value(_current_elem->vertex_average());
 }
