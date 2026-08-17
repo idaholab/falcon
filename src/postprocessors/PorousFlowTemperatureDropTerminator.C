@@ -21,8 +21,8 @@ PorousFlowTemperatureDropTerminator::validParams()
   params.addParam<Real>("T_inj", 0.0, "Injection fluid temperature");
   params.addParam<Real>("T_init", 0.0, "reservior intial temperature");
   params.addParam<Real>("P_drop", 1e-2, "Percent drop");
-  // params.addParam<Real>("Cap_time", 0.0, "Dection cap time");
-  params.addClassDescription("provide true or false on PorousFlowTemperatureDropTerminator");
+  params.addParam<Real>("max_time", 315360000, "The maximum simulation time (s) after which the terminator fires regardless of temperature drop (Default is 315360000, i.e. 10 years)");
+  params.addClassDescription("Returns 1 once the produced fluid temperature drops by a set percentage or a maximum time is reached");
   return params;
 }
 
@@ -33,7 +33,8 @@ PorousFlowTemperatureDropTerminator::PorousFlowTemperatureDropTerminator(const I
     _pps_t(getPostprocessorValue("timepostprocessor")),
     _temperature_inj(getParam<Real>("T_inj")),
     _temperature_init(getParam<Real>("T_init")),
-    _percentile_drop(getParam<Real>("P_drop"))
+    _percentile_drop(getParam<Real>("P_drop")),
+    _max_time(getParam<Real>("max_time"))
 {
 }
 
@@ -52,7 +53,7 @@ PorousFlowTemperatureDropTerminator::getValue()  const
 {
   if (((_pps_value_J/_pps_value_kg/4186 + 273.15)-_temperature_init)/(_temperature_inj-_temperature_init) < _percentile_drop/100)
     return 1;
-  else if (_pps_t >= 315360000)
+  else if (_pps_t >= _max_time)
     return 1;
   else
     return 0;

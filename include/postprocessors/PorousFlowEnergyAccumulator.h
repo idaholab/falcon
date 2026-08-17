@@ -13,11 +13,8 @@
 
 class PorousFlowEnergyAccumulator;
 
-///template <>
-///InputParameters validParams<PorousFlowSteadyStateDetection>();
-
 /**
- * Computes the relative change rate in a post-processor value.
+ * Accumulates the produced thermal energy (hot + cold well enthalpy) while production is active.
  */
 class PorousFlowEnergyAccumulator : public GeneralPostprocessor
 {

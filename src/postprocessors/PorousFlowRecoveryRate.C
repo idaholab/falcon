@@ -9,6 +9,8 @@
 
 #include "PorousFlowRecoveryRate.h"
 
+#include <cmath>
+
 registerMooseObject("FalconApp", PorousFlowRecoveryRate);
 
 InputParameters
@@ -56,5 +58,5 @@ PorousFlowRecoveryRate::getValue()  const
   if (_accumulator_ext == 0)
     return 0;
   else
-    return abs(_accumulator_ext)/abs(_accumulator_inj)*100;
+    return std::abs(_accumulator_ext)/std::abs(_accumulator_inj)*100;
 }

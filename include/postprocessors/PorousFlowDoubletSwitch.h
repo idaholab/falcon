@@ -13,11 +13,9 @@
 
 class PorousFlowDoubletSwitch;
 
-///template <>
-///InputParameters validParams<PorousFlowSteadyStateDetection>();
-
 /**
- * Computes the relative change rate in a post-processor value.
+ * Switches a doublet well between on/off duty phases on a daily cycle once a target
+ * postprocessor's deviation from its initial value first exceeds a tolerance.
  */
 class PorousFlowDoubletSwitch : public GeneralPostprocessor
 {
@@ -38,5 +36,7 @@ protected:
   Real _temp_init_value;
   Real _pps_relative_diff;
   Real _charge_time;
+  /// Fraction of each daily cycle during which the doublet switch is "on"
+  Real _duty_cycle_fraction;
 
 };

@@ -13,11 +13,9 @@
 
 class PorousFlowRecoveryTime;
 
-///template <>
-///InputParameters validParams<PorousFlowSteadyStateDetection>();
-
 /**
- * Computes the relative change rate in a post-processor value.
+ * Computes the elapsed time (in days) since the doublet breakthrough time recorded by
+ * another postprocessor.
  */
 class PorousFlowRecoveryTime : public GeneralPostprocessor
 {

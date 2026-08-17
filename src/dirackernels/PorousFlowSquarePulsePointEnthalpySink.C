@@ -50,7 +50,7 @@ PorousFlowSquarePulsePointEnthalpySink::PorousFlowSquarePulsePointEnthalpySink(
     // Sanity check to ensure that the end_time is greater than the start_time
   if (_end_time <= _start_time)
     mooseError(name(),
-               ": start time for PorousFlowSquarePulsePointEnthalpySource is ",
+               ": start time for PorousFlowSquarePulsePointEnthalpySink is ",
                _start_time,
                " but it must be less than end time ",
                _end_time);

@@ -20,6 +20,9 @@ FunctionEnthalpySink::validParams()
   params.addRequiredParam<UserObjectName>("fp", "The name of the user object for fluid properties");
   params.addRequiredCoupledVar("pressure", "Pressure");
   params.addRequiredParam<FunctionName>("function", "The forcing function.");
+  params.addClassDescription("Enthalpy (energy) sink layered on a PorousFlowPolyLineSink: the mass "
+                             "outflow is multiplied by the fluid enthalpy at the local pressure and "
+                             "an inlet temperature given by a function of time and position.");
   return params;
 }
 

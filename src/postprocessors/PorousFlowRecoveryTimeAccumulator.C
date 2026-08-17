@@ -9,6 +9,8 @@
 
 #include "PorousFlowRecoveryTimeAccumulator.h"
 
+#include <cmath>
+
 registerMooseObject("FalconApp", PorousFlowRecoveryTimeAccumulator);
 
 InputParameters
@@ -44,5 +46,5 @@ PorousFlowRecoveryTimeAccumulator::execute()
 Real
 PorousFlowRecoveryTimeAccumulator::getValue()  const
 {
-  return abs(_accumulator/3600/24);
+  return std::abs(_accumulator/3600/24);
 }

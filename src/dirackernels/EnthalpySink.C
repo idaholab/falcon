@@ -19,6 +19,9 @@ EnthalpySink::validParams()
   params.addRequiredParam<UserObjectName>("fp", "The name of the user object for fluid properties");
   params.addRequiredCoupledVar("pressure", "Pressure");
   params.addRequiredParam<Real>("T_in", "The incoming fluid temperature");
+  params.addClassDescription("Enthalpy (energy) sink layered on a PorousFlowPolyLineSink: the mass "
+                             "outflow is multiplied by the fluid enthalpy at the local pressure and "
+                             "a constant inlet temperature T_in.");
   return params;
 }
 

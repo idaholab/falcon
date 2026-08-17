@@ -17,7 +17,7 @@ PorousFlowRecoveryTime::validParams()
   InputParameters params = GeneralPostprocessor::validParams();
   params.addRequiredParam<PostprocessorName>("breakthroughtime", "The name of the targetpostprocessor");
   params.addRequiredParam<PostprocessorName>("timepostprocessor", "The name of the timepostprocessor");
-  params.addClassDescription("provide true or false on doublet breakthrough detection");
+  params.addClassDescription("Computes the elapsed time (in days) since the recorded doublet breakthrough time");
   return params;
 }
 

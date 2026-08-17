@@ -13,11 +13,9 @@
 
 class PorousFlowDoubletBreakthroughTerminator;
 
-///template <>
-///InputParameters validParams<PorousFlowSteadyStateDetection>();
-
 /**
- * Computes the relativse change rate in a post-processor value.
+ * Detects doublet thermal breakthrough: returns 1 (true) once a target postprocessor's
+ * deviation from its initial value exceeds a tolerance, 0 (false) otherwise.
  */
 class PorousFlowDoubletBreakthroughTerminator : public GeneralPostprocessor
 {

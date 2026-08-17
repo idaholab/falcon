@@ -9,6 +9,8 @@
 
 #include "PorousFlowAccumulator.h"
 
+#include <cmath>
+
 registerMooseObject("FalconApp", PorousFlowAccumulator);
 
 InputParameters
@@ -17,9 +19,8 @@ PorousFlowAccumulator::validParams()
   InputParameters params = GeneralPostprocessor::validParams();
   params.addRequiredParam<PostprocessorName>("targetpostprocessor", "The name of the targetpostprocessor");
   params.addRequiredParam<PostprocessorName>("timepostprocessor", "The name of the timepostprocessor");
-/*  params.addParam<Real>("accumulator_start_time", 0.0, "accumulator start time");
-  params.addParam<Real>("accumulator_end_time", 0.0, "accumulator cap time");
-*/
+  params.addParam<Real>("accumulator_start_time", 0.0, "The time at which accumulation starts (Default is 0)");
+  params.addParam<Real>("accumulator_end_time", 1e30, "The time at which accumulation ends (Default is 1e30)");
   params.addClassDescription("accumulate the targetted post processor value");
   return params;
 }
@@ -28,9 +29,8 @@ PorousFlowAccumulator::PorousFlowAccumulator(const InputParameters & parameters)
   : GeneralPostprocessor(parameters),
     _pps_value(getPostprocessorValue("targetpostprocessor")),
     _pps_t(getPostprocessorValue("timepostprocessor")),
-/*    _accumulator_start_time(getParam<Real>("accumulator_start_time")),
+    _accumulator_start_time(getParam<Real>("accumulator_start_time")),
     _accumulator_end_time(getParam<Real>("accumulator_end_time")),
-*/
     _accumulator(0)
 {
 }
@@ -43,7 +43,7 @@ PorousFlowAccumulator::initialize()
 void
 PorousFlowAccumulator::execute()
 {
-///  if (_pps_t > _accumulator_start_time &&  _pps_t < _accumulator_end_time)
+  if (_pps_t > _accumulator_start_time && _pps_t < _accumulator_end_time)
     if (_pps_value < 0)
       _accumulator += _pps_value;
 }
@@ -51,5 +51,5 @@ PorousFlowAccumulator::execute()
 Real
 PorousFlowAccumulator::getValue() const
 {
-  return abs(_accumulator);
+  return std::abs(_accumulator);
 }

@@ -67,19 +67,14 @@ PointEnthalpySourceSinkFromFunction::computeQpResidual()
   //check whether the fluid is injected for extracted from the point
   Real _mass_flux = _func_mass_flux.value(_t, _p);
   Real _T_input = _func_temperature.value(_t, _p);
-  // printf("_mass_flux=%f",_mass_flux);
-  // printf("_T_input=%f",_T_input);
   Real h =0;
   if ((_mass_flux>=0) && (_T_input<=0)){ //extraction
     h = _fp.h_from_p_T(_pressure[_qp], (*_temperature)[_qp]);
-    // printf("check_extraction");
   }else if((_mass_flux<=0) && (_T_input>0)){ //injection
     h = _fp.h_from_p_T(_pressure[_qp], _T_input);
-    // printf("check_injection");
   }else{
     mooseError(name(), "The functions of mass flux and temperature are not coordinated for injection and extraction");
   }
-  // printf("h=%f",h);
   // The test function is used here to account for all quadrature points
   _total_outflow_enthalpy.add(_test[_i][_qp]*_mass_flux * h * _dt);
   // negative sign means source, while positive sign means sink

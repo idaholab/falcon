@@ -13,11 +13,9 @@
 
 class PorousFlowRecoveryRate;
 
-///template <>
-///InputParameters validParams<PorousFlowSteadyStateDetection>();
-
 /**
- * Computes the relative change rate in a post-processor value.
+ * Computes the thermal recovery rate (percentage) of a doublet system as extracted energy
+ * relative to injected energy.
  */
 class PorousFlowRecoveryRate : public GeneralPostprocessor
 {

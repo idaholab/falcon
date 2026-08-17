@@ -13,11 +13,9 @@
 
 class PorousFlowSteadyStateDetection;
 
-///template <>
-///InputParameters validParams<PorousFlowSteadyStateDetection>();
-
 /**
- * Computes the relative change rate in a post-processor value.
+ * Computes the relative rate of change of a target postprocessor value between the
+ * current and previous timestep.
  */
 class PorousFlowSteadyStateDetection : public GeneralPostprocessor
 {

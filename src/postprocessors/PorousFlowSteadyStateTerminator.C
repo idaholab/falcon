@@ -18,11 +18,11 @@ PorousFlowSteadyStateTerminator::validParams()
   params.addRequiredParam<PostprocessorName>("targetpostprocessor", "The name of the targetpostprocessor");
   params.addRequiredParam<PostprocessorName>("timepostprocessor", "The name of the timepostprocessor");
   params.addParam<Real>(
-  "ss_dection_start_time", 0.0,
-  "steady state dection start time");
+  "ss_detection_start_time", 0.0,
+  "steady state detection start time");
   params.addParam<Real>(
-  "ss_dection_end_time", 0.0,
-  "steady state dection cap time");
+  "ss_detection_end_time", 0.0,
+  "steady state detection cap time");
   params.addParam<Real>(
   "ss_relative_error", 1e-2,
   "Postprocessor relative difference");
@@ -34,8 +34,8 @@ PorousFlowSteadyStateTerminator::PorousFlowSteadyStateTerminator(const InputPara
   : GeneralPostprocessor(parameters),
     _pps_value(getPostprocessorValue("targetpostprocessor")),
     _pps_t(getPostprocessorValue("timepostprocessor")),
-    _steady_state_start_time(getParam<Real>("ss_dection_start_time")),
-    _steady_state_end_time(getParam<Real>("ss_dection_end_time")),
+    _steady_state_start_time(getParam<Real>("ss_detection_start_time")),
+    _steady_state_end_time(getParam<Real>("ss_detection_end_time")),
     _steady_state_relative_diff(getParam<Real>("ss_relative_error"))
 {
 }

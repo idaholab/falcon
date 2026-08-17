@@ -13,11 +13,9 @@
 
 class PorousFlowTemperatureDropTerminator;
 
-///template <>
-///InputParameters validParams<PorousFlowSteadyStateDetection>();
-
 /**
- * Computes the relative change rate in a post-processor value.
+ * Returns true (1) once the produced fluid temperature drops by a specified percentage
+ * relative to the injection and initial temperatures, or a maximum time is exceeded.
  */
 class PorousFlowTemperatureDropTerminator : public GeneralPostprocessor
 {
@@ -38,9 +36,10 @@ protected:
     /// current time value
   const PostprocessorValue & _pps_t;
 
-  // Real _temperature_detection_cap_time;
   Real _temperature_inj;
   Real _temperature_init;
   Real _percentile_drop;
+  /// Maximum simulation time (s) after which the terminator fires unconditionally
+  Real _max_time;
 
 };

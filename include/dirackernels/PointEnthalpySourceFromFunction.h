@@ -12,10 +12,11 @@
 #include "DiracKernel.h"
 
 class SinglePhaseFluidProperties;
+class Function;
 
 /**
- * Point source that adds heat energy corresponding to adding a fluid with flux rate specified by a
- * postprocessor at given temperature (specified by a postprocessor).
+ * Point source that adds heat energy corresponding to injection of a fluid with mass flux rate
+ * specified by a postprocessor, at a temperature specified by a function.
  */
 class PointEnthalpySourceFromFunction : public DiracKernel
 {

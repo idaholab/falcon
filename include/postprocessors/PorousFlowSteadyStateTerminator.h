@@ -13,11 +13,9 @@
 
 class PorousFlowSteadyStateTerminator;
 
-///template <>
-///InputParameters validParams<PorousFlowSteadyStateDetection>();
-
 /**
- * Computes the relative change rate in a post-processor value.
+ * Returns true (1) once a target postprocessor's relative change falls below a tolerance
+ * (indicating steady state) within a detection window, or a maximum detection time is exceeded.
  */
 class PorousFlowSteadyStateTerminator : public GeneralPostprocessor
 {

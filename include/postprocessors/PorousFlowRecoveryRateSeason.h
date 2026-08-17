@@ -13,11 +13,9 @@
 
 class PorousFlowRecoveryRateSeason;
 
-///template <>
-///InputParameters validParams<PorousFlowSteadyStateDetection>();
-
 /**
- * Computes the relative change rate in a post-processor value.
+ * Computes the seasonal thermal recovery rate (percentage) of a doublet system, gated by
+ * separate injection/production season indicator postprocessors.
  */
 class PorousFlowRecoveryRateSeason : public GeneralPostprocessor
 {

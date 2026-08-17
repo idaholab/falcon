@@ -13,11 +13,9 @@
 
 class PorousFlowRecoveryTimeAccumulator;
 
-///template <>
-///InputParameters validParams<PorousFlowSteadyStateDetection>();
-
 /**
- * Computes the relative change rate in a post-processor value.
+ * Accumulates elapsed operating time (in days) while an indicator postprocessor
+ * (e.g. winter season) is active.
  */
 class PorousFlowRecoveryTimeAccumulator : public GeneralPostprocessor
 {

@@ -9,6 +9,8 @@
 
 #include "PorousFlowDoubletBreakthroughTerminator.h"
 
+#include <cmath>
+
 registerMooseObject("FalconApp", PorousFlowDoubletBreakthroughTerminator);
 
 InputParameters
@@ -39,7 +41,7 @@ PorousFlowDoubletBreakthroughTerminator::initialize()
 void
 PorousFlowDoubletBreakthroughTerminator::execute()
 {
-  Real temp_diff = abs(_pps_value-_temp_init_value);
+  Real temp_diff = std::abs(_pps_value-_temp_init_value);
   if (temp_diff >= _pps_relative_diff)
     _keep_constant = 1;
   else

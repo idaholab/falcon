@@ -9,6 +9,8 @@
 
 #include "PorousFlowEnergyAccumulator.h"
 
+#include <cmath>
+
 registerMooseObject("FalconApp", PorousFlowEnergyAccumulator);
 
 InputParameters
@@ -18,7 +20,7 @@ PorousFlowEnergyAccumulator::validParams()
   params.addRequiredParam<PostprocessorName>("hotwellenergy", "The name of the enthalpy postprocessor at hot well");
   params.addRequiredParam<PostprocessorName>("coldwellenergy", "The name of the enthalpy postprocessor at cold well");
   params.addRequiredParam<PostprocessorName>("ProductionIndicator", "The name of the postprocessor for production indication");
-  params.addClassDescription("accumulate the produced thermal enegy");
+  params.addClassDescription("accumulate the produced thermal energy");
   return params;
 }
 
@@ -47,5 +49,5 @@ PorousFlowEnergyAccumulator::execute()
 Real
 PorousFlowEnergyAccumulator::getValue()  const
 {
-  return abs(_accumulator);
+  return std::abs(_accumulator);
 }

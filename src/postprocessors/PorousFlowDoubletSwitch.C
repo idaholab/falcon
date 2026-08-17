@@ -8,7 +8,8 @@
 //* https://www.gnu.org/licenses/lgpl-2.1.html
 
 #include "PorousFlowDoubletSwitch.h"
-#include <math.h>
+
+#include <cmath>
 
 registerMooseObject("FalconApp", PorousFlowDoubletSwitch);
 
@@ -20,6 +21,7 @@ PorousFlowDoubletSwitch::validParams()
   params.addRequiredParam<PostprocessorName>("timepostprocessor", "The name of the timepostprocessor");
   params.addParam<Real>("temperature_init", 273.15, "Reservior initial temperature");
   params.addParam<Real>("temperature_tolerance", 1e-2, "Postprocessor relative tolerance");
+  params.addParam<Real>("duty_cycle_fraction", 0.6666667, "Fraction of each daily cycle during which the doublet switch is on");
   params.addClassDescription("provide true or false on doublet breakthrough detection");
   return params;
 }
@@ -30,7 +32,8 @@ PorousFlowDoubletSwitch::PorousFlowDoubletSwitch(const InputParameters & paramet
     _pps_time(getPostprocessorValue("timepostprocessor")),
     _temp_init_value(getParam<Real>("temperature_init")),
     _pps_relative_diff(getParam<Real>("temperature_tolerance")),
-    _charge_time(0)
+    _charge_time(0),
+    _duty_cycle_fraction(getParam<Real>("duty_cycle_fraction"))
 {
 }
 
@@ -44,7 +47,7 @@ PorousFlowDoubletSwitch::execute()
 {
   if (_charge_time == 0)
   {
-    if (abs(_pps_value-_temp_init_value) >= _pps_relative_diff )
+    if (std::abs(_pps_value-_temp_init_value) >= _pps_relative_diff )
     {
       _charge_time = _pps_time;
     }
@@ -61,8 +64,8 @@ PorousFlowDoubletSwitch::getValue()  const
     Real temp_time;
     Real check;
     temp_time = _pps_time - _charge_time;
-    check = temp_time/3600/24 - floor(temp_time/3600/24);
-    if ( check < 0.6666667 )
+    check = temp_time/3600/24 - std::floor(temp_time/3600/24);
+    if ( check < _duty_cycle_fraction )
       return 1;
     else
       return 0;

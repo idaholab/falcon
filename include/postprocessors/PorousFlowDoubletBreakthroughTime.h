@@ -13,11 +13,9 @@
 
 class PorousFlowDoubletBreakthroughTime;
 
-///template <>
-///InputParameters validParams<PorousFlowSteadyStateDetection>();
-
 /**
- * Computes the relative change rate in a post-processor value.
+ * Records the simulation time (in days) at which the doublet breakthrough terminator
+ * postprocessor first indicates breakthrough.
  */
 class PorousFlowDoubletBreakthroughTime : public GeneralPostprocessor
 {

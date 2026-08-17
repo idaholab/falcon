@@ -13,11 +13,8 @@
 
 class PorousFlowAccumulator;
 
-///template <>
-///InputParameters validParams<PorousFlowSteadyStateDetection>();
-
 /**
- * Computes the relative change rate in a post-processor value.
+ * Accumulates the value of a target postprocessor over time (optionally gated by a time window).
  */
 class PorousFlowAccumulator : public GeneralPostprocessor
 {
@@ -37,8 +34,10 @@ protected:
   /// current time value
   const PostprocessorValue & _pps_t;
 
-  // Real _accumulator_start_time;
-  // Real _accumulator_end_time;
+  /// Time at which accumulation starts
+  Real _accumulator_start_time;
+  /// Time at which accumulation ends
+  Real _accumulator_end_time;
   Real _accumulator;
 
 };

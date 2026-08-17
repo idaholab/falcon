@@ -17,7 +17,7 @@ PorousFlowDoubletBreakthroughTime::validParams()
   InputParameters params = GeneralPostprocessor::validParams();
   params.addRequiredParam<PostprocessorName>("breakthroughterminator", "The name of the targetpostprocessor");
   params.addRequiredParam<PostprocessorName>("timepostprocessor", "The name of the timepostprocessor");
-  params.addClassDescription("provide true or false on doublet breakthrough detection");
+  params.addClassDescription("Records the simulation time (in days) at which doublet breakthrough is first detected");
   return params;
 }
 
@@ -37,7 +37,7 @@ PorousFlowDoubletBreakthroughTime::initialize()
 void
 PorousFlowDoubletBreakthroughTime::execute()
 {
-  if (_keep_constant == 0 && _pps_value ==1)
+  if (_keep_constant == 0 && _pps_value >= 0.5)
     _keep_constant = _pps_time/3600/24;
 }
 
