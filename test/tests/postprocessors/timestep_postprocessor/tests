@@ -1,0 +1,14 @@
+[Tests]
+  design = 'TimestepPostprocessor.md'
+  issues = '#147'
+
+  [timestep_postprocessor]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    requirement = "The system shall select between two timestep sizes based on whether a target "
+                  "postprocessor has crossed a tolerance, matching a hand-derived analytic "
+                  "solution to within floating-point tolerance."
+  []
+[]
