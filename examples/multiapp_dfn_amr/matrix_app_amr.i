@@ -51,7 +51,7 @@ z_out = 39.5722
 [Functions]
   [insitu_pp]
     type = ParsedFunction
-    value = '10 - 0.847E-2 * z' # Approximate hydrostatic in MPa
+    expression = '10 - 0.847E-2 * z' # Approximate hydrostatic in MPa
   []
 []
 
@@ -213,8 +213,8 @@ z_out = 39.5722
     variable = increase_10deg
     constant_names = To
     constant_expressions = ${intial_temperature}
-    args = 'T_elem'
-    function = 'if( (To-T_elem)>10,1,0)'
+    coupled_variables = 'T_elem'
+    expression = 'if( (To-T_elem)>10,1,0)'
   []
 []
 

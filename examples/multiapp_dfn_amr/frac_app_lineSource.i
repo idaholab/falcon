@@ -144,10 +144,10 @@ z2_out = 1 #50.6
   [heat_transfer_coefficient_auxk]
     type = ParsedAux
     variable = heat_transfer_coefficient
-    args = 'enclosing_element_normal_length enclosing_element_normal_thermal_cond'
+    coupled_variables = 'enclosing_element_normal_length enclosing_element_normal_thermal_cond'
     constant_names = h_s
     constant_expressions = 1E3 # should be much bigger than thermal_conductivity / L ~ 1
-    function = 'if(enclosing_element_normal_length = 0, 0, h_s * '
+    expression = 'if(enclosing_element_normal_length = 0, 0, h_s * '
                'enclosing_element_normal_thermal_cond * 2 * enclosing_element_normal_length / (h_s * '
                'enclosing_element_normal_length * enclosing_element_normal_length + '
                'enclosing_element_normal_thermal_cond * 2 * enclosing_element_normal_length))'
@@ -155,10 +155,10 @@ z2_out = 1 #50.6
   [frac_P_Pa]
     type = ParsedAux
     variable = frac_P_Pa
-    args = frac_P
+    coupled_variables = frac_P
     constant_names = MPa_to_Pa
     constant_expressions = 1E6
-    function = 'frac_P*MPa_to_Pa'
+    expression = 'frac_P*MPa_to_Pa'
   []
   [aperture]
     type = PorousFlowPropertyAux
@@ -194,7 +194,7 @@ z2_out = 1 #50.6
     type = ParsedAux
     variable = z_id
     use_xyzt = true
-    function = 'z*0.03'
+    expression = 'z*0.03'
   []
 []
 
@@ -391,18 +391,18 @@ z2_out = 1 #50.6
 [Functions]
   [kg_rate]
     type = ParsedFunction
-    vals = 'dt kg_out'
-    vars = 'dt kg_out'
-    value = 'kg_out/dt'
+    symbol_values = 'dt kg_out'
+    symbol_names = 'dt kg_out'
+    expression = 'kg_out/dt'
   []
   [insitu_pp]
     type = ParsedFunction
-    value = '10 - 0.847E-2 * z' # Approximate hydrostatic in MPa
+    expression = '10 - 0.847E-2 * z' # Approximate hydrostatic in MPa
   []
   # approx insitu at production point, to prevent aperture closing due to low porepressures
   [insitu_pp_borehole]
     type = ParsedFunction
-    value = '10 - 0.847E-2 * z + 1' # Approximate hydrostatic in MPa + 1MPa
+    expression = '10 - 0.847E-2 * z + 1' # Approximate hydrostatic in MPa + 1MPa
   []
 []
 
