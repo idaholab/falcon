@@ -1,6 +1,6 @@
 [Tests]
   [refinement]
-    method = '!dbg'
+    capabilities = 'method!=dbg'
     type     = CSVDiff
     input    = 'matrix_app_amr.i'
     csvdiff = 'matrix_app_amr_out.csv'
@@ -8,7 +8,7 @@
     allow_unused = true
   [../]
   [lineSink]
-    method = '!dbg'
+    capabilities = 'method!=dbg'
     type     = RunApp
     input    = 'matrix_app_lineSource_amr.i'
     allow_unused = true

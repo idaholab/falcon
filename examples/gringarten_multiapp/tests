@@ -1,6 +1,6 @@
 [Tests]
   [shortTest]
-    method = '!dbg'
+    capabilities = 'method!=dbg'
     type     = CSVDiff
     input    = 'mrect1.i'
     csvdiff = 'mrect1_out_fracture_app0.csv'

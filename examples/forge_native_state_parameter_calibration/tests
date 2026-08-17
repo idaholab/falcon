@@ -8,7 +8,7 @@
     input = FORGE_NS_Ph3_coarse.i
     cli_args = 'Outputs/file_base=Ref/FORGE_NS_Ph3_coarse_point_data'
     check_files = Ref/FORGE_NS_Ph3_coarse_point_data_16A_0007.csv
-    method = opt
+    capabilities = 'method=opt'
     heavy = true
     recover = False
     # min_parallel = 2
@@ -19,7 +19,7 @@
              "data."
     prereq = 'data'
     type = RunCommand
-    method = opt
+    capabilities = 'method=opt'
     heavy = true
     command = "python3 optimization_script.py"
     recover = False
