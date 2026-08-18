@@ -1,0 +1,14 @@
+[Tests]
+  design = 'PorousFlowRecoveryTimeAccumulator.md'
+  issues = '#147'
+
+  [recovery_time_accumulator]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    requirement = "The system shall accumulate elapsed operating time, in days, while an "
+                  "indicator postprocessor is truthy, matching a hand-derived analytic solution "
+                  "to within floating-point tolerance."
+  []
+[]

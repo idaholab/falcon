@@ -1,0 +1,15 @@
+[Tests]
+  design = 'PorousFlowRecoveryRateSeason.md'
+  issues = '#147'
+
+  [recovery_rate_season]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    requirement = "The system shall compute the seasonal thermal recovery rate of a doublet "
+                  "system, gated by separate injection and production season indicator "
+                  "postprocessors, matching a hand-derived analytic solution to within "
+                  "floating-point tolerance."
+  []
+[]

@@ -1,0 +1,15 @@
+[Tests]
+  design = 'PorousFlowDoubletSwitch.md'
+  issues = '#147'
+
+  [doublet_switch]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    requirement = "The system shall report a 0/1 daily duty-cycle indicator, active for a "
+                  "configurable fraction of each day once a temperature-tolerance breakthrough "
+                  "criterion has latched, matching a hand-derived analytic solution to within "
+                  "floating-point tolerance."
+  []
+[]

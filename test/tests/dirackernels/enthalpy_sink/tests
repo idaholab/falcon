@@ -1,0 +1,12 @@
+[Tests]
+  design = 'EnthalpySink.md'
+  issues = '#147'
+  [analytic]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    requirement = 'The system shall compute the enthalpy removed by an EnthalpySink line sink '
+                  'that matches the analytic mass_rate * enthalpy * dt at every timestep, to '
+                  'within solver tolerance.'
+  []
+[]

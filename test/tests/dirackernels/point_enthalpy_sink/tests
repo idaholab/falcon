@@ -1,0 +1,12 @@
+[Tests]
+  design = 'PointEnthalpySink.md'
+  issues = '#147'
+  [analytic]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    requirement = 'The system shall remove heat energy at a point, at the local enthalpy, such '
+                  'that the change in the domain total heat energy each timestep matches '
+                  '-mass_flux * cv * T_local * dt, to within solver tolerance.'
+  []
+[]

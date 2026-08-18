@@ -1,0 +1,15 @@
+[Tests]
+  design = 'PorousFlowEnergyAccumulator.md'
+  issues = '#147'
+
+  [energy_accumulator]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    requirement = "The system shall accumulate the sum of hot- and cold-well energy "
+                  "postprocessors while a production indicator postprocessor is active, and "
+                  "report the absolute value of the accumulation, matching a hand-derived "
+                  "analytic solution to within floating-point tolerance."
+  []
+[]
