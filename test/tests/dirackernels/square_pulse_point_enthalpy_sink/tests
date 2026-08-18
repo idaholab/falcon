@@ -1,0 +1,23 @@
+[Tests]
+  design = 'PorousFlowSquarePulsePointEnthalpySink.md'
+  issues = '#147'
+  [analytic]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    requirement = 'The system shall remove heat energy at a point, at the local enthalpy, at a '
+                  'constant mass flux ramped on and off across the timesteps straddling '
+                  'start_time and end_time, such that the change in the domain total heat '
+                  'energy each timestep matches -mass_flux * cv * T_local(t) * factor(t) * dt '
+                  'for the analytic 5-case pulse ramp factor, to within solver tolerance.'
+  []
+  [start_after_end_error]
+    type = RunException
+    input = 'inp.i'
+    cli_args = "DiracKernels/source_h/end_time=200 DiracKernels/source_h/start_time=250"
+    expect_err = 'start time for PorousFlowSquarePulsePointEnthalpySink is 250 but it must be '
+                 'less than end time 200'
+    requirement = 'The system shall error if end_time is not greater than start_time for '
+                  'PorousFlowSquarePulsePointEnthalpySink.'
+  []
+[]

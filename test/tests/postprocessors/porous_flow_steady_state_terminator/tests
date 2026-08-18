@@ -1,0 +1,15 @@
+[Tests]
+  design = 'PorousFlowSteadyStateTerminator.md'
+  issues = '#147'
+
+  [steady_state_terminator]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    requirement = "The system shall report a 0/1 steady-state indicator once a detection "
+                  "postprocessor drops to or below a relative-error threshold within a detection "
+                  "time window, matching a hand-derived analytic solution, and shall terminate "
+                  "the run early when paired with a [UserObjects] Terminator on that indicator."
+  []
+[]

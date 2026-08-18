@@ -1,0 +1,13 @@
+[Tests]
+  design = 'PointEnthalpySourceFromFunction.md'
+  issues = '#147'
+  [analytic]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    requirement = 'The system shall add/remove heat energy at a point, at the enthalpy given by '
+                  'a function of time, such that the change in the domain total heat energy '
+                  'each timestep matches -mass_flux * cv * T(t) * dt, to within solver '
+                  'tolerance.'
+  []
+[]

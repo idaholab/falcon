@@ -1,0 +1,13 @@
+[Tests]
+  design = 'PointSourceSinkFromFunction.md'
+  issues = '#147'
+  [analytic]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    requirement = 'The system shall inject/extract fluid mass at a point at a rate given by a '
+                  'function of time, such that the accumulated mass reported via '
+                  'PorousFlowSumQuantity/PorousFlowPlotQuantity matches the analytic time '
+                  'integral of the function at every timestep, to within solver tolerance.'
+  []
+[]
