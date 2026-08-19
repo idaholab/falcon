@@ -1,0 +1,24 @@
+[Tests]
+  design = 'PointEnthalpySourceSinkFromFunction.md'
+  issues = '#147'
+  [analytic]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    requirement = 'The system shall inject heat energy at a point at a rate given by functions '
+                  'of time for the mass flux and temperature, such that the accumulated '
+                  'enthalpy reported via PorousFlowSumQuantity/PorousFlowPlotQuantity matches '
+                  'the analytic mass_flux(t) * cv * T(t) * dt at every timestep, to within '
+                  'solver tolerance.'
+  []
+  [not_coordinated_error]
+    type = RunException
+    input = 'inp.i'
+    cli_args = "Functions/mass_flux_fn/expression=0.02"
+    expect_err = 'not coordinated for injection and extraction'
+    requirement = 'The system shall error if the mass flux and temperature functions supplied to '
+                  'PointEnthalpySourceSinkFromFunction are not coordinated for injection or '
+                  'extraction (both indicating extraction, or both indicating injection, at the '
+                  'same time).'
+  []
+[]

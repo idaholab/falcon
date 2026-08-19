@@ -1,0 +1,14 @@
+[Tests]
+  design = 'PorousFlowAccumulator.md'
+  issues = '#147'
+
+  [accumulator]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    requirement = "The system shall accumulate a target postprocessor's negative values within a "
+                  "time window and report the absolute value of the accumulation, matching a "
+                  "hand-derived analytic solution to within floating-point tolerance."
+  []
+[]

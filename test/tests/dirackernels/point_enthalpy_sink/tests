@@ -1,0 +1,18 @@
+[Tests]
+  design = 'PointEnthalpySink.md'
+  issues = '#147'
+  [analytic]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    # 'residual' = abs(delta_E + mass_flux*cv*T_local*dt) is a ~5e-3 catastrophic cancellation of
+    # two ~1.2e6 solve-dependent terms, so it is 0 only to solver tolerance and drifts by O(1e-3)
+    # across platforms/compilers. abs_zero (one order of magnitude above that floor) treats the
+    # residual column as the intended 0; the large solve columns (delta_E, heat_energy, T_local)
+    # remain governed by the default rel_err, which still catches regressions.
+    abs_zero = 1e-2
+    requirement = 'The system shall remove heat energy at a point, at the local enthalpy, such '
+                  'that the change in the domain total heat energy each timestep matches '
+                  '-mass_flux * cv * T_local * dt, to within solver tolerance.'
+  []
+[]

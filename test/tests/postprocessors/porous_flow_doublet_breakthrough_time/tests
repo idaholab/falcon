@@ -1,0 +1,15 @@
+[Tests]
+  design = 'PorousFlowDoubletBreakthroughTime.md'
+  issues = '#147'
+
+  [breakthrough_time]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    requirement = "The system shall record the simulation time, in days, at which a doublet "
+                  "breakthrough indicator postprocessor first indicates breakthrough, and shall "
+                  "hold that value constant thereafter, matching a hand-derived analytic "
+                  "solution to within floating-point tolerance."
+  []
+[]
