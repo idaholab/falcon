@@ -1,0 +1,29 @@
+[Tests]
+  design = 'PorousFlowSquarePulsePointEnthalpySink.md'
+  issues = '#147'
+  [analytic]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    # 'residual' = abs(delta_E + mass_flux*cv*T_local*factor*dt) is a ~5e-3 catastrophic
+    # cancellation of two ~1.2e6 solve-dependent terms, so it is 0 only to solver tolerance and
+    # drifts by O(1e-3) across platforms/compilers. abs_zero (one order of magnitude above that
+    # floor) treats the residual column as the intended 0; the large solve columns (delta_E,
+    # heat_energy, T_local) remain governed by the default rel_err, which still catches regressions.
+    abs_zero = 1e-2
+    requirement = 'The system shall remove heat energy at a point, at the local enthalpy, at a '
+                  'constant mass flux ramped on and off across the timesteps straddling '
+                  'start_time and end_time, such that the change in the domain total heat '
+                  'energy each timestep matches -mass_flux * cv * T_local(t) * factor(t) * dt '
+                  'for the analytic 5-case pulse ramp factor, to within solver tolerance.'
+  []
+  [start_after_end_error]
+    type = RunException
+    input = 'inp.i'
+    cli_args = "DiracKernels/source_h/end_time=200 DiracKernels/source_h/start_time=250"
+    expect_err = 'start time for PorousFlowSquarePulsePointEnthalpySink is 250 but it must be '
+                 'less than end time 200'
+    requirement = 'The system shall error if end_time is not greater than start_time for '
+                  'PorousFlowSquarePulsePointEnthalpySink.'
+  []
+[]

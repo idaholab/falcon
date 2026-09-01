@@ -1,0 +1,14 @@
+[Tests]
+  design = 'PorousFlowRecoveryRate.md'
+  issues = '#147'
+
+  [recovery_rate]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    requirement = "The system shall compute the thermal recovery rate of a doublet system as the "
+                  "ratio of extracted to injected energy, expressed as a percentage, matching a "
+                  "hand-derived analytic solution to within floating-point tolerance."
+  []
+[]

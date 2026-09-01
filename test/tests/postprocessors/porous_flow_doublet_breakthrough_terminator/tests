@@ -1,0 +1,15 @@
+[Tests]
+  design = 'PorousFlowDoubletBreakthroughTerminator.md'
+  issues = '#147'
+
+  [breakthrough_terminator]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    requirement = "The system shall report a 0/1 doublet breakthrough indicator based on a "
+                  "temperature-tolerance criterion, matching a hand-derived analytic solution, "
+                  "and shall terminate the run early when paired with a [UserObjects] "
+                  "Terminator on that indicator."
+  []
+[]

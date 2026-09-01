@@ -1,0 +1,14 @@
+[Tests]
+  design = 'PorousFlowSteadyStateDetection.md'
+  issues = '#147'
+
+  [steady_state_detection]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    requirement = "The system shall compute the relative rate of change of a target "
+                  "postprocessor's per-timestep rate between the current and previous timestep, "
+                  "matching a hand-derived analytic solution to within floating-point tolerance."
+  []
+[]

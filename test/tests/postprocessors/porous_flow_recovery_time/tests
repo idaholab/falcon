@@ -1,0 +1,14 @@
+[Tests]
+  design = 'PorousFlowRecoveryTime.md'
+  issues = '#147'
+
+  [recovery_time]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    requirement = "The system shall compute the elapsed time, in days, since a recorded doublet "
+                  "breakthrough time, matching a hand-derived analytic solution to within "
+                  "floating-point tolerance."
+  []
+[]
