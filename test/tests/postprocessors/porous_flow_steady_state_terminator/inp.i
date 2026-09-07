@@ -7,9 +7,11 @@
 #   0 otherwise
 #
 # Drive targetpostprocessor(t) = 1/t (a synthetic, monotonically decreasing steady-state
-# detection metric), ss_relative_error = 0.2, ss_detection_start_time = 0,
-# ss_detection_end_time = 1000 (so large it is never reached in this test, isolating the first
-# OR branch), dt = 1, num_steps = 8:
+# detection metric), ss_relative_error = 0.2, ss_detection_start_time = 0, and
+# ss_detection_end_time left at its default (1.0e30, so it is never reached in this test,
+# isolating the first OR branch) rather than set explicitly -- this exercises the actual class
+# default directly: before it was fixed, the default was 0.0, which would have made the second
+# OR branch fire unconditionally at t=1 regardless of ss_relative_error. dt = 1, num_steps = 8:
 #
 #   t=1: 1/1=1     >0.2 -> 0
 #   t=2: 1/2=0.5   >0.2 -> 0
@@ -58,7 +60,6 @@
     targetpostprocessor = target
     timepostprocessor = cur_time
     ss_detection_start_time = 0
-    ss_detection_end_time = 1000
     ss_relative_error = 0.2
   []
   [exact]

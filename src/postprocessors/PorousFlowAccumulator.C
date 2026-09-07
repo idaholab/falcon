@@ -31,7 +31,7 @@ PorousFlowAccumulator::PorousFlowAccumulator(const InputParameters & parameters)
     _pps_t(getPostprocessorValue("timepostprocessor")),
     _accumulator_start_time(getParam<Real>("accumulator_start_time")),
     _accumulator_end_time(getParam<Real>("accumulator_end_time")),
-    _accumulator(0)
+    _accumulator(declareRestartableData<Real>("accumulator", 0))
 {
 }
 

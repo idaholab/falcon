@@ -19,9 +19,6 @@ PorousFlowRecoveryRate::validParams()
   InputParameters params = GeneralPostprocessor::validParams();
   params.addRequiredParam<PostprocessorName>("hotwellenergy", "The name of the enthalpy postprocessor at hot well");
   params.addRequiredParam<PostprocessorName>("coldwellenergy", "The name of the enthalpy postprocessor at cold well");
-/*  params.addParam<Real>("accumulator_start_time", 0.0, "accumulator start time");
-  params.addParam<Real>("accumulator_end_time", 0.0, "accumulator cap time");
-  */
   params.addClassDescription("Calculate the recovery rate for the doublet system");
   return params;
 }
@@ -30,11 +27,8 @@ PorousFlowRecoveryRate::PorousFlowRecoveryRate(const InputParameters & parameter
   : GeneralPostprocessor(parameters),
     _pps_hot(getPostprocessorValue("hotwellenergy")),
     _pps_cold(getPostprocessorValue("coldwellenergy")),
-/*    _accumulator_start_time(getParam<Real>("accumulator_start_time")),
-    _accumulator_end_time(getParam<Real>("accumulator_end_time")),
-    */
-    _accumulator_inj(0),
-    _accumulator_ext(0)
+    _accumulator_inj(declareRestartableData<Real>("accumulator_inj", 0)),
+    _accumulator_ext(declareRestartableData<Real>("accumulator_ext", 0))
 {
 }
 
@@ -55,7 +49,7 @@ PorousFlowRecoveryRate::execute()
 Real
 PorousFlowRecoveryRate::getValue()  const
 {
-  if (_accumulator_ext == 0)
+  if (_accumulator_inj == 0)
     return 0;
   else
     return std::abs(_accumulator_ext)/std::abs(_accumulator_inj)*100;

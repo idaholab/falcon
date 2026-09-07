@@ -32,7 +32,8 @@ PorousFlowDoubletSwitch::PorousFlowDoubletSwitch(const InputParameters & paramet
     _pps_time(getPostprocessorValue("timepostprocessor")),
     _temp_init_value(getParam<Real>("temperature_init")),
     _pps_relative_diff(getParam<Real>("temperature_tolerance")),
-    _charge_time(0),
+    _charge_time(declareRestartableData<Real>("charge_time", 0)),
+    _triggered(declareRestartableData<bool>("triggered", false)),
     _duty_cycle_fraction(getParam<Real>("duty_cycle_fraction"))
 {
 }
@@ -45,11 +46,12 @@ PorousFlowDoubletSwitch::initialize()
 void
 PorousFlowDoubletSwitch::execute()
 {
-  if (_charge_time == 0)
+  if (!_triggered)
   {
     if (std::abs(_pps_value-_temp_init_value) >= _pps_relative_diff )
     {
       _charge_time = _pps_time;
+      _triggered = true;
     }
   }
 }
@@ -57,7 +59,7 @@ PorousFlowDoubletSwitch::execute()
 Real
 PorousFlowDoubletSwitch::getValue()  const
 {
-  if (_charge_time == 0)
+  if (!_triggered)
     return 0;
   else
   {

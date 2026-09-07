@@ -34,6 +34,11 @@ protected:
   const PostprocessorValue & _pps_time;
   /// constant input
 
-  Real _keep_constant;
+  /// Recorded breakthrough time (restartable)
+  Real & _keep_constant;
+  /// Whether breakthrough has been recorded yet (restartable; kept separate from
+  /// _keep_constant so a breakthrough detected exactly at t=0 isn't indistinguishable from
+  /// "not yet detected")
+  bool & _triggered;
 
 };

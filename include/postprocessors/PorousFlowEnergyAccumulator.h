@@ -33,6 +33,7 @@ protected:
   const PostprocessorValue & _pps_cold;
   const PostprocessorValue & _pps_pro;
 
-  Real _accumulator;
+  /// Running accumulated value (restartable, so --recover/restart don't silently reset it to 0)
+  Real & _accumulator;
 
 };

@@ -1,3 +1,12 @@
+//* This file is part of the MOOSE framework
+//* https://www.mooseframework.org
+//*
+//* All rights reserved, see COPYRIGHT for full restrictions
+//* https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//*
+//* Licensed under LGPL 2.1, please see LICENSE for details
+//* https://www.gnu.org/licenses/lgpl-2.1.html
+
 #include "TimestepPostprocessor.h"
 
 registerMooseObject("FalconApp", TimestepPostprocessor);
@@ -20,7 +29,8 @@ TimestepPostprocessor::TimestepPostprocessor(const InputParameters & parameters)
     _pps_value(getPostprocessorValue("targetpostprocessor")),
     _pps_time(getPostprocessorValue("timepostprocessor")),
     _pps_relative_diff(getParam<Real>("enthalpy_relative_tolerance")),
-    _charge_time(0),
+    _charge_time(declareRestartableData<Real>("charge_time", 0)),
+    _triggered(declareRestartableData<bool>("triggered", false)),
     _dt_before_trigger(getParam<Real>("dt_before_trigger")),
     _dt_after_trigger(getParam<Real>("dt_after_trigger"))
 {
@@ -34,11 +44,12 @@ TimestepPostprocessor::initialize()
 void
 TimestepPostprocessor::execute()
 {
-  if (_charge_time == 0)
+  if (!_triggered)
   {
     if ( _pps_value >= _pps_relative_diff )
     {
       _charge_time = _pps_time;
+      _triggered = true;
     }
   }
 }
@@ -46,7 +57,7 @@ TimestepPostprocessor::execute()
 Real
 TimestepPostprocessor::getValue() const
 {
-  if (_charge_time == 0)
+  if (!_triggered)
     return _dt_before_trigger; /// 1 month by default
   else
     return _dt_after_trigger; /// 6 hours by default

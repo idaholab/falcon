@@ -32,7 +32,8 @@ protected:
   /// current post-processor value
   const PostprocessorValue & _pps_iswinter;
   const PostprocessorValue & _pps_dt;
-  Real _accumulator;
+  /// Running accumulated value (restartable, so --recover/restart don't silently reset it to 0)
+  Real & _accumulator;
   /// constant input
 
 };

@@ -16,7 +16,7 @@ PorousFlowSteadyStateDetection::validParams()
 {
   InputParameters params = GeneralPostprocessor::validParams();
   params.addRequiredParam<PostprocessorName>("targetpostprocessor", "The name of the targetpostprocessor");
-  params.addRequiredParam<PostprocessorName>("timepostprocessor", "The name of the timepostprocessor");
+  params.addRequiredParam<PostprocessorName>("dt_postprocessor", "The name of the timestep-size postprocessor");
   params.addClassDescription("Computes the rate of relative change in a post-processor value "
                              "over a timestep");
   return params;
@@ -26,8 +26,8 @@ PorousFlowSteadyStateDetection::PorousFlowSteadyStateDetection(const InputParame
   : GeneralPostprocessor(parameters),
     _pps_value(getPostprocessorValue("targetpostprocessor")),
     _pps_value_old(getPostprocessorValueOld("targetpostprocessor")),
-    _pps_dt(getPostprocessorValue("timepostprocessor")),
-    _pps_dt_old(getPostprocessorValueOld("timepostprocessor"))
+    _pps_dt(getPostprocessorValue("dt_postprocessor")),
+    _pps_dt_old(getPostprocessorValueOld("dt_postprocessor"))
 {
 }
 
@@ -46,8 +46,8 @@ PorousFlowSteadyStateDetection::getValue()  const
 {
   // copy initial value in case difference is measured against initial value
   Real change;
-  if (_t_step == 0)
-    change  = 0;
+  if (_t_step == 0 || _pps_dt == 0.0 || _pps_dt_old == 0.0 || _pps_value_old == 0.0)
+    change = 0;
   else
     change = (_pps_value/_pps_dt - _pps_value_old/_pps_dt_old)/(_pps_value_old/_pps_dt_old);
   return std::fabs(change);

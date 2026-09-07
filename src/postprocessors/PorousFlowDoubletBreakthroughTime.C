@@ -25,7 +25,8 @@ PorousFlowDoubletBreakthroughTime::PorousFlowDoubletBreakthroughTime(const Input
   : GeneralPostprocessor(parameters),
     _pps_value(getPostprocessorValue("breakthroughterminator")),
     _pps_time(getPostprocessorValue("timepostprocessor")),
-    _keep_constant(0)
+    _keep_constant(declareRestartableData<Real>("keep_constant", 0)),
+    _triggered(declareRestartableData<bool>("triggered", false))
 {
 }
 
@@ -37,8 +38,11 @@ PorousFlowDoubletBreakthroughTime::initialize()
 void
 PorousFlowDoubletBreakthroughTime::execute()
 {
-  if (_keep_constant == 0 && _pps_value >= 0.5)
+  if (!_triggered && _pps_value >= 0.5)
+  {
     _keep_constant = _pps_time/3600/24;
+    _triggered = true;
+  }
 }
 
 Real

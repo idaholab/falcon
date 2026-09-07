@@ -29,7 +29,7 @@ PorousFlowEnergyAccumulator::PorousFlowEnergyAccumulator(const InputParameters &
     _pps_hot(getPostprocessorValue("hotwellenergy")),
     _pps_cold(getPostprocessorValue("coldwellenergy")),
     _pps_pro(getPostprocessorValue("ProductionIndicator")),
-    _accumulator(0)
+    _accumulator(declareRestartableData<Real>("accumulator", 0))
 {
 }
 
@@ -41,7 +41,7 @@ PorousFlowEnergyAccumulator::initialize()
 void
 PorousFlowEnergyAccumulator::execute()
 {
-  if(_pps_pro == 1 ){
+  if(_pps_pro > 0.5 ){
     _accumulator += (_pps_hot + _pps_cold);
   }
 }

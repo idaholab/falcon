@@ -27,7 +27,7 @@ PorousFlowRecoveryTimeAccumulator::PorousFlowRecoveryTimeAccumulator(const Input
   : GeneralPostprocessor(parameters),
    _pps_iswinter(getPostprocessorValue("targetpostprocessor")),
    _pps_dt(getPostprocessorValue("dtpostprocessor")),
-   _accumulator(0)
+   _accumulator(declareRestartableData<Real>("accumulator", 0))
 {
 }
 

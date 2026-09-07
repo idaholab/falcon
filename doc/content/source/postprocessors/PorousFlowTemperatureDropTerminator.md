@@ -8,9 +8,14 @@
 temperature has dropped by a set percentage of the way from the reservoir's initial temperature
 towards the injection temperature. The produced temperature is reconstructed from a specific
 enthalpy postprocessor (`enthalpypostprocessor`, in J) and a mass postprocessor
-(`masspostprocessor`, in kg) as `T_prod = enthalpypostprocessor/masspostprocessor/4186 + 273.15`
-(using 4186 J/(kg K) as an approximate specific heat of water to convert enthalpy to a
-temperature rise, and 273.15 to convert to Kelvin). The reported value is `1` once
+(`masspostprocessor`, in kg) as
+`T_prod = enthalpypostprocessor/masspostprocessor/fluid_specific_heat + T_enthalpy_ref`
+(`fluid_specific_heat` defaults to 4186 J/(kg K), an approximate specific heat of water, and
+`T_enthalpy_ref` defaults to 273.15 K, i.e. the 0 degrees C enthalpy datum; both are exposed as
+parameters so a different fluid's approximate specific heat and enthalpy reference can be used).
+`T_inj` and `T_init` are required parameters (there is no sensible default), and
+`masspostprocessor` reporting `0` (e.g. before any production has occurred) reports the
+indicator as `0` rather than dividing by zero. The reported value is `1` once
 
 ```
 (T_prod - T_init)/(T_inj - T_init) < P_drop/100

@@ -35,7 +35,11 @@ protected:
   /// constant input
   Real _temp_init_value;
   Real _pps_relative_diff;
-  Real _charge_time;
+  /// Time recorded when the trigger fired (restartable)
+  Real & _charge_time;
+  /// Whether the trigger has fired yet (restartable; kept separate from _charge_time so a
+  /// trigger that fires exactly at t=0 isn't indistinguishable from "never fired")
+  bool & _triggered;
   /// Fraction of each daily cycle during which the doublet switch is "on"
   Real _duty_cycle_fraction;
 

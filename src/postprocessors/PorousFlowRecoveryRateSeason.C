@@ -21,9 +21,6 @@ PorousFlowRecoveryRateSeason::validParams()
   params.addRequiredParam<PostprocessorName>("coldwellenergy", "The name of the enthalpy postprocessor at cold well");
   params.addRequiredParam<PostprocessorName>("InjectionIndicator", "The name of the postprocessor for injeciton indication");
   params.addRequiredParam<PostprocessorName>("ProductionIndicator", "The name of the postprocessor for production indication");
-/*  params.addParam<Real>("accumulator_start_time", 0.0, "accumulator start time");
-  params.addParam<Real>("accumulator_end_time", 0.0, "accumulator cap time");
-  */
   params.addClassDescription("Calculate the recovery rate for the doublet system");
   return params;
 }
@@ -34,8 +31,8 @@ PorousFlowRecoveryRateSeason::PorousFlowRecoveryRateSeason(const InputParameters
     _pps_cold(getPostprocessorValue("coldwellenergy")),
     _pps_inj(getPostprocessorValue("InjectionIndicator")),
     _pps_pro(getPostprocessorValue("ProductionIndicator")),
-    _accumulator_inj(0),
-    _accumulator_ext(0)
+    _accumulator_inj(declareRestartableData<Real>("accumulator_inj", 0)),
+    _accumulator_ext(declareRestartableData<Real>("accumulator_ext", 0))
 {
 }
 
@@ -47,9 +44,9 @@ PorousFlowRecoveryRateSeason::initialize()
 void
 PorousFlowRecoveryRateSeason::execute()
 {
-  if (_pps_inj == 1){
+  if (_pps_inj > 0.5){
     _accumulator_inj += (_pps_hot + _pps_cold);
-  }else if(_pps_pro == 1 ){
+  }else if(_pps_pro > 0.5 ){
     _accumulator_ext += (_pps_hot + _pps_cold);
   }
 
@@ -58,7 +55,7 @@ PorousFlowRecoveryRateSeason::execute()
 Real
 PorousFlowRecoveryRateSeason::getValue()  const
 {
-  if (_accumulator_ext == 0)
+  if (_accumulator_inj == 0)
     return 0;
   else
     return std::abs(_accumulator_ext)/std::abs(_accumulator_inj)*100;

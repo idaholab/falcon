@@ -7,21 +7,22 @@
 `PorousFlowSteadyStateDetection` computes the relative rate of change, between the current and
 previous timestep, of a target postprocessor's value normalized by the timestep size. Denoting
 the current and old values of `targetpostprocessor` as `value`/`value_old` and of
-`timepostprocessor` (the timestep-size postprocessor) as `dt`/`dt_old`, the reported value is
+`dt_postprocessor` (the timestep-size postprocessor) as `dt`/`dt_old`, the reported value is
 
 ```
 abs( (value/dt - value_old/dt_old) / (value_old/dt_old) )
 ```
 
-except on the very first (`t_step == 0`) evaluation, where it is forced to `0`. This quantity
-trends toward zero as a simulation approaches a steady state, and is typically fed into
+except on the very first (`t_step == 0`) evaluation, or whenever `dt`, `dt_old`, or `value_old`
+is `0` (a division guard), where it is forced to `0`. This quantity trends toward zero as a
+simulation approaches a steady state, and is typically fed into
 [PorousFlowSteadyStateTerminator.md] to stop a transient once the system has settled.
 
 Because `value_old` and `dt_old` are only meaningful once a postprocessor has been through at
-least one real timestep transition, feeding this postprocessor a `timepostprocessor` whose value
+least one real timestep transition, feeding this postprocessor a `dt_postprocessor` whose value
 is not yet defined at the simulation's initial time (e.g. `TimestepSize`, whose value before the
-executioner has set a timestep is `0`) will produce a division-by-zero on the first timestep
-after initialization.
+executioner has set a timestep is `0`) reports `0` on the first timestep after initialization
+(via the division guard above) rather than dividing by zero.
 
 ## Example Input Syntax
 

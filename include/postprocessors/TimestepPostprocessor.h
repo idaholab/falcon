@@ -1,3 +1,12 @@
+//* This file is part of the MOOSE framework
+//* https://www.mooseframework.org
+//*
+//* All rights reserved, see COPYRIGHT for full restrictions
+//* https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//*
+//* Licensed under LGPL 2.1, please see LICENSE for details
+//* https://www.gnu.org/licenses/lgpl-2.1.html
+
 #pragma once
 
 #include "GeneralPostprocessor.h"
@@ -25,7 +34,11 @@ protected:
   const PostprocessorValue & _pps_time;
   /// constant input
   Real _pps_relative_diff;
-  Real _charge_time;
+  /// Time recorded when the trigger fired (restartable)
+  Real & _charge_time;
+  /// Whether the trigger has fired yet (restartable; kept separate from _charge_time so a
+  /// trigger that fires exactly at t=0 isn't indistinguishable from "never fired")
+  bool & _triggered;
   /// Timestep size to use before the trigger fires (s)
   Real _dt_before_trigger;
   /// Timestep size to use after the trigger fires (s)

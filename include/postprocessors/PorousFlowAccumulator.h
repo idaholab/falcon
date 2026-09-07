@@ -38,7 +38,8 @@ protected:
   Real _accumulator_start_time;
   /// Time at which accumulation ends
   Real _accumulator_end_time;
-  Real _accumulator;
+  /// Running accumulated value (restartable, so --recover/restart don't silently reset it to 0)
+  Real & _accumulator;
 
 };
 

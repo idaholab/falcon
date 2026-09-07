@@ -21,7 +21,7 @@ PorousFlowSteadyStateTerminator::validParams()
   "ss_detection_start_time", 0.0,
   "steady state detection start time");
   params.addParam<Real>(
-  "ss_detection_end_time", 0.0,
+  "ss_detection_end_time", 1.0e30,
   "steady state detection cap time");
   params.addParam<Real>(
   "ss_relative_error", 1e-2,

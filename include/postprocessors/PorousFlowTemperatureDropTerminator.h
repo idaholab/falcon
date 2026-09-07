@@ -41,5 +41,9 @@ protected:
   Real _percentile_drop;
   /// Maximum simulation time (s) after which the terminator fires unconditionally
   Real _max_time;
+  /// Fluid specific heat (J/kg/K) used to convert enthalpy/mass to temperature
+  Real _fluid_specific_heat;
+  /// Enthalpy-datum reference temperature (K) used to convert enthalpy/mass to temperature
+  Real _T_enthalpy_ref;
 
 };
