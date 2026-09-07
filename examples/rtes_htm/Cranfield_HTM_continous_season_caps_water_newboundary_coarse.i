@@ -12,7 +12,7 @@ inj_ext_flux= ${fparse 3/well_length/4 } # 3 kg/s over injection length with 1/4
 [Mesh]
   [./fmg]
     type = FileMeshGenerator
-    file = Cranfield_caps_new_coarse.e
+    file = ../rtes_benchmark/Cranfield_caps_new_coarse.e
   []
 []
 #############################################################

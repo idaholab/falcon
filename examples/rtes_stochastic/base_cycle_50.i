@@ -87,14 +87,23 @@ perm_aquifer = ${fparse 10^perm_exponent}
 
 # Darcy flow with heat advection and conduction
 [Mesh]
-  # base_final_50.e has element-block IDs 200001/200002 (aquifer_HEX8/aquifer_WEDGE),
-  # which overflow the unsigned-short block-ID field the current libMesh
-  # ExodusII_IO reader uses ("restrict_int failed: 200001 does not fit in type
-  # t"). base_final_50_blockid_fix.e is byte-identical apart from renumbering
-  # those two block IDs to 3/4 (via ncdump/ncgen); geometry, coordinates,
-  # connectivity, and block/nodeset/sideset NAMES (which is what this input
-  # and its Materials blocks reference) are unchanged. The original
-  # base_final_50.e is left untouched in this directory.
+  # The original base_final_50.e had one or more element-block IDs that overflowed the
+  # unsigned-short block-ID field the current libMesh ExodusII_IO reader uses
+  # ("restrict_int failed: <id> does not fit in type t"). base_final_50_blockid_fix.e is that
+  # same mesh with its element-block IDs renumbered to fit (geometry, coordinates, connectivity,
+  # and block/nodeset/sideset NAMES -- which is what this input and its Materials blocks
+  # reference by name, not by numeric ID -- are unchanged by a renumbering).
+  #
+  # The original base_final_50.e is not present in this repository (on this branch or on
+  # devel), so the renumbering is not independently auditable from git history alone. The
+  # renumbered file's own embedded NetCDF metadata is the audit trail instead: its `title`
+  # global attribute reads
+  #   cubit(s/jinw-mac/projects/falcon/Applied_Energy/base_final_50.e): 10/02/2020: 22
+  # (i.e. it was produced by Cubit from a file of that name), and its current eb_prop1/eb_names
+  # (`ncdump -v eb_prop1,eb_names base_final_50_blockid_fix.e`) are:
+  #   caps_HEX8=1, caps_WEDGE=3, aquifer_HEX8=2, aquifer_WEDGE=4
+  # all comfortably within the unsigned-short range, consistent with a renumbering rather than a
+  # from-scratch remesh.
   [./fmg]
     type = FileMeshGenerator
     file = base_final_50_blockid_fix.e
