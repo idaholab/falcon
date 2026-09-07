@@ -12,8 +12,12 @@ PorousFlow mass-balance equation (typically the porepressure variable) at a rate
 \dot{m} = \dot{m}(t, \vec{x})
 \end{equation}
 
-A positive `mass_flux_function` value is a source of fluid mass into the model, and a negative
-value is a sink (extraction). Unlike [PorousFlowSquarePulsePointSource](PorousFlowSquarePulsePointSource.md)
+A positive `mass_flux_function` value acts as a sink (extraction) of fluid mass from the model,
+and a negative value acts as a source (injection) -- see `computeQpResidual`, which has no
+leading minus, so a positive value removes mass rather than adding it. This is the same
+convention used by [PointEnthalpySourceSinkFromFunction](PointEnthalpySourceSinkFromFunction.md),
+which is meant to be driven by the same `mass_flux_function`.
+Unlike [PorousFlowSquarePulsePointSource](PorousFlowSquarePulsePointSource.md)
 (a constant rate active between `start_time` and `end_time`), the rate here can vary arbitrarily
 over time, which is convenient for representing, for example, a time-dependent well schedule read
 from a table.

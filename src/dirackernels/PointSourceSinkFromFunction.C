@@ -16,8 +16,9 @@ InputParameters
 PointSourceSinkFromFunction::validParams()
 {
   InputParameters params = DiracKernel::validParams();
-  params.addRequiredParam<FunctionName>("mass_flux_function", "The function holding the mass flux at this point in kg/s (positive is flux in, "
-      "negative is flux out)");
+  params.addRequiredParam<FunctionName>("mass_flux_function", "The function holding the mass flux at this point in kg/s "
+      "(positive is flux out, i.e. extraction; negative is flux in, i.e. injection -- see "
+      "PointEnthalpySourceSinkFromFunction, which is driven by the same convention)");
   params.addRequiredParam<Point>("point", "The x,y,z coordinates of the point source (sink)");
   params.addRequiredParam<UserObjectName>(
       "SumQuantityUO",
@@ -50,6 +51,7 @@ PointSourceSinkFromFunction::computeQpResidual()
   Real _mass_flux = _func.value(_t, _p);
   // The test function is used here to account for all quadrature points
   _total_outflow_mass.add(_test[_i][_qp]*_mass_flux * _dt) ;
-  // Negative sign to make a positive mass_flux in the input file a source
+  // No leading minus: a positive mass_flux acts as extraction (a sink), removing mass from the
+  // domain -- see the class description.
   return _test[_i][_qp] * _mass_flux;
 }

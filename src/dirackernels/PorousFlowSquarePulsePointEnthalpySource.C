@@ -49,11 +49,7 @@ PorousFlowSquarePulsePointEnthalpySource::PorousFlowSquarePulsePointEnthalpySour
 {
   // Sanity check to ensure that the end_time is greater than the start_time
   if (_end_time <= _start_time)
-    mooseError(name(),
-               ": start time for PorousFlowSquarePulsePointEnthalpySource is ",
-               _start_time,
-               " but it must be less than end time ",
-               _end_time);
+    mooseError("start_time is ", _start_time, " but it must be less than end_time ", _end_time);
 }
 
 void
@@ -134,7 +130,9 @@ PorousFlowSquarePulsePointEnthalpySource::computeQpOffDiagJacobian(unsigned int 
   {
     Real h, dh_dp, dh_dT;
     _fp.h_from_p_T(_pressure[_qp], _temperature, h, dh_dp, dh_dT);
-    return _test[_i][_qp] * _phi[_j][_qp] * factor * _mass_flux * dh_dp;
+    // Residual is -_test*factor*_mass_flux*h (see computeQpResidual), so its derivative wrt
+    // pressure needs the same leading minus.
+    return -_test[_i][_qp] * _phi[_j][_qp] * factor * _mass_flux * dh_dp;
   }
   else
     return 0.;

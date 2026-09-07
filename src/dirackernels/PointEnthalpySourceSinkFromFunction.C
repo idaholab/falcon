@@ -22,19 +22,24 @@ PointEnthalpySourceSinkFromFunction::validParams()
       "User Object of type=PorousFlowSumQuantity in which to place the total "
       "outflow from the line sink for each time step.");
   params.addRequiredParam<FunctionName>("mass_flux_function",
-      "The function holding the mass flux at this point in kg/s (positive is flux in,"
-      "negative is flux out)");
+      "The function holding the mass flux at this point in kg/s. Per computeQpResidual, "
+      "mass_flux_function >= 0 (paired with temperature_function <= 0) means extraction, and "
+      "mass_flux_function <= 0 (paired with temperature_function > 0) means injection -- the "
+      "two functions must be coordinated this way or a mooseError is raised.");
   params.addRequiredParam<FunctionName>("temperature_function",
-      "The function holding the temperature (K) of the injected fluid,"
-      "Function value is 0 if the fluid is extracted");
+      "The function holding the temperature (K) of the injected fluid. "
+      "Function value must be <= 0 if the fluid is extracted (see mass_flux_function)");
   params.addRequiredCoupledVar(
-      "pressure", "Pressure used to calculate the injected fluid enthalpy (measured in Pa)");
+      "pressure", "Pressure used to calculate the injected/extracted fluid enthalpy (measured in Pa)");
   params.addRequiredParam<UserObjectName>(
       "fp",
-      "The name of the user object used to calculate the fluid properties of the injected fluid");
+      "The name of the user object used to calculate the fluid properties of the injected/extracted fluid");
   params.addRequiredParam<Point>("point", "The x,y,z coordinates of the point source");
-  params.addClassDescription("Integrated Point Sink that adds/minus heat energy at a variable mass "
-                             " flux rate and a variable temperature ");
+  params.addClassDescription("Point source/sink that adds or removes heat energy at a variable "
+                             "mass flux rate and a variable temperature, switching between "
+                             "extraction (using the local solution temperature) and injection "
+                             "(using the prescribed temperature_function) based on the sign of "
+                             "mass_flux_function");
   return params;
 }
 
@@ -73,7 +78,7 @@ PointEnthalpySourceSinkFromFunction::computeQpResidual()
   }else if((_mass_flux<=0) && (_T_input>0)){ //injection
     h = _fp.h_from_p_T(_pressure[_qp], _T_input);
   }else{
-    mooseError(name(), "The functions of mass flux and temperature are not coordinated for injection and extraction");
+    mooseError("The functions of mass flux and temperature are not coordinated for injection and extraction");
   }
   // The test function is used here to account for all quadrature points
   _total_outflow_enthalpy.add(_test[_i][_qp]*_mass_flux * h * _dt);
@@ -84,7 +89,20 @@ PointEnthalpySourceSinkFromFunction::computeQpResidual()
 Real
 PointEnthalpySourceSinkFromFunction::computeQpJacobian()
 {
-  return 0.;
+  // This kernel is applied to the temperature variable. In the extraction branch h depends on
+  // PorousFlow_temperature_qp (the solve variable), so there is a genuine dh/dT diagonal term;
+  // in the injection branch h depends on _T_input (a prescribed function value), so there isn't.
+  Real _mass_flux = _func_mass_flux.value(_t, _p);
+  Real _T_input = _func_temperature.value(_t, _p);
+  if ((_mass_flux>=0) && (_T_input<=0)){ //extraction
+    Real h, dh_dp, dh_dT;
+    _fp.h_from_p_T(_pressure[_qp], (*_temperature)[_qp], h, dh_dp, dh_dT);
+    return _test[_i][_qp] * _phi[_j][_qp] * _mass_flux * dh_dT;
+  }else if((_mass_flux<=0) && (_T_input>0)){ //injection
+    return 0.;
+  }else{
+    mooseError("The functions of mass flux and temperature are not coordinated for injection and extraction");
+  }
 }
 
 Real
@@ -103,7 +121,7 @@ PointEnthalpySourceSinkFromFunction::computeQpOffDiagJacobian(unsigned int jvar)
       _fp.h_from_p_T(_pressure[_qp], _T_input, h, dh_dp, dh_dT);
       return _test[_i][_qp] * _phi[_j][_qp]* _mass_flux * dh_dp;
     }else{
-    mooseError(name(), "The functions of mass flux and temperature are not coordinated for injection and extraction");
+    mooseError("The functions of mass flux and temperature are not coordinated for injection and extraction");
     }
   }
   else

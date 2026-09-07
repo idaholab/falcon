@@ -25,6 +25,10 @@ public:
   EnthalpySink(const InputParameters & parameters);
 
   virtual Real computeQpBaseOutflow(unsigned current_dirac_ptid) const override;
+  virtual void computeQpBaseOutflowJacobian(unsigned jvar,
+                                            unsigned current_dirac_ptid,
+                                            Real & outflow,
+                                            Real & outflowp) const override;
 
 protected:
   /// Pressure
@@ -33,4 +37,6 @@ protected:
   const Real & _T_in;
   /// Fluid properties UserObject
   const SinglePhaseFluidProperties & _fp;
+  /// Pressure variable number (for the enthalpy dh/dp Jacobian term)
+  unsigned int _p_var_num;
 };

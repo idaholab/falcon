@@ -19,19 +19,22 @@ PointEnthalpySourceFromFunction::validParams()
   InputParameters params = DiracKernel::validParams();
   params.addRequiredParam<PostprocessorName>(
       "mass_flux",
-      "The postprocessor name holding the mass flux of injected fluid at this point in kg/s "
-      "(please ensure this is positive so that this object acts like a source)");
+      "The postprocessor name holding the mass flux of extracted fluid at this point in kg/s "
+      "(despite the class name, a positive value acts like a sink: see the residual sign in "
+      "computeQpResidual)");
   params.addRequiredParam<UserObjectName>(
       "fp",
-      "The name of the user object used to calculate the fluid properties of the injected fluid");
+      "The name of the user object used to calculate the fluid properties of the extracted fluid");
   params.addRequiredCoupledVar(
-      "pressure", "Pressure used to calculate the injected fluid enthalpy (measured in Pa)");
+      "pressure", "Pressure used to calculate the extracted fluid enthalpy (measured in Pa)");
   params.addRequiredParam<FunctionName>(
-      "function", "The function holding the temperature (K) of the injected fluid");
+      "function", "The function holding the temperature (K) at which the enthalpy of the "
+      "extracted fluid is evaluated");
   params.addRequiredParam<Point>("point", "The x,y,z coordinates of the point source");
-  params.addClassDescription("Point source that adds heat energy corresponding to injection of a "
-                             "fluid with specified mass flux rate (specified by a postprocessor) "
-                             "at given temperature (specified by a function)");
+  params.addClassDescription("Point sink that removes heat energy corresponding to extraction of "
+                             "a fluid at a specified mass flux rate (specified by a "
+                             "postprocessor), at a temperature given by a function of time and "
+                             "position (not the local solution temperature)");
   return params;
 }
 
