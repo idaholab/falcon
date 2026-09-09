@@ -1,0 +1,12 @@
+[Tests]
+  issues = '#180'
+  design = 'geothermal_wellbore.md PorousFlowPeacemanBorehole.md PorousFlowPointFluxQuantity.md PorousFlowPlotPointFluxQuantity.md'
+
+  [production]
+    type = CSVDiff
+    input = 'production.i'
+    cli_args = 'Executioner/end_time=10000'
+    csvdiff = 'production_out.csv production_out_temperature_halo_0003.csv'
+    requirement = 'FALCON shall demonstrate a geothermal production well with wellbore-reservoir heat exchange, using PorousFlowPeacemanBorehole with a temperature-dependent unit_weight_fp wellbore-pressure profile and per-point flux reporting via PorousFlowPointFluxQuantity/PorousFlowPlotPointFluxQuantity.'
+  []
+[]
