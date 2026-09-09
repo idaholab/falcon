@@ -233,6 +233,36 @@
     variable = temperature
     point = '0 -1000 0'
   []
+  # Temperature vs. time at a series of depths along the well axis (r=0), spanning both the
+  # cap (where the well's thermal interaction with the formation shows up as a halo) and the
+  # open interval (where extraction directly cools the formation). Together with T_wellhead
+  # (y=0), T_open_top (y=-1000) and T_bottomhole_formation (y=-2000) above, this gives depths
+  # 0, -200, -400, -600, -800, -1000, -1500, -2000.
+  [T_y200]
+    type = PointValue
+    variable = temperature
+    point = '0 -200 0'
+  []
+  [T_y400]
+    type = PointValue
+    variable = temperature
+    point = '0 -400 0'
+  []
+  [T_y600]
+    type = PointValue
+    variable = temperature
+    point = '0 -600 0'
+  []
+  [T_y800]
+    type = PointValue
+    variable = temperature
+    point = '0 -800 0'
+  []
+  [T_y1500]
+    type = PointValue
+    variable = temperature
+    point = '0 -1500 0'
+  []
 []
 
 [VectorPostprocessors]
@@ -254,6 +284,20 @@
     start_point = '0 0 0'
     end_point = '0 -1000 0'
     num_points = 41
+    sort_by = y
+  []
+  # Pressure vs. depth along the well axis (r=0), full column - the direct, simulation-grounded
+  # picture of how the wellbore pressure profile differs between the constant-unit_weight and
+  # unit_weight_fp treatments (compare production_out vs. production_constant_unit_weight_out).
+  # num_points matches the well's own 100m point spacing (peaceman_wellbore.bh) - oversampling
+  # between the discrete Peaceman points picks up local near-sink pressure structure that
+  # doesn't cancel cleanly between the two variants, adding noise without adding information.
+  [porepressure_along_well_axis]
+    type = LineValueSampler
+    variable = porepressure
+    start_point = '0 0 0'
+    end_point = '0 -2000 0'
+    num_points = 21
     sort_by = y
   []
 []
