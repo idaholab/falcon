@@ -2,10 +2,15 @@
 # accepted step-size trajectory depends on the per-rank nonlinear convergence history, so these
 # CSV golds are not rank-count invariant; the bound is pinned rather than ranged for that reason.
 #
-# Caveat: whether the CIVET heavy job supplies -p 4 cannot be determined from this repository, as
-# no CI recipe is checked in here. If it does not, these tests are skipped rather than run, and
-# the bound should be dropped in favour of a rank count the default heavy run does exercise.
-# Tracked separately from the #178 review.
+# Caveat, established against CIVET rather than this repository (no CI recipe is checked in here):
+# as of PR #178, none of the five PR-attached CIVET jobs runs --heavy at all, and the highest rank
+# count any of them uses is 2 -- the Test recipe's steps are "Test falcon", "Test falcon -p 2",
+# "Test falcon --n-threads=2" and "Test falcon dbg", and the Apptainer, Coverage, Documentation and
+# Precheck jobs run no test sweep of their own. These seven tests therefore do not execute in PR
+# CI, both for want of --heavy and because 4 > 2, so a green PR CI says nothing about them either
+# way. Whether a separate scheduled/nightly recipe runs them at 4 ranks is not visible from a PR
+# job list. If no heavy runner supplies 4 ranks, the bound should be dropped and these golds
+# regenerated at a rank count that is actually exercised. Tracked separately.
 
 [Tests]
   issues = '#178'
