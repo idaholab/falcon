@@ -1,13 +1,49 @@
 [Tests]
-  design = 'EnthalpySink.md FunctionEnthalpySink.md PointEnthalpySink.md PorousFlowSquarePulsePointEnthalpySink.md PorousFlowSquarePulsePointEnthalpySource.md PointEnthalpySourceSinkFromFunction.md'
+  design = 'EnthalpySink.md FunctionEnthalpySink.md PointEnthalpySink.md PorousFlowSquarePulsePointEnthalpySink.md PorousFlowSquarePulsePointEnthalpySource.md PointEnthalpySourceSinkFromFunction.md PointEnthalpySourceFromFunction.md PointSourceSinkFromFunction.md'
   issues = '#178'
 
-  [jacobian]
+  # Two inputs, because PetscJacobianTester gates on ||J - Jfd||_F / ||J||_F and the two halves of
+  # the coverage need different conditioning:
+  #
+  #   full_physics  keeps the PorousFlowUnsaturated action, so it is representative -- but its ~1e5
+  #                 rock-energy diagonal sets ||J||_F and leaves an absolute budget of ~1e-2. It
+  #                 catches the three dh/dT diagonals (perturbation ~8) and nothing smaller.
+  #   scaled        is the same eight kernels on an O(1)-scaled problem (plain TimeDerivative in
+  #                 place of the action's bulk kernels), where the pressure-block entries are the
+  #                 same order as everything else. It is what actually catches the dh/dp chain rule
+  #                 in EnthalpySink/FunctionEnthalpySink and the leading minus in
+  #                 PorousFlowSquarePulsePointEnthalpySource.
+  #
+  # Per-defect coverage was verified by reverting ONE fix at a time, not all of them at once.
+
+  [full_physics]
     type = 'PetscJacobianTester'
     input = 'inp.i'
     ratio_tol = 1E-7
     difference_tol = 1E10
     cli_args = 'Executioner/num_steps=1'
-    requirement = 'The system shall compute Jacobian entries that are consistent (to finite-difference tolerance) with the residuals of EnthalpySink, FunctionEnthalpySink, PointEnthalpySink, PorousFlowSquarePulsePointEnthalpySink, PorousFlowSquarePulsePointEnthalpySource, and PointEnthalpySourceSinkFromFunction.'
+    requirement = 'The system shall compute Jacobian entries that are consistent (to '
+                  'finite-difference tolerance) with the residuals of EnthalpySink, '
+                  'FunctionEnthalpySink, PointEnthalpySink, '
+                  'PorousFlowSquarePulsePointEnthalpySink, '
+                  'PorousFlowSquarePulsePointEnthalpySource, '
+                  'PointEnthalpySourceSinkFromFunction, PointEnthalpySourceFromFunction and '
+                  'PointSourceSinkFromFunction, on a representative coupled '
+                  'thermo-hydro PorousFlow problem.'
+  []
+
+  [scaled]
+    type = 'PetscJacobianTester'
+    input = 'inp_scaled.i'
+    ratio_tol = 1E-7
+    difference_tol = 1E10
+    cli_args = 'Executioner/num_steps=1'
+    requirement = 'The system shall compute Jacobian entries that are consistent (to '
+                  'finite-difference tolerance) with the residuals of the same eight enthalpy '
+                  'DiracKernels on a problem scaled so that no single term dominates the '
+                  'Jacobian norm, so that the pressure-block contributions -- the fluid-enthalpy '
+                  'factor and its dh/dp chain-rule term, and the sign of the '
+                  'PorousFlowSquarePulsePointEnthalpySource off-diagonal -- are resolvable '
+                  'rather than being masked by the bulk rock energy term.'
   []
 []

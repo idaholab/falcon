@@ -14,8 +14,9 @@
 class SinglePhaseFluidProperties;
 
 /**
- * Point source that adds heat energy corresponding to adding a fluid with flux rate specified by a
- * postprocessor at given temperature (specified by a postprocessor).
+ * Point sink that removes heat energy at a constant mass flux rate for times between start_time
+ * and end_time, evaluated at the LOCAL solution temperature (the PorousFlow_temperature_qp
+ * material property) rather than a prescribed value.
  */
 class PorousFlowSquarePulsePointEnthalpySink : public DiracKernel
 {
@@ -30,6 +31,10 @@ public:
   virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
 
 protected:
+  /// Fraction of the current timestep that lies inside (start_time, end_time), used to
+  /// scale mass_flux so the total mass added/removed is correct across a partial step
+  Real pulseFactor() const;
+
   /// The constant mass flux (kg/s)
   const Real _mass_flux;
   /// Pressure

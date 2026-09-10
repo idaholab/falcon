@@ -61,31 +61,36 @@ PorousFlowSquarePulsePointEnthalpySink::addPoints()
 }
 
 Real
-PorousFlowSquarePulsePointEnthalpySink::computeQpResidual()
+PorousFlowSquarePulsePointEnthalpySink::pulseFactor() const
 {
-   Real factor = 0.0;
-    /**
-   * There are six cases for the start and end time in relation to t-dt and t.
-   * If the interval (t-dt,t) is only partly but not fully within the (start,end)
-   * interval, then the  mass_flux is scaled so that the total mass added
-   * (or removed) is correct
+  /**
+   * There are six cases for the start and end time in relation to t-dt and t. If the interval
+   * (t-dt,t) is only partly but not fully within the (start,end) interval, then the mass_flux is
+   * scaled so that the total mass added (or removed) is correct.
+   *
+   * Shared by computeQpResidual(), computeQpJacobian() and computeQpOffDiagJacobian() so the
+   * three cannot drift apart -- note that a Jacobian test only ever exercises factor == 1.0.
    */
   if (_t < _start_time || _t - _dt >= _end_time)
-    factor = 0.0;
-  else if (_t - _dt < _start_time)
+    return 0.0;
+
+  if (_t - _dt < _start_time)
   {
     if (_t <= _end_time)
-      factor = (_t - _start_time) / _dt;
-    else
-      factor = (_end_time - _start_time) / _dt;
+      return (_t - _start_time) / _dt;
+    return (_end_time - _start_time) / _dt;
   }
-  else
-  {
-    if (_t <= _end_time)
-      factor = 1.0;
-    else
-      factor = (_end_time - (_t - _dt)) / _dt;
-  }
+
+  if (_t <= _end_time)
+    return 1.0;
+  return (_end_time - (_t - _dt)) / _dt;
+}
+
+Real
+PorousFlowSquarePulsePointEnthalpySink::computeQpResidual()
+{
+  const Real factor = pulseFactor();
+
   // No leading minus: a positive mass_flux acts as a SINK, removing energy from the domain.
   Real h = _fp.h_from_p_T(_pressure[_qp], (*_temperature)[_qp]);
   return _test[_i][_qp] * factor * _mass_flux * h;
@@ -96,30 +101,7 @@ PorousFlowSquarePulsePointEnthalpySink::computeQpJacobian()
 {
   // This kernel is applied to the temperature variable, and h depends on
   // PorousFlow_temperature_qp, so there is a genuine dh/dT diagonal term.
-  Real factor = 0.0;
-
-  /**
-   * There are six cases for the start and end time in relation to t-dt and t.
-   * If the interval (t-dt,t) is only partly but not fully within the (start,end)
-   * interval, then the  mass_flux is scaled so that the total mass added
-   * (or removed) is correct
-   */
-  if (_t < _start_time || _t - _dt >= _end_time)
-    factor = 0.0;
-  else if (_t - _dt < _start_time)
-  {
-    if (_t <= _end_time)
-      factor = (_t - _start_time) / _dt;
-    else
-      factor = (_end_time - _start_time) / _dt;
-  }
-  else
-  {
-    if (_t <= _end_time)
-      factor = 1.0;
-    else
-      factor = (_end_time - (_t - _dt)) / _dt;
-  }
+  const Real factor = pulseFactor();
 
   Real h, dh_dp, dh_dT;
   _fp.h_from_p_T(_pressure[_qp], (*_temperature)[_qp], h, dh_dp, dh_dT);
@@ -129,30 +111,8 @@ PorousFlowSquarePulsePointEnthalpySink::computeQpJacobian()
 Real
 PorousFlowSquarePulsePointEnthalpySink::computeQpOffDiagJacobian(unsigned int jvar)
 {
-  Real factor = 0.0;
+  const Real factor = pulseFactor();
 
-  /**
-   * There are six cases for the start and end time in relation to t-dt and t.
-   * If the interval (t-dt,t) is only partly but not fully within the (start,end)
-   * interval, then the  mass_flux is scaled so that the total mass added
-   * (or removed) is correct
-   */
-  if (_t < _start_time || _t - _dt >= _end_time)
-    factor = 0.0;
-  else if (_t - _dt < _start_time)
-  {
-    if (_t <= _end_time)
-      factor = (_t - _start_time) / _dt;
-    else
-      factor = (_end_time - _start_time) / _dt;
-  }
-  else
-  {
-    if (_t <= _end_time)
-      factor = 1.0;
-    else
-      factor = (_end_time - (_t - _dt)) / _dt;
-  }
   if (jvar == _p_var_num)
   {
     Real h, dh_dp, dh_dT;

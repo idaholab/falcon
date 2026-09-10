@@ -29,6 +29,10 @@ public:
   virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
 
 protected:
+  /// Fraction of the current timestep that lies inside (start_time, end_time), used to
+  /// scale mass_flux so the total mass added/removed is correct across a partial step
+  Real pulseFactor() const;
+
   /// The constant mass flux (kg/s)
   const Real _mass_flux;
   /// Pressure
