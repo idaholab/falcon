@@ -1,6 +1,6 @@
 [Tests]
   design = 'PointEnthalpySourceSinkFromFunction.md'
-  issues = '#147'
+  issues = '#147 #178'
   [analytic]
     type = CSVDiff
     input = 'inp.i'
@@ -20,5 +20,24 @@
                   'PointEnthalpySourceSinkFromFunction are not coordinated for injection or '
                   'extraction (both indicating extraction, or both indicating injection, at the '
                   'same time).'
+  []
+
+  [enthalpy_vs_internal_energy]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'pp_coeff_out.csv'
+    override_columns = 'residual'
+    override_rel_err = '5.5e-6'
+    override_abs_zero = '1e-2'
+    cli_args = "FluidProperties/simple_fluid/porepressure_coefficient=1 "
+               "Postprocessors/residual/expression='abs(outflow - (-0.02) * (4000 * (300 + 0.5*t) + 1e6/(1000*exp(1e6/2e9))) * 100)' "
+               "Outputs/file_base=pp_coeff_out"
+    requirement = 'The system shall transport the fluid ENTHALPY rather than its internal '
+                  'energy, verified against a closed-form analytic result with the '
+                  'porepressure_coefficient of SimpleFluidProperties at its physical value of 1, '
+                  'where h = cv*T + p/rho and the two genuinely differ. Every other case in this '
+                  'directory sets porepressure_coefficient = 0, which makes h identically equal '
+                  'to e, so replacing every h_from_p_T call by e_from_p_T would leave those '
+                  'golds bit-identical.'
   []
 []

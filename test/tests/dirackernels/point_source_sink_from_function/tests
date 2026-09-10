@@ -1,6 +1,6 @@
 [Tests]
   design = 'PointSourceSinkFromFunction.md'
-  issues = '#147'
+  issues = '#147 #178'
   [analytic]
     type = CSVDiff
     input = 'inp.i'
