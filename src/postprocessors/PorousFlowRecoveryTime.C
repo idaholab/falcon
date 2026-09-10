@@ -41,5 +41,12 @@ PorousFlowRecoveryTime::execute()
 Real
 PorousFlowRecoveryTime::getValue()  const
 {
+  // PorousFlowDoubletBreakthroughTime reports 0 until it latches. Taken literally that would make
+  // this object report the entire elapsed simulation time as "recovery time" before breakthrough
+  // has happened at all. A latched breakthrough time is strictly positive, so treat a non-positive
+  // value as "not recorded yet".
+  if (_pps_value <= 0.0)
+    return 0.0;
+
   return (_pps_time/3600/24 - _pps_value);
 }

@@ -19,9 +19,9 @@ PorousFlowRecoveryRateSeason::validParams()
   InputParameters params = GeneralPostprocessor::validParams();
   params.addRequiredParam<PostprocessorName>("hotwellenergy", "The name of the enthalpy postprocessor at hot well");
   params.addRequiredParam<PostprocessorName>("coldwellenergy", "The name of the enthalpy postprocessor at cold well");
-  params.addRequiredParam<PostprocessorName>("InjectionIndicator", "The name of the postprocessor for injeciton indication");
+  params.addRequiredParam<PostprocessorName>("InjectionIndicator", "The name of the postprocessor for injection indication");
   params.addRequiredParam<PostprocessorName>("ProductionIndicator", "The name of the postprocessor for production indication");
-  params.addClassDescription("Calculate the recovery rate for the doublet system");
+  params.addClassDescription("Calculate the seasonal thermal recovery rate (percent) for a doublet system, using explicit injection/production indicator postprocessors to decide which accumulator each timestep contributes to");
   return params;
 }
 

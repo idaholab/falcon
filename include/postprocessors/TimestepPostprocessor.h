@@ -14,8 +14,8 @@
 class TimestepPostprocessor;
 
 /**
- * Selects a timestep size (large before, small after) based on when a target postprocessor
- * first exceeds a tolerance relative to a time postprocessor.
+ * Selects a timestep size (dt_before_trigger before, dt_after_trigger after) based on whether a
+ * target postprocessor has yet exceeded a tolerance. The latch is one-way and restartable.
  */
 class TimestepPostprocessor : public GeneralPostprocessor
 {
@@ -31,13 +31,10 @@ public:
 protected:
   /// current post-processor value
   const PostprocessorValue & _pps_value;
-  const PostprocessorValue & _pps_time;
-  /// constant input
+  /// Threshold on _pps_value at which the trigger latches
   Real _pps_relative_diff;
-  /// Time recorded when the trigger fired (restartable)
-  Real & _charge_time;
-  /// Whether the trigger has fired yet (restartable; kept separate from _charge_time so a
-  /// trigger that fires exactly at t=0 isn't indistinguishable from "never fired")
+  /// Whether the trigger has fired yet (restartable, so a --recover run does not silently
+  /// revert to the pre-trigger timestep size)
   bool & _triggered;
   /// Timestep size to use before the trigger fires (s)
   Real _dt_before_trigger;

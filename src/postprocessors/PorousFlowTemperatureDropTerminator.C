@@ -19,10 +19,10 @@ PorousFlowTemperatureDropTerminator::validParams()
   params.addRequiredParam<PostprocessorName>("masspostprocessor", "The name of the mass postprocessor");
   params.addRequiredParam<PostprocessorName>("timepostprocessor", "The name of the timepostprocessor");
   params.addRequiredParam<Real>("T_inj", "Injection fluid temperature");
-  params.addRequiredParam<Real>("T_init", "reservior intial temperature");
+  params.addRequiredParam<Real>("T_init", "Reservoir initial temperature");
   params.addParam<Real>("P_drop", 1e-2, "Percent drop");
   params.addParam<Real>("max_time", 315360000, "The maximum simulation time (s) after which the terminator fires regardless of temperature drop (Default is 315360000, i.e. 10 years)");
-  params.addParam<Real>("fluid_specific_heat", 4186, "Fluid specific heat (J/kg/K), used to convert the enthalpy/mass postprocessor ratio into a temperature (Default is 4186, i.e. water)");
+  params.addRangeCheckedParam<Real>("fluid_specific_heat", 4186, "fluid_specific_heat > 0", "Fluid specific heat (J/kg/K), used to convert the enthalpy/mass postprocessor ratio into a temperature (Default is 4186, i.e. water)");
   params.addParam<Real>("T_enthalpy_ref", 273.15, "Enthalpy-datum reference temperature (K) used to convert the enthalpy/mass postprocessor ratio into a temperature (Default is 273.15, i.e. 0 degrees C)");
   params.addClassDescription("Returns 1 once the produced fluid temperature drops by a set percentage or a maximum time is reached");
   return params;

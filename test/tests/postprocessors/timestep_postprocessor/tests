@@ -1,6 +1,6 @@
 [Tests]
   design = 'TimestepPostprocessor.md'
-  issues = '#147'
+  issues = '#147 #178'
 
   [timestep_postprocessor]
     type = CSVDiff

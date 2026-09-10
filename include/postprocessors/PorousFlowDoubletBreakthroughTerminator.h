@@ -33,7 +33,8 @@ protected:
   const PostprocessorValue & _pps_value;
   /// constant input
   Real _temp_init_value;
-  Real _pps_relative_diff;
+  /// Absolute temperature difference from _temp_init_value at which breakthrough is declared
+  Real _temperature_tolerance;
   Real _keep_constant;
 
 };

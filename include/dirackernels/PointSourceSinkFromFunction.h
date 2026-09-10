@@ -24,8 +24,9 @@ public:
 
   virtual void addPoints() override;
   virtual Real computeQpResidual() override;
-  // virtual Real computeQpJacobian() override;
-  // virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
+  // computeQpJacobian() and computeQpOffDiagJacobian() are deliberately not overridden: the
+  // residual depends only on a Function of time and position, so it has no solution dependence
+  // and the Jacobian contribution is legitimately zero.
 
 protected:
   /// The function being used for evaluation mass flux

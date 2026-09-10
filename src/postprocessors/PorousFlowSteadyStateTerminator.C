@@ -26,7 +26,7 @@ PorousFlowSteadyStateTerminator::validParams()
   params.addParam<Real>(
   "ss_relative_error", 1e-2,
   "Postprocessor relative difference");
-  params.addClassDescription("provide true or false on steadystatedetection");
+  params.addClassDescription("Returns 1 once a steady-state detection postprocessor falls below ss_relative_error (within the detection time window), or once ss_detection_end_time is reached, and 0 otherwise");
   return params;
 }
 

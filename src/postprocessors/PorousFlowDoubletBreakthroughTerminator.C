@@ -18,9 +18,9 @@ PorousFlowDoubletBreakthroughTerminator::validParams()
 {
   InputParameters params = GeneralPostprocessor::validParams();
   params.addRequiredParam<PostprocessorName>("targetpostprocessor", "The name of the targetpostprocessor");
-  params.addParam<Real>("temperature_init", 273.15, "Reservior initial temperature");
-  params.addParam<Real>("temperature_tolerance", 1e-2, "Postprocessor relative tolerance");
-  params.addClassDescription("provide true or false on doublet breakthrough detection");
+  params.addParam<Real>("temperature_init", 273.15, "Reservoir initial temperature");
+  params.addParam<Real>("temperature_tolerance", 1e-2, "Absolute temperature difference (in the units of temperature_init) from temperature_init at which breakthrough is declared");
+  params.addClassDescription("Returns 1 once a target postprocessor deviates from the reservoir initial temperature by more than temperature_tolerance, and 0 otherwise (thermal breakthrough detection)");
   return params;
 }
 
@@ -28,7 +28,7 @@ PorousFlowDoubletBreakthroughTerminator::PorousFlowDoubletBreakthroughTerminator
   : GeneralPostprocessor(parameters),
     _pps_value(getPostprocessorValue("targetpostprocessor")),
     _temp_init_value(getParam<Real>("temperature_init")),
-    _pps_relative_diff(getParam<Real>("temperature_tolerance")),
+    _temperature_tolerance(getParam<Real>("temperature_tolerance")),
     _keep_constant(0)
 {
 }
@@ -42,7 +42,7 @@ void
 PorousFlowDoubletBreakthroughTerminator::execute()
 {
   Real temp_diff = std::abs(_pps_value-_temp_init_value);
-  if (temp_diff >= _pps_relative_diff)
+  if (temp_diff >= _temperature_tolerance)
     _keep_constant = 1;
   else
     _keep_constant = 0;

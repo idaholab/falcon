@@ -34,7 +34,8 @@ protected:
   const PostprocessorValue & _pps_time;
   /// constant input
   Real _temp_init_value;
-  Real _pps_relative_diff;
+  /// Absolute temperature difference from _temp_init_value at which breakthrough is declared
+  Real _temperature_tolerance;
   /// Time recorded when the trigger fired (restartable)
   Real & _charge_time;
   /// Whether the trigger has fired yet (restartable; kept separate from _charge_time so a

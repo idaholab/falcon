@@ -19,10 +19,10 @@ PorousFlowDoubletSwitch::validParams()
   InputParameters params = GeneralPostprocessor::validParams();
   params.addRequiredParam<PostprocessorName>("targetpostprocessor", "The name of the targetpostprocessor");
   params.addRequiredParam<PostprocessorName>("timepostprocessor", "The name of the timepostprocessor");
-  params.addParam<Real>("temperature_init", 273.15, "Reservior initial temperature");
-  params.addParam<Real>("temperature_tolerance", 1e-2, "Postprocessor relative tolerance");
-  params.addParam<Real>("duty_cycle_fraction", 0.6666667, "Fraction of each daily cycle during which the doublet switch is on");
-  params.addClassDescription("provide true or false on doublet breakthrough detection");
+  params.addParam<Real>("temperature_init", 273.15, "Reservoir initial temperature");
+  params.addParam<Real>("temperature_tolerance", 1e-2, "Absolute temperature difference (in the units of temperature_init) from temperature_init at which breakthrough is declared");
+  params.addRangeCheckedParam<Real>("duty_cycle_fraction", 0.6666667, "duty_cycle_fraction >= 0 & duty_cycle_fraction <= 1", "Fraction of each daily cycle during which the doublet switch is on");
+  params.addClassDescription("Returns 1 (on) or 0 (off) for a doublet well following a daily duty cycle, which starts once a target postprocessor first deviates from the reservoir initial temperature by more than temperature_tolerance");
   return params;
 }
 
@@ -31,7 +31,7 @@ PorousFlowDoubletSwitch::PorousFlowDoubletSwitch(const InputParameters & paramet
     _pps_value(getPostprocessorValue("targetpostprocessor")),
     _pps_time(getPostprocessorValue("timepostprocessor")),
     _temp_init_value(getParam<Real>("temperature_init")),
-    _pps_relative_diff(getParam<Real>("temperature_tolerance")),
+    _temperature_tolerance(getParam<Real>("temperature_tolerance")),
     _charge_time(declareRestartableData<Real>("charge_time", 0)),
     _triggered(declareRestartableData<bool>("triggered", false)),
     _duty_cycle_fraction(getParam<Real>("duty_cycle_fraction"))
@@ -48,7 +48,7 @@ PorousFlowDoubletSwitch::execute()
 {
   if (!_triggered)
   {
-    if (std::abs(_pps_value-_temp_init_value) >= _pps_relative_diff )
+    if (std::abs(_pps_value-_temp_init_value) >= _temperature_tolerance )
     {
       _charge_time = _pps_time;
       _triggered = true;

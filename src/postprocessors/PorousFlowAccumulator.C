@@ -21,7 +21,7 @@ PorousFlowAccumulator::validParams()
   params.addRequiredParam<PostprocessorName>("timepostprocessor", "The name of the timepostprocessor");
   params.addParam<Real>("accumulator_start_time", 0.0, "The time at which accumulation starts (Default is 0)");
   params.addParam<Real>("accumulator_end_time", 1e30, "The time at which accumulation ends (Default is 1e30)");
-  params.addClassDescription("accumulate the targetted post processor value");
+  params.addClassDescription("Accumulate the targeted postprocessor value over time");
   return params;
 }
 

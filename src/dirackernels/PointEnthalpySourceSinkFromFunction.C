@@ -66,20 +66,33 @@ PointEnthalpySourceSinkFromFunction::addPoints()
   addPoint(_p, 0);
 }
 
+PointEnthalpySourceSinkFromFunction::FlowMode
+PointEnthalpySourceSinkFromFunction::currentFlowMode(Real mass_flux, Real T_input) const
+{
+  if (mass_flux >= 0 && T_input <= 0)
+    return FlowMode::Extraction;
+  if (mass_flux <= 0 && T_input > 0)
+    return FlowMode::Injection;
+
+  mooseError("The functions of mass flux and temperature are not coordinated for injection and "
+             "extraction: at t = ", _t, ", mass_flux_function = ", mass_flux,
+             " and temperature_function = ", T_input,
+             ". Extraction requires mass_flux >= 0 paired with temperature <= 0 (the local "
+             "solution temperature is used instead); injection requires mass_flux <= 0 paired "
+             "with temperature > 0.");
+}
+
 Real
 PointEnthalpySourceSinkFromFunction::computeQpResidual()
 {
   //check whether the fluid is injected for extracted from the point
   Real _mass_flux = _func_mass_flux.value(_t, _p);
   Real _T_input = _func_temperature.value(_t, _p);
-  Real h =0;
-  if ((_mass_flux>=0) && (_T_input<=0)){ //extraction
+  Real h = 0;
+  if (currentFlowMode(_mass_flux, _T_input) == FlowMode::Extraction)
     h = _fp.h_from_p_T(_pressure[_qp], (*_temperature)[_qp]);
-  }else if((_mass_flux<=0) && (_T_input>0)){ //injection
+  else
     h = _fp.h_from_p_T(_pressure[_qp], _T_input);
-  }else{
-    mooseError("The functions of mass flux and temperature are not coordinated for injection and extraction");
-  }
   // The test function is used here to account for all quadrature points
   _total_outflow_enthalpy.add(_test[_i][_qp]*_mass_flux * h * _dt);
   // negative sign means source, while positive sign means sink
@@ -94,15 +107,16 @@ PointEnthalpySourceSinkFromFunction::computeQpJacobian()
   // in the injection branch h depends on _T_input (a prescribed function value), so there isn't.
   Real _mass_flux = _func_mass_flux.value(_t, _p);
   Real _T_input = _func_temperature.value(_t, _p);
-  if ((_mass_flux>=0) && (_T_input<=0)){ //extraction
+  if (currentFlowMode(_mass_flux, _T_input) == FlowMode::Extraction)
+  {
     Real h, dh_dp, dh_dT;
     _fp.h_from_p_T(_pressure[_qp], (*_temperature)[_qp], h, dh_dp, dh_dT);
     return _test[_i][_qp] * _phi[_j][_qp] * _mass_flux * dh_dT;
-  }else if((_mass_flux<=0) && (_T_input>0)){ //injection
-    return 0.;
-  }else{
-    mooseError("The functions of mass flux and temperature are not coordinated for injection and extraction");
   }
+
+  // Injection: h is evaluated at the prescribed temperature_function value, so it carries no
+  // dependence on the temperature solution variable.
+  return 0.;
 }
 
 Real
@@ -114,15 +128,12 @@ PointEnthalpySourceSinkFromFunction::computeQpOffDiagJacobian(unsigned int jvar)
     Real h, dh_dp, dh_dT;
     Real _mass_flux = _func_mass_flux.value(_t, _p);
     Real _T_input = _func_temperature.value(_t, _p);
-    if ((_mass_flux>=0) && (_T_input<=0)){ //extraction
+    if (currentFlowMode(_mass_flux, _T_input) == FlowMode::Extraction)
       _fp.h_from_p_T(_pressure[_qp], (*_temperature)[_qp], h, dh_dp, dh_dT);
-      return _test[_i][_qp] * _phi[_j][_qp]* _mass_flux * dh_dp;
-    }else if((_mass_flux<=0) && (_T_input>0)){ //injection
+    else
       _fp.h_from_p_T(_pressure[_qp], _T_input, h, dh_dp, dh_dT);
-      return _test[_i][_qp] * _phi[_j][_qp]* _mass_flux * dh_dp;
-    }else{
-    mooseError("The functions of mass flux and temperature are not coordinated for injection and extraction");
-    }
+
+    return _test[_i][_qp] * _phi[_j][_qp] * _mass_flux * dh_dp;
   }
   else
     return 0.;

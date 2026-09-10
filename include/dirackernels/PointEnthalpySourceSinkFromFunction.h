@@ -14,9 +14,9 @@
 class Function;
 class SinglePhaseFluidProperties;
 /**
- * Point source (or sink) that adds (removes) fluid at a constant mass flux rate for times
- * between the specified start and end times. If no start and end times are specified,
- * the source (sink) starts at the start of the simulation and continues to act indefinitely
+ * Point source/sink that adds or removes heat energy at a variable mass flux rate and a variable
+ * temperature, switching between extraction (using the local solution temperature) and injection
+ * (using the prescribed temperature_function) based on the sign of mass_flux_function.
  */
 class PointEnthalpySourceSinkFromFunction : public DiracKernel
 {
@@ -31,6 +31,18 @@ public:
   virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
 
 protected:
+  /// Which branch the (mass_flux_function, temperature_function) pair selects at the current time
+  enum class FlowMode
+  {
+    Extraction,
+    Injection
+  };
+
+  /// Classify the current function pair, raising a single diagnostic error if the two are not
+  /// coordinated. The predicate is time-dependent (the pair legitimately changes sign between
+  /// injection and extraction seasons), so it cannot be hoisted to initialSetup().
+  FlowMode currentFlowMode(Real mass_flux, Real T_input) const;
+
   /**
    * This is used to hold the total fluid flowing into the line sink for each time step.
    * Hence, it is positive for production wells where fluid is flowing
