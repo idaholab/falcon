@@ -9,6 +9,23 @@
 
 #include "PorousFlowSteadyStateDetection.h"
 
+#include <cmath>
+
+namespace
+{
+/**
+ * Value reported when the relative rate of change cannot be computed yet: the very first
+ * evaluation, or a zero appearing in a denominator (dt, dt_old, or value_old).
+ *
+ * This must read as "definitely NOT steady" rather than "perfectly steady". The companion
+ * PorousFlowSteadyStateTerminator tests this value against ss_relative_error (default 1e-2), so
+ * returning 0 here would make the documented Detection+Terminator pairing hard-stop a run on its
+ * very first timestep and report it as an instantly-converged steady state. 1.0e30 matches the
+ * sentinel already used for ss_detection_end_time and accumulator_end_time.
+ */
+const Real not_computable = 1.0e30;
+}
+
 registerMooseObject("FalconApp", PorousFlowSteadyStateDetection);
 
 InputParameters
@@ -44,11 +61,11 @@ PorousFlowSteadyStateDetection::execute()
 Real
 PorousFlowSteadyStateDetection::getValue()  const
 {
-  // copy initial value in case difference is measured against initial value
-  Real change;
+  // "Cannot compute yet" must not be mistaken for convergence -- see not_computable.
   if (_t_step == 0 || _pps_dt == 0.0 || _pps_dt_old == 0.0 || _pps_value_old == 0.0)
-    change = 0;
-  else
-    change = (_pps_value/_pps_dt - _pps_value_old/_pps_dt_old)/(_pps_value_old/_pps_dt_old);
-  return std::fabs(change);
+    return not_computable;
+
+  const Real rate_now = _pps_value / _pps_dt;
+  const Real rate_old = _pps_value_old / _pps_dt_old;
+  return std::fabs((rate_now - rate_old) / rate_old);
 }

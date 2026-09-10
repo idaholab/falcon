@@ -1,7 +1,7 @@
 # Analytic verification of PorousFlowSteadyStateDetection.
 #
-# PorousFlowSteadyStateDetection::getValue() returns 0 at t_step == 0, or whenever dt, dt_old, or
-# value_old is 0 (division guard), and otherwise
+# PorousFlowSteadyStateDetection::getValue() returns the sentinel 1e30 at t_step == 0, or whenever
+# dt, dt_old, or value_old is 0 (division guard), and otherwise
 #   abs( (value/dt - value_old/dt_old) / (value_old/dt_old) )
 # where value/value_old and dt/dt_old are the current/old values of the target and dt
 # postprocessors.
@@ -12,14 +12,14 @@
 # timestep (t_step=1) is 0 -- this exercises the division guard directly, rather than stepping
 # around it with a constant dt postprocessor.
 #
-#   t_step=0 (t=0): forced to 0 by the class (not written to the CSV since this postprocessor's
-#                   own execute_on is the default, timestep_end only)
-#   t_step=1 (t=1): dt_old=0, so the division guard forces change=0
+#   t_step=0 (t=0): the guard applies (not evaluated into the CSV, since this postprocessor's own
+#                   execute_on is the default, timestep_end only)
+#   t_step=1 (t=1): dt_old=0, so the division guard reports the 1e30 sentinel
 #   t_step=k (t=k), k=2..6: dt=dt_old=1 (cancels), value=5+k, value_old=5+(k-1)=4+k
 #                   change = (value-value_old)/value_old = 1/(4+k)
 #
-# so exact(t) = 0 for t=1, and 1/(4+t) for t = 2..6 (recalling dt=1 so t and t_step coincide
-# numerically).
+# so exact(t) = 1e30 for t=1, and 1/(4+t) for t = 2..6 (recalling dt=1 so t and t_step coincide
+# numerically). The sentinel must be large, not 0: see pair.i, which pins down why.
 
 [Mesh/mesh]
   type = GeneratedMeshGenerator
@@ -38,7 +38,7 @@
   []
   [exact_fn]
     type = ParsedFunction
-    expression = 'if(t <= 1, 0, 1/(4 + t))'
+    expression = 'if(t <= 1, 1e30, 1/(4 + t))'
   []
 []
 
