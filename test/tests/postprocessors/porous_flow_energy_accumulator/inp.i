@@ -1,7 +1,7 @@
 # Analytic verification of PorousFlowEnergyAccumulator.
 #
 # PorousFlowEnergyAccumulator::execute() does:
-#   if (ProductionIndicator == 1)
+#   if (ProductionIndicator > 0.5)
 #     accumulator += (hotwellenergy + coldwellenergy)
 # and getValue() returns abs(accumulator).
 #

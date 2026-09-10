@@ -1,6 +1,6 @@
 [Tests]
   design = 'PorousFlowRecoveryRate.md'
-  issues = '#147'
+  issues = '#147 #178'
 
   [recovery_rate]
     type = CSVDiff
@@ -10,5 +10,19 @@
     requirement = "The system shall compute the thermal recovery rate of a doublet system as the "
                   "ratio of extracted to injected energy, expressed as a percentage, matching a "
                   "hand-derived analytic solution to within floating-point tolerance."
+  []
+
+  [recovery_rate_production_first]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'production_first_out.csv'
+    abs_zero = 1.0e-08
+    cli_args = "Functions/hot_fn/expression='if(t <= 3, 3, -2)' "
+               "Functions/exact_fn/expression='if(t <= 3, 0, 900/(2*(t - 3)))' "
+               "Outputs/file_base=production_first_out"
+    requirement = 'The system shall report a recovery rate of zero, rather than a division by '
+                  'zero, for a doublet run in which production precedes any injection, because '
+                  'the zero-guard belongs on the injection accumulator that forms the '
+                  'denominator. The shipped injection-first ordering cannot distinguish this.'
   []
 []

@@ -1,7 +1,7 @@
 # Analytic verification of PorousFlowDoubletBreakthroughTime.
 #
 # PorousFlowDoubletBreakthroughTime::execute() does:
-#   if (keep_constant == 0 && breakthroughterminator >= 0.5)
+#   if (!triggered && breakthroughterminator >= 0.5)
 #     keep_constant = timepostprocessor/3600/24     # latch, in days
 # and getValue() returns keep_constant, which stays at whatever it was first latched to.
 #
@@ -11,7 +11,7 @@
 #   day 1 (t=86400):  flag=0 -> not latched, keep=0
 #   day 2 (t=172800): flag=0 -> not latched, keep=0
 #   day 3 (t=259200): flag=1 -> first latch: keep = 259200/3600/24 = 3
-#   day 4 (t=345600): flag=1, but keep_constant != 0 already -> unchanged, keep=3
+#   day 4 (t=345600): flag=1, but already triggered -> unchanged, keep=3
 #   day 5 (t=432000): flag=1, unchanged, keep=3
 #
 # so exact(t) = if(t < 259200, 0, 3).

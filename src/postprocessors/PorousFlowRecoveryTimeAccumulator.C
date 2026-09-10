@@ -39,7 +39,9 @@ PorousFlowRecoveryTimeAccumulator::initialize()
 void
 PorousFlowRecoveryTimeAccumulator::execute()
 {
-    if (_pps_iswinter)
+    // Thresholded rather than tested for truthiness: an implicit != 0.0 lets a smoothed or
+    // transfer-round-tripped indicator of ~1e-16 count a whole timestep as recovery time.
+    if (_pps_iswinter > 0.5)
       _accumulator += _pps_dt;
 }
 

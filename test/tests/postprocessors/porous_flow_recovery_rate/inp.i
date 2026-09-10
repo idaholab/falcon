@@ -5,7 +5,8 @@
 #     accumulator_inj += (hotwellenergy + coldwellenergy)   # injection leg
 #   else
 #     accumulator_ext += (hotwellenergy + coldwellenergy)   # extraction leg
-# and getValue() returns 0 if accumulator_ext == 0, else abs(ext)/abs(inj)*100.
+# and getValue() returns 0 if accumulator_inj == 0, else abs(ext)/abs(inj)*100.
+# (the guard is on the denominator, so a production-first run reports 0 instead of inf).
 #
 # Drive coldwellenergy = 0 and hotwellenergy(t) = -2 for t<=3 (injection), +3 for t>3
 # (extraction), dt = 1, num_steps = 6:

@@ -1,6 +1,6 @@
 [Tests]
   design = 'PorousFlowRecoveryRateSeason.md'
-  issues = '#147'
+  issues = '#147 #178'
 
   [recovery_rate_season]
     type = CSVDiff
@@ -11,5 +11,35 @@
                   "system, gated by separate injection and production season indicator "
                   "postprocessors, matching a hand-derived analytic solution to within "
                   "floating-point tolerance."
+  []
+
+  [recovery_rate_season_smoothed_indicators]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    prereq = 'recovery_rate_season'
+    ignore_columns = 'inj_indicator pro_indicator'
+    cli_args = "Functions/inj_fn/expression='if(t <= 3, 0.999999999, 0)' "
+               "Functions/pro_fn/expression='if(t <= 3, 0, 0.999999999)'"
+    requirement = 'The system shall accumulate seasonal injection and production energy for '
+                  'indicators that are close to but not exactly 1, reproducing the same recovery '
+                  'rate as bit-exact indicators. Exact-equality tests against 1 accumulate '
+                  'nothing on either leg here and fail.'
+  []
+
+  [recovery_rate_season_production_first]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'season_production_first_out.csv'
+    abs_zero = 1.0e-08
+    cli_args = "Functions/inj_fn/expression='if(t <= 3, 0, 1)' "
+               "Functions/pro_fn/expression='if(t <= 3, 1, 0)' "
+               "Functions/exact_fn/expression='if(t <= 3, 0, 900/(3*(t - 3)))' "
+               "Outputs/file_base=season_production_first_out"
+    requirement = 'The system shall report a seasonal recovery rate of zero, rather than a '
+                  'division by zero, for a run in which the production season precedes any '
+                  'injection season, because the zero-guard belongs on the injection accumulator '
+                  'that forms the denominator.'
   []
 []

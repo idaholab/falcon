@@ -1,11 +1,13 @@
 # Analytic verification of PorousFlowRecoveryRateSeason.
 #
 # PorousFlowRecoveryRateSeason::execute() does:
-#   if (InjectionIndicator == 1)
+#   if (InjectionIndicator > 0.5)
 #     accumulator_inj += (hotwellenergy + coldwellenergy)
-#   else if (ProductionIndicator == 1)
+#   else if (ProductionIndicator > 0.5)
 #     accumulator_ext += (hotwellenergy + coldwellenergy)
-# and getValue() returns 0 if accumulator_ext == 0, else abs(ext)/abs(inj)*100.
+# and getValue() returns 0 if accumulator_inj == 0, else abs(ext)/abs(inj)*100.
+# (the indicators are thresholded at 0.5, not compared for exact equality with 1, and the
+# guard is on the denominator.)
 #
 # Drive hotwellenergy = 2, coldwellenergy = 1 (sum = 3, constant), dt = 1, num_steps = 6,
 # InjectionIndicator(t) = 1 for t<=3 (else 0), ProductionIndicator(t) = 1 for t>3 (else 0):
