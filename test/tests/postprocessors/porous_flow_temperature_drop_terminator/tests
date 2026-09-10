@@ -1,6 +1,6 @@
 [Tests]
   design = 'PorousFlowTemperatureDropTerminator.md'
-  issues = '#147'
+  issues = '#147 #178'
 
   [temperature_drop_terminator]
     type = CSVDiff

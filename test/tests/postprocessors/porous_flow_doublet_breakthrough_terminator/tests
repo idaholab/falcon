@@ -1,6 +1,6 @@
 [Tests]
   design = 'PorousFlowDoubletBreakthroughTerminator.md'
-  issues = '#147'
+  issues = '#147 #178'
 
   [breakthrough_terminator]
     type = CSVDiff

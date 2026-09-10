@@ -1,3 +1,12 @@
+# All of the RTES example tests below are pinned to exactly 4 MPI ranks. IterationAdaptiveDT's
+# accepted step-size trajectory depends on the per-rank nonlinear convergence history, so these
+# CSV golds are not rank-count invariant; the bound is pinned rather than ranged for that reason.
+#
+# Caveat: whether the CIVET heavy job supplies -p 4 cannot be determined from this repository, as
+# no CI recipe is checked in here. If it does not, these tests are skipped rather than run, and
+# the bound should be dropped in favour of a rank count the default heavy run does exercise.
+# Tracked separately from the #178 review.
+
 [Tests]
   issues = '#178'
   design = 'examples/rtes_htm.md'
@@ -9,8 +18,8 @@
     cli_args = 'Executioner/num_steps=10'
     capabilities = 'method!=dbg'
     heavy = true
-    min_parallel = 4 # heavy RTES example: skipped unless run with >=4 MPI ranks
-    max_parallel = 4 # gold is generated at 4 ranks (IterationAdaptiveDT trajectory is rank-count dependent)
+    min_parallel = 4 # see the rank-count note at the top of this file
+    max_parallel = 4
     # recover is disabled: the trajectory is rank-count dependent (see max_parallel
     # comment above) and, until this PR, several postprocessors used in the sweep
     # (accumulators/latches) held non-restartable state that would silently reset on
@@ -31,8 +40,8 @@
     cli_args = 'Executioner/num_steps=10'
     capabilities = 'method!=dbg'
     heavy = true
-    min_parallel = 4 # heavy RTES example: skipped unless run with >=4 MPI ranks
-    max_parallel = 4 # gold is generated at 4 ranks (IterationAdaptiveDT trajectory is rank-count dependent)
+    min_parallel = 4 # see the rank-count note at the top of this file
+    max_parallel = 4
     # recover is disabled: the trajectory is rank-count dependent (see max_parallel
     # comment above) and, until this PR, several postprocessors used in the sweep
     # (accumulators/latches) held non-restartable state that would silently reset on

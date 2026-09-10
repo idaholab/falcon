@@ -14,8 +14,9 @@
 class SinglePhaseFluidProperties;
 
 /**
- * Point source that adds heat energy corresponding to adding a fluid with flux rate specified by a
- * postprocessor at given temperature (specified by a postprocessor).
+ * Point sink that removes heat energy corresponding to extraction of a fluid at a mass flux rate
+ * specified by a postprocessor, evaluated at the LOCAL solution temperature (the
+ * PorousFlow_temperature_qp material property) rather than a fixed or prescribed value.
  */
 class PointEnthalpySink : public DiracKernel
 {

@@ -6,10 +6,13 @@
 
 `PorousFlowRecoveryTime` computes the elapsed time, in days, since a doublet breakthrough time
 recorded by another postprocessor (typically a [PorousFlowDoubletBreakthroughTime.md]). It is a
-purely algebraic postprocessor: the reported value is simply
+purely algebraic postprocessor: once a breakthrough time has been recorded, the reported value is
 `timepostprocessor/3600/24 - breakthroughtime`, i.e. the current simulation time converted to
-days, minus the recorded breakthrough time (also in days). The result is negative before
-breakthrough has been recorded and increases linearly with simulation time thereafter.
+days, minus the recorded breakthrough time (also in days), which increases linearly with
+simulation time. Before breakthrough is recorded, [PorousFlowDoubletBreakthroughTime.md] reports
+`0`; taken literally that would make this object report the whole elapsed simulation time as
+though recovery had already begun, so it instead reports `0` until a positive breakthrough time
+is available.
 
 ## Example Input Syntax
 

@@ -1,6 +1,6 @@
 [Tests]
   design = 'PorousFlowRecoveryTime.md'
-  issues = '#147'
+  issues = '#147 #178'
 
   [recovery_time]
     type = CSVDiff

@@ -1,6 +1,6 @@
 [Tests]
   design = 'PorousFlowSteadyStateTerminator.md'
-  issues = '#147'
+  issues = '#147 #178'
 
   [steady_state_terminator]
     type = CSVDiff

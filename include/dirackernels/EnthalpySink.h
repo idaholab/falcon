@@ -15,7 +15,9 @@
 class SinglePhaseFluidProperties;
 
 /**
- * Point source (or sink) that adds (removes) fluid at a mass flux rate specified by a postprocessor
+ * Enthalpy (energy) sink layered on a PorousFlowPolyLineSink: the mass outflow computed by the
+ * base class is multiplied by the fluid enthalpy at the local pressure and a constant inlet
+ * temperature T_in.
  */
 class EnthalpySink : public PorousFlowPolyLineSink
 {

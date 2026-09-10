@@ -1,6 +1,6 @@
 [Tests]
   design = 'PorousFlowAccumulator.md'
-  issues = '#147'
+  issues = '#147 #178'
 
   [accumulator]
     type = CSVDiff
