@@ -11,4 +11,20 @@
                   "breakthrough time, matching a hand-derived analytic solution to within "
                   "floating-point tolerance."
   []
+
+  [not_yet_latched]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'not_yet_latched_out.csv'
+    abs_zero = 1.0e-08
+    cli_args = "Functions/breakthrough_fn/expression='if(t >= 259200, 3, 0)' "
+               "Functions/exact_fn/expression='if(t < 259200, 0, t/86400 - 3)' "
+               "Outputs/file_base=not_yet_latched_out"
+    requirement = 'The system shall report a recovery time of zero while the companion '
+                  'breakthrough-time postprocessor has not yet latched, rather than reporting the '
+                  'whole elapsed simulation time as though recovery had already begun. '
+                  'PorousFlowDoubletBreakthroughTime reports 0 until it latches, and the shipped '
+                  'case above supplies a breakthrough time that is nonzero for all time, so it '
+                  'cannot detect this.'
+  []
 []
