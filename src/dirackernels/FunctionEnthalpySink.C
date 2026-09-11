@@ -1,0 +1,67 @@
+//* This file is part of the MOOSE framework
+//* https://www.mooseframework.org
+//*
+//* All rights reserved, see COPYRIGHT for full restrictions
+//* https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//*
+//* Licensed under LGPL 2.1, please see LICENSE for details
+//* https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include "FunctionEnthalpySink.h"
+#include "SinglePhaseFluidProperties.h"
+#include "Function.h"
+
+registerMooseObject("FalconApp", FunctionEnthalpySink);
+
+InputParameters
+FunctionEnthalpySink::validParams()
+{
+  InputParameters params = PorousFlowPolyLineSink::validParams();
+  params.addRequiredParam<UserObjectName>("fp", "The name of the user object for fluid properties");
+  params.addRequiredCoupledVar("pressure", "Pressure");
+  params.addRequiredParam<FunctionName>("function", "The forcing function.");
+  params.addClassDescription("Enthalpy (energy) sink layered on a PorousFlowPolyLineSink: the mass "
+                             "outflow is multiplied by the fluid enthalpy at the local pressure and "
+                             "an inlet temperature given by a function of time and position.");
+  return params;
+}
+
+FunctionEnthalpySink::FunctionEnthalpySink(const InputParameters & parameters)
+  : PorousFlowPolyLineSink(parameters),
+    _pressure(coupledValue("pressure")),
+    _func(getFunction("function")),
+    _fp(getUserObject<SinglePhaseFluidProperties>("fp")),
+    _p_var_num(coupled("pressure"))
+{
+}
+
+Real
+FunctionEnthalpySink::computeQpBaseOutflow(unsigned current_dirac_ptid) const
+{
+  Real _T_in = _func.value(_t, _q_point[_qp]);
+  Real h = _fp.h_from_p_T(_pressure[_qp], _T_in);
+  return PorousFlowPolyLineSink::computeQpBaseOutflow(current_dirac_ptid) * h;
+}
+
+void
+FunctionEnthalpySink::computeQpBaseOutflowJacobian(unsigned jvar,
+                                                   unsigned current_dirac_ptid,
+                                                   Real & outflow,
+                                                   Real & outflowp) const
+{
+  // outflow/outflowp here are the *unscaled* line-sink outflow and its derivative wrt jvar;
+  // computeQpBaseOutflow() scales outflow by h, so the Jacobian must apply the same chain rule.
+  // T_in is a function of (t, position) only, so it carries no dh/dT term wrt any solve variable.
+  PorousFlowPolyLineSink::computeQpBaseOutflowJacobian(jvar, current_dirac_ptid, outflow, outflowp);
+
+  Real T_in = _func.value(_t, _q_point[_qp]);
+  Real h, dh_dp, dh_dT;
+  _fp.h_from_p_T(_pressure[_qp], T_in, h, dh_dp, dh_dT);
+
+  if (jvar == _p_var_num)
+    outflowp = h * outflowp + dh_dp * _phi[_j][_qp] * outflow;
+  else
+    outflowp *= h;
+
+  outflow *= h;
+}

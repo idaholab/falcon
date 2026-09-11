@@ -1,0 +1,30 @@
+[Tests]
+  design = 'PorousFlowSteadyStateDetection.md'
+  issues = '#147 #178'
+
+  [steady_state_detection]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    requirement = "The system shall compute the relative rate of change of a target "
+                  "postprocessor's per-timestep rate between the current and previous timestep, "
+                  "matching a hand-derived analytic solution to within floating-point tolerance, "
+                  "and shall report a large sentinel rather than zero on the timestep where that "
+                  "rate cannot be computed."
+  []
+
+  [detection_terminator_pair]
+    type = CSVDiff
+    input = 'pair.i'
+    csvdiff = 'pair_out.csv'
+    abs_zero = 1.0e-08
+    design = 'PorousFlowSteadyStateDetection.md PorousFlowSteadyStateTerminator.md'
+    requirement = 'The system shall not terminate a transient on its first timestep when a '
+                  'PorousFlowSteadyStateDetection postprocessor whose relative rate of change is '
+                  'not yet computable is fed to a PorousFlowSteadyStateTerminator at its default '
+                  'ss_relative_error: the run shall reach its final timestep, because "cannot '
+                  'compute yet" must not read as "converged". A truncated CSV -- the terminator '
+                  'having fired early -- fails this test on row count.'
+  []
+[]
