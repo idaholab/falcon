@@ -53,6 +53,25 @@ The two operation modes were realized by the combination of Functions, Controls 
 !listing examples/rtes_htm/Cranfield_HTM_push-pull_season_caps_water_newboundary_coarse.i block=Functions
 !listing examples/rtes_htm/Cranfield_HTM_push-pull_season_caps_water_newboundary_coarse.i block=Controls
 
+## Automated Regression Tests
+
+The `examples/rtes_htm` inputs (`Cranfield_HTM_{continous,push-pull}_season_caps_water_
+newboundary_coarse.i`) are run as `heavy` regression tests for a bounded number of timesteps
+(not the full 10 year transient) and reproduce a self-baseline gold, rather than an automatic
+comparison against TOUGH.
+
+The same Lower Tuscaloosa 20-layer aquifer is modeled by the TOUGH3 deck
+`../rtes_benchmark/tough.inp`; its GENER injection/production schedule at wells 2FA99/2FB13
+spans the same 315576000 s (10 year) duration as these inputs' `end_time`. The corresponding
+real TOUGH output (converted from the original `cs05rcFOFT_2FA99.xlsx` and
+`cs05rcFOFT_2FB13.xlsx` TOUGH output files, which cover the full 10 years) is kept as
+`gold/TOUGH_cs05rc_FOFT_2FA99_injection.csv` and `gold/TOUGH_cs05rc_FOFT_2FB13_production.csv`
+for manual, documented comparison. TOUGH (FDM, no mechanics) and this FEM HTM model use
+different time discretizations, and TOUGH has no mechanical coupling, so an automatic resampled
+`CSVDiff` against TOUGH is not attempted; only the hydraulic and thermal trends (not the
+mechanical response) are physically comparable, with an expected approximate (order 1 to 10
+percent) discrepancy.
+
 ## Results
 
 Both the push-pull and flow-through operation cases were simulated for 10 years. [fig:results_con] and [fig:results_pp] show the predicted pore pressure and temperature evolution at the two wells over 10 years of flow-through and push-pull operation, respectively. 
