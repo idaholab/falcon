@@ -284,6 +284,18 @@
     num_points = 51
     sort_by = x
   []
+  # Temperature vs. radius at mid-cap depth (y=-500, strictly inside the cased section) -
+  # tracks how the radial thermal signal (from the cased section's own conductive heat exchange,
+  # plus whatever diffuses up from the open interval below) develops within the cap itself, as
+  # opposed to temperature_halo's snapshot at the cap/reservoir boundary.
+  [cap_temperature_radial]
+    type = LineValueSampler
+    variable = temperature
+    start_point = '0 -500 0'
+    end_point = '500 -500 0'
+    num_points = 51
+    sort_by = x
+  []
   # Temperature vs. depth along the well axis (r=0) - context for how the geothermal gradient
   # and the well's own thermal interaction combine along the column.
   [temperature_along_well_axis]

@@ -12,6 +12,11 @@ Y_SURFACE = 0.0
 Y_INTERFACE = -1000.0  # cap/reservoir boundary, also the well's cased/open boundary
 Y_BOTTOM = -2000.0
 
+# The 11 Peaceman points where withdraw_fluid/withdraw_heat are active (well_character=1,
+# geothermal_wellbore.bh points y=-1000 to y=-2000 in 100m steps) - the only points where fluid
+# actually crosses from the formation into the well.
+OPEN_POINTS = [Y_INTERFACE - 100.0 * i for i in range(11)]
+
 
 def main():
     fig, ax = plt.subplots(figsize=(7.5, 6.2))
@@ -28,17 +33,33 @@ def main():
             ha="center", va="center", fontsize=10)
 
     # Well, drawn as a bold line at r=0 (true radius 0.1m, far too thin to draw to scale) -
-    # dashed/grey for the cased section, solid/dark for the open (perforated) section.
+    # solid where the casing seals the well off from the formation (no mass can cross; only
+    # PorousFlowCasedBoreholeHeatExchange's conductive heat exchange applies), dashed where the
+    # well is open to the formation and fluid can actually cross into it. Dashes are drawn as
+    # explicit short segments in data coordinates (one dash+gap per 100m Peaceman spacing)
+    # rather than via a point-based linestyle, which doesn't read clearly at this linewidth.
     ax.plot([0, 0], [Y_SURFACE, Y_INTERFACE], color="#777777", linewidth=6,
-            linestyle=(0, (3, 2)), solid_capstyle="butt", zorder=2)
-    ax.plot([0, 0], [Y_INTERFACE, Y_BOTTOM], color="#222222", linewidth=6,
             solid_capstyle="butt", zorder=2)
+    dash_len = 60.0  # of each 100m point-to-point segment; the rest is the gap
+    for y0 in OPEN_POINTS[:-1]:
+        ax.plot([0, 0], [y0, y0 - dash_len], color="#222222", linewidth=6,
+                solid_capstyle="butt", zorder=2)
 
-    ax.annotate("cased\n(no flow/heat exchange)", xy=(0, -500), xytext=(R_MAX * 0.30, -300),
+    # Peaceman points along the open interval - the discrete locations where mass (and, via the
+    # enthalpy it carries, heat) actually leaves the formation and enters the well.
+    ax.scatter([0] * len(OPEN_POINTS), OPEN_POINTS, s=55, facecolor="white",
+               edgecolor="#222222", linewidth=1.3, zorder=3)
+
+    ax.annotate("cased\n(sealed to mass flow;\nconductive heat exchange only)",
+                xy=(0, -500), xytext=(R_MAX * 0.30, -300),
                 fontsize=9, style="italic", ha="left", va="center",
                 arrowprops=dict(arrowstyle="-", color="#777777", lw=0.8))
-    ax.annotate("open interval\n(mass + heat exchange,\n403-503 K)", xy=(0, -1700),
+    ax.annotate("open interval\n(mass + advective heat exchange,\n403-503 K)", xy=(0, -1700),
                 xytext=(R_MAX * 0.30, -1850), fontsize=9, style="italic", ha="left", va="center",
+                arrowprops=dict(arrowstyle="-", color="#222222", lw=0.8))
+    ax.annotate("Peaceman points:\nfluid leaves the domain\nhere, one every 100m",
+                xy=(0, OPEN_POINTS[3]), xytext=(-R_MAX * 0.42, OPEN_POINTS[3] + 120),
+                fontsize=9, style="italic", ha="left", va="center",
                 arrowprops=dict(arrowstyle="-", color="#222222", lw=0.8))
 
     # Interface line
@@ -61,7 +82,7 @@ def main():
             "geothermal gradient:\n30 degC at surface,\n100 degC/km",
             fontsize=8.5, color="#0b6f6b", va="center")
 
-    ax.set_xlim(0, R_MAX * 1.02)
+    ax.set_xlim(-R_MAX * 0.46, R_MAX * 1.02)
     ax.set_ylim(Y_BOTTOM * 1.03, 60)
     ax.set_xlabel("radius, r (m)")
     ax.set_ylabel("depth, y (m)")
