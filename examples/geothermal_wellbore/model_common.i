@@ -99,6 +99,14 @@
     type = ParsedFunction
     expression = 'if(y <= -1000, 1, 0)'
   []
+  [cased_character]
+    # Complement of well_character: 1 over the cased cap (y > -1000), where
+    # PorousFlowCasedBoreholeHeatExchange conducts heat between the well and the formation; 0
+    # over the open interval, where PorousFlowPeacemanBorehole already exchanges heat
+    # advectively.
+    type = ParsedFunction
+    expression = 'if(y <= -1000, 0, 1)'
+  []
 []
 
 [ICs]
