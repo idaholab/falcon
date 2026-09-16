@@ -88,16 +88,19 @@ depending on whether mass can actually cross the well wall there:
   [PorousFlowCasedBoreholeHeatExchange.md] for why.
 
   $h$ represents the casing's own thermal resistance (steel, cement, the in-well film), not the
-  formation's, which is already resolved by the mesh, and is deliberately kept small
-  (0.01 $\mathrm{W/m^2/K}$, well below a nominal casing-resistance estimate) for a reason
-  specific to this example: the cap's permeability is set very low precisely so the well's
-  pressure influence stays confined to a small halo, and heat injected into a low-permeability
-  rock thermally pressurizes the trapped pore fluid instead of relieving via flow. Above roughly
-  0.1 $\mathrm{W/m^2/K}$ that pressurization runs away and the simulation fails to converge,
-  regardless of how small a fraction of the advected heat rate $Q_{\mathrm{adv}}$ it represents.
-  The resulting conductive exchange is real but small - about 0.08% of the advected heat rate -
-  a real effect, not a dominant one; see [geothermal_wellbore_cap_temperature_fig] for where it
-  shows up.
+  formation's, which is already resolved by the mesh, and is set to a realistic estimate of
+  1.5 $\mathrm{W/m^2/K}$. An earlier revision of this example used a deliberately very low cap
+  permeability, under which heat injected here could not relieve via flow and instead thermally
+  pressurized the trapped pore fluid, running away above $h \sim 0.1$; at the realistic cap
+  permeability used now (see [#model-setup]), that specific failure mode no longer binds. A
+  separate numerical limit remains, unrelated to pressurization: above roughly
+  $h \sim 1.5\text{-}1.8\ \mathrm{W/m^2/K}$, the simulation stalls around day 156 of the run
+  (confirmed by bisection; raising the solver's iteration limit does not rescue it), so 1.5 stays
+  just below that wall. The resulting conductive exchange totals about 6.6% of the advected heat
+  rate $Q_{\mathrm{adv}}$ over the run - real, but secondary to a much larger effect: at this
+  permeability, the cap itself is porous enough for the well's own pressure drawdown to drive
+  significant advective flow up through it, which dominates the temperature changes shown in
+  [#results] far more than this conductive term does.
 
 ## Model setup
 
@@ -136,14 +139,16 @@ The core physics is handled by the [PorousFlowFullySaturated.md] Action:
 
 !listing examples/geothermal_wellbore/model_common.i block=PorousFlowFullySaturated
 
-The cap's permeability and thermal properties are deliberately set well outside typical geologic
-ranges, and the reservoir's permeability is likewise lowered - a deliberate idealization for
-clarity, not a claim about real rock properties. With realistic values, the well's influence
-would either spread across nearly the entire domain (a highly permeable reservoir lets pressure
-diffuse over kilometers within a few years) or take millennia to become visible at all (real
-caprock's thermal diffusivity is far too low to show any signal on a human timescale). The values
-below keep the well's influence confined to a visible halo a few hundred meters across, on a
-runnable 5-year timescale:
+Cap and reservoir properties are realistic geologic values - permeability ~1E-16 m$^2$ for the
+cap and ~1E-15 m$^2$ for the reservoir, isotropic thermal conductivity ~2.5 $\mathrm{W/m/K}$,
+and a rock specific heat of 800 $\mathrm{J/kg/K}$ in both layers - not idealized for visual
+effect the way an earlier revision of this example set them. The reservoir's permeability is
+still kept about 10x below a typical ~1E-14 m$^2$ value, a modest, deliberate choice so the
+well's pressure influence doesn't diffuse across the whole domain within the runnable 5-year
+timescale; the cap's permeability is fully realistic. One direct consequence, visible throughout
+[#results]: a realistically-permeable cap lets the well's own pressure drawdown drive real
+advective flow up through it, which turns out to dominate the cap's thermal response far more
+than either the conductive heat exchange described above or simple conduction alone would:
 
 !listing examples/geothermal_wellbore/model_common.i block=Materials
 
@@ -184,10 +189,15 @@ it removes the need to hand-derive and re-check that constant every time a well'
 
 [geothermal_wellbore_pressure_fig] shows exactly where that difference comes from: pressure vs.
 depth along the well, at the end of the run, for both treatments, plus their difference. The two
-profiles agree almost exactly through the cased section (y=0 to -1000, no flow enters there
-either way), then diverge smoothly through the open interval, reaching about 150 kPa at its
-midpoint before converging back to zero at the well bottom - where `bottom_p_or_t` pins both
-treatments to the same value by construction, regardless of the density model used above it.
+profiles diverge smoothly through the open interval, reaching about 153 kPa at its midpoint
+before converging back to zero at the well bottom - where `bottom_p_or_t` pins both treatments
+to the same value by construction, regardless of the density model used above it. Through the
+cased section (y=0 to -1000) the difference no longer sits at zero the way it would in a purely
+diffusive cap: it grows smoothly from about 1.7 kPa at the surface to about 65 kPa at the
+cap/reservoir interface, because the cap's realistic permeability lets some of the open
+interval's pressure-treatment difference propagate up through it via the same advective flow
+discussed in [#model-setup] and shown in [geothermal_wellbore_temperature_depths_fig] - not
+because any mass crosses the well wall there, which it still does not.
 
 !media geothermal_wellbore_pressure_depth.png
   id=geothermal_wellbore_pressure_fig
@@ -196,13 +206,20 @@ treatments to the same value by construction, regardless of the density model us
   difference vs. depth.
 
 [geothermal_wellbore_temperature_depths_fig] shows how temperature changes over time at a series
-of depths along the well axis, for the `unit_weight_fp` treatment. At the surface (y=0m, in the
-cap, directly above the well but outside its cased section) temperature rises by more than 6 K
-over 5 years, as the cap's exaggerated thermal diffusivity carries heat up from the open interval
-below. At the well bottom (y=-2000m, in the open interval) temperature falls by about 2.5 K, as
-continuous heat extraction outpaces replenishment from the surrounding reservoir. The
-intermediate depths (y=-200 to -1500m) change by well under 0.5 K over the same period - the
-thermal signal is concentrated at the two ends of the column, not spread evenly along it.
+of depths along the well axis, for the `unit_weight_fp` treatment, and the picture is very
+different from a purely conductive cap: temperature rises substantially throughout the cased
+section, not just near its two ends. At the surface (y=0m) it rises by about 67 K over 5 years;
+at y=-200, -400, -600 and -800m the rises are about 58, 50, 42 and 34 K respectively - a smooth
+gradient, largest near the surface and decreasing with depth through the cap. This is not the
+new conductive heat exchange at work (which totals only about 6.6% of the advected heat rate):
+it is the realistically-permeable cap itself allowing the well's pressure drawdown to pull fluid,
+and the heat it carries, up through the cased section by advection - a genuinely different, and
+much larger, mechanism than the small conductive term derived in [#borehole-heat-exchange]. Right
+at the cap/reservoir interface (y=-1000) the change is a much more modest 1.2 K, and below it -
+in the open interval and reservoir - the picture reverts to what drives the mass/heat extraction
+comparison above: temperature at the well bottom (y=-2000m) falls by about 2.4 K as continuous
+heat extraction outpaces replenishment from the surrounding reservoir, while y=-1500m barely
+changes at all.
 
 !media geothermal_wellbore_temperature_depths.png
   id=geothermal_wellbore_temperature_depths_fig
@@ -212,7 +229,8 @@ thermal signal is concentrated at the two ends of the column, not spread evenly 
 
 [geothermal_wellbore_halo_fig] shows the temperature at the cap/reservoir interface (right where
 the well's open interval begins) as a function of radius, at the end of the run - a real,
-well-centered thermal halo around the well, roughly 100-300m across, for both treatments.
+well-centered thermal halo around the well for both treatments, peaking at about 404.3 K against
+a 403.2 K background and extending to about 60m radius.
 
 !media geothermal_wellbore_temperature_halo.png
   id=geothermal_wellbore_halo_fig
@@ -220,17 +238,21 @@ well-centered thermal halo around the well, roughly 100-300m across, for both tr
   caption=Temperature vs. radius at the cap/reservoir interface, final timestep.
 
 [geothermal_wellbore_cap_temperature_fig] shows the same kind of radial profile, but strictly
-*inside* the cap (y=-500, `unit_weight_fp` treatment only) and at a handful of times through the
-run, rather than a single final snapshot at the cap/reservoir boundary. The profile is flat at
-the undisturbed background (353.15 K, the geothermal gradient's value at this depth) at early
-times, then a small, growing elevation appears within about 50m of the well as the cased
-section's conductive heat exchange (and whatever advective signal has diffused up from the open
-interval below) warms the near-well cap over the 5-year run - visibly real, but consistent with
-[#borehole-heat-exchange]'s ~0.08% figure: a few hundredths of a kelvin, not the multi-kelvin
-halo already visible at the cap/reservoir interface in [geothermal_wellbore_halo_fig].
+*inside* the cap, 500m below the surface, and at a handful of times through the run, rather than
+a single final snapshot at the cap/reservoir boundary. The profile is flat at the undisturbed
+background (353.15 K, the geothermal gradient's value at this depth) at early times, then a
+sharp, growing spike develops right at the well - reaching about 399 K by the end of the run,
+46 K above background, and decaying back to background within about 20m. This is the same
+advective mechanism visible in [geothermal_wellbore_temperature_depths_fig], now shown as a
+function of radius rather than time: hot fluid drawn up along the well axis through the
+realistically-permeable cap, not the new conductive heat exchange kernel, whose own contribution
+(reported separately via `wellbore_heat_point_flux_out`, not distinguishable from the advective
+signal in a plain temperature snapshot like this one) is an order of magnitude smaller.
 
 !media geothermal_wellbore_cap_temperature_radial.png
   id=geothermal_wellbore_cap_temperature_fig
   style=width:65%;margin-left:auto;margin-right:auto;
-  caption=Temperature vs. radius at mid-cap depth (y=-500), at several times through the run,
-  `unit_weight_fp` treatment.
+  caption=Temperature vs. radius at 500m depth within the cap, at several times through the
+  run, the `unit_weight_fp` treatment.
+
+

@@ -16,14 +16,14 @@
 # is open to the formation over its bottom 1000m (y=-1000 to -2000), spanning an in-well
 # temperature range of 403-503 K.
 #
-# The cap's thermal properties are deliberately exaggerated (real caprock would take
-# millennia to show any measurable thermal response over this depth) so that the well's
-# interaction with the surrounding formation - the point of this example - is visible on a
-# runnable timescale. Permeability in both layers is likewise well below realistic geologic
-# values, to keep that thermal response spatially confined to the region around the well
-# rather than spread across the whole domain by fast pressure diffusion. Both are idealizations
-# made for clarity, not a claim about real reservoir/caprock properties - see
-# geothermal_wellbore.md for the reasoning.
+# Cap and reservoir properties are realistic geologic values (see the [Materials] block), not
+# idealized for visual effect: cap permeability ~1E-16 m^2, isotropic ~2.5 W/m/K thermal
+# conductivity, and a rock specific heat matching the reservoir's. The reservoir's own
+# permeability (1E-15 m^2) is left about 10x below a typical ~1E-14 m^2 value, a modest,
+# deliberate choice to keep the well's pressure influence from diffusing across the whole
+# domain within the runnable 5-year timescale - see geothermal_wellbore.md for the resulting
+# halo/pressure numbers, which are now driven by realistic-order physics rather than an
+# exaggerated one.
 
 [Mesh]
   coord_type = RZ
@@ -157,7 +157,7 @@
 [Materials]
   [porosity_cap]
     type = PorousFlowPorosityConst
-    porosity = 0.05
+    porosity = 0.1
     block = cap
   []
   [porosity_reservoir]
@@ -165,14 +165,11 @@
     porosity = 0.1
     block = reservoir
   []
-  # Permeability in both layers is lowered well below typical geologic values (reservoir would
-  # normally be ~1E-14 m^2, cap ~1E-16 m^2) to keep the well's pressure/thermal influence
-  # confined to roughly 100-300m around the well over the run - both layers need lowering
-  # together, since leaving either one relatively higher lets its faster diffusion smear the
-  # other's localized signal back out laterally. See geothermal_wellbore.md for the derivation.
+  # Cap permeability at a realistic caprock value (~1E-16 m^2); the reservoir stays as before
+  # (1E-15 m^2 - already only 10x below a typical ~1E-14 m^2 reservoir, so left alone here).
   [permeability_cap]
     type = PorousFlowPermeabilityConst
-    permeability = '1E-19 0 0  0 1E-19 0  0 0 1E-19'
+    permeability = '1E-16 0 0  0 1E-16 0  0 0 1E-16'
     block = cap
   []
   [permeability_reservoir]
@@ -180,25 +177,22 @@
     permeability = '1E-15 0 0  0 1E-15 0  0 0 1E-15'
     block = reservoir
   []
-  # Cap thermal properties are exaggerated (vs. real caprock's ~2.5 W/m/K, ~900 J/kg/K) so the
-  # well's thermal interaction with the formation is visible on a runnable timescale.
-  # Conductivity is anisotropic - xx=radial, yy=vertical/axial, zz=unused (out-of-plane,
-  # irrelevant for a 2D RZ mesh) - vertical stays higher (faster transport toward the surface)
-  # while radial stays closer to realistic, so the thermal halo doesn't smear outward as fast
-  # as it rises.
+  # Cap thermal properties at realistic caprock values - isotropic conductivity and a rock
+  # specific heat matching the reservoir's, rather than the exaggerated, anisotropic values an
+  # earlier revision of this example used to make the well's thermal interaction with the
+  # formation visible on a runnable timescale.
   [thermal_conductivity_cap]
     type = PorousFlowThermalConductivityIdeal
-    dry_thermal_conductivity = '2 0 0  0 10 0  0 0 2'
+    dry_thermal_conductivity = '2.5 0 0  0 2.5 0  0 0 2.5'
     block = cap
   []
   [rock_internal_energy_cap]
     type = PorousFlowMatrixInternalEnergy
     density = 2700
-    specific_heat_capacity = 80
+    specific_heat_capacity = 800
     block = cap
   []
-  # Reservoir thermal properties stay close to realistic geologic media - only the cap above
-  # is meant to have an exaggerated response.
+  # Reservoir thermal properties, also realistic geologic media.
   [thermal_conductivity_reservoir]
     type = PorousFlowThermalConductivityIdeal
     dry_thermal_conductivity = '2.5 0 0 0 2.5 0 0 0 2.5'

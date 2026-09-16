@@ -57,14 +57,16 @@ the casing.
 $h$ is nominally the *casing-side* resistance only (the in-well convective film, the steel
 casing, and the cement sheath), referenced to the casing outer radius - not an overall
 wellbore-to-far-field heat transfer coefficient, since the formation's own conductive resistance
-is already resolved by the mesh. In practice, in this example, $h$ is capped far below any such
-physical estimate by the cap's own deliberately very low permeability (chosen to keep the well's
-pressure influence confined - see [geothermal_wellbore.md]): heat injected into the cap cannot
-relieve via flow and instead thermally pressurizes the pore fluid there, and above roughly
-$h=0.1\ \mathrm{W/m^2/K}$ that pressurization runs away and the solve diverges within the first
-simulated day, regardless of how small a fraction of the advected heat rate it represents. The
-value used, 0.01, was found by bisection to run stably for the full 5-year simulation; the
-resulting effect is real but small (about 0.08% of the advected `well_heat_rate`).
+is already resolved by the mesh. In this example, the cap's permeability is realistic (see
+[geothermal_wellbore.md]), so $h$ can use a realistic estimate too: 1.5 $\mathrm{W/m^2/K}$. A
+separate numerical limit, unrelated to any thermal-pressurization concern, remains around
+$h=1.5\text{-}1.8\ \mathrm{W/m^2/K}$: above it the solve stalls near day 156 of the 5-year run
+(confirmed by bisection; raising the solver's iteration limit does not rescue it), so 1.5 stays
+just below that wall. The resulting conductive exchange totals about 6.6% of the advected
+`well_heat_rate` - real, but small next to a much larger effect: at this permeability, the cap
+itself is porous enough for the well's own pressure drawdown to drive substantial advective flow
+up through it, which dominates the temperature changes this example actually shows far more than
+this conductive term does.
 
 As with `PorousFlowPeacemanBorehole`, the Jacobian only differentiates the local (same-point)
 dependence of the residual on the current iterate; the wellbore temperature profile's dependence

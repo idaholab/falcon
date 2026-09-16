@@ -27,7 +27,7 @@ def main():
     ax.add_patch(patches.Rectangle((0, Y_BOTTOM), R_MAX, Y_INTERFACE - Y_BOTTOM,
                                     facecolor="#a3c4d8", edgecolor="none", zorder=0))
     ax.text(R_MAX * 0.38, (Y_SURFACE + Y_INTERFACE) / 2,
-            "cap\n(low permeability,\nexaggerated thermal response)",
+            "cap\n(realistic properties:\nk=1E-16 m^2, k_th=2.5 W/m/K)",
             ha="center", va="center", fontsize=10)
     ax.text(R_MAX * 0.5, Y_INTERFACE - 150, "reservoir\n(normal geologic media)",
             ha="center", va="center", fontsize=10)
