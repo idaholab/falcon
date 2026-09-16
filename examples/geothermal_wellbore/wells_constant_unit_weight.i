@@ -65,21 +65,19 @@
     # surrounding cap, complementing withdraw_heat's advective-only exchange below - see
     # PorousFlowCasedBoreholeHeatExchange.md.
     #
-    # heat_transfer_coefficient is capped well below a "casing resistance only" physical
-    # estimate (~10) by this model's own cap properties: the cap's permeability is deliberately
-    # very low (to keep the well's pressure influence confined - see model_common.i), so heat
-    # injected there cannot relieve via flow and instead thermally pressurizes the pore fluid.
-    # Above roughly h=0.1 that pressurization runs away and the solve diverges within the first
-    # simulated day, regardless of how small a fraction of the advected heat rate it represents
-    # (confirmed by bisection: h=0.01 runs stably for the full 5 years, h=0.1 does not - both
-    # well below the point where the effect is dominated by anything resembling real casing
-    # resistance). 0.01 keeps the model numerically stable; the resulting effect is small
-    # (~0.08% of well_heat_rate) but real.
+    # heat_transfer_coefficient = 1.5 W/m^2/K is a realistic casing-side resistance estimate
+    # (in-well film + steel casing + cement sheath). At this cap permeability (see
+    # model_common.i - realistic, unlike an earlier revision's deliberately very low value),
+    # thermal pressurization is no longer a binding constraint the way it was before, but a
+    # separate numerical wall remains around day 156 of the run above roughly h=1.5-1.8
+    # (confirmed by bisection; unrelated to thermal pressurization - raising nl_max_its does not
+    # rescue h=1.8, which fails via DIVERGED_LINE_SEARCH even at dt=dtmin). 1.5 stays safely
+    # below that wall.
     type = PorousFlowCasedBoreholeHeatExchange
     variable = temperature
     point_file = geothermal_wellbore.bh
     character = cased_character
-    heat_transfer_coefficient = 0.01
+    heat_transfer_coefficient = 1.5
     mass_point_flux_vpp = mass_point_flux
     wellbore_fp = water
     wellbore_reference_pressure = 8E6
