@@ -24,6 +24,12 @@
   [well_heat_point_flux]
     type = PorousFlowPointFluxQuantity
   []
+  [wellbore_heat_outflow]
+    type = PorousFlowSumQuantity
+  []
+  [wellbore_heat_point_flux]
+    type = PorousFlowPointFluxQuantity
+  []
 []
 
 [DiracKernels]
@@ -54,6 +60,32 @@
     SumQuantityUO = well_heat_outflow
     PointFluxUO = well_heat_point_flux
   []
+  [wellbore_heat_exchange]
+    # Conductive heat exchange between the cased section (above the open interval) and the
+    # surrounding cap, complementing withdraw_heat's advective-only exchange below - see
+    # PorousFlowCasedBoreholeHeatExchange.md.
+    #
+    # heat_transfer_coefficient is capped well below a "casing resistance only" physical
+    # estimate (~10) by this model's own cap properties: the cap's permeability is deliberately
+    # very low (to keep the well's pressure influence confined - see model_common.i), so heat
+    # injected there cannot relieve via flow and instead thermally pressurizes the pore fluid.
+    # Above roughly h=0.1 that pressurization runs away and the solve diverges within the first
+    # simulated day, regardless of how small a fraction of the advected heat rate it represents
+    # (confirmed by bisection: h=0.01 runs stably for the full 5 years, h=0.1 does not - both
+    # well below the point where the effect is dominated by anything resembling real casing
+    # resistance). 0.01 keeps the model numerically stable; the resulting effect is small
+    # (~0.08% of well_heat_rate) but real.
+    type = PorousFlowCasedBoreholeHeatExchange
+    variable = temperature
+    point_file = geothermal_wellbore.bh
+    character = cased_character
+    heat_transfer_coefficient = 0.01
+    mass_point_flux_vpp = mass_point_flux
+    wellbore_fp = water
+    wellbore_reference_pressure = 8E6
+    SumQuantityUO = wellbore_heat_outflow
+    PointFluxUO = wellbore_heat_point_flux
+  []
 []
 
 [Postprocessors]
@@ -65,6 +97,10 @@
     type = PorousFlowPlotQuantity
     uo = well_heat_outflow
   []
+  [wellbore_heat_rate]
+    type = PorousFlowPlotQuantity
+    uo = wellbore_heat_outflow
+  []
 []
 
 [VectorPostprocessors]
@@ -75,5 +111,9 @@
   [heat_point_flux]
     type = PorousFlowPlotPointFluxQuantity
     uo = well_heat_point_flux
+  []
+  [wellbore_heat_point_flux_out]
+    type = PorousFlowPlotPointFluxQuantity
+    uo = wellbore_heat_point_flux
   []
 []
