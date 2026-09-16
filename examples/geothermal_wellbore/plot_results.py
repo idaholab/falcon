@@ -40,6 +40,20 @@ def load_final_line(prefix, sampler):
     return pd.read_csv(files[-1])
 
 
+def load_lines_near_times(prefix, sampler, target_times):
+    """Load the sampler output file closest to each target time (seconds), skipping index 0
+    (this model's VectorPostprocessors report empty output at t=0). File index N is assumed to
+    align with row N of the main CSV (both advance one-for-one with accepted timesteps), which
+    holds as long as the run has no cut/retried timesteps."""
+    files = sorted(glob.glob(f"{prefix}_out_{sampler}_*.csv"))[1:]
+    times = load_main(prefix)["time"].to_numpy()[1:]
+    selected = []
+    for target in target_times:
+        idx = int(abs(times - target).argmin())
+        selected.append((times[idx], pd.read_csv(files[idx])))
+    return selected
+
+
 def main():
     old, new = load_main(OLD), load_main(NEW)
 
@@ -132,6 +146,25 @@ def main():
     fig.tight_layout()
     fig.savefig("temperature_halo.png", dpi=150)
     print("Saved temperature_halo.png")
+
+    # 5. Temperature vs. radius at mid-cap depth (y=-500), at a handful of times through the
+    # run - shows the radial thermal signal developing inside the cap itself (unit_weight_fp
+    # variant only, since the point is the cased-section heat exchange's own effect, not the
+    # pressure-treatment comparison from plots 1-2).
+    target_times = [i * YEAR for i in range(6)]
+    snapshots = load_lines_near_times(NEW, "cap_temperature_radial", target_times)
+    fig, ax = plt.subplots(figsize=(7, 5))
+    cmap = plt.get_cmap("viridis")
+    for i, (t, df) in enumerate(snapshots):
+        ax.plot(df["x"], df["temperature"], color=cmap(i / (len(snapshots) - 1)),
+                label=f"t = {t / YEAR:.1f} yr")
+    ax.set_xlabel("radius, r (m)")
+    ax.set_ylabel("temperature (K)")
+    ax.set_title("Temperature vs. radius at mid-cap depth (y=-500), unit_weight_fp")
+    ax.legend(fontsize=8)
+    fig.tight_layout()
+    fig.savefig("cap_temperature_radial.png", dpi=150)
+    print("Saved cap_temperature_radial.png")
 
 
 if __name__ == "__main__":
