@@ -72,10 +72,22 @@ protected:
   const Real _h;
 
   /// Per-point produced mass flux (kg.s^-1) reported by the open interval's mass-extraction
-  /// PorousFlowPeacemanBorehole, indexed the same way as this kernel's own points (same
-  /// point_file). Used both to get the total produced mass rate and to compute the mass-flux-
-  /// weighted mixing temperature of the fluid entering the cased section.
+  /// PorousFlowPeacemanBorehole. This kernel's own point set (see PolylineDiracPoints) need not
+  /// coincide with the points this is indexed by - the mixing-temperature calculation samples
+  /// formation temperature at _mass_flux_x/_mass_flux_y/_mass_flux_z below, not at this kernel's
+  /// own _x_coord/_y_coord/_z_coord. Used both to get the total produced mass rate and to
+  /// compute the mass-flux-weighted mixing temperature of the fluid entering the cased section.
   const VectorPostprocessorValue & _mass_flux;
+
+  ///@{
+  /// Coordinates of the open interval's own mass-flux points, read from the same
+  /// PorousFlowPlotPointFluxQuantity's 'x'/'y'/'z' vectors, filled in lockstep with _mass_flux.
+  /// The mixing-temperature sum samples the formation temperature at *these* points, not at this
+  /// kernel's own points.
+  const VectorPostprocessorValue & _mass_flux_x;
+  const VectorPostprocessorValue & _mass_flux_y;
+  const VectorPostprocessorValue & _mass_flux_z;
+  ///@}
 
   /// Fluid properties used to evaluate the in-well fluid specific heat
   const SinglePhaseFluidProperties & _fp;

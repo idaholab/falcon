@@ -32,11 +32,17 @@ PorousFlowCasedBoreholeHeatExchange::validParams()
   params.addRequiredParam<VectorPostprocessorName>(
       "mass_point_flux_vpp",
       "The name of a PorousFlowPlotPointFluxQuantity VectorPostprocessor reporting the produced "
-      "mass flux (its 'flux' vector) at each point of the open/perforated section, using the "
-      "same point_file as this kernel. Used both to get the total produced mass rate and to "
-      "compute the mass-flux-weighted mixing temperature of the fluid entering the cased "
-      "section - the fluid produced deeper in the open interval is hotter, so a mixing average "
-      "is used rather than the local formation temperature at the open/cased boundary alone.");
+      "mass flux (its 'flux' vector) at each point of the open/perforated section. Its point set "
+      "is independent of this kernel's own: the mixing temperature is evaluated at that VPP's "
+      "own reported 'x'/'y'/'z' coordinates, so the cased section may place its points however "
+      "it likes (see PolylineDiracPoints). By convention the cased path's deepest point should "
+      "coincide with the shallowest point of the open interval, so that the distance along the "
+      "well in the wellbore-temperature march is measured from the true open/cased boundary - "
+      "enforced at initialSetup() by requiring 'character' to be zero at this kernel's own last "
+      "point. Used both to get the total produced mass rate and to compute the mass-flux-"
+      "weighted mixing temperature of the fluid entering the cased section - the fluid produced "
+      "deeper in the open interval is hotter, so a mixing average is used rather than the local "
+      "formation temperature at the open/cased boundary alone.");
   params.addRequiredParam<UserObjectName>(
       "wellbore_fp",
       "SinglePhaseFluidProperties UserObject used to evaluate the in-well fluid specific heat "
@@ -71,6 +77,9 @@ PorousFlowCasedBoreholeHeatExchange::PorousFlowCasedBoreholeHeatExchange(
     _character(getFunction("character")),
     _h(getParam<Real>("heat_transfer_coefficient")),
     _mass_flux(getVectorPostprocessorValue("mass_point_flux_vpp", "flux")),
+    _mass_flux_x(getVectorPostprocessorValue("mass_point_flux_vpp", "x")),
+    _mass_flux_y(getVectorPostprocessorValue("mass_point_flux_vpp", "y")),
+    _mass_flux_z(getVectorPostprocessorValue("mass_point_flux_vpp", "z")),
     _fp(getUserObject<SinglePhaseFluidProperties>("wellbore_fp")),
     _reference_pressure(getParam<Real>("wellbore_reference_pressure")),
     _temperature_system(_var.sys().system()),
@@ -90,6 +99,46 @@ PorousFlowCasedBoreholeHeatExchange::initialSetup()
   if (_z_coord->size() < 2)
     mooseError("PorousFlowCasedBoreholeHeatExchange: at least two well points are required to "
                "march the wellbore-fluid-temperature profile along a segment.");
+
+  // The wellbore-temperature march needs a point just below the cased section, at the open/cased
+  // boundary, to enter the mixing temperature at and to measure cumulative distance from - so the
+  // *deepest* point of this kernel's own path must be one where 'character' is zero. Without
+  // this check, a path that ended even slightly above that boundary would leave every point
+  // active, computeWellboreTemperatures()'s 'i_start + 1 >= num_pts' guard would fire on every
+  // call, and this kernel would silently exchange no heat at all - the failure mode this guard
+  // exists to catch is exactly the one a mismatch between this kernel's own point placement (see
+  // PolylineDiracPoints) and the open interval's point_file would otherwise produce silently.
+  const std::size_t num_pts = _z_coord->size();
+  int i_start = -1;
+  for (int i = static_cast<int>(num_pts) - 1; i >= 0; --i)
+  {
+    const Point p(_x_coord->at(i), _y_coord->at(i), _z_coord->at(i));
+    if (_character.value(_t, p) != 0.0)
+    {
+      i_start = i;
+      break;
+    }
+  }
+
+  if (i_start < 0)
+    paramError("character",
+               "'character' is zero at every point of this kernel's path, so it would exchange "
+               "no heat anywhere. It must be nonzero over the cased section.");
+
+  if (static_cast<std::size_t>(i_start) + 1 >= num_pts)
+  {
+    const Point last(
+        _x_coord->at(num_pts - 1), _y_coord->at(num_pts - 1), _z_coord->at(num_pts - 1));
+    paramError(
+        "character",
+        "'character' is nonzero at the deepest point of this kernel's path (",
+        last,
+        "), so there is no point at the open/cased boundary for the wellbore-temperature march "
+        "to start from and this kernel would silently exchange no heat. Extend the path so its "
+        "last point reaches (or passes) the boundary where 'character' becomes zero - "
+        "conventionally the shallowest point of the open interval's own point set. (Checked at "
+        "the initial time; a time-varying 'character' is not supported by this check.)");
+  }
 }
 
 void
@@ -148,23 +197,41 @@ PorousFlowCasedBoreholeHeatExchange::computeWellboreTemperatures()
   // returns zero wherever _character is zero anyway.
   _t_well = temperature_f;
 
-  // mass_point_flux_vpp's underlying vector is cleared to size 0 by its own initialize() and
+  // mass_point_flux_vpp's underlying vectors are cleared to size 0 by its own initialize() and
   // only refilled by its own execute(), on its own schedule - before its first execute() (eg
   // going into the very first real solve), or transiently between initialize() and execute(),
-  // it can be empty. Treat that exactly like "no produced flow yet".
-  if (_mass_flux.size() != num_pts)
+  // they can be empty. Treat that exactly like "no produced flow yet". The coordinate vectors
+  // are always filled in lockstep with 'flux' by PorousFlowPlotPointFluxQuantity, so a size
+  // mismatch here means the VPP is mid-update, not misconfigured.
+  const std::size_t num_mass_pts = _mass_flux.size();
+  if (num_mass_pts == 0 || _mass_flux_x.size() != num_mass_pts ||
+      _mass_flux_y.size() != num_mass_pts || _mass_flux_z.size() != num_mass_pts)
     return;
 
-  // Total produced mass rate and the mass-flux-weighted mixing temperature of everything
-  // produced across the open interval - the fluid entering deeper in that interval is hotter,
-  // so this mixing average (not the local formation temperature at the open/cased boundary
-  // alone) is the physically correct temperature of the fluid entering the cased section.
+  // Total produced mass rate, and the mass-flux-weighted mixing temperature of everything
+  // produced across the open interval - the fluid entering deeper in that interval is hotter, so
+  // this mixing average (not the local formation temperature at the open/cased boundary alone)
+  // is the physically correct temperature of the fluid entering the cased section. Sampled at the
+  // open interval's OWN reported point coordinates: this kernel's cased section places its
+  // points independently (see PolylineDiracPoints), so its own _x_coord/_y_coord/_z_coord no
+  // longer index the same physical locations as _mass_flux.
   Real mdot = 0.0;
   Real mdot_t = 0.0;
-  for (const auto i : make_range(num_pts))
+  for (const auto i : make_range(num_mass_pts))
   {
+    // Zero-flux points (everywhere the open interval's own 'character' is zero) contribute
+    // nothing to either sum, so skipping them is numerically exact - and it avoids a needless
+    // System::point_value() call, which insists the point be evaluable and can trip a libMesh
+    // assertion in a debug build if it is not. _mass_flux is replicated (its underlying
+    // PorousFlowPointFluxQuantity sums across processors in finalize()), so every rank makes the
+    // same skip decision and the collective point_value() calls below stay in lockstep.
+    if (_mass_flux[i] == 0.0)
+      continue;
+
+    const Point p(_mass_flux_x[i], _mass_flux_y[i], _mass_flux_z[i]);
+    const Real t = _temperature_system.point_value(_temperature_var_number, p, &old_solution);
     mdot += _mass_flux[i];
-    mdot_t += _mass_flux[i] * temperature_f[i];
+    mdot_t += _mass_flux[i] * t;
   }
   if (mdot <= 0.0)
     return; // no produced flow yet (eg the first time step, before mass_point_flux_vpp has run)
