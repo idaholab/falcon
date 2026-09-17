@@ -42,6 +42,25 @@ With these modification, the FALCON predicted results, shown as red dashed lines
   style=width:100%;
   caption= Comparison of pressure and temperature evolutions at the injection and production wells with a year of injection-storage-extraction-rest cycle with different boundary conditions and model set-ups. For the benchmark study, we used a constant injection temperature at 180 degree C, and the injection starts at the beginning of the simulation.
 
+## Automated Regression Tests
+
+The `examples/rtes_benchmark` inputs (`Cranfield_HT_season_caps_water_{newboundary,oldboundary,
+oldboundary_noComp}_coarse.i`) are run as `heavy` regression tests for a bounded number of
+timesteps (not the full ~1 year transient) and reproduce a self-baseline gold, rather than an
+automatic comparison against TOUGH: TOUGH's FDM and FALCON's FEM use different time
+discretizations, so an automatic resampled `CSVDiff` against TOUGH is not attempted.
+
+For manual, documented comparison alongside the self-baseline gold, `newboundary`'s test
+directory also keeps a real TOUGH3 simulation of the same Lower Tuscaloosa (Cranfield)
+5-spot/quarter-symmetry aquifer, run from the co-located `tough.inp` deck whose 20-layer
+porosity/permeability match this input's `layer_N` `Materials` block for block. Its FOFT
+observation elements 2FA99 and 2FB13 (the injection and production wells) are kept as
+`gold/TOUGH_c10_FOFT_2FA99_injection.csv` and `gold/TOUGH_c10_FOFT_2FB13_production.csv`
+(converted from the original `c10FOFT_2FA99.xlsx` and `c10FOFT_2FB13.xlsx` TOUGH output files).
+Qualitative agreement in injection/production pressure and temperature trends should be checked
+by hand against these files, with an expected approximate (order 1 to 10 percent) discrepancy
+given the FDM-versus-FEM and 1/8-versus-1/4 symmetry model differences noted above.
+
 ## Acknowledgement
 
 The author would like to acknowledge Christine Doughty at the Lawrence Berkeley National Laboratory for performing TOUGH simulations and providing the corresponding input file.

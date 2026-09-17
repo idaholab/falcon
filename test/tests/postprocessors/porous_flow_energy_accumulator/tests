@@ -1,0 +1,29 @@
+[Tests]
+  design = 'PorousFlowEnergyAccumulator.md'
+  issues = '#147 #178'
+
+  [energy_accumulator]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    requirement = "The system shall accumulate the sum of hot- and cold-well energy "
+                  "postprocessors while a production indicator postprocessor is active, and "
+                  "report the absolute value of the accumulation, matching a hand-derived "
+                  "analytic solution to within floating-point tolerance."
+  []
+
+  [energy_accumulator_smoothed_indicator]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    prereq = 'energy_accumulator'
+    ignore_columns = 'indicator'
+    cli_args = "Functions/indicator_fn/expression='if(t <= 3, 0.999999999, 0)'"
+    requirement = 'The system shall accumulate produced energy for a production indicator that is '
+                  'close to but not exactly 1, as a smoothed or transfer-round-tripped indicator '
+                  'would be, reproducing the same accumulation as a bit-exact indicator. An '
+                  'exact-equality test against 1 accumulates nothing here and fails.'
+  []
+[]

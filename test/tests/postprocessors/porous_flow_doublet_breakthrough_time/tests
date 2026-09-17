@@ -1,0 +1,34 @@
+[Tests]
+  design = 'PorousFlowDoubletBreakthroughTime.md'
+  issues = '#147 #178'
+
+  [breakthrough_time]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    abs_zero = 1.0e-08
+    requirement = "The system shall record the simulation time, in days, at which a doublet "
+                  "breakthrough indicator postprocessor first indicates breakthrough, and shall "
+                  "hold that value constant thereafter, matching a hand-derived analytic "
+                  "solution to within floating-point tolerance."
+  []
+
+  [breakthrough_time_latch_at_zero]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'latch_at_zero_out.csv'
+    abs_zero = 1.0e-08
+    cli_args = "Functions/flag_fn/expression='1' "
+               "Functions/exact_fn/expression='0' "
+               "Postprocessors/cur_time/execute_on='initial timestep_end' "
+               "Postprocessors/flag/execute_on='initial timestep_end' "
+               "Postprocessors/computed/execute_on='initial timestep_end' "
+               "Postprocessors/exact/execute_on='initial timestep_end' "
+               "Postprocessors/residual/execute_on='initial timestep_end' "
+               "Outputs/file_base=latch_at_zero_out"
+    requirement = 'The system shall hold a doublet breakthrough time that latches at t = 0, where '
+                  'the latched value coincides with the not-yet-latched sentinel, rather than '
+                  're-latching it on every subsequent timestep. This requires a separate '
+                  'triggered flag; a guard on the latched value alone re-latches here and fails.'
+  []
+[]

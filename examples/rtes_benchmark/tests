@@ -1,0 +1,91 @@
+# All of the RTES example tests below are pinned to exactly 4 MPI ranks. IterationAdaptiveDT's
+# accepted step-size trajectory depends on the per-rank nonlinear convergence history, so these
+# CSV golds are not rank-count invariant; the bound is pinned rather than ranged for that reason.
+#
+# Caveat, established against CIVET rather than this repository (no CI recipe is checked in here):
+# as of PR #178, none of the five PR-attached CIVET jobs runs --heavy at all, and the highest rank
+# count any of them uses is 2 -- the Test recipe's steps are "Test falcon", "Test falcon -p 2",
+# "Test falcon --n-threads=2" and "Test falcon dbg", and the Apptainer, Coverage, Documentation and
+# Precheck jobs run no test sweep of their own. These seven tests therefore do not execute in PR
+# CI, both for want of --heavy and because 4 > 2, so a green PR CI says nothing about them either
+# way. Whether a separate scheduled/nightly recipe runs them at 4 ranks is not visible from a PR
+# job list. If no heavy runner supplies 4 ranks, the bound should be dropped and these golds
+# regenerated at a rank count that is actually exercised. Tracked separately.
+
+[Tests]
+  issues = '#178'
+  design = 'examples/rtes_ht.md'
+
+  [newboundary]
+    type = CSVDiff
+    input = 'Cranfield_HT_season_caps_water_newboundary_coarse.i'
+    csvdiff = 'Cranfield_HT_season_caps_water_newboundary_coarse_CSV.csv'
+    cli_args = 'Executioner/num_steps=20'
+    capabilities = 'method!=dbg'
+    heavy = true
+    min_parallel = 4 # see the rank-count note at the top of this file
+    max_parallel = 4
+    # recover is disabled: the trajectory is rank-count dependent (see max_parallel
+    # comment above) and, until this PR, several postprocessors used in the sweep
+    # (accumulators/latches) held non-restartable state that would silently reset on
+    # --recover. That state is now declared restartable, but recover=true has not been
+    # verified end-to-end for this heavy example, so it stays disabled here.
+    recover = false
+    requirement = 'The system shall run the Cranfield hydro-thermal (HT) RTES seasonal '
+                  'push-pull benchmark, on the reference mesh with mesh-native inj_well/'
+                  'ext_well completion blocks (Cranfield_caps_new_coarse.e), for a bounded '
+                  'number of timesteps (not the full approximately 1 year transient) and '
+                  'reproduce a self-baseline gold.'
+  []
+
+  [oldboundary]
+    type = CSVDiff
+    input = 'Cranfield_HT_season_caps_water_oldboundary_coarse.i'
+    csvdiff = 'Cranfield_HT_season_caps_water_oldboundary_coarse_CSV.csv'
+    cli_args = 'Executioner/num_steps=20'
+    capabilities = 'method!=dbg'
+    heavy = true
+    min_parallel = 4 # see the rank-count note at the top of this file
+    max_parallel = 4
+    # recover is disabled: the trajectory is rank-count dependent (see max_parallel
+    # comment above) and, until this PR, several postprocessors used in the sweep
+    # (accumulators/latches) held non-restartable state that would silently reset on
+    # --recover. That state is now declared restartable, but recover=true has not been
+    # verified end-to-end for this heavy example, so it stays disabled here.
+    recover = false
+    requirement = 'The system shall run the oldboundary (full-formation-thickness well, '
+                  'poromechanical porosity and permeability) variant of the Cranfield HT '
+                  'RTES benchmark, remapped from the no-longer-present '
+                  'Cranfield_caps_old_coarse.e mesh onto the current '
+                  'Cranfield_caps_new_coarse.e mesh. The injection and extraction nodesets '
+                  'and the caps/layer_1 through layer_20 blocks map cleanly onto the new '
+                  'mesh; the new mesh additionally carves out inj_well/ext_well blocks '
+                  'around the wells that the old mesh did not have, so this Materials block '
+                  'was extended with the newboundary input porosity_well/permeability_well '
+                  'definitions so every mesh block has a defined property. The input is run '
+                  'for a bounded number of timesteps and reproduces a self-baseline gold.'
+  []
+
+  [oldboundary_noComp]
+    type = CSVDiff
+    input = 'Cranfield_HT_season_caps_water_oldboundary_noComp_coarse.i'
+    csvdiff = 'Cranfield_HT_season_caps_water_oldboundary_noComp_coarse_CSV.csv'
+    cli_args = 'Executioner/num_steps=20'
+    capabilities = 'method!=dbg'
+    heavy = true
+    min_parallel = 4 # see the rank-count note at the top of this file
+    max_parallel = 4
+    # recover is disabled: the trajectory is rank-count dependent (see max_parallel
+    # comment above) and, until this PR, several postprocessors used in the sweep
+    # (accumulators/latches) held non-restartable state that would silently reset on
+    # --recover. That state is now declared restartable, but recover=true has not been
+    # verified end-to-end for this heavy example, so it stays disabled here.
+    recover = false
+    requirement = 'The system shall run the oldboundary_noComp (full-formation-thickness '
+                  'well, constant/incompressible porosity, no poromechanical coupling) '
+                  'variant of the Cranfield HT RTES benchmark, remapped onto '
+                  'Cranfield_caps_new_coarse.e with the same inj_well/ext_well Materials '
+                  'addition as the oldboundary case above, for a bounded number of '
+                  'timesteps, and reproduce a self-baseline gold.'
+  []
+[]

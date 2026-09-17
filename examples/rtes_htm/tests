@@ -1,0 +1,62 @@
+# All of the RTES example tests below are pinned to exactly 4 MPI ranks. IterationAdaptiveDT's
+# accepted step-size trajectory depends on the per-rank nonlinear convergence history, so these
+# CSV golds are not rank-count invariant; the bound is pinned rather than ranged for that reason.
+#
+# Caveat, established against CIVET rather than this repository (no CI recipe is checked in here):
+# as of PR #178, none of the five PR-attached CIVET jobs runs --heavy at all, and the highest rank
+# count any of them uses is 2 -- the Test recipe's steps are "Test falcon", "Test falcon -p 2",
+# "Test falcon --n-threads=2" and "Test falcon dbg", and the Apptainer, Coverage, Documentation and
+# Precheck jobs run no test sweep of their own. These seven tests therefore do not execute in PR
+# CI, both for want of --heavy and because 4 > 2, so a green PR CI says nothing about them either
+# way. Whether a separate scheduled/nightly recipe runs them at 4 ranks is not visible from a PR
+# job list. If no heavy runner supplies 4 ranks, the bound should be dropped and these golds
+# regenerated at a rank count that is actually exercised. Tracked separately.
+
+[Tests]
+  issues = '#178'
+  design = 'examples/rtes_htm.md'
+
+  [continuous]
+    type = CSVDiff
+    input = 'Cranfield_HTM_continous_season_caps_water_newboundary_coarse.i'
+    csvdiff = 'Cranfield_HTM_continous_season_caps_water_newboundary_coarse_CSV.csv'
+    cli_args = 'Executioner/num_steps=10'
+    capabilities = 'method!=dbg'
+    heavy = true
+    min_parallel = 4 # see the rank-count note at the top of this file
+    max_parallel = 4
+    # recover is disabled: the trajectory is rank-count dependent (see max_parallel
+    # comment above) and, until this PR, several postprocessors used in the sweep
+    # (accumulators/latches) held non-restartable state that would silently reset on
+    # --recover. That state is now declared restartable, but recover=true has not been
+    # verified end-to-end for this heavy example, so it stays disabled here.
+    recover = false
+    max_time = 1800 # HTM coupled-mechanics steps are ~44s each; bounded heavy test
+    requirement = 'The system shall run the hydro-thermo-mechanical (HTM) coupled Cranfield '
+                  'RTES benchmark with a continuous seasonal injection schedule, on '
+                  'Cranfield_caps_new_coarse.e, for a bounded number of timesteps (not the '
+                  'full 10 year transient) and reproduce a self-baseline gold.'
+  []
+
+  [pushpull]
+    type = CSVDiff
+    input = 'Cranfield_HTM_push-pull_season_caps_water_newboundary_coarse.i'
+    csvdiff = 'Cranfield_HTM_push-pull_season_caps_water_newboundary_coarse_CSV.csv'
+    cli_args = 'Executioner/num_steps=10'
+    capabilities = 'method!=dbg'
+    heavy = true
+    min_parallel = 4 # see the rank-count note at the top of this file
+    max_parallel = 4
+    # recover is disabled: the trajectory is rank-count dependent (see max_parallel
+    # comment above) and, until this PR, several postprocessors used in the sweep
+    # (accumulators/latches) held non-restartable state that would silently reset on
+    # --recover. That state is now declared restartable, but recover=true has not been
+    # verified end-to-end for this heavy example, so it stays disabled here.
+    recover = false
+    max_time = 1800 # HTM coupled-mechanics steps are ~44s each; bounded heavy test
+    requirement = 'The system shall run the HTM-coupled Cranfield RTES benchmark with a '
+                  'push-pull (summer inject / winter extract / rest) seasonal schedule, on '
+                  'Cranfield_caps_new_coarse.e, for a bounded number of timesteps and '
+                  'reproduce a self-baseline gold.'
+  []
+[]

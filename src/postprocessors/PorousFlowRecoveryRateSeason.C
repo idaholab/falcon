@@ -1,0 +1,62 @@
+//* This file is part of the MOOSE framework
+//* https://www.mooseframework.org
+//*
+//* All rights reserved, see COPYRIGHT for full restrictions
+//* https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//*
+//* Licensed under LGPL 2.1, please see LICENSE for details
+//* https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include "PorousFlowRecoveryRateSeason.h"
+
+#include <cmath>
+
+registerMooseObject("FalconApp", PorousFlowRecoveryRateSeason);
+
+InputParameters
+PorousFlowRecoveryRateSeason::validParams()
+{
+  InputParameters params = GeneralPostprocessor::validParams();
+  params.addRequiredParam<PostprocessorName>("hotwellenergy", "The name of the enthalpy postprocessor at hot well");
+  params.addRequiredParam<PostprocessorName>("coldwellenergy", "The name of the enthalpy postprocessor at cold well");
+  params.addRequiredParam<PostprocessorName>("InjectionIndicator", "The name of the postprocessor for injection indication");
+  params.addRequiredParam<PostprocessorName>("ProductionIndicator", "The name of the postprocessor for production indication");
+  params.addClassDescription("Calculate the seasonal thermal recovery rate (percent) for a doublet system, using explicit injection/production indicator postprocessors to decide which accumulator each timestep contributes to");
+  return params;
+}
+
+PorousFlowRecoveryRateSeason::PorousFlowRecoveryRateSeason(const InputParameters & parameters)
+  : GeneralPostprocessor(parameters),
+    _pps_hot(getPostprocessorValue("hotwellenergy")),
+    _pps_cold(getPostprocessorValue("coldwellenergy")),
+    _pps_inj(getPostprocessorValue("InjectionIndicator")),
+    _pps_pro(getPostprocessorValue("ProductionIndicator")),
+    _accumulator_inj(declareRestartableData<Real>("accumulator_inj", 0)),
+    _accumulator_ext(declareRestartableData<Real>("accumulator_ext", 0))
+{
+}
+
+void
+PorousFlowRecoveryRateSeason::initialize()
+{
+}
+
+void
+PorousFlowRecoveryRateSeason::execute()
+{
+  if (_pps_inj > 0.5){
+    _accumulator_inj += (_pps_hot + _pps_cold);
+  }else if(_pps_pro > 0.5 ){
+    _accumulator_ext += (_pps_hot + _pps_cold);
+  }
+
+}
+
+Real
+PorousFlowRecoveryRateSeason::getValue()  const
+{
+  if (_accumulator_inj == 0)
+    return 0;
+  else
+    return std::abs(_accumulator_ext)/std::abs(_accumulator_inj)*100;
+}

@@ -261,3 +261,7 @@ falcon.yaml
 
 # images
 test/**/*.png
+
+# Local agent tooling (never commit)
+.codegraph/
+/CLAUDE.md

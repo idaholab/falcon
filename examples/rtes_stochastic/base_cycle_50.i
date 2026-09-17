@@ -87,9 +87,26 @@ perm_aquifer = ${fparse 10^perm_exponent}
 
 # Darcy flow with heat advection and conduction
 [Mesh]
+  # The original base_final_50.e had one or more element-block IDs that overflowed the
+  # unsigned-short block-ID field the current libMesh ExodusII_IO reader uses
+  # ("restrict_int failed: <id> does not fit in type t"). base_final_50_blockid_fix.e is that
+  # same mesh with its element-block IDs renumbered to fit (geometry, coordinates, connectivity,
+  # and block/nodeset/sideset NAMES -- which is what this input and its Materials blocks
+  # reference by name, not by numeric ID -- are unchanged by a renumbering).
+  #
+  # The original base_final_50.e is not present in this repository (on this branch or on
+  # devel), so the renumbering is not independently auditable from git history alone. The
+  # renumbered file's own embedded NetCDF metadata is the audit trail instead: its `title`
+  # global attribute reads
+  #   cubit(s/jinw-mac/projects/falcon/Applied_Energy/base_final_50.e): 10/02/2020: 22
+  # (i.e. it was produced by Cubit from a file of that name), and its current eb_prop1/eb_names
+  # (`ncdump -v eb_prop1,eb_names base_final_50_blockid_fix.e`) are:
+  #   caps_HEX8=1, caps_WEDGE=3, aquifer_HEX8=2, aquifer_WEDGE=4
+  # all comfortably within the unsigned-short range, consistent with a renumbering rather than a
+  # from-scratch remesh.
   [./fmg]
     type = FileMeshGenerator
-    file = base_final_50.e
+    file = base_final_50_blockid_fix.e
   []
 []
 #############################################################
@@ -331,20 +348,19 @@ perm_aquifer = ${fparse 10^perm_exponent}
 
 []
 ############################################################
-[Modules]
-  [./FluidProperties]
-    [./true_water]
-      type = Water97FluidProperties
-    [../]
-    [./tabulated_water]
-      type = TabulatedFluidProperties
-      fp = true_water
-      temperature_min = 275
-      temperature_max = 600
-      pressure_max = 1E8
-      interpolated_properties = 'density viscosity enthalpy internal_energy'
-      fluid_property_file = water97_tabulated.csv
-    [../]
+[FluidProperties]
+  [./true_water]
+    type = Water97FluidProperties
+  [../]
+  [./tabulated_water]
+    type = TabulatedFluidProperties
+    fp = true_water
+    allow_fp_and_tabulation = true
+    temperature_min = 275
+    temperature_max = 600
+    pressure_max = 1E8
+    interpolated_properties = 'density viscosity enthalpy internal_energy'
+    fluid_property_file = water97_tabulated.csv
   [../]
 []
 ############################################################

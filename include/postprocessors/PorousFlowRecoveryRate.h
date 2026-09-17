@@ -1,0 +1,40 @@
+//* This file is part of the MOOSE framework
+//* https://www.mooseframework.org
+//*
+//* All rights reserved, see COPYRIGHT for full restrictions
+//* https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//*
+//* Licensed under LGPL 2.1, please see LICENSE for details
+//* https://www.gnu.org/licenses/lgpl-2.1.html
+
+#pragma once
+
+#include "GeneralPostprocessor.h"
+
+class PorousFlowRecoveryRate;
+
+/**
+ * Computes the thermal recovery rate (percentage) of a doublet system as extracted energy
+ * relative to injected energy.
+ */
+class PorousFlowRecoveryRate : public GeneralPostprocessor
+{
+public:
+  static InputParameters validParams();
+
+  PorousFlowRecoveryRate(const InputParameters & parameters);
+
+  virtual void initialize() override;
+  virtual void execute() override;
+  virtual Real getValue() const override;
+
+protected:
+  /// current post-processor value
+  const PostprocessorValue & _pps_hot;
+  const PostprocessorValue & _pps_cold;
+
+  /// Running accumulated values (restartable, so --recover/restart don't silently reset them to 0)
+  Real & _accumulator_inj;
+  Real & _accumulator_ext;
+
+};

@@ -85,7 +85,7 @@ sampler = montecarlo
 [Transfers]
   [results]
     type = SamplerPostprocessorTransfer
-    multi_app = runner
+    from_multi_app = runner
     sampler = ${sampler}
     to_vector_postprocessor = results
     from_postprocessor = 'recovery_rate total_recovery_time total_energy'
@@ -109,6 +109,13 @@ sampler = montecarlo
     input_files = 'base_cycle_50.i'
     mode = batch-reset
     ignore_solve_not_converge = true
+    # error_on_dtmin defaults to true; that's incompatible with
+    # ignore_solve_not_converge above (a non-converged sub-app solve would
+    # otherwise still abort the whole batch instead of being tolerated).
+    cli_args = 'Executioner/error_on_dtmin=false'
+    # NOTE for smoke-testing only: append 'Executioner/num_steps=<N>' to
+    # cli_args above (or via the test spec's cli_args) to bound the sub-app
+    # to a few steps instead of the full 10-year transient.
   []
 []
 

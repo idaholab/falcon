@@ -67,21 +67,25 @@
     type = SolutionFunction
     from_variable = stress_xx
     solution = steady_solution
+    weighting_type = average
   [../]
   [./initial_stress_xy]
     type = SolutionFunction
     from_variable = stress_xy
     solution = steady_solution
+    weighting_type = average
   [../]
   [./initial_stress_yy]
     type = SolutionFunction
     from_variable = stress_yy
     solution = steady_solution
+    weighting_type = average
   [../]
   [./initial_stress_zz]
     type = SolutionFunction
     from_variable = stress_zz
     solution = steady_solution
+    weighting_type = average
   [../]
 []
 ############################################################

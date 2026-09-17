@@ -12,6 +12,7 @@
     exodiff = 'thm_transient_out.e'
     abs_zero = 1.0e-07
     rel_err = 2.0e-04
+    allow_unused = true
     capabilities = 'method!=dbg' # too slow for debug
   [../]
 []

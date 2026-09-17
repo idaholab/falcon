@@ -1,0 +1,49 @@
+[Tests]
+  design = 'PorousFlowSquarePulsePointEnthalpySource.md'
+  issues = '#147 #178'
+  [analytic]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'inp_out.csv'
+    # 'residual' is a catastrophic cancellation of two large solve-dependent terms, so it is 0
+    # only to solver tolerance and drifts across platforms/compilers. The floor is scoped to that
+    # one column via override_*, so every other column keeps the default 1e-10 floor and is still
+    # judged by rel_err -- a blanket abs_zero would also swallow small physical values such as
+    # mass_flux_pp = 0.01, which would otherwise clear the default floor by only 8 orders.
+    override_columns = 'residual'
+    override_rel_err = '5.5e-6'
+    override_abs_zero = '1e-5'
+    requirement = 'The system shall add heat energy at a point at a constant mass flux and fixed '
+                  'inlet temperature, ramped on and off across the timesteps straddling '
+                  'start_time and end_time, such that the change in the domain total heat '
+                  'energy each timestep matches mass_flux * cv * T_in * factor(t) * dt for the '
+                  'analytic 5-case pulse ramp factor, to within solver tolerance.'
+  []
+  [start_after_end_error]
+    type = RunException
+    input = 'inp.i'
+    cli_args = "DiracKernels/source_h/end_time=200 DiracKernels/source_h/start_time=250"
+    expect_err = 'start_time is 250 but it must be less than end_time 200'
+    requirement = 'The system shall error if end_time is not greater than start_time for '
+                  'PorousFlowSquarePulsePointEnthalpySource.'
+  []
+
+  [enthalpy_vs_internal_energy]
+    type = CSVDiff
+    input = 'inp.i'
+    csvdiff = 'pp_coeff_out.csv'
+    override_columns = 'residual'
+    override_rel_err = '5.5e-6'
+    override_abs_zero = '1e-2'
+    cli_args = "FluidProperties/simple_fluid/porepressure_coefficient=1 "
+               "Postprocessors/residual/expression='abs(delta_E - 0.01 * (4000 * 320 + 1e6/(1000*exp(1e6/2e9))) * factor * dt_pp)' "
+               "Outputs/file_base=pp_coeff_out"
+    requirement = 'The system shall transport the fluid ENTHALPY rather than its internal '
+                  'energy, verified against a closed-form analytic result with the '
+                  'porepressure_coefficient of SimpleFluidProperties at its physical value of 1, '
+                  'where h = cv*T + p/rho and the two genuinely differ. Every other case in this '
+                  'directory sets porepressure_coefficient = 0, which makes h identically equal '
+                  'to e, so replacing every h_from_p_T call by e_from_p_T would leave those '
+                  'golds bit-identical.'
+  []
+[]
