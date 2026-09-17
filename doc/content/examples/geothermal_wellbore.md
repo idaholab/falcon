@@ -93,14 +93,28 @@ depending on whether mass can actually cross the well wall there:
   permeability, under which heat injected here could not relieve via flow and instead thermally
   pressurized the trapped pore fluid, running away above $h \sim 0.1$; at the realistic cap
   permeability used now (see [#model-setup]), that specific failure mode no longer binds. A
-  separate numerical limit remains, unrelated to pressurization: above roughly
-  $h \sim 1.5\text{-}1.8\ \mathrm{W/m^2/K}$, the simulation stalls around day 156 of the run
-  (confirmed by bisection; raising the solver's iteration limit does not rescue it), so 1.5 stays
-  just below that wall. The resulting conductive exchange totals about 6.6% of the advected heat
-  rate $Q_{\mathrm{adv}}$ over the run - real, but secondary to a much larger effect: at this
-  permeability, the cap itself is porous enough for the well's own pressure drawdown to drive
-  significant advective flow up through it, which dominates the temperature changes shown in
-  [#results] far more than this conductive term does.
+  separate numerical limit was found at the point placement then in use (a hand-listed
+  `point_file` shared with the open interval, 100m between points): the simulation stalled
+  around day 156 of the run above roughly $h \sim 1.5\text{-}1.8\ \mathrm{W/m^2/K}$. Switching to
+  the auto-placed points described next removed that wall - this revision now runs cleanly
+  through at least $h = 3\ \mathrm{W/m^2/K}$, twice the value actually used, only failing
+  somewhere between 3 and 5. The resulting conductive exchange totals about 9% of the advected
+  heat rate $Q_{\mathrm{adv}}$ over the run - real, but secondary to a much larger effect: at
+  this permeability, the cap itself is porous enough for the well's own pressure drawdown to
+  drive significant advective flow up through it, which dominates the temperature changes shown
+  in [#results] far more than this conductive term does.
+
+  [PorousFlowCasedBoreholeHeatExchange.md]'s own Dirac points are placed by
+  [PolylineDiracPoints.md] (see the `[Reporters][cased_path]` block in [#model-setup]), not by a
+  hand-listed `point_file`: given just the wellhead and the open/cased boundary as literal
+  coordinates, it auto-finds every mesh element the path between them crosses and places one
+  point per element, at this mesh's own 50m vertical resolution rather than at the open
+  interval's 100m Peaceman spacing. An earlier revision shared the open interval's `point_file`
+  for this kernel too, which resolved the conductive exchange on only every other mesh node - a
+  visibly lumpy pattern in Exodus output, and (as the day-156 wall above shows) a real numerical
+  cost as well, not just a cosmetic one. The same object accepts three or more waypoints for a
+  bent or branching well and works unchanged on a fully 3D Cartesian mesh; this example's well is
+  vertical and this mesh is 2D RZ only because the physics being demonstrated is.
 
 ## Model setup
 
@@ -121,7 +135,11 @@ well line itself, dashed marks the open interval, where fluid can actually cross
 and solid marks the cased section, which is sealed to mass flow. The white dots along the open
 interval are the 11 discrete Peaceman points (from `geothermal_wellbore.bh`, 100m apart) where
 `withdraw_fluid`/`withdraw_heat` actually act - the only locations where fluid leaves the
-formation and enters the well.
+formation and enters the well. The cased section above them has its own, separately-placed set
+of 20 points (one per 50m mesh element, via [PolylineDiracPoints.md]; see
+[#borehole-heat-exchange]) where the conductive heat-exchange kernel acts - not shown here, since
+they are simply the mesh's own resolution rather than a deliberate modelling choice the way the
+Peaceman points are.
 
 !media geothermal_wellbore_schematic.png
   id=geothermal_wellbore_geometry_fig
@@ -152,8 +170,12 @@ than either the conductive heat exchange described above or simple conduction al
 
 !listing examples/geothermal_wellbore/model_common.i block=Materials
 
-The two wells share one `point_file` and `character` function, so the open interval is identical
-for the mass-extraction and heat-exchange DiracKernels:
+The mass-extraction DiracKernels (`withdraw_fluid`/`withdraw_heat`) share one `point_file` and
+`character` function, so the open interval is identical for both. The cased-section heat-exchange
+kernel uses the same well line and the complementary `character` function, but places its own
+points via the `[Reporters][cased_path]` block below rather than sharing that `point_file`:
+
+!listing examples/geothermal_wellbore/wells_variable_unit_weight.i block=Reporters/cased_path
 
 !listing examples/geothermal_wellbore/wells_variable_unit_weight.i block=DiracKernels
 
@@ -208,18 +230,29 @@ because any mass crosses the well wall there, which it still does not.
 [geothermal_wellbore_temperature_depths_fig] shows how temperature changes over time at a series
 of depths along the well axis, for the `unit_weight_fp` treatment, and the picture is very
 different from a purely conductive cap: temperature rises substantially throughout the cased
-section, not just near its two ends. At the surface (y=0m) it rises by about 67 K over 5 years;
-at y=-200, -400, -600 and -800m the rises are about 58, 50, 42 and 34 K respectively - a smooth
+section, not just near its two ends. At the surface (y=0m) it rises by about 46 K over 5 years;
+at y=-200, -400, -600 and -800m the rises are about 25, 21, 17 and 14 K respectively - a smooth
 gradient, largest near the surface and decreasing with depth through the cap. This is not the
-new conductive heat exchange at work (which totals only about 6.6% of the advected heat rate):
-it is the realistically-permeable cap itself allowing the well's pressure drawdown to pull fluid,
+new conductive heat exchange at work (which totals only about 9% of the advected heat rate): it
+is the realistically-permeable cap itself allowing the well's pressure drawdown to pull fluid,
 and the heat it carries, up through the cased section by advection - a genuinely different, and
 much larger, mechanism than the small conductive term derived in [#borehole-heat-exchange]. Right
-at the cap/reservoir interface (y=-1000) the change is a much more modest 1.2 K, and below it -
-in the open interval and reservoir - the picture reverts to what drives the mass/heat extraction
-comparison above: temperature at the well bottom (y=-2000m) falls by about 2.4 K as continuous
-heat extraction outpaces replenishment from the surrounding reservoir, while y=-1500m barely
-changes at all.
+at the cap/reservoir interface (y=-1000) the change is negligible (a fraction of a degree either
+way), and below it - in the open interval and reservoir - the picture reverts to what drives the
+mass/heat extraction comparison above: temperature at the well bottom (y=-2000m) falls by about
+2.4 K as continuous heat extraction outpaces replenishment from the surrounding reservoir, while
+y=-1500m barely changes at all.
+
+These near-surface numbers are noticeably smaller than an earlier revision of this example
+reported at the same materials and `heat_transfer_coefficient` (about 67 K at the surface, rather
+than 46 K) - a direct, and reassuring, consequence of switching to
+[PolylineDiracPoints.md]'s finer, mesh-resolution point placement described in
+[#borehole-heat-exchange]. A coarser point spacing concentrates the same total exchanged heat
+onto fewer Dirac points, and each point's own local Dirac-source response in the FEM solution
+overshoots more the more concentrated it is; the earlier, coarser numbers were partly this
+overshoot, not purely the physical advective signal. The total conductive exchange itself barely
+moved (see [#borehole-heat-exchange]) - only its spatial distribution, and hence how much
+discretization artifact leaks into a point sample taken right at the well, did.
 
 !media geothermal_wellbore_temperature_depths.png
   id=geothermal_wellbore_temperature_depths_fig
@@ -229,8 +262,19 @@ changes at all.
 
 [geothermal_wellbore_halo_fig] shows the temperature at the cap/reservoir interface (right where
 the well's open interval begins) as a function of radius, at the end of the run - a real,
-well-centered thermal halo around the well for both treatments, peaking at about 404.3 K against
-a 403.2 K background and extending to about 60m radius.
+well-centered thermal halo around the well for both treatments, settling back to a 403.2 K
+background by about 100-150m radius. Its very center is not perfectly smooth: at r=0 the
+temperature (402.9 K) actually sits slightly *below* the background, with the local maximum
+(403.7 K) at the next sample out (r=10m) instead. y=-1000 is the one location where two
+independently-discretized objects place a point at exactly the same coordinate - the cased
+kernel's own deepest (and, there, inactive) point and the open interval's shallowest Peaceman
+point - so the temperature reported right there reflects the balance of the advective cooling
+from `withdraw_fluid`/`withdraw_heat` (still acting at that exact point) against how much
+warmth conducts across from the nearest *active* cased point, 75m up the well, rather than any
+local heat input of the cased kernel's own (`cased_character` is zero at y=-1000 itself). Beyond
+r=20m the profile is indistinguishable from a run that still used the old, coarser cased-section
+point placement, confirming the halo's overall shape and extent are unaffected - only the one or
+two points immediately at the shared coordinate move.
 
 !media geothermal_wellbore_temperature_halo.png
   id=geothermal_wellbore_halo_fig
@@ -238,16 +282,18 @@ a 403.2 K background and extending to about 60m radius.
   caption=Temperature vs. radius at the cap/reservoir interface, final timestep.
 
 [geothermal_wellbore_cap_temperature_fig] shows the same kind of radial profile, but strictly
-*inside* the cap, 500m below the surface, and at a handful of times through the run, rather than
-a single final snapshot at the cap/reservoir boundary. The profile is flat at the undisturbed
-background (353.15 K, the geothermal gradient's value at this depth) at early times, then a
-sharp, growing spike develops right at the well - reaching about 399 K by the end of the run,
-46 K above background, and decaying back to background within about 20m. This is the same
-advective mechanism visible in [geothermal_wellbore_temperature_depths_fig], now shown as a
-function of radius rather than time: hot fluid drawn up along the well axis through the
-realistically-permeable cap, not the new conductive heat exchange kernel, whose own contribution
-(reported separately via `wellbore_heat_point_flux_out`, not distinguishable from the advective
-signal in a plain temperature snapshot like this one) is an order of magnitude smaller.
+*inside* the cap, 500m below the surface (not at a shared point-placement coordinate the way
+y=-1000 is, so this profile is smooth and monotonic all the way to r=0), and at a handful of
+times through the run, rather than a single final snapshot at the cap/reservoir boundary. The
+profile is flat at the undisturbed background (353.15 K, the geothermal gradient's value at this
+depth) at early times, then a growing peak develops right at the well - reaching about 372 K by
+the end of the run, 19 K above background, and decaying back to background within about 50m.
+This is the same advective mechanism visible in [geothermal_wellbore_temperature_depths_fig], now
+shown as a function of radius rather than time: hot fluid drawn up along the well axis through
+the realistically-permeable cap, not the new conductive heat exchange kernel, whose own
+contribution (reported separately via `wellbore_heat_point_flux_out`, not distinguishable from
+the advective signal in a plain temperature snapshot like this one) is an order of magnitude
+smaller.
 
 !media geothermal_wellbore_cap_temperature_radial.png
   id=geothermal_wellbore_cap_temperature_fig
