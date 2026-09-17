@@ -1,0 +1,14 @@
+[Tests]
+  issues = '#181'
+  design = 'PolylineDiracPoints.md'
+  [bend_and_3d]
+    type = 'JSONDiff'
+    input = 'polyline_dirac_points.i'
+    jsondiff = 'polyline_dirac_points_out.json'
+    skip_keys = 'type'
+    requirement = 'The system shall be able to auto-place Dirac points along an arbitrary '
+                  'multi-segment (bent) polyline path on a fully 3D Cartesian mesh, given only '
+                  'literal waypoint coordinates, placing exactly one point per mesh element '
+                  'crossed and exactly one point (not a duplicate) at each interior waypoint.'
+  []
+[]
