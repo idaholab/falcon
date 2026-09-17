@@ -33,6 +33,33 @@
   []
 []
 
+[Reporters]
+  [cased_path]
+    # Auto-placed Dirac points for the cased section: one per mesh element the path from the
+    # wellhead (y=0) down to the cased/open boundary (y=-1000) crosses, found by walking the
+    # mesh rather than by any hand-picked spacing. The mass-extraction kernels below keep using
+    # geothermal_wellbore.bh, whose 100m spacing is coarser than this mesh's own 50m vertical
+    # resolution; that is harmless for them (they are only active over the open interval, and
+    # their Peaceman points are a deliberate modelling choice), but it made the cased section's
+    # conductive exchange visibly lumpy, acting on only every other mesh node - see
+    # PolylineDiracPoints.md.
+    #
+    # 'points' takes literal coordinates in path order - shallowest first, deepest last - and
+    # accepts three or more waypoints for a bent or branching well; two are used here because
+    # this example's well is vertical. The last waypoint MUST reach the cased/open boundary at
+    # y=-1000, where cased_character becomes zero (PorousFlowCasedBoreholeHeatExchange enforces
+    # this at startup): that boundary point is where PorousFlowCasedBoreholeHeatExchange enters
+    # the open interval's mixing temperature and starts measuring distance up the well from. It
+    # also matches geothermal_wellbore.bh's own y=-1000 point (row 11), so the cased and open
+    # geometries meet exactly, with no gap and no overlap (cased_character and well_character are
+    # exact complements at y=-1000).
+    type = PolylineDiracPoints
+    points = '0 0 0
+              0 -1000 0'
+    weight = 0.1 # casing outer radius (m), matching geothermal_wellbore.bh's own weight column
+  []
+[]
+
 [DiracKernels]
   [withdraw_fluid]
     type = PorousFlowPeacemanBorehole
@@ -72,6 +99,10 @@
     # surrounding cap, complementing withdraw_heat's advective-only exchange below - see
     # PorousFlowCasedBoreholeHeatExchange.md.
     #
+    # Places its own points independently of withdraw_fluid/withdraw_heat's point_file (see the
+    # [Reporters][cased_path] block above), at this mesh's own 50m vertical resolution rather
+    # than the mass-extraction kernels' 100m point spacing.
+    #
     # heat_transfer_coefficient = 1.5 W/m^2/K is a realistic casing-side resistance estimate
     # (in-well film + steel casing + cement sheath). At this cap permeability (see
     # model_common.i - realistic, unlike an earlier revision's deliberately very low value),
@@ -82,7 +113,10 @@
     # below that wall.
     type = PorousFlowCasedBoreholeHeatExchange
     variable = temperature
-    point_file = geothermal_wellbore.bh
+    x_coord_reporter = 'cased_path/x'
+    y_coord_reporter = 'cased_path/y'
+    z_coord_reporter = 'cased_path/z'
+    weight_reporter = 'cased_path/weight'
     character = cased_character
     heat_transfer_coefficient = 1.5
     mass_point_flux_vpp = mass_point_flux
