@@ -29,7 +29,7 @@
 # means PorousFlowMatrixInternalEnergy's ~1e5 energy diagonal dominates ||J||_F, leaving too coarse
 # an absolute budget to see the O(1e-5) pressure-block entries. The three dh/dT diagonals are
 # caught here; the pressure-block terms are covered by the companion inp_scaled.i, which is the
-# same eight kernels on an O(1)-scaled problem. See that file's header.
+# same nine kernels on an O(1)-scaled problem. See that file's header.
 
 [Mesh]
   type = GeneratedMesh
@@ -118,6 +118,9 @@
   [mass_source_sink_fn_uo]
     type = PorousFlowSumQuantity
   []
+  [peaceman_enthalpy_sink_uo]
+    type = PorousFlowSumQuantity
+  []
 []
 
 [Functions]
@@ -132,6 +135,13 @@
   [temperature_fn]
     type = ParsedFunction
     expression = '0'
+  []
+  [bottom_pressure_fn]
+    # Well above the pressure_ic range (1e5 to 2e6), so pp < bh_pressure is guaranteed and the
+    # injection branch (character < 0) is always active - otherwise the outflow, and everything
+    # this test exists to check, would be identically zero.
+    type = ParsedFunction
+    expression = '3e6'
   []
 []
 
@@ -220,6 +230,22 @@
     pressure = pressure
     fp = simple_fluid
     point = '0.2 0.2 0.8'
+  []
+  [peaceman_enthalpy_sink]
+    type = PorousFlowPeacemanEnthalpySink
+    variable = temperature
+    fp = simple_fluid
+    pressure = pressure
+    injection_temperature = t_in_fn
+    fluid_phase = 0
+    line_base = '0.01 0.5 0.5 0.05'
+    line_direction = '0 0 1'
+    line_length = 0.1
+    character = -1
+    bottom_p_or_t = bottom_pressure_fn
+    unit_weight = '0 0 0'
+    use_mobility = false
+    SumQuantityUO = peaceman_enthalpy_sink_uo
   []
 []
 
