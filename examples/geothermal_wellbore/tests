@@ -1,7 +1,9 @@
 [Tests]
-  issues = '#180'
+  issues = '#180 #181'
   design = 'geothermal_wellbore.md PorousFlowPeacemanBorehole.md PorousFlowPointFluxQuantity.md '
-           'PorousFlowPlotPointFluxQuantity.md PorousFlowCasedBoreholeHeatExchange.md'
+           'PorousFlowPlotPointFluxQuantity.md PorousFlowCasedBoreholeHeatExchange.md '
+           'PorousFlowRateControlledBoreholePressure.md PorousFlowPeacemanEnthalpySink.md '
+           'PolylineDiracPoints.md'
 
   [production]
     type = CSVDiff
@@ -11,5 +13,20 @@
               'production_out_wellbore_heat_point_flux_out_0003.csv'
     max_threads = 1
     requirement = 'FALCON shall demonstrate a geothermal production well with wellbore-reservoir heat exchange, using PorousFlowPeacemanBorehole with a temperature-dependent unit_weight_fp wellbore-pressure profile and per-point flux reporting via PorousFlowPointFluxQuantity/PorousFlowPlotPointFluxQuantity, plus conductive heat exchange between the cased section and the surrounding cap via PorousFlowCasedBoreholeHeatExchange.'
+  []
+  [injection]
+    type = CSVDiff
+    input = 'injection.i'
+    csvdiff = 'injection_out.csv injection_out_mass_point_flux_0026.csv '
+              'injection_out_wellbore_heat_point_flux_out_0026.csv'
+    max_threads = 1
+    requirement = 'FALCON shall demonstrate a rate-controlled geothermal injection well, in '
+                  'which PorousFlowRateControlledBoreholePressure corrects the Peaceman '
+                  'bottomhole pressure once per timestep so the delivered mass rate converges '
+                  'on a prescribed target, the injected flow partitions itself across the open '
+                  'interval in proportion to local permeability, injected enthalpy enters via '
+                  'PorousFlowPeacemanEnthalpySink at a prescribed injection temperature, and '
+                  'PorousFlowCasedBoreholeHeatExchange marches the wellbore temperature downward '
+                  'from the wellhead with flow_direction=injection.'
   []
 []
