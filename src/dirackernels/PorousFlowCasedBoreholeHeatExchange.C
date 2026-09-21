@@ -31,18 +31,35 @@ PorousFlowCasedBoreholeHeatExchange::validParams()
       "resistance is already resolved by the mesh, so including it here would double-count it.");
   params.addRequiredParam<VectorPostprocessorName>(
       "mass_point_flux_vpp",
-      "The name of a PorousFlowPlotPointFluxQuantity VectorPostprocessor reporting the produced "
-      "mass flux (its 'flux' vector) at each point of the open/perforated section. Its point set "
-      "is independent of this kernel's own: the mixing temperature is evaluated at that VPP's "
-      "own reported 'x'/'y'/'z' coordinates, so the cased section may place its points however "
-      "it likes (see PolylineDiracPoints). By convention the cased path's deepest point should "
+      "The name of a PorousFlowPlotPointFluxQuantity VectorPostprocessor reporting the mass flux "
+      "(its 'flux' vector) at each point of the open/perforated section - produced, in "
+      "production mode; injected, in injection mode. Its point set is independent of this "
+      "kernel's own: in production mode the mixing temperature is evaluated at that VPP's own "
+      "reported 'x'/'y'/'z' coordinates, so the cased section may place its points however it "
+      "likes (see PolylineDiracPoints). By convention the cased path's deepest point should "
       "coincide with the shallowest point of the open interval, so that the distance along the "
       "well in the wellbore-temperature march is measured from the true open/cased boundary - "
       "enforced at initialSetup() by requiring 'character' to be zero at this kernel's own last "
-      "point. Used both to get the total produced mass rate and to compute the mass-flux-"
-      "weighted mixing temperature of the fluid entering the cased section - the fluid produced "
-      "deeper in the open interval is hotter, so a mixing average is used rather than the local "
-      "formation temperature at the open/cased boundary alone.");
+      "point. Used to get the total mass rate in both modes, and (production only) to compute "
+      "the mass-flux-weighted mixing temperature of the fluid entering the cased section - the "
+      "fluid produced deeper in the open interval is hotter, so a mixing average is used rather "
+      "than the local formation temperature at the open/cased boundary alone.");
+  MooseEnum flow_direction("production injection", "production");
+  params.addParam<MooseEnum>(
+      "flow_direction",
+      flow_direction,
+      "Which way fluid flows through the cased section. 'production' (the default): fluid "
+      "enters at the open/cased boundary carrying the mass-flux-weighted mixing temperature of "
+      "everything produced across the open interval, and flows UP to the wellhead. 'injection': "
+      "fluid enters at the WELLHEAD at 'injection_temperature' and flows DOWN to the open/cased "
+      "boundary, so the march runs in the opposite index direction and the entry condition is "
+      "prescribed rather than derived.");
+  params.addParam<FunctionName>(
+      "injection_temperature",
+      "Temperature (K) of the fluid entering the cased section at the wellhead. Required if and "
+      "only if flow_direction = injection. Deliberately NOT fed from the open interval's own "
+      "downstream temperature - this is the fluid's temperature before it has exchanged any "
+      "heat with the formation on its way down, which is exactly what this kernel then models.");
   params.addRequiredParam<UserObjectName>(
       "wellbore_fp",
       "SinglePhaseFluidProperties UserObject used to evaluate the in-well fluid specific heat "
@@ -76,6 +93,9 @@ PorousFlowCasedBoreholeHeatExchange::PorousFlowCasedBoreholeHeatExchange(
   : PorousFlowLineGeometry(parameters),
     _character(getFunction("character")),
     _h(getParam<Real>("heat_transfer_coefficient")),
+    _flow_direction(getParam<MooseEnum>("flow_direction").getEnum<FlowDirection>()),
+    _t_inj(isParamValid("injection_temperature") ? &getFunction("injection_temperature")
+                                                 : nullptr),
     _mass_flux(getVectorPostprocessorValue("mass_point_flux_vpp", "flux")),
     _mass_flux_x(getVectorPostprocessorValue("mass_point_flux_vpp", "x")),
     _mass_flux_y(getVectorPostprocessorValue("mass_point_flux_vpp", "y")),
@@ -89,6 +109,16 @@ PorousFlowCasedBoreholeHeatExchange::PorousFlowCasedBoreholeHeatExchange(
     _point_fluxes(const_cast<PorousFlowPointFluxQuantity &>(
         getUserObject<PorousFlowPointFluxQuantity>("PointFluxUO")))
 {
+  if (_flow_direction == FlowDirection::injection && !_t_inj)
+    paramError("injection_temperature",
+               "is required when flow_direction = injection: the cased section's entry "
+               "temperature is prescribed at the wellhead, not derived from the open interval's "
+               "mixing temperature as it is for production.");
+  if (_flow_direction == FlowDirection::production && _t_inj)
+    paramError("injection_temperature",
+               "is only meaningful when flow_direction = injection. For production the entry "
+               "temperature is the mass-flux-weighted mixing temperature derived from "
+               "'mass_point_flux_vpp'.");
 }
 
 void
@@ -208,35 +238,60 @@ PorousFlowCasedBoreholeHeatExchange::computeWellboreTemperatures()
       _mass_flux_y.size() != num_mass_pts || _mass_flux_z.size() != num_mass_pts)
     return;
 
-  // Total produced mass rate, and the mass-flux-weighted mixing temperature of everything
-  // produced across the open interval - the fluid entering deeper in that interval is hotter, so
-  // this mixing average (not the local formation temperature at the open/cased boundary alone)
-  // is the physically correct temperature of the fluid entering the cased section. Sampled at the
-  // open interval's OWN reported point coordinates: this kernel's cased section places its
-  // points independently (see PolylineDiracPoints), so its own _x_coord/_y_coord/_z_coord no
-  // longer index the same physical locations as _mass_flux.
   Real mdot = 0.0;
-  Real mdot_t = 0.0;
-  for (const auto i : make_range(num_mass_pts))
+  Real t_entry = 0.0;
+
+  if (_flow_direction == FlowDirection::production)
   {
-    // Zero-flux points (everywhere the open interval's own 'character' is zero) contribute
-    // nothing to either sum, so skipping them is numerically exact - and it avoids a needless
-    // System::point_value() call, which insists the point be evaluable and can trip a libMesh
-    // assertion in a debug build if it is not. _mass_flux is replicated (its underlying
-    // PorousFlowPointFluxQuantity sums across processors in finalize()), so every rank makes the
-    // same skip decision and the collective point_value() calls below stay in lockstep.
-    if (_mass_flux[i] == 0.0)
-      continue;
+    // Total produced mass rate, and the mass-flux-weighted mixing temperature of everything
+    // produced across the open interval - the fluid entering deeper in that interval is hotter,
+    // so this mixing average (not the local formation temperature at the open/cased boundary
+    // alone) is the physically correct temperature of the fluid entering the cased section.
+    // Sampled at the open interval's OWN reported point coordinates: this kernel's cased section
+    // places its points independently (see PolylineDiracPoints), so its own
+    // _x_coord/_y_coord/_z_coord no longer index the same physical locations as _mass_flux.
+    Real mdot_t = 0.0;
+    for (const auto i : make_range(num_mass_pts))
+    {
+      // Zero-flux points (everywhere the open interval's own 'character' is zero) contribute
+      // nothing to either sum, so skipping them is numerically exact - and it avoids a needless
+      // System::point_value() call, which insists the point be evaluable and can trip a libMesh
+      // assertion in a debug build if it is not. _mass_flux is replicated (its underlying
+      // PorousFlowPointFluxQuantity sums across processors in finalize()), so every rank makes
+      // the same skip decision and the collective point_value() calls below stay in lockstep.
+      if (_mass_flux[i] == 0.0)
+        continue;
 
-    const Point p(_mass_flux_x[i], _mass_flux_y[i], _mass_flux_z[i]);
-    const Real t = _temperature_system.point_value(_temperature_var_number, p, &old_solution);
-    mdot += _mass_flux[i];
-    mdot_t += _mass_flux[i] * t;
+      const Point p(_mass_flux_x[i], _mass_flux_y[i], _mass_flux_z[i]);
+      const Real t = _temperature_system.point_value(_temperature_var_number, p, &old_solution);
+      mdot += _mass_flux[i];
+      mdot_t += _mass_flux[i] * t;
+    }
+    if (mdot <= 0.0)
+      return; // no produced flow yet (eg the first time step, before mass_point_flux_vpp has run)
+
+    t_entry = mdot_t / mdot;
   }
-  if (mdot <= 0.0)
-    return; // no produced flow yet (eg the first time step, before mass_point_flux_vpp has run)
+  else
+  {
+    // Injection: the entry temperature is PRESCRIBED at the wellhead, so there is no mixing
+    // average to form, and none of the per-point formation-temperature sampling the production
+    // branch needs either. Only the total injected mass rate is required, and the open interval
+    // reports it with the opposite sign (PorousFlow's outflow convention: negative outflow =
+    // source, driven by the injector's character < 0).
+    for (const auto i : make_range(num_mass_pts))
+      mdot += _mass_flux[i];
+    mdot = -mdot; // now positive, as this ODE's mdot must be
+    if (mdot <= 0.0)
+      return; // no injected flow yet (eg the very first timestep)
 
-  const Real t_mix = mdot_t / mdot;
+    // Evaluated at the shallowest point of this kernel's own path - the wellhead - so that a
+    // spatially-varying Function reads sensibly. Evaluated at the current time _t, which (like
+    // _character and PorousFlowPeacemanBorehole's _p_bot) is deterministic and constant through
+    // the whole Newton solve, so _t_well remains a true constant for that solve.
+    t_entry = _t_inj->value(
+        _t, Point(_x_coord->at(0), _y_coord->at(0), _z_coord->at(0)));
+  }
 
   // Find the deepest point at which this kernel is active (the largest index with nonzero
   // _character): the point_file convention (shared with PorousFlowPeacemanBorehole) is that the
@@ -257,14 +312,15 @@ PorousFlowCasedBoreholeHeatExchange::computeWellboreTemperatures()
     return; // this kernel is disabled everywhere, or has no open interval below it to mix from
 
   // Bulk-averaged formation temperature over the cased section (points 0..i_start, plus the
-  // open/cased boundary point i_start+1 that t_mix enters at), and the fluid's specific heat
-  // evaluated once at the entry temperature - both single, well-mixed values rather than a
-  // segment-by-segment recomputation, so T_well at any point depends only on t_mix and this
-  // point's own cumulative distance from the boundary, never on another cased point's T_well.
+  // open/cased boundary point i_start+1), and the fluid's specific heat evaluated once at the
+  // entry temperature - both single, well-mixed values rather than a segment-by-segment
+  // recomputation, so T_well at any point depends only on t_entry and this point's own
+  // cumulative distance from where the fluid enters, never on another cased point's T_well.
   //
-  // temperature_f, t_mix, and t_avg are all sampled from the *old* (previous time step's
-  // converged) solution (see above), so none of this is reachable with an unphysical
-  // intermediate value from the current Newton iterate. It is still clamped defensively: the
+  // temperature_f, t_entry, and t_avg are all sampled from (or, for injection's prescribed
+  // t_entry, evaluated at) the *old* (previous time step's converged) solution/time (see above),
+  // so none of this is reachable with an unphysical intermediate value from the current Newton
+  // iterate. It is still clamped defensively: the
   // converged solution driving next time step's old solution is itself extrapolated by the
   // time integrator/time stepper from a finite-precision solve, and clamping costs nothing on
   // the physically-sane values this normally sees.
@@ -288,16 +344,38 @@ PorousFlowCasedBoreholeHeatExchange::computeWellboreTemperatures()
   }
   const Real t_avg = t_avg_numerator / t_avg_length;
 
-  const Real t_for_cp = std::min(std::max(t_mix, min_valid_temperature), max_valid_temperature);
+  const Real t_for_cp = std::min(std::max(t_entry, min_valid_temperature), max_valid_temperature);
   const Real cp = std::max(_fp.cp_from_p_T(_reference_pressure, t_for_cp), min_valid_cp);
-  const Real perimeter_avg = libMesh::pi * (_weight->at(i_start) + _weight->at(i_start + 1));
 
-  Real cumulative_length = 0.0;
-  for (int i = i_start; i >= 0; --i)
+  if (_flow_direction == FlowDirection::production)
   {
-    cumulative_length += 2.0 * _half_seg_len[i];
-    const Real ntu = std::min(_h * perimeter_avg * cumulative_length / (mdot * cp), max_ntu);
-    _t_well[i] = t_avg + (t_mix - t_avg) * std::exp(-ntu);
+    // Fluid enters at the open/cased boundary (node i_start+1, which is NOT one of this
+    // kernel's own active points) and s increases toward the wellhead (index 0).
+    const Real perimeter_avg = libMesh::pi * (_weight->at(i_start) + _weight->at(i_start + 1));
+    Real cumulative_length = 0.0;
+    for (int i = i_start; i >= 0; --i)
+    {
+      cumulative_length += 2.0 * _half_seg_len[i];
+      const Real ntu = std::min(_h * perimeter_avg * cumulative_length / (mdot * cp), max_ntu);
+      _t_well[i] = t_avg + (t_entry - t_avg) * std::exp(-ntu);
+    }
+  }
+  else
+  {
+    // Injection: fluid enters at the wellhead (index 0, one of this kernel's own active points)
+    // and s increases toward the open/cased boundary. Because the wellhead IS the entry point
+    // (unlike production's entry point, which sits just outside this kernel's own active range),
+    // cumulative_length starts at exactly 0, so _t_well[0] equals injection_temperature exactly -
+    // not one segment's worth of decay in, the way production's first active point is.
+    const Real perimeter_avg = libMesh::pi * (_weight->at(0) + _weight->at(1));
+    Real cumulative_length = 0.0;
+    for (int i = 0; i <= i_start; ++i)
+    {
+      if (i > 0)
+        cumulative_length += 2.0 * _half_seg_len[i - 1];
+      const Real ntu = std::min(_h * perimeter_avg * cumulative_length / (mdot * cp), max_ntu);
+      _t_well[i] = t_avg + (t_entry - t_avg) * std::exp(-ntu);
+    }
   }
 }
 

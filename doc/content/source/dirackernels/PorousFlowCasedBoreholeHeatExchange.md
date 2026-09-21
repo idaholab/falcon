@@ -52,15 +52,39 @@ elsewhere along the well can be just as large as the one term the Jacobian captu
 undifferentiated this destabilized the coupled Newton solve during the example's production
 ramp-up - lagging to the old solution removes the dependency instead of merely approximating it.
 
-The starting (entry) condition is the mass-flux-weighted mixing temperature of everything
-produced across the open interval, read from a `PorousFlowPointFluxQuantity`/
-`PorousFlowPlotPointFluxQuantity` pair already reporting that well's per-point flux *and*
-coordinates (at the same one-time-step lag), not simply the local formation temperature at the
-open/cased boundary - fluid produced deeper in the open interval is hotter, and most of the
-produced mass typically enters there, so using only the boundary-point temperature would
-understate the fluid actually entering the casing. Sampling formation temperature at that VPP's
-own reported coordinates, rather than at this kernel's own points, is what lets the two point
-sets be placed completely independently of one another.
+In `flow_direction = production` (the default), the starting (entry) condition is the
+mass-flux-weighted mixing temperature of everything produced across the open interval, read from
+a `PorousFlowPointFluxQuantity`/`PorousFlowPlotPointFluxQuantity` pair already reporting that
+well's per-point flux *and* coordinates (at the same one-time-step lag), not simply the local
+formation temperature at the open/cased boundary - fluid produced deeper in the open interval is
+hotter, and most of the produced mass typically enters there, so using only the boundary-point
+temperature would understate the fluid actually entering the casing. Sampling formation
+temperature at that VPP's own reported coordinates, rather than at this kernel's own points, is
+what lets the two point sets be placed completely independently of one another.
+
+## Flow direction
+
+`flow_direction = injection` reverses both the entry condition and the march direction: fluid
+enters at the *wellhead* (this kernel's own first point) at `injection_temperature`, a prescribed
+`Function` rather than a derived mixing temperature, and $s$ increases from the wellhead toward
+the open/cased boundary instead of the other way around. Because the wellhead is one of this
+kernel's own active points (unlike production's entry point, which sits just outside its active
+range, at the open/cased boundary), $T_{\mathrm{well}}$ at the wellhead equals
+`injection_temperature` exactly, with no decay - the resulting per-point exchanged heat is
+largest there and decays with depth, the mirror image of the production profile (largest at the
+boundary, decaying toward the wellhead).
+
+`mdot` in both modes is the well's own *actual* mass rate from `mass_point_flux_vpp` - produced,
+in production mode; injected, in injection mode (the sign is flipped internally, since
+PorousFlow's outflow convention reports injection as negative) - never an externally-prescribed
+target rate (eg from [PorousFlowRateControlledBoreholePressure.md]), since the physically correct
+value to march with is whatever mass is actually flowing this timestep.
+
+`injection_temperature` is the fluid's temperature *before* it has exchanged any heat with the
+formation - by design, this kernel is what computes how that temperature evolves on the way down.
+It is deliberately not fed back from anywhere downstream (eg a companion advective enthalpy sink
+at the open interval, such as [PorousFlowPeacemanEnthalpySink.md]) - see the
+[geothermal_wellbore.md] injection example's own note on this as a documented simplification.
 
 ## Point set and the open/cased boundary
 
@@ -98,9 +122,15 @@ than merely left undifferentiated.
 
 ## Example Input File Syntax
 
+Production mode:
+
 !listing examples/geothermal_wellbore/wells_variable_unit_weight.i block=Reporters/cased_path
 
 !listing examples/geothermal_wellbore/wells_variable_unit_weight.i block=DiracKernels/wellbore_heat_exchange
+
+Injection mode:
+
+!listing examples/geothermal_wellbore/wells_injection.i block=DiracKernels/wellbore_heat_exchange
 
 !syntax parameters /DiracKernels/PorousFlowCasedBoreholeHeatExchange
 
