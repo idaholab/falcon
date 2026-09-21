@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 """Compare the old (constant unit_weight) and new (unit_weight_fp) PorousFlowPeacemanBorehole
-wellbore-pressure treatments for this example: extracted mass/heat rate over time, pressure vs.
-depth along the well, temperature vs. time at a series of depths, and the temperature halo at
-the cap/reservoir interface (y=-1000, right at the well's open interval).
+wellbore-pressure treatments for the production example: extracted mass/heat rate over time,
+pressure vs. depth along the well, temperature vs. time at a series of depths, and the
+temperature halo at the cap/reservoir interface (y=-1000, right at the well's open interval).
+Also plots the rate-controlled injection example: delivered rate/bottomhole pressure vs. time
+(showing the secant correction converge), and per-point injected mass flux vs. depth (showing
+the flow partition itself by local permeability across the high-k sub-zone).
 
 Usage: python3 plot_results.py
-Run from this directory after both variants have been run with falcon-opt:
+Run from this directory after all three variants have been run with falcon-opt:
   falcon-opt -i production.i
   falcon-opt -i production_constant_unit_weight.i
+  falcon-opt -i injection.i
 """
 import glob
 
@@ -16,6 +20,7 @@ import pandas as pd
 
 NEW = "production"
 OLD = "production_constant_unit_weight"
+INJ = "injection"
 YEAR = 3.15576e7
 
 # Depth (m) -> main-CSV postprocessor name, for the temperature-vs-time-at-depth plot.
@@ -165,6 +170,52 @@ def main():
     fig.tight_layout()
     fig.savefig("cap_temperature_radial.png", dpi=150)
     print("Saved cap_temperature_radial.png")
+
+    plot_injection()
+
+
+def plot_injection():
+    inj = load_main(INJ)
+    inj = inj[inj["time"] > 0]
+
+    target = -20.0  # kg/s - see wells_injection.i's target_injection_rate
+
+    # 6. Delivered rate and controlled bottomhole pressure vs. time - the direct evidence the
+    # secant correction converges on the target rate rather than merely running at some
+    # arbitrary fixed pressure.
+    fig, ax1 = plt.subplots(figsize=(8, 5.5))
+    ax2 = ax1.twinx()
+    ax1.plot(inj["time"] / YEAR, inj["injected_mass_rate"], "s-", color="#1f77b4",
+             label="delivered rate")
+    ax1.axhline(target, color="#1f77b4", linewidth=0.8, linestyle="--", label="target rate")
+    ax2.plot(inj["time"] / YEAR, inj["bhp_control"] / 1e6, "o-", color="#a85a2a",
+             label="bottomhole pressure")
+    ax1.set_xlabel("time (years)")
+    ax1.set_ylabel("injected mass rate (kg/s)", color="#1f77b4")
+    ax2.set_ylabel("bhp_control (MPa)", color="#a85a2a")
+    ax1.tick_params(axis="y", labelcolor="#1f77b4")
+    ax2.tick_params(axis="y", labelcolor="#a85a2a")
+    ax1.set_title("Rate-controlled injection: delivered rate and bottomhole pressure")
+    fig.legend(loc="lower right")
+    fig.tight_layout()
+    fig.savefig("injection_rate_and_bhp.png", dpi=150)
+    print("Saved injection_rate_and_bhp.png")
+
+    # 7. Per-point injected mass flux vs. depth, final step - the direct evidence that flow
+    # partitions itself by local permeability: the three points inside the high-k sub-zone
+    # (y=-1400 to -1600, injection_zones.i) should carry visibly more flux than their
+    # uniform-permeability neighbors, with NOTHING in the model explicitly imposing that split.
+    flux = load_final_line(INJ, "mass_point_flux")
+    fig, ax = plt.subplots(figsize=(6, 7))
+    ax.plot(flux["flux"], flux["y"], "o-", markersize=4)
+    ax.axhspan(-1600, -1400, color="#d62728", alpha=0.15, label="high-k sub-zone (10x)")
+    ax.set_xlabel("injected mass flux (kg/s)")
+    ax.set_ylabel("depth, y (m)")
+    ax.set_title("Injected mass flux vs. depth, final step")
+    ax.legend()
+    fig.tight_layout()
+    fig.savefig("injection_flux_vs_depth.png", dpi=150)
+    print("Saved injection_flux_vs_depth.png")
 
 
 if __name__ == "__main__":

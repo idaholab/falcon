@@ -1,11 +1,13 @@
-# Geothermal well production and wellbore-reservoir heat exchange
+# Geothermal well production, rate-controlled injection, and wellbore-reservoir heat exchange
 
 ## Introduction
 
-This example has two goals: to show how a temperature-dependent fluid density changes the
-pressure needed to produce hot water from a geothermal well, and to show the two distinct
-mechanisms by which the well exchanges heat with the rock around it - advectively, where fluid
-actually crosses into the well, and conductively, through the casing wall above that.
+This example has three goals: to show how a temperature-dependent fluid density changes the
+pressure needed to produce hot water from a geothermal well; to show the two distinct mechanisms
+by which a well exchanges heat with the rock around it - advectively, where fluid actually
+crosses into the well, and conductively, through the casing wall above that; and to show how a
+well can be driven by a prescribed *flow rate* rather than a prescribed pressure, which in turn
+lets the injected flow partition itself across the open interval according to local permeability.
 
 ### Thermal fluid production
 
@@ -116,6 +118,65 @@ depending on whether mass can actually cross the well wall there:
   bent or branching well and works unchanged on a fully 3D Cartesian mesh; this example's well is
   vertical and this mesh is 2D RZ only because the physics being demonstrated is.
 
+### Rate-controlled injection
+
+The production well above is driven by a prescribed pressure - `bottom_p_or_t` - with the
+delivered mass rate emerging from [PorousFlowPeacemanBorehole.md]'s own well-index (WI) formula.
+An injection well is often better specified the other way around: a target flow rate, with the
+pressure needed to deliver it left to emerge. [PorousFlowRateControlledBoreholePressure.md]
+provides exactly this, without any change to `PorousFlowPeacemanBorehole` itself: because its
+flux at each point is $\mathrm{WI}_i \lambda_i (P_i - P_{\mathrm{well},i})$, and
+$P_{\mathrm{well},i}$ is an affine function of the single scalar `bottom_p_or_t`, the *total*
+well rate is itself affine in that one scalar:
+
+\begin{equation}
+\dot{m}_{\mathrm{total}}(P_{\mathrm{bot}}) = A - B P_{\mathrm{bot}}, \qquad
+B = \sum_i \mathrm{WI}_i \lambda_i \ ,
+\end{equation}
+
+so a secant-method correction, using only the well's own delivered rate and its own pressure
+history - never permeability directly - finds the pressure that delivers a target rate:
+
+\begin{equation}
+B^{(n)} = -\frac{\dot m^{(n)} - \dot m^{(n-1)}}{P^{(n)} - P^{(n-1)}}, \qquad
+P^{(n+1)} = P^{(n)} + \frac{\dot m^{(n)} - \dot m_{\mathrm{target}}}{B^{(n)}} \ .
+\end{equation}
+
+The consequence that motivates this example: once a single $P_{\mathrm{bot}}$ is chosen, flow
+partitions itself across the open interval's points in proportion to each point's own local
+well index - which already depends on local permeability -
+
+\begin{equation}
+\frac{\dot m_i}{\dot m_{\mathrm{total}}} = \frac{\mathrm{WI}_i \lambda_i}{\sum_j \mathrm{WI}_j \lambda_j} \ ,
+\end{equation}
+
+*emergently*, not as something explicitly computed or imposed. [#results] shows this directly: a
+10x-higher-permeability sub-zone carved out of part of the open interval receives roughly 9x more
+flow than its neighbors, using nothing but the rate controller and the mesh's own material
+properties.
+
+Injected heat enters advectively too, but the fluid being pushed in carries its *own* prescribed
+enthalpy, not the local reservoir's - the opposite of `use_enthalpy = true`'s assumption for a
+producer. [PorousFlowPeacemanEnthalpySink.md] provides this: the same Peaceman mass flux,
+multiplied by $h_{\mathrm{fluid}}(p, T_{\mathrm{inj}})$ at a prescribed injection temperature
+rather than the local solved field's temperature.
+
+The cased section above the open interval still conducts heat between the well and the cap, via
+the same [PorousFlowCasedBoreholeHeatExchange.md] as the production well - but with
+`flow_direction = injection`: fluid enters at the wellhead at `injection_temperature` and the
+march runs downward to the open/cased boundary, the mirror image of production's upward march
+from the boundary.
+
++Known simplifications:+ `injection_temperature` is the raw temperature at the wellhead, not fed
+back from the cased kernel's own computed arrival temperature at the open/cased boundary - a
+secondary effect, in the same spirit as this example's own note above that the conductive term is
+secondary (real geothermal wells' casing does affect the injectate's temperature on the way down,
+but by less than the other simplifications already in this model). `use_mobility` still weights
+by the *reservoir-side* mobility, not the cooler injected fluid's own higher viscosity, so the
+delivered rate at a given overpressure is somewhat overstated. And the rate converges over a
+handful of timesteps rather than instantly - itself physically reasonable (a real rate-controlled
+well's bottomhole pressure also takes time to settle), not an error in the settled physics.
+
 ## Model setup
 
 The well has radial symmetry, so it is simulated using RZ coordinates - the same approach used
@@ -184,16 +245,40 @@ points via the `[Reporters][cased_path]` block below rather than sharing that `p
 constant `unit_weight` (see that file for how it was derived) in place of `unit_weight_fp` -
 everything else in the two input files, down to the shared `model_common.i`, is the same.
 
+### Injection well
+
+`injection.i` shares `model_common.i` unchanged (so the production examples' own results above
+are unaffected), and additionally includes `injection_zones.i`, which carves a 10x
+higher-permeability sub-zone out of part of the open interval (y=-1400 to -1600, entirely within
+the reservoir block) - see [#rate-controlled-injection] for why:
+
+!listing examples/geothermal_wellbore/injection_zones.i
+
+`wells_injection.i` defines the well itself: `inject_fluid` and `inject_heat` share the same
+`point_file`/`character` as the production wells' own mass-extraction kernels (just with the
+opposite-signed `character`), and `wellbore_heat_exchange` places its own points the same way as
+the production well's - the only genuinely new pieces are the rate controller and its supporting
+`Functions`:
+
+!listing examples/geothermal_wellbore/wells_injection.i block=Functions
+
+!listing examples/geothermal_wellbore/wells_injection.i block=DiracKernels
+
+!listing examples/geothermal_wellbore/wells_injection.i block=Postprocessors/bhp_control
+
 ## Running the Example
 
 ```
 falcon-opt -i production.i                          # the new unit_weight_fp behaviour
 falcon-opt -i production_constant_unit_weight.i      # the old constant-unit_weight behaviour
+falcon-opt -i injection.i                             # the rate-controlled injection well
 python3 plot_results.py                              # produces the plots below
 python3 make_schematic.py                             # produces the geometry schematic above
 ```
 
 ## Results
+
+### Production
 
 [geothermal_wellbore_rates_fig] shows the extracted mass and heat rate over the 5-year run, for
 both wellbore-pressure treatments. Over the full run, the old constant-`unit_weight` treatment
@@ -300,5 +385,48 @@ smaller.
   style=width:65%;margin-left:auto;margin-right:auto;
   caption=Temperature vs. radius at 500m depth within the cap, at several times through the
   run, the `unit_weight_fp` treatment.
+
+### Injection
+
+[geothermal_wellbore_injection_rate_fig] shows the delivered injection rate and
+`bhp_control`'s own corrected bottomhole pressure over the run, against the -20 kg/s target.
+`bhp_control` starts at its `initial_pressure` guess, with no history to correct from yet; the
+first several timesteps ramp quickly toward the target as the secant correction's own conductance
+estimate improves, then track it closely (within about 1 kg/s) once settled, drifting the
+pressure gradually upward from about 22 to 29 MPa over the run as the well's own injected mass
+raises the near-well reservoir pressure, eroding some of the available overpressure at a fixed
+`bhp_control`. Total injected mass over the run is about 2.96 billion kg, roughly 6% below
+target*(elapsed time) - almost entirely from the initial ramp-up, not any ongoing steady-state
+error.
+
+!media geothermal_wellbore_injection_rate_and_bhp.png
+  id=geothermal_wellbore_injection_rate_fig
+  style=width:75%;margin-left:auto;margin-right:auto;
+  caption=Delivered injection rate (left axis) and controlled bottomhole pressure (right axis)
+  vs. time.
+
+[geothermal_wellbore_injection_flux_fig] shows why `injection_zones.i`'s high-permeability
+sub-zone exists: per-point injected mass flux vs. depth, at the end of the run. The three points
+inside the sub-zone (y=-1400 to -1600, 10x the surrounding reservoir's permeability) carry about
+8.6x the flux of their uniform-permeability neighbors - close to, but not exactly, the
+permeability ratio itself, since the higher-flow zone also locally relieves its own overpressure
+somewhat faster than its neighbors. Nothing in this model explicitly computes or imposes that
+split: it falls directly out of [PorousFlowPeacemanBorehole.md]'s own well-index formula, which
+already scales with local permeability, once
+[PorousFlowRateControlledBoreholePressure.md] has picked a single bottomhole pressure for the
+whole well.
+
+!media geothermal_wellbore_injection_flux_vs_depth.png
+  id=geothermal_wellbore_injection_flux_fig
+  style=width:55%;margin-left:auto;margin-right:auto;
+  caption=Injected mass flux vs. depth at each open-interval point, final step. Shaded band: the
+  high-permeability sub-zone.
+
+The cased-section conductive exchange totals only about 0.7% of the advected heat rate here -
+smaller, relative to its own well's advected total, than the production well's own ~9% figure
+above. `injection_temperature` is fixed and well below the formation temperature throughout, so
+(unlike production's mass-flux-weighted mixing temperature, which itself evolves with the
+formation) the driving temperature difference here does not grow over time the same way,
+capping how much this term can contribute over a 5-year run.
 
 
