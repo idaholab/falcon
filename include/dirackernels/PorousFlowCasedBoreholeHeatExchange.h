@@ -18,20 +18,28 @@ class System;
  * advective: heat flux = mass flux * enthalpy, and is therefore exactly zero wherever the mass
  * flux is zero).
  *
- * The produced fluid keeps flowing up the well through the cased section even though no more
- * mass crosses the casing there, and it exchanges heat with the surrounding formation
- * conductively through the casing wall: dT_well/ds = -(h*P)/(mdot*cp) * (T_well - T_formation),
- * where h is heat_transfer_coefficient (the casing-side resistance only - in-pipe film, steel,
- * cement - NOT an overall wellbore-to-far-field U, since the formation's own conductive
- * resistance is already resolved by the mesh), P is the casing perimeter, mdot is the total
- * produced mass rate, and cp is the fluid's specific heat.
+ * The fluid keeps flowing through the cased section even though no mass crosses the casing
+ * there, and it exchanges heat with the surrounding formation conductively through the casing
+ * wall: dT_well/ds = -(h*P)/(mdot*cp) * (T_well - T_formation), where h is
+ * heat_transfer_coefficient (the casing-side resistance only - in-pipe film, steel, cement - NOT
+ * an overall wellbore-to-far-field U, since the formation's own conductive resistance is already
+ * resolved by the mesh), P is the casing perimeter, mdot is the total mass rate through the
+ * cased section, and cp is the fluid's specific heat.
+ *
+ * "flow_direction" selects which way s is measured and what the entry (s=0) condition is:
+ *  - production (the default): fluid enters at the open/cased boundary carrying the
+ *    mass-flux-weighted mixing temperature of everything produced across the open interval
+ *    (read from "mass_point_flux_vpp"), and s increases toward the wellhead.
+ *  - injection: fluid enters at the wellhead at "injection_temperature", and s increases toward
+ *    the open/cased boundary. mdot is still the open interval's own actual mass rate (from
+ *    "mass_point_flux_vpp"), not any externally-prescribed target - the physically correct value
+ *    to march with is whatever mass is actually flowing this timestep, not what some outer
+ *    rate-controller (see PorousFlowRateControlledBoreholePressure) is aiming for.
  *
  * The wellbore fluid temperature profile (T_well) is not a solved nonlinear variable: it is
  * recomputed once per residual/Jacobian evaluation (residualSetup()/jacobianSetup(), mirroring
  * PorousFlowPeacemanBorehole::computeWellborePressures()) from the closed-form solution of this
- * ODE using a single length-weighted average formation temperature over the whole cased
- * section, using the mass-flux-weighted mixing temperature of everything produced across the
- * open (perforated) section as the entry condition.
+ * ODE using a single length-weighted average formation temperature over the whole cased section.
  *
  * Every formation/mixing temperature this computation samples is read from the *old* (previous
  * time step's converged) solution, via SystemBase::solutionOld() - not the current nonlinear
@@ -71,19 +79,34 @@ protected:
   /// Casing-side heat transfer coefficient (W.m^-2.K^-1), referenced to the casing outer radius
   const Real _h;
 
-  /// Per-point produced mass flux (kg.s^-1) reported by the open interval's mass-extraction
-  /// PorousFlowPeacemanBorehole. This kernel's own point set (see PolylineDiracPoints) need not
-  /// coincide with the points this is indexed by - the mixing-temperature calculation samples
-  /// formation temperature at _mass_flux_x/_mass_flux_y/_mass_flux_z below, not at this kernel's
-  /// own _x_coord/_y_coord/_z_coord. Used both to get the total produced mass rate and to
-  /// compute the mass-flux-weighted mixing temperature of the fluid entering the cased section.
+  /// Which way fluid flows through the cased section - selects the wellbore-temperature march's
+  /// entry point and direction in computeWellboreTemperatures()
+  enum class FlowDirection
+  {
+    production,
+    injection
+  };
+  const FlowDirection _flow_direction;
+
+  /// Temperature (K) of the fluid entering the cased section at the wellhead. Only meaningful
+  /// (and only set) when _flow_direction == injection; nullptr otherwise.
+  const Function * const _t_inj;
+
+  /// Per-point mass flux (kg.s^-1) reported by the open interval's own PorousFlowPeacemanBorehole
+  /// (produced, in production mode; injected, in injection mode). This kernel's own point set
+  /// (see PolylineDiracPoints) need not coincide with the points this is indexed by - the
+  /// mixing-temperature calculation (production mode only) samples formation temperature at
+  /// _mass_flux_x/_mass_flux_y/_mass_flux_z below, not at this kernel's own
+  /// _x_coord/_y_coord/_z_coord. Used to get the total mass rate in both modes, and (production
+  /// only) to compute the mass-flux-weighted mixing temperature of the fluid entering the cased
+  /// section.
   const VectorPostprocessorValue & _mass_flux;
 
   ///@{
   /// Coordinates of the open interval's own mass-flux points, read from the same
   /// PorousFlowPlotPointFluxQuantity's 'x'/'y'/'z' vectors, filled in lockstep with _mass_flux.
-  /// The mixing-temperature sum samples the formation temperature at *these* points, not at this
-  /// kernel's own points.
+  /// Only used in production mode, where the mixing-temperature sum samples the formation
+  /// temperature at *these* points, not at this kernel's own points.
   const VectorPostprocessorValue & _mass_flux_x;
   const VectorPostprocessorValue & _mass_flux_y;
   const VectorPostprocessorValue & _mass_flux_z;
