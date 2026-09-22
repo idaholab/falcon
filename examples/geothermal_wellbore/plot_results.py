@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """Compare the old (constant unit_weight) and new (unit_weight_fp) PorousFlowPeacemanBorehole
 wellbore-pressure treatments for the production example: extracted mass/heat rate over time,
-pressure vs. depth along the well, temperature vs. time at a series of depths, and the
-temperature halo at the cap/reservoir interface (y=-1000, right at the well's open interval).
-Also plots the rate-controlled injection example: delivered rate/bottomhole pressure vs. time
-(showing the secant correction converge), and per-point injected mass flux vs. depth (showing
-the flow partition itself by local permeability across the high-k sub-zone).
+pressure vs. depth along the well's open (feed) interval, and temperature vs. time at a series
+of depths. Also plots the rate-controlled injection example: delivered rate/bottomhole pressure
+vs. time (showing the secant correction converge), and per-point injected mass flux vs. depth
+(showing the flow partition itself by local permeability across the high-k sub-zone).
 
 Usage: python3 plot_results.py
 Run from this directory after all three variants have been run with falcon-opt:
@@ -70,92 +69,97 @@ def main():
     print("Cumulative extracted heat (J):  old=%.4g new=%.4g (%.1f%% difference)" %
           (cum_heat_old, cum_heat_new, 100 * (cum_heat_new - cum_heat_old) / cum_heat_old))
 
-    # 1. Extracted mass/heat rate vs time
+    # 1. Extracted mass/heat RATE vs time - true rates (value/dt), not the raw per-timestep
+    # accumulated quantities well_mass_rate/well_heat_rate actually are (see
+    # PorousFlowRateControlledBoreholePressure.md's own "units trap" note - the same trap applies
+    # here). Plotting the raw accumulated values directly against time produces a misleading
+    # drop at the very end of the run: IterationAdaptiveDT's last step is clipped short to land
+    # exactly on end_time, so the accumulated-per-step quantity there is smaller even though the
+    # true underlying rate is not - dividing by each row's own dt removes that artifact.
+    old_dt, new_dt = old["time"].diff(), new["time"].diff()
     fig, axes = plt.subplots(2, 1, figsize=(7, 8), sharex=True)
-    axes[0].plot(old["time"] / YEAR, old["well_mass_rate"], "o-", label="constant unit_weight")
-    axes[0].plot(new["time"] / YEAR, new["well_mass_rate"], "s-", label="unit_weight_fp")
-    axes[0].set_ylabel("mass extracted per step (kg)")
+    axes[0].plot(old["time"] / YEAR, old["well_mass_rate"] / old_dt, "o-",
+                 label="constant unit_weight")
+    axes[0].plot(new["time"] / YEAR, new["well_mass_rate"] / new_dt, "s-", label="unit_weight_fp")
+    axes[0].set_ylabel("mass extraction rate (kg/s)")
     axes[0].legend()
-    axes[0].set_title("Extracted mass per timestep")
+    axes[0].set_title("Extracted mass rate")
 
-    axes[1].plot(old["time"] / YEAR, old["well_heat_rate"], "o-", label="constant unit_weight")
-    axes[1].plot(new["time"] / YEAR, new["well_heat_rate"], "s-", label="unit_weight_fp")
-    axes[1].set_ylabel("heat extracted per step (J)")
+    axes[1].plot(old["time"] / YEAR, old["well_heat_rate"] / old_dt, "o-",
+                 label="constant unit_weight")
+    axes[1].plot(new["time"] / YEAR, new["well_heat_rate"] / new_dt, "s-", label="unit_weight_fp")
+    axes[1].set_ylabel("heat extraction rate (W)")
     axes[1].set_xlabel("time (years)")
     axes[1].legend()
-    axes[1].set_title("Extracted heat per timestep")
+    axes[1].set_title("Extracted heat rate")
     fig.tight_layout()
     fig.savefig("rates_vs_time.png", dpi=150)
     print("Saved rates_vs_time.png")
 
-    # 2. Pressure vs. depth along the well axis, final step - old vs. new, plus the
-    # difference (new - old) alongside, since the two profiles are close enough in absolute
-    # terms that the difference isn't visible on a shared axis.
+    # 2. Pressure vs. depth, final step - old vs. new, plus the difference (new - old)
+    # alongside, since the two profiles are close enough in absolute terms that the difference
+    # isn't visible on a shared axis. Restricted to the open (feed) interval, y=-1000 to -2000 -
+    # the cased section above it carries no mass at all in either treatment, so it adds nothing
+    # to this particular comparison.
     old_p = load_final_line(OLD, "porepressure_along_well_axis")
     new_p = load_final_line(NEW, "porepressure_along_well_axis")
+    old_p = old_p[old_p["y"] <= -1000]
+    new_p = new_p[new_p["y"] <= -1000]
+
+    bottom_pp_old = old_p[old_p["y"] == -2000]["porepressure"].iloc[0]
+    bottom_pp_new = new_p[new_p["y"] == -2000]["porepressure"].iloc[0]
+    print("Pressure at well bottom (y=-2000): old=%.4g MPa new=%.4g MPa (bottomhole_pressure "
+          "Function itself = 18.02 MPa - PorousFlowPeacemanBorehole's Peaceman coupling is a "
+          "finite-well-index source term, not a hard Dirichlet constraint, so the solved field "
+          "converges close to, not exactly onto, that imposed value)" %
+          (bottom_pp_old / 1e6, bottom_pp_new / 1e6))
+
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 7), sharey=True)
     ax1.plot(old_p["porepressure"] / 1e6, old_p["y"], "o-", label="constant unit_weight",
-             markersize=3)
-    ax1.plot(new_p["porepressure"] / 1e6, new_p["y"], "s-", label="unit_weight_fp", markersize=3)
-    ax1.axhline(-1000, color="gray", linewidth=0.8, linestyle="--")
+             markersize=4)
+    ax1.plot(new_p["porepressure"] / 1e6, new_p["y"], "s-", label="unit_weight_fp", markersize=4)
     ax1.set_xlabel("porepressure (MPa)")
     ax1.set_ylabel("depth, y (m)")
-    ax1.set_title("Pressure vs. depth, final step")
+    ax1.set_title("Pressure vs. depth, open interval, final step")
     ax1.legend()
 
     diff_kpa = (new_p["porepressure"].to_numpy() - old_p["porepressure"].to_numpy()) / 1e3
     ax2.plot(diff_kpa, new_p["y"], color="#a85a2a")
     ax2.axvline(0, color="black", linewidth=0.6)
-    ax2.axhline(-1000, color="gray", linewidth=0.8, linestyle="--")
-    ax2.text(ax2.get_xlim()[1], -1000, " cap/reservoir\n interface", fontsize=8, color="gray",
-             va="center")
     ax2.set_xlabel("unit_weight_fp minus constant (kPa)")
     ax2.set_title("Difference")
     fig.tight_layout()
     fig.savefig("pressure_depth.png", dpi=150)
     print("Saved pressure_depth.png")
 
-    # 3. Temperature CHANGE vs. time at a series of depths (new variant). Plotted relative to
-    # each depth's own initial value, not absolute temperature - the geothermal gradient means
-    # absolute temperatures span 300-500K between depths, which would swamp the actual dynamics
-    # (a few K at most) on a shared axis. The spurious time=0 row (postprocessors report 0
-    # before the first solve) is dropped.
+    # 3. Absolute temperature vs. time at a series of depths (new variant). The spurious time=0
+    # row (postprocessors report 0 before the first solve) is dropped.
     new_t = new[new["time"] > 0]
     fig, ax = plt.subplots(figsize=(8, 5.5))
     depths = sorted(DEPTH_POSTPROCESSORS, reverse=True)
     cmap = plt.get_cmap("viridis")
     for i, depth in enumerate(depths):
         col = DEPTH_POSTPROCESSORS[depth]
-        delta = new_t[col] - new_t[col].iloc[0]
-        ax.plot(new_t["time"] / YEAR, delta, color=cmap(i / (len(depths) - 1)),
+        ax.plot(new_t["time"] / YEAR, new_t[col], color=cmap(i / (len(depths) - 1)),
                 label=f"y = {depth} m")
-    ax.axhline(0, color="black", linewidth=0.6)
     ax.set_xlabel("time (years)")
-    ax.set_ylabel("temperature change from t~0 (K)")
-    ax.set_title("Temperature change vs. time at depths along the well axis (unit_weight_fp)")
+    ax.set_ylabel("temperature (K)")
+    ax.set_title("Temperature vs. time at depths along the well axis (unit_weight_fp)")
     ax.legend(fontsize=8, ncol=2)
     fig.tight_layout()
     fig.savefig("temperature_vs_time_depths.png", dpi=150)
     print("Saved temperature_vs_time_depths.png")
 
-    # 4. Temperature halo at the cap/reservoir interface, final step
-    old_halo = load_final_line(OLD, "temperature_halo")
-    new_halo = load_final_line(NEW, "temperature_halo")
-    fig, ax = plt.subplots(figsize=(7, 5))
-    ax.plot(old_halo["x"], old_halo["temperature"], "o-", label="constant unit_weight")
-    ax.plot(new_halo["x"], new_halo["temperature"], "s-", label="unit_weight_fp")
-    ax.set_xlabel("radius, r (m)")
-    ax.set_ylabel("temperature (K)")
-    ax.set_title("Temperature halo at the cap/reservoir interface (y=-1000), final step")
-    ax.legend()
-    fig.tight_layout()
-    fig.savefig("temperature_halo.png", dpi=150)
-    print("Saved temperature_halo.png")
-
-    # 5. Temperature vs. radius at mid-cap depth (y=-500), at a handful of times through the
+    # 4. Temperature vs. radius at mid-cap depth (y=-500), at a handful of times through the
     # run - shows the radial thermal signal developing inside the cap itself (unit_weight_fp
     # variant only, since the point is the cased-section heat exchange's own effect, not the
-    # pressure-treatment comparison from plots 1-2).
+    # pressure-treatment comparison from plots 1-2). Zoomed to the nearest 50m: the whole signal
+    # decays to background within about that distance (see model_common.i's own
+    # cap_temperature_radial sampler, which sits at 2m spacing over the nearest 100m
+    # specifically so this zoom has enough points to look smooth, not just cropped). The
+    # cap/reservoir-interface halo this same radial signature would show at y=-1000 is not
+    # plotted separately - it is materially the same story at that depth too, so a second,
+    # near-identical figure would add a comparison without adding information.
     target_times = [i * YEAR for i in range(6)]
     snapshots = load_lines_near_times(NEW, "cap_temperature_radial", target_times)
     fig, ax = plt.subplots(figsize=(7, 5))
@@ -163,6 +167,7 @@ def main():
     for i, (t, df) in enumerate(snapshots):
         ax.plot(df["x"], df["temperature"], color=cmap(i / (len(snapshots) - 1)),
                 label=f"t = {t / YEAR:.1f} yr")
+    ax.set_xlim(0, 50)
     ax.set_xlabel("radius, r (m)")
     ax.set_ylabel("temperature (K)")
     ax.set_title("Temperature vs. radius at mid-cap depth (y=-500), unit_weight_fp")

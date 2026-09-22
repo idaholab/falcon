@@ -281,12 +281,15 @@
   # Temperature vs. radius at mid-cap depth (y=-500, strictly inside the cased section) -
   # tracks how the radial thermal signal (from the cased section's own conductive heat exchange,
   # plus whatever diffuses up from the open interval below) develops within the cap itself, as
-  # opposed to temperature_halo's snapshot at the cap/reservoir boundary.
+  # opposed to temperature_halo's snapshot at the cap/reservoir boundary. Restricted to the
+  # nearest 100m (rather than the full 500m radius) at 2m spacing, since the whole signal decays
+  # to background within about 50m - sampling the far field at the same density as the earlier,
+  # wider-ranging temperature_halo sampler would just waste resolution on a flat line.
   [cap_temperature_radial]
     type = LineValueSampler
     variable = temperature
     start_point = '0 -500 0'
-    end_point = '500 -500 0'
+    end_point = '100 -500 0'
     num_points = 51
     sort_by = x
   []
