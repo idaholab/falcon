@@ -254,6 +254,18 @@ the reservoir block) - see [#rate-controlled-injection] for why:
 
 !listing examples/geothermal_wellbore/injection_zones.i
 
+[geothermal_wellbore_injection_geometry_fig] shows this well's geometry - otherwise identical to
+[geothermal_wellbore_geometry_fig] above, with the addition of that sub-zone and the direction of
+flow at the open interval.
+
+!media geothermal_wellbore_injection_schematic.png
+  id=geothermal_wellbore_injection_geometry_fig
+  style=width:80%;margin-left:auto;margin-right:auto;
+  caption=Geometry on a radial slice of the rate-controlled injection well. Shaded band: the
+  10x-higher-permeability sub-zone carved out of the reservoir by `injection_zones.i`. Blue arrow:
+  direction of flow at the open interval (into the formation, the opposite of
+  [geothermal_wellbore_geometry_fig]'s production well).
+
 `wells_injection.i` defines the well itself: `inject_fluid` and `inject_heat` share the same
 `point_file`/`character` as the production wells' own mass-extraction kernels (just with the
 opposite-signed `character`), and `wellbore_heat_exchange` places its own points the same way as
@@ -291,31 +303,35 @@ it removes the need to hand-derive and re-check that constant every time a well'
 !media geothermal_wellbore_rates_vs_time.png
   id=geothermal_wellbore_rates_fig
   style=width:70%;margin-left:auto;margin-right:auto;
-  caption=Extracted mass (top) and heat (bottom) per timestep, old (constant `unit_weight`) vs.
-  new (`unit_weight_fp`).
+  caption=Extracted mass rate (top) and heat rate (bottom) vs. time, old (constant
+  `unit_weight`) vs. new (`unit_weight_fp`).
 
 [geothermal_wellbore_pressure_fig] shows exactly where that difference comes from: pressure vs.
-depth along the well, at the end of the run, for both treatments, plus their difference. The two
-profiles diverge smoothly through the open interval, reaching about 153 kPa at its midpoint
-before converging back to zero at the well bottom - where `bottom_p_or_t` pins both treatments
-to the same value by construction, regardless of the density model used above it. Through the
-cased section (y=0 to -1000) the difference no longer sits at zero the way it would in a purely
-diffusive cap: it grows smoothly from about 1.7 kPa at the surface to about 65 kPa at the
-cap/reservoir interface, because the cap's realistic permeability lets some of the open
-interval's pressure-treatment difference propagate up through it via the same advective flow
-discussed in [#model-setup] and shown in [geothermal_wellbore_temperature_depths_fig] - not
-because any mass crosses the well wall there, which it still does not.
+depth along the well's open (feed) interval, y=-1000 to -2000, at the end of the run, for both
+treatments, plus their difference - the cased section above carries no mass at all in either
+treatment, so it adds nothing to this particular comparison. The two profiles diverge smoothly
+moving up from the well bottom, reaching about 153 kPa at the interval's midpoint (y=-1500)
+before narrowing back to under 1 kPa at y=-2000 - not exactly zero, because
+[PorousFlowPeacemanBorehole.md]'s Peaceman coupling is a finite-well-index source term, not a
+hard Dirichlet constraint on `bottom_p_or_t`: both treatments solve to about 18.05-18.06 MPa
+there, close to, but not exactly onto, the `bottomhole_pressure` Function's own 18.02 MPa value.
+At the top of the feed zone (y=-1000) the difference has grown to about 64 kPa - the same
+propagation-through-the-permeable-cap effect described in [#model-setup] and shown in
+[geothermal_wellbore_temperature_depths_fig], now visible from the pressure side instead of the
+temperature side.
 
 !media geothermal_wellbore_pressure_depth.png
   id=geothermal_wellbore_pressure_fig
   style=width:95%;margin-left:auto;margin-right:auto;
-  caption=Left: pressure vs. depth along the well, final step, old vs. new. Right: their
-  difference vs. depth.
+  caption=Left: pressure vs. depth along the well's open interval (depth -1000 to -2000 m), final
+  step, old vs. new. Right: their difference vs. depth.
 
-[geothermal_wellbore_temperature_depths_fig] shows how temperature changes over time at a series
-of depths along the well axis, for the `unit_weight_fp` treatment, and the picture is very
-different from a purely conductive cap: temperature rises substantially throughout the cased
-section, not just near its two ends. At the surface (y=0m) it rises by about 46 K over 5 years;
+[geothermal_wellbore_temperature_depths_fig] shows absolute temperature vs. time at a series of
+depths along the well axis, for the `unit_weight_fp` treatment - each curve starts at that
+depth's own undisturbed background value on the geothermal gradient (303 K at the surface, up to
+503 K at the well bottom), and the picture of how they then evolve is very different from a
+purely conductive cap: temperature rises substantially throughout the cased section, not just
+near its two ends. At the surface (y=0m) it rises by about 46 K over 5 years, ending near 349 K;
 at y=-200, -400, -600 and -800m the rises are about 25, 21, 17 and 14 K respectively - a smooth
 gradient, largest near the surface and decreasing with depth through the cap. This is not the
 new conductive heat exchange at work (which totals only about 9% of the advected heat rate): it
@@ -342,62 +358,50 @@ discretization artifact leaks into a point sample taken right at the well, did.
 !media geothermal_wellbore_temperature_depths.png
   id=geothermal_wellbore_temperature_depths_fig
   style=width:80%;margin-left:auto;margin-right:auto;
-  caption=Temperature change (relative to the start of the run) vs. time, at depths along the
-  well axis, `unit_weight_fp` treatment.
+  caption=Absolute temperature vs. time at depths along the well axis, `unit_weight_fp`
+  treatment.
 
-[geothermal_wellbore_halo_fig] shows the temperature at the cap/reservoir interface (right where
-the well's open interval begins) as a function of radius, at the end of the run - a real,
-well-centered thermal halo around the well for both treatments, settling back to a 403.2 K
-background by about 100-150m radius. Its very center is not perfectly smooth: at r=0 the
-temperature (402.9 K) actually sits slightly *below* the background, with the local maximum
-(403.7 K) at the next sample out (r=10m) instead. y=-1000 is the one location where two
-independently-discretized objects place a point at exactly the same coordinate - the cased
-kernel's own deepest (and, there, inactive) point and the open interval's shallowest Peaceman
-point - so the temperature reported right there reflects the balance of the advective cooling
-from `withdraw_fluid`/`withdraw_heat` (still acting at that exact point) against how much
-warmth conducts across from the nearest *active* cased point, 75m up the well, rather than any
-local heat input of the cased kernel's own (`cased_character` is zero at y=-1000 itself). Beyond
-r=20m the profile is indistinguishable from a run that still used the old, coarser cased-section
-point placement, confirming the halo's overall shape and extent are unaffected - only the one or
-two points immediately at the shared coordinate move.
-
-!media geothermal_wellbore_temperature_halo.png
-  id=geothermal_wellbore_halo_fig
-  style=width:65%;margin-left:auto;margin-right:auto;
-  caption=Temperature vs. radius at the cap/reservoir interface, final timestep.
-
-[geothermal_wellbore_cap_temperature_fig] shows the same kind of radial profile, but strictly
-*inside* the cap, 500m below the surface (not at a shared point-placement coordinate the way
-y=-1000 is, so this profile is smooth and monotonic all the way to r=0), and at a handful of
-times through the run, rather than a single final snapshot at the cap/reservoir boundary. The
-profile is flat at the undisturbed background (353.15 K, the geothermal gradient's value at this
-depth) at early times, then a growing peak develops right at the well - reaching about 372 K by
-the end of the run, 19 K above background, and decaying back to background within about 50m.
-This is the same advective mechanism visible in [geothermal_wellbore_temperature_depths_fig], now
-shown as a function of radius rather than time: hot fluid drawn up along the well axis through
-the realistically-permeable cap, not the new conductive heat exchange kernel, whose own
-contribution (reported separately via `wellbore_heat_point_flux_out`, not distinguishable from
-the advective signal in a plain temperature snapshot like this one) is an order of magnitude
-smaller.
+[geothermal_wellbore_cap_temperature_fig] shows a radial temperature profile strictly *inside*
+the cap, 500m below the surface, at a handful of times through the run, zoomed to the nearest
+50m of the well - the whole signal decays back to background within about that distance, so a
+wider view would only add empty axis (`model_common.i`'s `cap_temperature_radial` sampler was
+tightened to 2m spacing over the nearest 100m specifically so this zoom stays smooth rather than
+visibly cropped). The profile is flat at the undisturbed background (353.15 K, the geothermal
+gradient's value at this depth) at early times, then a growing peak develops right at the well -
+reaching about 372 K by the end of the run, 19 K above background. This is the same advective
+mechanism visible in [geothermal_wellbore_temperature_depths_fig], now shown as a function of
+radius rather than time: hot fluid drawn up along the well axis through the realistically
+-permeable cap, not the new conductive heat exchange kernel, whose own contribution (reported
+separately via `wellbore_heat_point_flux_out`, not distinguishable from the advective signal in a
+plain temperature snapshot like this one) is an order of magnitude smaller. The same radial
+signature appears at the cap/reservoir interface itself (y=-1000) and at every other depth
+through the cased section - materially the same story throughout, so it is not plotted
+separately at each one.
 
 !media geothermal_wellbore_cap_temperature_radial.png
   id=geothermal_wellbore_cap_temperature_fig
   style=width:65%;margin-left:auto;margin-right:auto;
-  caption=Temperature vs. radius at 500m depth within the cap, at several times through the
-  run, the `unit_weight_fp` treatment.
+  caption=Temperature vs. radius (zoomed to the nearest 50m) at 500m depth within the cap, at
+  several times through the run, the `unit_weight_fp` treatment.
 
 ### Injection
 
 [geothermal_wellbore_injection_rate_fig] shows the delivered injection rate and
-`bhp_control`'s own corrected bottomhole pressure over the run, against the -20 kg/s target.
-`bhp_control` starts at its `initial_pressure` guess, with no history to correct from yet; the
-first several timesteps ramp quickly toward the target as the secant correction's own conductance
-estimate improves, then track it closely (within about 1 kg/s) once settled, drifting the
-pressure gradually upward from about 22 to 29 MPa over the run as the well's own injected mass
-raises the near-well reservoir pressure, eroding some of the available overpressure at a fixed
-`bhp_control`. Total injected mass over the run is about 2.96 billion kg, roughly 6% below
-target*(elapsed time) - almost entirely from the initial ramp-up, not any ongoing steady-state
-error.
+`bhp_control`'s own corrected bottomhole pressure over the run, against a fixed -20 kg/s target.
+That target is negative because it follows [PorousFlowPeacemanBorehole.md]'s own `outflow` sign
+convention, already used throughout this example by `character`/`cased_character`: production
+*removes* mass from the porespace, so `outflow > 0`; injection *adds* mass, so `outflow < 0`.
+A negative injection rate is this well adding mass to the formation, not withdrawing it.
+`bhp_control` starts at `initial_pressure`, calibrated ahead of time (via a short fixed-pressure
+sweep of this same model) to deliver close to the target rate from the very first timestep,
+rather than an arbitrary guess the controller would otherwise spend a long time correcting away
+from. The delivered rate settles to within about 2 kg/s of target within roughly a month of
+simulated time, then tracks it closely for the remainder of the 5-year run as `bhp_control`
+drifts gradually upward from about 22 to 29 MPa - the near-well reservoir pressure itself rising
+as injected mass accumulates, eroding some of the available underpressure at a fixed
+`bhp_control`. Total injected mass over the run is about 3.11 billion kg, only about 1.6% below
+target*(elapsed time) - almost entirely from the initial few weeks' ramp-up, not any ongoing
+steady-state error.
 
 !media geothermal_wellbore_injection_rate_and_bhp.png
   id=geothermal_wellbore_injection_rate_fig
