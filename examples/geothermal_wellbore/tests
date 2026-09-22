@@ -17,8 +17,8 @@
   [injection]
     type = CSVDiff
     input = 'injection.i'
-    csvdiff = 'injection_out.csv injection_out_mass_point_flux_0026.csv '
-              'injection_out_wellbore_heat_point_flux_out_0026.csv'
+    csvdiff = 'injection_out.csv injection_out_mass_point_flux_0028.csv '
+              'injection_out_wellbore_heat_point_flux_out_0028.csv'
     max_threads = 1
     requirement = 'FALCON shall demonstrate a rate-controlled geothermal injection well, in '
                   'which PorousFlowRateControlledBoreholePressure corrects the Peaceman '

@@ -64,10 +64,47 @@ by `dt`.
 ### Convergence behavior
 
 Because the secant needs two data points, the reported pressure does not reach the target rate
-instantly - it settles over a handful of timesteps (a probe step on the first correction, then
+instantly - it settles over some number of timesteps (a probe step on the first correction, then
 secant corrections once a conductance estimate exists). This is a modelling characteristic, not
 an approximation error once settled: a real rate-controlled well's bottomhole pressure also takes
-some time to reach its operating point.
+some time to reach its operating point. Two things determine how *many* timesteps that takes -
+and, in this app's own examples, `IterationAdaptiveDT` grows `dt` aggressively, so a slow
+convergence in timestep count can mean a slow convergence in a large fraction of the run's
+simulated time:
+
+- **`initial_pressure` should be calibrated, not guessed.** A short fixed-`bottom_p_or_t` run of
+  the same model (varying only that one value) directly measures what pressure the target rate
+  actually needs at the model's own initial state - starting from that value means the controller
+  has almost nothing left to correct from step one onward, rather than spending many timesteps
+  (and, under a growing `dt`, a large fraction of simulated time) closing a big initial gap.
+- **The well's response is not perfectly affine over a wide pressure range.** Real mobility
+  evolves as the near-well temperature/pressure state evolves (eg a cold injectate advancing, or
+  reservoir pressure itself rising from the injected mass), so a secant slope measured near one
+  operating point can under-estimate the correction needed once conditions - or the required
+  pressure - have moved far enough away from where that slope was measured. Left unchecked, this
+  can leave the reported pressure crawling toward the target far more slowly than the safety
+  clamp `max_pressure_change` would otherwise allow.
+
+`min_relative_error_for_floor` addresses the second point: while the relative error
+$|\dot m - \dot m_{\mathrm{target}}| / |\dot m_{\mathrm{target}}|$ exceeds this fraction, the
+correction is floored at (that same relative error) $\times$ `max_pressure_change`, rather than
+whatever smaller value the secant alone would have produced - but *only* when the correction is
+pushing the **same direction** as the previous call's. That direction check is what keeps this
+escalation from causing an oscillation: a controller already close to its target, and merely
+bouncing back and forth across it (eg through Peaceman's own zero-flux deadband), has a
+correction direction that *alternates* call to call, and is left alone; one that has been making
+slow, one-directional progress for many calls without closing the gap is not, and gets a bigger
+push. So `max_pressure_change` is not purely a safety-only ceiling here - it also sets the size
+of this escalated correction, and should be calibrated to the well's own true conductance rather
+than left at an arbitrarily generous value (an oversized `max_pressure_change` can itself induce
+the very oscillation the direction check exists to detect, once the escalated step is large
+enough to overshoot in a single call).
+
+The very first call to `execute()` happens at `EXEC_TIMESTEP_BEGIN` of the very first timestep,
+before any solve has occurred - `rate_postprocessor` has not been computed from real physics yet
+at that point, so that reading is used only to pick the first probe's direction and is never
+recorded as a measurement (recording it would corrupt the very first real conductance estimate,
+computed from comparing it against the first genuine post-solve rate).
 
 ## Example Input Syntax
 

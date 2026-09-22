@@ -23,12 +23,20 @@
     expression = '313.15'
   []
   [target_injection_rate]
-    # Signed, in kg/s: negative = injection, matching PorousFlow's own outflow sign convention.
-    # Calibrated against a fixed-bottom_p_or_t run of this same model: -20 kg/s converges cleanly
-    # (monotonically, no oscillation) within bhp_control's pressure clamps below over the 5-year
-    # run; -40 pins the controller against max_pressure without ever reaching the target, since
-    # the near-well reservoir pressure itself rises enough over the run to erode most of the
-    # available overpressure.
+    # NEGATIVE, in kg/s, for INJECTION - this is not a typo. PorousFlow's DiracKernel sinks
+    # report "outflow": flow FROM the porespace OUT of the system. Production (character > 0)
+    # removes mass from the reservoir, so outflow > 0. Injection (character < 0, as this well's
+    # own injection_character is) ADDS mass to the reservoir - outflow FROM the reservoir is
+    # therefore NEGATIVE, exactly the same sign convention model_common.i's own well_character/
+    # cased_character already use throughout this example (character < 0 => injector). This
+    # target_rate is compared directly against rate_postprocessor below, which reports that same
+    # signed quantity - so both must use the same sign, and it must be PorousFlow's own.
+    #
+    # Calibrated against a fixed-bottom_p_or_t sweep of this same model at t=0 (see the example's
+    # own verification notes): -20 kg/s converges cleanly (monotonically, no oscillation) within
+    # bhp_control's pressure clamps below over the 5-year run; -40 pins the controller against
+    # max_pressure without ever reaching the target, since the near-well reservoir pressure
+    # itself rises enough over the run to erode most of the available overpressure.
     type = ParsedFunction
     expression = '-20'
   []
@@ -159,10 +167,26 @@
     type = PorousFlowRateControlledBoreholePressure
     rate_postprocessor = injected_mass_rate
     target_rate = target_injection_rate
-    # ~0.2 MPa above the initial hydrostatic pressure at the well bottom (y=-2000), so the well
-    # starts inside Peaceman's injection regime rather than deadbanded at exactly zero rate.
-    initial_pressure = 2.1e7
-    initial_pressure_step = 2e5
+    # Calibrated directly against the model's own t=0 state (a short fixed-bottom_p_or_t sweep -
+    # see the example's own verification notes): 2.18e7 Pa delivers -20.04 kg/s at t=0, matching
+    # the target almost exactly. Starting this close means the controller has essentially nothing
+    # to correct from step 1 onward, rather than spending many timesteps - and, since
+    # IterationAdaptiveDT grows dt aggressively (up to 1 year), potentially a large fraction of
+    # simulated TIME - closing a big initial gap. A cruder initial guess (2.1e7, tried first) put
+    # the controller ~9 kg/s off target for the first ~50 days, then needed until ~3.5 years (not
+    # a handful of timesteps) to fully close the remaining gap, one dt-growing step at a time.
+    initial_pressure = 2.18e7
+    initial_pressure_step = 5e4
+    # 1e6, not the more conservative 5e5 tried first: the well's real response is not exactly
+    # affine over the ~7e6 Pa range this run ends up covering (near-well mobility evolves as the
+    # cold injectate advances and reservoir pressure itself rises), so a secant slope measured
+    # near one operating point under-estimates the correction needed once conditions have moved
+    # far enough - PorousFlowRateControlledBoreholePressure's min_relative_error_for_floor
+    # mechanism compensates for this (see its own docs), but its escalated step is sized
+    # relative to max_pressure_change, so 5e5 left the rate needing until ~2 years to fully
+    # settle. 1e6 settles within about 3-4 weeks and then tracks the target closely (within a
+    # few percent) for the rest of the run - the direction-consistency check in the same
+    # mechanism keeps this from overshooting into a persistent oscillation.
     max_pressure_change = 1e6
     min_pressure = 1.902e7 # the initial hydrostatic pressure at the well bottom - the controller
                            # can never wander into the production regime
