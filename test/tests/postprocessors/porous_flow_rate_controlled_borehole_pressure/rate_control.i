@@ -160,7 +160,13 @@
     target_rate = target_rate
     initial_pressure = 1e6
     initial_pressure_step = 1e3
-    max_pressure_change = 5e5
+    # Calibrated to this tiny-scale test's own true conductance (~2e-6 kg/s/Pa - a required step
+    # of only a few hundred Pa per kg/s of correction), not an arbitrary generous safety-only
+    # ceiling: max_pressure_change now also sets the size of the error-scaled floor applied while
+    # still significantly off target (see min_relative_error_for_floor), so a value wildly larger
+    # than what this system actually needs would overshoot into a persistent limit cycle instead
+    # of converging.
+    max_pressure_change = 1e4
     relaxation_factor = 1.0
   []
   [rate_error]

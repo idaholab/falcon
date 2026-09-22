@@ -30,6 +30,16 @@ class Function;
  * exactly the same "frozen for the whole timestep" property that makes
  * PorousFlowCasedBoreholeHeatExchange's own old-solution lagging of the wellbore temperature
  * exact rather than approximate.
+ *
+ * A locally-measured secant slope can under-estimate the true correction needed once conditions
+ * (or the target itself) have drifted far enough from where that slope was measured - real
+ * mobility is not perfectly constant with pressure/temperature, so the affine assumption above
+ * only holds in a neighbourhood of the operating point it was fit at. min_relative_error_for_floor
+ * escalates the correction while the relative error remains large, but only when the correction
+ * is pushing the same direction as the previous call's - not when alternating sign call to call,
+ * which indicates the controller is already oscillating around a target it is close to, and
+ * escalating further would only make that oscillation worse. See this parameter's own
+ * documentation for the full reasoning.
  */
 class PorousFlowRateControlledBoreholePressure : public GeneralPostprocessor
 {
@@ -60,6 +70,7 @@ protected:
   const Real _relaxation_factor;
   const Real _min_pressure_difference;
   const Real _min_rate_difference;
+  const Real _min_relative_error_for_floor;
 
   /// The bottomhole pressure this object currently reports - the value that will be in force for
   /// the timestep that is about to run. Restartable so a recover/restart resumes mid-correction
@@ -79,4 +90,17 @@ protected:
 
   /// Whether _p_prev/_q_prev hold a real measurement yet
   bool & _have_history;
+
+  /// Number of times execute() has run. The very first call happens at EXEC_TIMESTEP_BEGIN of
+  /// the first timestep, before any solve has occurred - "rate_postprocessor" has not been
+  /// computed from real physics yet at that point (it holds whatever default/bootstrap value it
+  /// was declared with), so that first reading must never be recorded as a real measurement or
+  /// compared against anything. See execute()'s implementation for why this matters.
+  unsigned int & _call_count;
+
+  /// The (signed) correction actually applied last call. Used only to detect whether the
+  /// current call's correction is pushing the same direction (genuinely stuck, escalate) or the
+  /// opposite direction (oscillating around a target it is already close to, do not escalate) -
+  /// see execute()'s use of it alongside min_relative_error_for_floor.
+  Real & _prev_step;
 };
