@@ -39,7 +39,7 @@
   [./inlet]
     type = InletMassFlowRateTemperature1Phase
     input = 'pipe:in'
-    m_dot = 5
+    m_dot = inlet_m_dot_fn
     T = 327
   [../]
 
@@ -62,15 +62,6 @@
     type = Outlet1Phase
     input = 'pipe:out'
     p = 1.5e7
-  [../]
-[]
-
-[ControlLogic]
-  [./inlet_m_dot]
-    type = TimeFunctionComponentControl
-    component = inlet
-    parameter = m_dot
-    function = inlet_m_dot_fn
   [../]
 []
 
