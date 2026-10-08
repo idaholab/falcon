@@ -166,24 +166,29 @@
   []
 []
 
+[Convergence]
+  [fp_conv]
+    type = DefaultMultiAppFixedPointConvergence
+    fixed_point_max_its = 50
+    fixed_point_rel_tol = 1e-8
+    fixed_point_abs_tol = 1e-10
+  []
+[]
+
 [Executioner]
   type = Transient
   solve_type = Newton
   start_time = 0
   end_time = 0.7
+  nl_abs_tol = 1e-10
 
-  petsc_options = '-ksp_snes_ew'
+  multiapp_fixed_point_convergence = fp_conv
+
   petsc_options_iname = '-pc_type -pc_factor_mat_solver_package'
   petsc_options_value = 'lu       superlu_dist'
 
-  #fixed_point_algorithm = 'secant'
-
-  accept_on_max_fixed_point_iteration = true
-  fixed_point_max_its = 2
-  fixed_point_rel_tol = 1e-20
-
   relaxation_factor = 0.5
-  relaxed_variables = 'disp_x disp_y disp_z'
+  transformed_variables = 'disp_x disp_y disp_z'
 
   [TimeStepper]
     type = PostprocessorDT
@@ -307,29 +312,25 @@
 [Transfers]
   [./disp_x_to_sub]
     type = MultiAppCopyTransfer
-    direction = to_multiapp
-    multi_app = sub
+    to_multi_app = sub
     source_variable = disp_x
     variable = disp_x
   [../]
   [./disp_y_to_sub]
     type = MultiAppCopyTransfer
-    direction = to_multiapp
-    multi_app = sub
+    to_multi_app = sub
     source_variable = disp_y
     variable = disp_y
   [../]
   [./disp_z_to_sub]
     type = MultiAppCopyTransfer
-    direction = to_multiapp
-    multi_app = sub
+    to_multi_app = sub
     source_variable = disp_z
     variable = disp_z
   [../]
   [./porepressure_from_sub]
     type = MultiAppCopyTransfer
-    direction = from_multiapp
-    multi_app = sub
+    from_multi_app = sub
     source_variable = porepressure
     variable = porepressure
   [../]

@@ -30,11 +30,16 @@ velocity is fixed.  The velocity is worked out by solving Mandel's
 problem analytically, and the total force is monitored in the
 simulation to check that it indeed remains constant.
 
-The simulations in the PorousFlow test suite use 10 elements in the
-$x$ direction and 1 in the $y$ direction.  Four types of simulation
-are run:
-
-1. FullSat.  This uses the FullySaturated versions of the fluid mass time derivative and the fluid flux.  In this case the Biot modulus is kept fixed, so it is expected to agree with the analytical solutions.
+This example solves the problem using a fixed-stress split: a mechanics
+"master" app and a PorousFlow "sub" app are coupled through MOOSE's MultiApp
+system, with the master app driving a fixed-point (Picard) iteration between
+the two physics each timestep via a `DefaultMultiAppFixedPointConvergence`.
+This is the MultiApp counterpart to the monolithic (fully-coupled)
+`mandel_constM` test in the PorousFlow module's own test suite, which solves
+the identical mesh, materials and BCs in a single app. The fixed-point
+iteration here is converged to a tight relative tolerance (not capped at a
+fixed iteration count), so the split solution reproduces the monolithic
+result to within about 1e-6 relative.
 
 !listing examples/fixedStressMultiApp/mandel_master.i
 
