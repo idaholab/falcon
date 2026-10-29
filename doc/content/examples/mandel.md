@@ -41,6 +41,14 @@ iteration here is converged to a tight relative tolerance (not capped at a
 fixed iteration count), so the split solution reproduces the monolithic
 result to within about 1e-6 relative.
 
+The analytical solution of this linear poroelasticity benchmark drives the
+porosity negative, starting at the drained side ($x = a$) at early times and
+reaching the whole sample as it consolidates. Here porosity only plays the
+role of the fluid-storage term in the linear theory. PorousFlow porosity
+Materials clip porosity at `porosity_min`, which defaults to zero, and that
+would pin the porepressure to zero over most of the sample. So the sub app
+sets `porosity_min = -1`, as the PorousFlow module's own Mandel tests do.
+
 !listing examples/fixedStressMultiApp/mandel_master.i
 
 !media media/mandel_results.png
