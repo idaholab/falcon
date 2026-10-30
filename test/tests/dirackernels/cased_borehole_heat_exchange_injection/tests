@@ -1,0 +1,31 @@
+[Tests]
+  issues = '#181'
+  design = 'PorousFlowCasedBoreholeHeatExchange.md'
+  [direction]
+    type = 'CSVDiff'
+    input = 'injection_direction.i'
+    csvdiff = 'injection_direction_wellbore_heat_point_flux_out_0003.csv'
+    max_threads = 1
+    requirement = 'The system shall march PorousFlowCasedBoreholeHeatExchange\'s wellbore '
+                  'temperature profile from the wellhead downward when flow_direction=injection, '
+                  'the mirror image of the default production direction: the exchanged heat flux '
+                  'is largest at the shallowest cased point (where the prescribed injection '
+                  'temperature enters exactly) and decays with depth toward the open/cased '
+                  'boundary.'
+  []
+  [missing_injection_temperature]
+    type = 'RunException'
+    input = 'injection_direction_missing_temp.i'
+    expect_err = "injection_temperature: is required when flow_direction = injection"
+    requirement = 'The system shall error if PorousFlowCasedBoreholeHeatExchange is configured '
+                  'with flow_direction=injection but no injection_temperature is supplied.'
+  []
+  [extraneous_injection_temperature]
+    type = 'RunException'
+    input = 'injection_direction.i'
+    cli_args = "DiracKernels/wellbore_heat_exchange/flow_direction=production"
+    expect_err = "injection_temperature: is only meaningful when flow_direction = injection"
+    requirement = 'The system shall error if PorousFlowCasedBoreholeHeatExchange is configured '
+                  'with flow_direction=production but an injection_temperature is also supplied.'
+  []
+[]

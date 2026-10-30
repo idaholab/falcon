@@ -1,0 +1,168 @@
+{
+    "reporters": {
+        "bent_path": {
+            "type": "PolylineDiracPoints",
+            "values": {
+                "weight": {
+                    "type": "std::vector<double>"
+                },
+                "x": {
+                    "type": "std::vector<double>"
+                },
+                "y": {
+                    "type": "std::vector<double>"
+                },
+                "z": {
+                    "type": "std::vector<double>"
+                }
+            }
+        },
+        "straight_path": {
+            "type": "PolylineDiracPoints",
+            "values": {
+                "weight": {
+                    "type": "std::vector<double>"
+                },
+                "x": {
+                    "type": "std::vector<double>"
+                },
+                "y": {
+                    "type": "std::vector<double>"
+                },
+                "z": {
+                    "type": "std::vector<double>"
+                }
+            }
+        }
+    },
+    "time_steps": [
+        {
+            "bent_path": {
+                "weight": [
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.1
+                ],
+                "x": [
+                    0.5,
+                    1.5,
+                    2.5,
+                    3.5,
+                    3.5,
+                    3.5,
+                    3.5
+                ],
+                "y": [
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "z": [
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    1.5,
+                    2.5,
+                    3.5
+                ]
+            },
+            "straight_path": {
+                "weight": [
+                    0.2,
+                    0.2,
+                    0.2
+                ],
+                "x": [
+                    0.5,
+                    1.5,
+                    2.5
+                ],
+                "y": [
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "z": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "time": 0.0,
+            "time_step": 0
+        },
+        {
+            "bent_path": {
+                "weight": [
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.1
+                ],
+                "x": [
+                    0.5,
+                    1.5,
+                    2.5,
+                    3.5,
+                    3.5,
+                    3.5,
+                    3.5
+                ],
+                "y": [
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "z": [
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    1.5,
+                    2.5,
+                    3.5
+                ]
+            },
+            "straight_path": {
+                "weight": [
+                    0.2,
+                    0.2,
+                    0.2
+                ],
+                "x": [
+                    0.5,
+                    1.5,
+                    2.5
+                ],
+                "y": [
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "z": [
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            },
+            "time": 1.0,
+            "time_step": 1
+        }
+    ]
+}

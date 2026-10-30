@@ -21,3 +21,4 @@ A list of simulations using FALCON is provided below.
 - [Fixed stress split - Mandel's consolidation](mandel.md)
 - [Material calibration of FORGE native state model](forge_effective_parameter_inversion_THM.md)
 - [Injection and production wells coupling](examples/wells_coupling.md)
+- [Geothermal well production and wellbore-reservoir heat exchange](examples/geothermal_wellbore.md)

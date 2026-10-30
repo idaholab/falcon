@@ -1,0 +1,30 @@
+[Tests]
+  issues = '#181'
+  design = 'PorousFlowRateControlledBoreholePressure.md FalconPostprocessorFunction.md'
+  [convergence]
+    type = 'CSVDiff'
+    input = 'rate_control.i'
+    csvdiff = 'rate_control.csv'
+    requirement = 'The system shall be able to drive a PorousFlowPeacemanBorehole well by a '
+                  'prescribed flow rate, via PorousFlowRateControlledBoreholePressure correcting '
+                  'the bottomhole pressure once per timestep by a secant-method update, '
+                  'converging the delivered rate onto the target within a handful of timesteps.'
+  []
+  [execute_on_error]
+    type = 'RunException'
+    input = 'rate_control.i'
+    cli_args = "Postprocessors/bhp_control/execute_on='timestep_begin nonlinear'"
+    expect_err = 'must not include LINEAR or NONLINEAR'
+    requirement = 'The system shall error if PorousFlowRateControlledBoreholePressure is '
+                  'configured to execute during the nonlinear solve, since that would make the '
+                  'bottomhole pressure it reports vary within a single timestep\'s Newton solve.'
+  []
+  [pressure_clamp_order_error]
+    type = 'RunException'
+    input = 'rate_control.i'
+    cli_args = 'Postprocessors/bhp_control/min_pressure=2e6 Postprocessors/bhp_control/max_pressure=1e6'
+    expect_err = "must be greater than 'min_pressure'"
+    requirement = 'The system shall error if PorousFlowRateControlledBoreholePressure\'s '
+                  'min_pressure and max_pressure clamps are given in the wrong order.'
+  []
+[]
