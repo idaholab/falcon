@@ -102,9 +102,17 @@ enough to overshoot in a single call).
 
 The very first call to `execute()` happens at `EXEC_TIMESTEP_BEGIN` of the very first timestep,
 before any solve has occurred - `rate_postprocessor` has not been computed from real physics yet
-at that point, so that reading is used only to pick the first probe's direction and is never
-recorded as a measurement (recording it would corrupt the very first real conductance estimate,
-computed from comparing it against the first genuine post-solve rate).
+at that point, so the first timestep runs at `initial_pressure` unchanged and that reading is
+never recorded as a measurement (recording it would corrupt the very first real conductance
+estimate, computed from comparing it against the first genuine post-solve rate). The probe step
+is taken on the second call, using the rate actually delivered at `initial_pressure`.
+
+When a timestep fails and is retried with a smaller `dt`, `EXEC_TIMESTEP_BEGIN` runs again
+without `rate_postprocessor` having been recomputed. The controller therefore restores its state
+to what it was at the start of that timestep's first attempt, so the retry uses the same pressure
+and no correction is applied on stale data. The step recorded for the same-direction check is
+the one actually applied after the `min_pressure`/`max_pressure` clamps, so a controller pinned
+at a clamp does not keep escalating.
 
 ## Example Input Syntax
 

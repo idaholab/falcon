@@ -26,8 +26,8 @@ PorousFlowRateControlledBoreholePressure::validParams()
       "target) rather than a plain Real so a startup ramp is expressible.");
   params.addRequiredParam<Real>(
       "initial_pressure",
-      "The bottom_p_or_t value (Pa) reported on the very first timestep, before any rate/pressure "
-      "history exists to base a correction on.");
+      "The bottom_p_or_t value (Pa) used unchanged for the whole first timestep, before any "
+      "rate/pressure history exists to base a correction on.");
   params.addRequiredRangeCheckedParam<Real>(
       "initial_pressure_step",
       "initial_pressure_step > 0",
@@ -71,8 +71,9 @@ PorousFlowRateControlledBoreholePressure::validParams()
       0.1,
       "min_relative_error_for_floor > 0 & min_relative_error_for_floor <= 1",
       "While the relative error |delta rate / target_rate| exceeds this fraction, the correction "
-      "step is floored at 'initial_pressure_step' in magnitude, even if the secant-derived step "
-      "would be smaller. A slope measured near one operating point can under-estimate the true "
+      "step is floored at (that relative error) * 'max_pressure_change' in magnitude, even if the "
+      "secant-derived step would be smaller - but only while the correction keeps pushing the same "
+      "direction as the previous one. A slope measured near one operating point can under-estimate the true "
       "correction needed once conditions have moved far enough that the well's real (non-affine) "
       "response curves away from that local slope - without this floor, extrapolating a "
       "locally-correct-but-too-shallow slope over a long distance leaves the controller stuck "
@@ -106,7 +107,8 @@ PorousFlowRateControlledBoreholePressure::PorousFlowRateControlledBoreholePressu
     _conductance(declareRestartableData<Real>("conductance", 0.0)),
     _have_history(declareRestartableData<bool>("have_history", false)),
     _call_count(declareRestartableData<unsigned int>("call_count", 0)),
-    _prev_step(declareRestartableData<Real>("prev_step", 0.0))
+    _prev_step(declareRestartableData<Real>("prev_step", 0.0)),
+    _step_start_t_step(-1)
 {
   const auto & exec_flags = getParam<ExecFlagEnum>("execute_on");
   if (exec_flags.isValueSet(EXEC_LINEAR) || exec_flags.isValueSet(EXEC_NONLINEAR))
@@ -126,6 +128,38 @@ PorousFlowRateControlledBoreholePressure::PorousFlowRateControlledBoreholePressu
 void
 PorousFlowRateControlledBoreholePressure::execute()
 {
+  // A failed or cut timestep is retried with the same _t_step, and EXEC_TIMESTEP_BEGIN runs again
+  // (as it also does on every fixed point iteration). Rate_postprocessor has not been recomputed
+  // since the attempt that failed, so restore the controller's state to what it was at the start of
+  // this timestep's first attempt. Otherwise each retry would pair the already-corrected pressure
+  // with the rate delivered by the previous one, record that inconsistent pair as history, and
+  // apply another correction.
+  if (_t_step == _step_start_t_step)
+  {
+    _p_current = _step_start_state.p_current;
+    _p_prev = _step_start_state.p_prev;
+    _q_prev = _step_start_state.q_prev;
+    _conductance = _step_start_state.conductance;
+    _have_history = _step_start_state.have_history;
+    _call_count = _step_start_state.call_count;
+    _prev_step = _step_start_state.prev_step;
+  }
+  else
+  {
+    _step_start_t_step = _t_step;
+    _step_start_state = {
+        _p_current, _p_prev, _q_prev, _conductance, _have_history, _call_count, _prev_step};
+  }
+
+  // The very first call happens at EXEC_TIMESTEP_BEGIN of the first timestep, before any solve:
+  // rate_postprocessor holds its bootstrap default (typically 0), not a measurement, so there is
+  // nothing to correct against yet. Run the first timestep at initial_pressure as given.
+  if (_call_count == 0)
+  {
+    ++_call_count;
+    return;
+  }
+
   const Real q_meas = _rate;
   const Real q_target = _target_rate.value(_t, Point(0.0, 0.0, 0.0));
   const Real p_used = _p_current;
@@ -144,22 +178,10 @@ PorousFlowRateControlledBoreholePressure::execute()
     // otherwise: keep whatever estimate _conductance already holds (possibly still zero)
   }
 
-  // The very FIRST call happens at EXEC_TIMESTEP_BEGIN of the first timestep, before any solve
-  // has occurred, so q_meas on that one call is whatever bootstrap default "rate_postprocessor"
-  // was declared with (typically 0) - not a real measurement of anything. Recording it as though
-  // it reflected real physics would corrupt every conductance estimate derived from it
-  // afterward (the second call would compute a slope by comparing this fake point against the
-  // first REAL measurement, and - since a small early correction step yields only a small
-  // pressure difference for the *next* comparison too - that one bad estimate can persist for
-  // many subsequent calls before enough accumulated pressure change forces a refresh). So the
-  // first call's q_meas is used only for choosing the initial probe direction below (which is
-  // harmless: any target on the correct side of zero probes the right way), never recorded.
-  if (_call_count > 0)
-  {
-    _p_prev = p_used;
-    _q_prev = q_meas;
-    _have_history = true;
-  }
+  // _call_count > 0 here, so q_meas is a real measurement: the rate delivered at p_used.
+  _p_prev = p_used;
+  _q_prev = q_meas;
+  _have_history = true;
   ++_call_count;
 
   Real step;
@@ -198,9 +220,11 @@ PorousFlowRateControlledBoreholePressure::execute()
 
   step *= _relaxation_factor;
   step = std::copysign(std::min(std::abs(step), _max_pressure_change), step);
-  _prev_step = step;
 
   _p_current = std::min(std::max(p_used + step, _min_pressure), _max_pressure);
+  // Record the step actually applied after the min_pressure/max_pressure clamp: while pinned at a
+  // clamp it is zero, so the controller does not keep escalating as though it were making progress.
+  _prev_step = _p_current - p_used;
 }
 
 Real

@@ -98,9 +98,26 @@ protected:
   /// compared against anything. See execute()'s implementation for why this matters.
   unsigned int & _call_count;
 
-  /// The (signed) correction actually applied last call. Used only to detect whether the
+  /// The (signed) correction actually applied last call, after the pressure clamps. Used only to detect whether the
   /// current call's correction is pushing the same direction (genuinely stuck, escalate) or the
   /// opposite direction (oscillating around a target it is already close to, do not escalate) -
   /// see execute()'s use of it alongside min_relative_error_for_floor.
   Real & _prev_step;
+
+  /// Snapshot of the restartable state above, taken at the start of the first attempt of a
+  /// timestep and restored on any retry of that same timestep (see execute()). Not restartable:
+  /// a recover always resumes at the start of a new timestep, which retakes the snapshot.
+  struct State
+  {
+    Real p_current;
+    Real p_prev;
+    Real q_prev;
+    Real conductance;
+    bool have_history;
+    unsigned int call_count;
+    Real prev_step;
+  } _step_start_state;
+
+  /// The _t_step at which _step_start_state was taken
+  int _step_start_t_step;
 };
