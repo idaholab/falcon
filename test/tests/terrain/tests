@@ -1,12 +1,12 @@
 [Tests]
   [mesh]
     type = RunCommand
-    command = '../../../scripts/mesh_terrain.py -o terrain.msh bottom_40m.csv granitoid_40m.csv surface_40m.csv --mesh_size 500 100 200'
+    command = '../../../scripts/mesh_terrain.py -o terrain.msh ../../../python/terrain/tests/bottom_40m.csv ../../../python/terrain/tests/granitoid_40m.csv ../../../python/terrain/tests/surface_40m.csv --mesh_size 500 100 200 --surface_names bottom_40m granitoid_40m surface_40m --volume_names bottom_40m_granitoid_40m granitoid_40m_surface_40m'
     required_python_packages = 'pandas numpy scipy gmsh'
   []
   [mesh_to_exodus]
     type = Exodiff
-    command = '../../../scripts/mesh_terrain.py -o terrain.msh --exodus bottom_40m.csv granitoid_40m.csv surface_40m.csv --mesh_size 500 100 200'
+    command = '../../../scripts/mesh_terrain.py -o terrain.msh --exodus ../../../python/terrain/tests/bottom_40m.csv ../../../python/terrain/tests/granitoid_40m.csv ../../../python/terrain/tests/surface_40m.csv --mesh_size 500 100 200 --surface_names bottom_40m granitoid_40m surface_40m --volume_names bottom_40m_granitoid_40m granitoid_40m_surface_40m'
     exodiff = terrain.e
     required_python_packages = 'pandas numpy scipy gmsh'
   []
@@ -27,43 +27,43 @@
     [n_files]
       type = RunException
       required_python_packages = 'pandas numpy scipy gmsh'
-      command = '../../../scripts/mesh_terrain.py bottom_40m.csv'
+      command = '../../../scripts/mesh_terrain.py ../../../python/terrain/tests/bottom_40m.csv'
       expect_err = "At least two file names are required"
     []
     [no_exist]
       type = RunException
       required_python_packages = 'pandas numpy scipy gmsh'
-      command = '../../../scripts/mesh_terrain.py bottom_40m.csv wrong.csv'
+      command = '../../../scripts/mesh_terrain.py ../../../python/terrain/tests/bottom_40m.csv wrong.csv'
       expect_err = "The following supplied 'file_names' do not exist: wrong.csv"
     []
     [num_elements_and_mesh_size]
       type = RunException
       required_python_packages = 'pandas numpy scipy gmsh'
-      command = '../../../scripts/mesh_terrain.py bottom_40m.csv surface_40m.csv --mesh_size=100 --num_elements=2'
+      command = '../../../scripts/mesh_terrain.py ../../../python/terrain/tests/bottom_40m.csv ../../../python/terrain/tests/surface_40m.csv --mesh_size=100 --num_elements=2'
       expect_err = "The 'num_elements' and 'mesh_size' options must not be used together"
     []
     [num_elements]
       type = RunException
       required_python_packages = 'pandas numpy scipy gmsh'
-      command = '../../../scripts/mesh_terrain.py bottom_40m.csv surface_40m.csv --num_elements 1 2 3'
+      command = '../../../scripts/mesh_terrain.py ../../../python/terrain/tests/bottom_40m.csv ../../../python/terrain/tests/surface_40m.csv --num_elements 1 2 3'
       expect_err = "The number of entries in 'num_elements' must be"
     []
     [mesh_size]
       type = RunException
       required_python_packages = 'pandas numpy scipy gmsh'
-      command = '../../../scripts/mesh_terrain.py bottom_40m.csv surface_40m.csv --mesh_size 1 2 3'
+      command = '../../../scripts/mesh_terrain.py ../../../python/terrain/tests/bottom_40m.csv ../../../python/terrain/tests/surface_40m.csv --mesh_size 1 2 3'
       expect_err = "The number of entries in 'mesh_size' must be"
     []
     [surface_names]
       type = RunException
       required_python_packages = 'pandas numpy scipy gmsh'
-      command = '../../../scripts/mesh_terrain.py bottom_40m.csv surface_40m.csv --surface_names surf'
+      command = '../../../scripts/mesh_terrain.py ../../../python/terrain/tests/bottom_40m.csv ../../../python/terrain/tests/surface_40m.csv --surface_names surf'
       expect_err = "The number of 'surface_names' must be"
     []
     [volume_names]
       type = RunException
       required_python_packages = 'pandas numpy scipy gmsh'
-      command = '../../../scripts/mesh_terrain.py bottom_40m.csv surface_40m.csv --volume_names vol vol2'
+      command = '../../../scripts/mesh_terrain.py ../../../python/terrain/tests/bottom_40m.csv ../../../python/terrain/tests/surface_40m.csv --volume_names vol vol2'
       expect_err = "The number of 'volume_names' must be"
     []
   []
