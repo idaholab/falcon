@@ -1,4 +1,4 @@
-# Companion to inp.i: the same eight RTES enthalpy DiracKernels, but on a deliberately
+# Companion to inp.i: the same nine RTES/FALCON enthalpy DiracKernels, but on a deliberately
 # non-dimensionalised problem so that EVERY block of the Jacobian is O(1).
 #
 # Why a second input exists. PetscJacobianTester gates on ratio_tol, i.e.
@@ -106,6 +106,9 @@
   [mass_source_sink_fn_uo]
     type = PorousFlowSumQuantity
   []
+  [peaceman_enthalpy_sink_uo]
+    type = PorousFlowSumQuantity
+  []
 []
 
 [Materials]
@@ -147,6 +150,12 @@
   [temperature_fn]
     type = ParsedFunction
     expression = '0'
+  []
+  [bottom_pressure_fn]
+    # Well above the pressure_ic range (0.2 to 1.0), so pp < bh_pressure is guaranteed and the
+    # injection branch (character < 0) is always active.
+    type = ParsedFunction
+    expression = '2.0'
   []
 []
 
@@ -239,6 +248,22 @@
     mass_flux_function = mass_flux_fn
     SumQuantityUO = mass_source_sink_fn_uo
     point = '0.8 0.2 0.8'
+  []
+  [peaceman_enthalpy_sink]
+    type = PorousFlowPeacemanEnthalpySink
+    variable = temperature
+    fp = simple_fluid
+    pressure = pressure
+    injection_temperature = t_in_fn
+    fluid_phase = 0
+    line_base = '0.01 0.5 0.5 0.05'
+    line_direction = '0 0 1'
+    line_length = 0.1
+    character = -1
+    bottom_p_or_t = bottom_pressure_fn
+    unit_weight = '0 0 0'
+    use_mobility = false
+    SumQuantityUO = peaceman_enthalpy_sink_uo
   []
 []
 
