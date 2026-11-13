@@ -110,19 +110,39 @@ PorousFlowRateControlledBoreholePressure::PorousFlowRateControlledBoreholePressu
     _prev_step(declareRestartableData<Real>("prev_step", 0.0)),
     _step_start_t_step(-1)
 {
+  // The controller is a once-per-timestep correction. Its retry handling (_step_start_t_step) and
+  // its first-call bootstrap (_call_count == 0) both assume it runs exactly once at the start of
+  // each timestep, so it must run at TIMESTEP_BEGIN and nowhere else. That also rules out LINEAR
+  // and NONLINEAR: the corrected pressure has to be a true constant throughout a timestep's whole
+  // Newton solve, because PorousFlowPeacemanBorehole's Jacobian differentiates its residual with
+  // respect to the local porepressure only, treating bottom_p_or_t as fixed. Re-evaluating this
+  // correction inside the solve would introduce an undifferentiated, same-order-of-magnitude
+  // dependency - the same failure mode documented on PorousFlowCasedBoreholeHeatExchange's own
+  // old-solution lagging.
   const auto & exec_flags = getParam<ExecFlagEnum>("execute_on");
-  if (exec_flags.isValueSet(EXEC_LINEAR) || exec_flags.isValueSet(EXEC_NONLINEAR))
-    paramError(
-        "execute_on",
-        "must not include LINEAR or NONLINEAR. The corrected pressure has to be a true constant "
-        "throughout a timestep's whole Newton solve: PorousFlowPeacemanBorehole's Jacobian "
-        "differentiates its residual with respect to the local porepressure only, treating "
-        "bottom_p_or_t as fixed. Re-evaluating this correction inside the solve would introduce "
-        "an undifferentiated, same-order-of-magnitude dependency - the same failure mode "
-        "documented on PorousFlowCasedBoreholeHeatExchange's own old-solution lagging.");
+  if (exec_flags.size() != 1 || !exec_flags.isValueSet(EXEC_TIMESTEP_BEGIN))
+    paramError("execute_on",
+               "must be exactly 'timestep_begin'. The controller corrects the pressure once per "
+               "timestep, before the solve, and its retry and first-call logic assume that; it "
+               "must not run at the end of a step, at 'initial' or 'final', or inside the solve "
+               "('linear' or 'nonlinear').");
 
   if (getParam<Real>("min_pressure") >= getParam<Real>("max_pressure"))
     paramError("max_pressure", "must be greater than 'min_pressure'.");
+
+  // The first timestep runs at initial_pressure exactly as given, but every later one is clamped
+  // to [min_pressure, max_pressure], so an initial_pressure outside that range would be a pressure
+  // the controller can never produce again.
+  const Real p_initial = getParam<Real>("initial_pressure");
+  if (p_initial < getParam<Real>("min_pressure") || p_initial > getParam<Real>("max_pressure"))
+    paramError("initial_pressure",
+               "must lie within [min_pressure, max_pressure] = [",
+               getParam<Real>("min_pressure"),
+               ", ",
+               getParam<Real>("max_pressure"),
+               "], but is ",
+               p_initial,
+               ".");
 }
 
 void

@@ -109,6 +109,15 @@ PorousFlowCasedBoreholeHeatExchange::PorousFlowCasedBoreholeHeatExchange(
     _point_fluxes(const_cast<PorousFlowPointFluxQuantity &>(
         getUserObject<PorousFlowPointFluxQuantity>("PointFluxUO")))
 {
+  // validParams() only changes the *default* of point_not_found_behavior, so a user can still ask
+  // for WARNING or IGNORE. computeWellboreTemperatures() samples the temperature at every well
+  // point with a collective call, so a point that is silently dropped would leave ranks out of
+  // step with each other.
+  if (getParam<MooseEnum>("point_not_found_behavior") != "ERROR")
+    paramError("point_not_found_behavior",
+               "must be 'ERROR' for this kernel: the wellbore-temperature march samples every "
+               "well point, so a point that is not found cannot be skipped.");
+
   if (_flow_direction == FlowDirection::injection && !_t_inj)
     paramError("injection_temperature",
                "is required when flow_direction = injection: the cased section's entry "
@@ -320,10 +329,10 @@ PorousFlowCasedBoreholeHeatExchange::computeWellboreTemperatures()
   // temperature_f, t_entry, and t_avg are all sampled from (or, for injection's prescribed
   // t_entry, evaluated at) the *old* (previous time step's converged) solution/time (see above),
   // so none of this is reachable with an unphysical intermediate value from the current Newton
-  // iterate. It is still clamped defensively: the
-  // converged solution driving next time step's old solution is itself extrapolated by the
-  // time integrator/time stepper from a finite-precision solve, and clamping costs nothing on
-  // the physically-sane values this normally sees.
+  // iterate. Only the temperature handed to the fluid-property cp lookup (t_for_cp, below) is
+  // clamped, to keep that correlation inside its valid domain. temperature_f, t_entry, t_avg and
+  // the resulting _t_well are deliberately NOT clamped: they are used as they are, so a bad
+  // old-solution value would pass straight through into the residual.
   constexpr Real min_valid_temperature = 280.0; // K - just above freezing; below this a
                                                 // liquid-water fp correlation is out of its
                                                 // valid domain and cannot be trusted not to

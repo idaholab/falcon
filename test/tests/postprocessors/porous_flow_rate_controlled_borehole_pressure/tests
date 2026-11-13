@@ -14,10 +14,28 @@
     type = 'RunException'
     input = 'rate_control.i'
     cli_args = "Postprocessors/bhp_control/execute_on='timestep_begin nonlinear'"
-    expect_err = 'must not include LINEAR or NONLINEAR'
+    expect_err = "must be exactly 'timestep_begin'"
     requirement = 'The system shall error if PorousFlowRateControlledBoreholePressure is '
                   'configured to execute during the nonlinear solve, since that would make the '
                   'bottomhole pressure it reports vary within a single timestep\'s Newton solve.'
+  []
+  [execute_on_timestep_end_error]
+    type = 'RunException'
+    input = 'rate_control.i'
+    cli_args = "Postprocessors/bhp_control/execute_on='timestep_end'"
+    expect_err = "must be exactly 'timestep_begin'"
+    requirement = 'The system shall error if PorousFlowRateControlledBoreholePressure is '
+                  'configured to execute at any time other than the start of a timestep, since '
+                  'its retry and first-call handling assume exactly one call per timestep.'
+  []
+  [initial_pressure_range_error]
+    type = 'RunException'
+    input = 'rate_control.i'
+    cli_args = 'Postprocessors/bhp_control/min_pressure=2e6 Postprocessors/bhp_control/max_pressure=3e6'
+    expect_err = "initial_pressure: must lie within"
+    requirement = 'The system shall error if the initial bottomhole pressure of '
+                  'PorousFlowRateControlledBoreholePressure lies outside its minimum and maximum '
+                  'pressure, since the controller could never produce that pressure again.'
   []
   [pressure_clamp_order_error]
     type = 'RunException'

@@ -28,4 +28,14 @@
     requirement = 'The system shall error if PorousFlowCasedBoreholeHeatExchange is configured '
                   'with flow_direction=production but an injection_temperature is also supplied.'
   []
+  [point_not_found_behavior_error]
+    type = 'RunException'
+    input = 'injection_direction.i'
+    cli_args = "DiracKernels/wellbore_heat_exchange/point_not_found_behavior=IGNORE"
+    expect_err = "must be 'ERROR' for this kernel"
+    requirement = 'The system shall error if PorousFlowCasedBoreholeHeatExchange is configured '
+                  'with a point_not_found_behavior other than ERROR, since its wellbore-temperature '
+                  'march samples every well point and a skipped point would leave ranks out of '
+                  'step.'
+  []
 []
